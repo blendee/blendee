@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Blendee Plugin
+Bundle-SymbolicName: jp.ats.blendee.plugin;singleton:=true
+Bundle-Version: 0.8.0
+Bundle-ClassPath: blendee.jar,
+ blendee.plugin.jar
+Bundle-Activator: jp.ats.blendee.plugin.BlendeePlugin
+Bundle-Vendor: ats
+Export-Package: .,
+ jp.ats.blendee.plugin,
+ jp.ats.blendee.plugin.popup.actions,
+ jp.ats.blendee.plugin.properties,
+ jp.ats.blendee.plugin.views,
+ jp.ats.blendee.plugin.views.element
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.views,
+ org.eclipse.jface.text,
+ org.eclipse.text;bundle-version="3.5.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

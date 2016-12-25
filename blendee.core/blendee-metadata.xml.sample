@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blendee-metadata-extension>
+	<table name="sample1" schema="" type="TABLE" remarks="this is a sample">
+		<columns>
+			<column
+				name="sample1_column1"
+				type="1"
+				type-name="CHAR"
+				size="5"
+				remarks="this is a sample"
+				default-value="'xxxxx'"
+				ordinal-position="1"
+				is-not-null="true"
+			/>
+			<column
+				name="sample1_column2"
+				type="4"
+				type-name="INTEGER"
+				size="2"
+				default-value="0"
+				ordinal-position="2"
+				is-not-null="true"
+			/>
+		</columns>
+		<primary-key name="sample1_pk1">
+			<column name="sample1_column1" />
+			<column name="sample1_column2" />
+		</primary-key>
+	</table>
+	<table name="sample2" schema="" type="VIEW" remarks="this is a sample">
+		<columns>
+			<column
+				name="sample2_column1"
+				type="-2"
+				type-name="BINARY"
+				size="2"
+				ordinal-position="1"
+				is-not-null="false"
+			/>
+			<column
+				name="sample2_column2"
+				type="91"
+				type-name="DATE"
+				ordinal-position="2"
+				is-not-null="true"
+			/>
+			<column
+				name="sample2_column3"
+				type="8"
+				type-name="DOUBLE"
+				size="10"
+				has-decimal-digits="true"
+				decimal-digits="3"
+				default-value="0.0"
+				ordinal-position="3"
+				is-not-null="true"
+			/>
+		</columns>
+		<primary-key name="sample2_pk1">
+			<column name="sample2_column1" />
+			<column name="sample2_column2" />
+		</primary-key>
+		<foreign-key name="sample2_fk1" references="sample1">
+			<column name="sample2_column1" />
+			<column name="sample2_column2" />
+		</foreign-key>
+		<foreign-key name="sample2_fk2" references="sample1">
+			<column name="sample2_column3" />
+			<column name="sample2_column4" />
+		</foreign-key>
+	</table>
+</blendee-metadata-extension>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Blendee J2EE build.xml
+-->
+<project name="blendee.j2ee" default="src-jar">
+
+	<!--
+	ソースファイルのみの jar ファイル blendee.j2ee-src.jar を生成します。
+	-->
+	<target name="src-jar" depends="cleanup">
+		<jar basedir="src" jarfile="target/blendee.j2ee-src.jar">
+			<include name="**/*.java" />
+		</jar>
+	</target>
+
+	<!--
+	この build.xml が生成した全てのファイルを削除します。
+	-->
+	<target name="cleanup">
+		<delete file="target/blendee.j2ee-src.jar" />
+	</target>
+</project>

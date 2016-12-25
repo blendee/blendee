@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Blendee build.xml
+-->
+<project name="blendee" default="all">
+
+	<property name="title" value="blendee" />
+	<property name="version" value="0.7-XXXXXXXXx" />
+	<property name="vendor" value="ats.jp" />
+
+	<path id="develop.classpath">
+		<pathelement location="build" />
+	</path>
+
+	<!--
+	blendee.jar を生成します。
+	-->
+	<target name="all" depends="cleanup">
+		<antcall target="compile" />
+		<copy todir="build">
+			<fileset dir="src" includes="**/*.java" />
+		</copy>
+		<jar basedir="build" jarfile="blendee.jar">
+			<manifest>
+				<attribute name="Implementation-Title"   value="${title}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!--
+	ソースファイルを含まない blendee.jar を生成します。
+	-->
+	<target name="class-jar" depends="cleanup">
+		<antcall target="compile" />
+		<jar basedir="build" jarfile="blendee.jar">
+			<manifest>
+				<attribute name="Implementation-Title"   value="${title}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!--
+	ソースファイルのみの jar ファイル blendee-src.jar を生成します。
+	-->
+	<target name="src-jar" depends="cleanup">
+		<jar basedir="src" jarfile="blendee-src.jar">
+			<include name="**/*.java" />
+			<manifest>
+				<attribute name="Implementation-Title"   value="${title}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
+				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!--
+	Blendee の javadoc を作成します。
+	また、それを圧縮した zip ファイルを作成します。
+	-->
+	<target name="javadoc" depends="cleanup">
+		<mkdir dir="blendee-api" />
+		<javadoc packagenames="jp.ats.blendee.*" destdir="blendee-api" windowtitle="Blendee API" doctitle="Blendee API" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
+			<sourcepath path="src" />
+			<link offline="true" href="https://docs.oracle.com/javase/jp/8/docs/api/" packagelistLoc="." />
+		</javadoc>
+		<zip zipfile="blendee-api.zip" basedir="blendee-api" />
+	</target>
+
+	<!--
+	この build.xml が生成した全てのファイルを削除します。
+	-->
+	<target name="cleanup">
+		<delete dir="build" />
+		<delete dir="blendee-api" />
+		<delete file="blendee.jar" />
+		<delete file="blendee-src.jar" />
+		<delete file="blendee-api.zip" />
+	</target>
+
+	<!--
+	javac を実行します。
+	-->
+	<target name="compile">
+		<mkdir dir="build" />
+		<javac srcdir="src" destdir="build" debug="true" optimize="true" deprecation="true" encoding="UTF-8" includeantruntime="false">
+			<include name="**/*.java" />
+			<exclude name="**/package-info.java" />
+		</javac>
+	</target>
+</project>

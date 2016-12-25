@@ -1,0 +1,13 @@
+Branch : v0_1
+	Tag : v0_1_20060130a
+	このBranchの最初のTag
+	Tag : v0_1_20060130b
+	Trunkにmerge済み
+	Tag : v0_1_20060130c
+	Trunkにmerge済み
+	Tag : v0_1_20060318a
+	Trunkにmerge済み
+	Tag : v0_1_20060419a
+	Trunkにmerge済み
+	Tag : v0_1_20060510a
+	Trunkにmerge済み
