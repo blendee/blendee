@@ -8,22 +8,22 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 import jp.ats.blendee.sql.Relationship;
 
 /**
- * {@link Iterator} としての性質を持った {@link DTO} の集合を表します。
+ * {@link Iterator} としての性質を持った {@link BEntity} の集合を表します。
  *
  * @author 千葉 哲嗣
  *
  * @param <O> One {@link Many} の要素
  * @param <M> Many {@link Many} の要素を一とした場合の、一対多の多側の型連鎖
  */
-public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>>, Iterator<One<O, M>> {
+public class Many<O extends BEntity, M> implements AutoCloseable, Iterable<One<O, M>>, Iterator<One<O, M>> {
 
 	private final DataObjectManager manager;
 
-	private final UpdatableDataObject one;
+	private final DataObject one;
 
 	private final QueryRelationship selfAsMany;
 
@@ -31,11 +31,11 @@ public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>
 
 	private final LinkedList<QueryRelationship> route;
 
-	private UpdatableDataObject prev;
+	private DataObject prev;
 
 	Many(
 		DataObjectManager manager,
-		UpdatableDataObject one,
+		DataObject one,
 		QueryRelationship selfAsMany,
 		LinkedList<QueryRelationship> route) {
 		this.manager = manager;
@@ -49,9 +49,9 @@ public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>
 	public One<O, M> next() {
 		if (!manager.prepared()) throw new IllegalStateException("hasNext() が実行されていません");
 
-		UpdatableDataObject current = manager.current(selfAsMany.getRelationship());
+		DataObject current = manager.current(selfAsMany.getRelationship());
 
-		Many<DTO, Object> next;
+		Many<BEntity, Object> next;
 		if (nextMany == null) {
 			manager.next();
 			next = null;
@@ -60,7 +60,7 @@ public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>
 		}
 
 		@SuppressWarnings("unchecked")
-		One<O, M> result = (One<O, M>) new One<>(selfAsMany.createDTO(current), next);
+		One<O, M> result = (One<O, M>) new One<>(selfAsMany.createEntity(current), next);
 
 		return result;
 	}
@@ -70,7 +70,7 @@ public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>
 		if (!manager.prepared()) return false;
 
 		Relationship key = selfAsMany.getRelationship();
-		UpdatableDataObject current = manager.current(key);
+		DataObject current = manager.current(key);
 
 		while (prev != null && current != null && prev.getPrimaryKey().equals(current.getPrimaryKey())) {
 			manager.next();
@@ -83,7 +83,7 @@ public class Many<O extends DTO, M> implements AutoCloseable, Iterable<One<O, M>
 		prev = current;
 
 		if (one != null) {
-			UpdatableDataObject currentOne = manager.current(one.getRelationship());
+			DataObject currentOne = manager.current(one.getRelationship());
 
 			return one.getPrimaryKey().equals(currentOne.getPrimaryKey());
 		}

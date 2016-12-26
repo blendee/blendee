@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import jp.ats.blendee.internal.U;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ColumnMetadata;
 import jp.ats.blendee.jdbc.CrossReference;
-import jp.ats.blendee.jdbc.BContext;
 import jp.ats.blendee.jdbc.Metadata;
 import jp.ats.blendee.jdbc.PrimaryKeyMetadata;
 import jp.ats.blendee.jdbc.ResourceLocator;
@@ -33,13 +33,13 @@ import jp.ats.blendee.sql.Column;
 import jp.ats.blendee.sql.Relationship;
 import jp.ats.blendee.sql.RelationshipFactory;
 import jp.ats.blendee.support.Many;
-import jp.ats.blendee.support.annotation.DTORelationship;
+import jp.ats.blendee.support.annotation.EntityRelationship;
 import jp.ats.blendee.support.annotation.FKs;
 import jp.ats.blendee.support.annotation.PseudoFK;
 import jp.ats.blendee.support.annotation.PseudoPK;
 
 /**
- * データベースの構成を読み取り、各テーブルの DAO クラスと DTO クラスの Java ソースを生成するジェネレータクラスです。
+ * データベースの構成を読み取り、各テーブルの EntityManager クラスと Entity クラスの Java ソースを生成するジェネレータクラスです。
  *
  * @author 千葉 哲嗣
  */
@@ -49,9 +49,9 @@ public class ORMGenerator {
 
 	private static final String constantsTemplate;
 
-	private static final String daoTemplate;
+	private static final String managerTemplate;
 
-	private static final String dtoTemplate;
+	private static final String entityTemplate;
 
 	private static final String queryTemplate;
 
@@ -59,9 +59,9 @@ public class ORMGenerator {
 
 	private static final String relationshipPartTemplate;
 
-	private static final String dtoPropertyAccessorPartTemplate;
+	private static final String entityPropertyAccessorPartTemplate;
 
-	private static final String dtoRelationshipPartTemplate;
+	private static final String entityRelationshipPartTemplate;
 
 	private static final String queryColumnPart1Template;
 
@@ -81,9 +81,9 @@ public class ORMGenerator {
 
 	private final String schemaName;
 
-	private final Class<?> daoSuperclass;
+	private final Class<?> managerSuperclass;
 
-	private final Class<?> dtoSuperclass;
+	private final Class<?> entitySuperclass;
 
 	private final Class<?> querySuperclass;
 
@@ -123,23 +123,23 @@ public class ORMGenerator {
 			}
 
 			constantsTemplate = convertToTemplate(source);
-			daoTemplate = convertToTemplate(readTemplate(DAOBase.class, charset));
+			managerTemplate = convertToTemplate(readTemplate(ManagerBase.class, charset));
 		}
 
 		{
-			String source = readTemplate(DTOBase.class, charset);
+			String source = readTemplate(EntityBase.class, charset);
 			{
-				String[] result = pickupFromSource(source, "DTOPropertyAccessorPart");
-				dtoPropertyAccessorPartTemplate = convertToTemplate(result[0]);
+				String[] result = pickupFromSource(source, "EntityPropertyAccessorPart");
+				entityPropertyAccessorPartTemplate = convertToTemplate(result[0]);
 				source = result[1];
 			}
 			{
-				String[] result = pickupFromSource(source, "DTORelationshipPart");
-				dtoRelationshipPartTemplate = convertToTemplate(result[0]);
+				String[] result = pickupFromSource(source, "EntityRelationshipPart");
+				entityRelationshipPartTemplate = convertToTemplate(result[0]);
 				source = result[1];
 			}
 
-			dtoTemplate = convertToTemplate(source);
+			entityTemplate = convertToTemplate(source);
 		}
 
 		{
@@ -180,22 +180,22 @@ public class ORMGenerator {
 	 * インスタンスを生成します。
 	 *
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
-	 * @param packageName DAO クラス、 DTO クラスが属するパッケージ名
+	 * @param packageName EntityManager クラス、 Entity クラスが属するパッケージ名
 	 * @param schemaName テーブルを読み込む対象となるスキーマ
-	 * @param daoSuperclass DAO クラスの親クラス
-	 * @param dtoSuperclass DTO クラスの親クラス
+	 * @param entityManagerSuperclass EntityManager クラスの親クラス
+	 * @param entitySuperclass Entity クラスの親クラス
 	 * @param querySuperclass Query クラスの親クラス
 	 * @param codeAdjuster {@link CodeFormatter}
-	 * @param useNumberClass DTO クラスの数値型項目を {@link Number} で統一する
-	 * @param useNullGuard DTO クラスの項目に null ガードを適用する
+	 * @param useNumberClass Entity クラスの数値型項目を {@link Number} で統一する
+	 * @param useNullGuard Entity クラスの項目に null ガードを適用する
 	 * @param generatorName ジェネレータ名
 	 */
 	public ORMGenerator(
 		Metadata metadata,
 		String packageName,
 		String schemaName,
-		Class<?> daoSuperclass,
-		Class<?> dtoSuperclass,
+		Class<?> entityManagerSuperclass,
+		Class<?> entitySuperclass,
 		Class<?> querySuperclass,
 		CodeFormatter codeAdjuster,
 		boolean useNumberClass,
@@ -205,8 +205,8 @@ public class ORMGenerator {
 		this.packageName = Objects.requireNonNull(packageName);
 
 		this.schemaName = schemaName;
-		this.daoSuperclass = daoSuperclass != null ? daoSuperclass : Object.class;
-		this.dtoSuperclass = dtoSuperclass != null ? dtoSuperclass : Object.class;
+		this.managerSuperclass = entityManagerSuperclass != null ? entityManagerSuperclass : Object.class;
+		this.entitySuperclass = entitySuperclass != null ? entitySuperclass : Object.class;
 		this.querySuperclass = querySuperclass != null ? querySuperclass : Object.class;
 
 		this.codeFormatter = codeAdjuster == null ? defaultCodeFormatter : codeAdjuster;
@@ -229,7 +229,7 @@ public class ORMGenerator {
 
 		ResourceLocator[] tables = metadata.getTables(schemaName);
 		for (ResourceLocator table : tables) {
-			Relationship relation = BContext.get(RelationshipFactory.class).getInstance(table);
+			Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(table);
 
 			String tableName = relation.getResourceLocator().getTableName();
 
@@ -239,13 +239,13 @@ public class ORMGenerator {
 				srcCharset);
 
 			write(
-				new File(packageDir, createDAOCompilationUnitName(tableName)),
-				buildDAO(relation),
+				new File(packageDir, createEntityManagerCompilationUnitName(tableName)),
+				buildEntityManager(relation),
 				srcCharset);
 
 			write(
-				new File(packageDir, createDTOCompilationUnitName(tableName)),
-				buildDTO(relation),
+				new File(packageDir, createEntityCompilationUnitName(tableName)),
+				buildEntity(relation),
 				srcCharset);
 
 			write(
@@ -266,22 +266,22 @@ public class ORMGenerator {
 	}
 
 	/**
-	 * このクラスが生成する DAO のコンパイル単位名を返します。
+	 * このクラスが生成する EntityManager のコンパイル単位名を返します。
 	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
-	public static String createDAOCompilationUnitName(String tableName) {
-		return tableName + "DAO.java";
+	public static String createEntityManagerCompilationUnitName(String tableName) {
+		return tableName + "Manager.java";
 	}
 
 	/**
-	 * このクラスが生成する DTO のコンパイル単位名を返します。
+	 * このクラスが生成する Entity のコンパイル単位名を返します。
 	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
-	public static String createDTOCompilationUnitName(String tableName) {
+	public static String createEntityCompilationUnitName(String tableName) {
 		return tableName + ".java";
 	}
 
@@ -343,32 +343,32 @@ public class ORMGenerator {
 	}
 
 	/**
-	 * DAO クラスを作成します。
+	 * EntityManager クラスを作成します。
 	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
-	public String buildDAO(Relationship relation) {
+	public String buildEntityManager(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
 		ResourceLocator target = relation.getResourceLocator();
 
-		return codeFormatter.formatDAO(
-			daoTemplate,
+		return codeFormatter.formatEntityManager(
+			managerTemplate,
 			packageName,
 			target.getTableName(),
-			daoSuperclass.getName(),
+			managerSuperclass.getName(),
 			buildTableComment(metadata, target),
 			getGenerator());
 	}
 
 	/**
-	 * DTO クラスを一件作成します。
+	 * Entity クラスを一件作成します。
 	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
-	public String buildDTO(Relationship relation) {
+	public String buildEntity(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
 		ResourceLocator target = relation.getResourceLocator();
@@ -407,9 +407,9 @@ public class ORMGenerator {
 					}
 				}
 
-				list.add(codeFormatter.formatDTOPropertyAccessorPart(
-					dtoPropertyAccessorPartTemplate,
-					tableName,
+				list.add(codeFormatter.formatEntityPropertyAccessorPart(
+					entityPropertyAccessorPartTemplate,
+					toUpperCaseFirstLetter(column.getName()),
 					column.getName(),
 					classNameString,
 					buildColumnComment(column),
@@ -435,26 +435,26 @@ public class ORMGenerator {
 				String childTableName = child.getResourceLocator().getTableName();
 				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
 
-				list.add(codeFormatter.formatDTORelationshipPart(
-					dtoRelationshipPartTemplate,
+				list.add(codeFormatter.formatEntityRelationshipPart(
+					entityRelationshipPartTemplate,
 					child.getResourceLocator().getTableName(),
 					foreignKey,
 					String.join(", ", crossReference.getForeignKeyColumnNames()),
-					methodName,
+					toUpperCaseFirstLetter(methodName),
 					tableName));
 			}
 
-			if (list.size() > 0) importPart.add(buildImportPart(DTORelationship.class));
+			if (list.size() > 0) importPart.add(buildImportPart(EntityRelationship.class));
 
 			relationshipPart = String.join("", list);
 		}
 
-		return codeFormatter.formatDTO(
-			dtoTemplate,
+		return codeFormatter.formatEntity(
+			entityTemplate,
 			packageName,
 			schemaName,
 			tableName,
-			dtoSuperclass.getName(),
+			entitySuperclass.getName(),
 			propertyAccessorPart,
 			relationshipPart,
 			buildTableComment(metadata, target),
@@ -684,6 +684,10 @@ public class ORMGenerator {
 
 	private String getGenerator() {
 		return generatorName != null ? generatorName : ORMGenerator.class.getName();
+	}
+
+	private static String toUpperCaseFirstLetter(String target) {
+		return Character.toUpperCase(target.charAt(0)) + target.substring(1);
 	}
 
 	private static void write(

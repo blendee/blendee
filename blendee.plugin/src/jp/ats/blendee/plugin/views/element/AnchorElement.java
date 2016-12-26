@@ -27,13 +27,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import jp.ats.blendee.plugin.Constants;
+import jp.ats.blendee.internal.U;
+import jp.ats.blendee.jdbc.BlendeeContext;
+import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.plugin.BlendeePlugin;
+import jp.ats.blendee.plugin.Constants;
 import jp.ats.blendee.plugin.TextDialog;
 import jp.ats.blendee.plugin.views.QueryEditorView;
-import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
-import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.selector.CommandColumnRepository;
 import jp.ats.blendee.sql.Column;
 import jp.ats.blendee.sql.FromClause;
@@ -345,7 +345,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		relationship = new RelationshipElement(
 			repository,
 			id,
-			BContext.get(RelationshipFactory.class).getInstance(
+			BlendeeContext.get(RelationshipFactory.class).getInstance(
 				repository.getResourceLocator(id)),
 			allColumns);
 		relationship.setParent(this);

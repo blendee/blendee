@@ -14,18 +14,18 @@ import java.util.stream.Collectors;
 
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.jdbc.ColumnMetadata;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.Metadata;
 import jp.ats.blendee.jdbc.MetadataFactory;
 import jp.ats.blendee.jdbc.ResourceLocator;
-import jp.ats.blendee.support.DTO;
+import jp.ats.blendee.support.BEntity;
 import jp.ats.blendee.support.annotation.FKs;
 import jp.ats.blendee.support.annotation.PseudoFK;
 import jp.ats.blendee.support.annotation.PseudoPK;
 
 /**
- * {@link VirtualSpace} を {@link DTO} に付与されたアノテーションからロードするファクトリクラスです。
+ * {@link VirtualSpace} を {@link BEntity} に付与されたアノテーションからロードするファクトリクラスです。
  *
  * @author 千葉 哲嗣
  */
@@ -40,7 +40,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 */
 	public AnnotationMetadataFactory() {
 		virtualSpace = getInstance(
-			BContext.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_DTO_PACKAGES).orElseThrow(
+			BlendeeContext.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ENTITY_PACKAGES).orElseThrow(
 				() -> new NullPointerException()));
 	}
 
@@ -76,7 +76,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 * @return アノテーションの調査をするクラスの対象かどうか
 	 */
 	protected boolean matches(Class<?> clazz) {
-		return DTO.class.isAssignableFrom(clazz) && !clazz.isInterface();
+		return BEntity.class.isAssignableFrom(clazz) && !clazz.isInterface();
 	}
 
 	private VirtualSpace getInstance(String[] packages) {

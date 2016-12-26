@@ -3,7 +3,7 @@ package jp.ats.blendee.support;
 import java.util.Arrays;
 
 import jp.ats.blendee.jdbc.ResourceLocator;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 import jp.ats.blendee.selector.Optimizer;
 import jp.ats.blendee.sql.Condition;
 import jp.ats.blendee.sql.OrderByClause;
@@ -106,8 +106,8 @@ public interface QueryRelationship {
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 *
-	 * @param data {@link DTO} の全要素の値を持つ検索結果オブジェクト
-	 * @return 生成された {@link DTO}
+	 * @param data {@link BEntity} の全要素の値を持つ検索結果オブジェクト
+	 * @return 生成された {@link BEntity}
 	 */
-	DTO createDTO(UpdatableDataObject data);
+	BEntity createEntity(DataObject data);
 }

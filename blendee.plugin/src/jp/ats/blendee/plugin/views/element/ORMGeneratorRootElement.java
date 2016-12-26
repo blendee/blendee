@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import jp.ats.blendee.internal.TransactionManager;
 import jp.ats.blendee.internal.TransactionShell;
 import jp.ats.blendee.jdbc.BConnection;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 
 public class ORMGeneratorRootElement implements Element {
@@ -23,7 +23,7 @@ public class ORMGeneratorRootElement implements Element {
 
 				@Override
 				public void execute() throws Exception {
-					BConnection connection = BContext.get(BlendeeManager.class)
+					BConnection connection = BlendeeContext.get(BlendeeManager.class)
 						.getConnection();
 					for (String schema : schemas) {
 						list.add(new SchemaElement(connection, schema));

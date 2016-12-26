@@ -2,7 +2,7 @@ package jp.ats.blendee.plugin;
 
 import java.util.Map;
 
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.OptionKey;
 import jp.ats.blendee.util.Blendee;
 
@@ -24,8 +24,8 @@ public class BlendeeStarter {
 		PluginDriverTransactionFactory.setClassLoader(loader);
 		PluginAnnotationMetadataFactory.setClassLoader(loader);
 
-		BContext.newStrategy();
-		BContext.updateStrategy();
+		BlendeeContext.newStrategy();
+		BlendeeContext.updateStrategy();
 
 		Blendee blendee = new Blendee();
 

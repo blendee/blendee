@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import jp.ats.blendee.internal.TransactionManager;
 import jp.ats.blendee.internal.TransactionShell;
 import jp.ats.blendee.jdbc.Initializer;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BTransaction;
 import jp.ats.blendee.jdbc.MetadataFactory;
@@ -59,7 +59,7 @@ public class Blendee {
 		Optional.ofNullable(
 			BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
 				() -> Optional.of(getDefaultMetadataFactoryClass())
-					.filter(c -> BlendeeConstants.ANNOTATED_DTO_PACKAGES.extract(initValues).isPresent())
+					.filter(c -> BlendeeConstants.ANNOTATED_ENTITY_PACKAGES.extract(initValues).isPresent())
 					.orElse(null)))
 			.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
 
@@ -73,12 +73,12 @@ public class Blendee {
 					.orElse(null)))
 			.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
-		BContext.get(BlendeeManager.class).initialize(init);
+		BlendeeContext.get(BlendeeManager.class).initialize(init);
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
-			.ifPresent(clazz -> BContext.get(SelectorConfigure.class).setValueExtractorsClass(clazz));
+			.ifPresent(clazz -> BlendeeContext.get(SelectorConfigure.class).setValueExtractorsClass(clazz));
 
-		AnchorOptimizerFactory anchorOptimizerFactory = BContext.get(AnchorOptimizerFactory.class);
+		AnchorOptimizerFactory anchorOptimizerFactory = BlendeeContext.get(AnchorOptimizerFactory.class);
 
 		BlendeeConstants.CAN_ADD_NEW_ENTRIES.extract(initValues)
 			.ifPresent(flag -> anchorOptimizerFactory.setCanAddNewEntries(flag));
@@ -95,7 +95,7 @@ public class Blendee {
 	 * @throws Exception 処理内で起こった例外
 	 */
 	public static void execute(Function function) throws Exception {
-		if (BContext.get(BlendeeManager.class).hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
+		if (BlendeeContext.get(BlendeeManager.class).hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
 
 		TransactionManager.start(new TransactionShell() {
 
@@ -167,8 +167,8 @@ public class Blendee {
 	 * Blendee が持つ定義情報の各キャッシュをクリアします。
 	 */
 	public static void clearCache() {
-		BContext.get(BlendeeManager.class).clearMetadataCache();
-		BContext.get(RelationshipFactory.class).clearCache();
+		BlendeeContext.get(BlendeeManager.class).clearMetadataCache();
+		BlendeeContext.get(RelationshipFactory.class).clearCache();
 	}
 
 	/**

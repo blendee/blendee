@@ -7,7 +7,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BResultSet;
 import jp.ats.blendee.jdbc.BStatement;
@@ -104,7 +104,7 @@ public class SQLProxyBuilder {
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
 
-			ValueExtractors extractors = BContext.get(SelectorConfigure.class).getValueExtractors();
+			ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			final Binder[] binders = new Binder[parameterTypes.length];
 			for (int i = 0; i < parameterTypes.length; i++) {
@@ -114,7 +114,7 @@ public class SQLProxyBuilder {
 
 			Class<?> returnType = method.getReturnType();
 
-			BStatement statement = BContext.get(BlendeeManager.class).getConnection().getStatement(sql, s -> {
+			BStatement statement = BlendeeContext.get(BlendeeManager.class).getConnection().getStatement(sql, s -> {
 				for (int i = 0; i < binders.length; i++) {
 					binders[i].bind(i + 1, s);
 				}

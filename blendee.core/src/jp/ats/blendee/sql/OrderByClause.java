@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ResourceLocator;
 
 /**
@@ -57,7 +57,7 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 	public static OrderByClause createPrimaryKeyOrder(
 		ResourceLocator locator,
 		Direction direction) {
-		Column[] columns = BContext.get(RelationshipFactory.class).getInstance(locator).getPrimaryKeyColumns();
+		Column[] columns = BlendeeContext.get(RelationshipFactory.class).getInstance(locator).getPrimaryKeyColumns();
 		OrderByClause clause = new OrderByClause();
 		for (Column column : columns)
 			clause.add(column, direction);

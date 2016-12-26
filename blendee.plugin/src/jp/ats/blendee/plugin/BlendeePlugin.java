@@ -37,8 +37,8 @@ import org.osgi.framework.BundleContext;
 import jp.ats.blendee.develop.CodeFormatter;
 import jp.ats.blendee.internal.HomeStorage;
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
 import jp.ats.blendee.jdbc.BTransaction;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.MetadataFactory;
 import jp.ats.blendee.jdbc.OptionKey;
@@ -47,8 +47,8 @@ import jp.ats.blendee.plugin.views.ClassBuilderView;
 import jp.ats.blendee.plugin.views.QueryEditorView;
 import jp.ats.blendee.selector.ColumnRepositoryFactory;
 import jp.ats.blendee.support.Query;
-import jp.ats.blendee.util.FileColumnRepositoryFactory;
 import jp.ats.blendee.util.BlendeeConstants;
+import jp.ats.blendee.util.FileColumnRepositoryFactory;
 
 public class BlendeePlugin extends AbstractUIPlugin {
 
@@ -76,9 +76,9 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	private final Map<String, String> outputPackages = new HashMap<>();
 
-	private Class<?> daoParentClass;
+	private Class<?> managerParentClass;
 
-	private Class<?> dtoParentClass;
+	private Class<?> entityParentClass;
 
 	private Class<?> queryParentClass;
 
@@ -203,12 +203,12 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		return factory;
 	}
 
-	public Class<?> getDAOParentClass() {
-		return daoParentClass;
+	public Class<?> getEntityManagerParentClass() {
+		return managerParentClass;
 	}
 
-	public Class<?> getDTOParentClass() {
-		return dtoParentClass;
+	public Class<?> getEntityParentClass() {
+		return entityParentClass;
 	}
 
 	public Class<?> getQueryParentClass() {
@@ -356,7 +356,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		Properties properties = getPersistentProperties(currentProject);
 
 		init.put(
-			BlendeeConstants.ANNOTATED_DTO_PACKAGES,
+			BlendeeConstants.ANNOTATED_ENTITY_PACKAGES,
 			splitByBlankAndRemoveEmptyString(properties.getProperty(
 				Constants.OUTPUT_PACKAGE_NAMES)));
 
@@ -443,24 +443,24 @@ public class BlendeePlugin extends AbstractUIPlugin {
 				currentProject,
 				columnRepositoryFactoryClass.newInstance());
 
-			transaction = BContext.get(BlendeeManager.class).startTransaction();
+			transaction = BlendeeContext.get(BlendeeManager.class).startTransaction();
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
 		}
 
 		try {
-			String daoParentClassName = properties.getProperty(Constants.DAO_PARENT_CLASS);
-			if (isAvailable(daoParentClassName)) {
-				daoParentClass = Class.forName(daoParentClassName, false, loader);
+			String managerParentClassName = properties.getProperty(Constants.ENTITY_MANAGER_PARENT_CLASS);
+			if (isAvailable(managerParentClassName)) {
+				managerParentClass = Class.forName(managerParentClassName, false, loader);
 			} else {
-				daoParentClass = null;
+				managerParentClass = null;
 			}
 
-			String dtoParentClassName = properties.getProperty(Constants.DTO_PARENT_CLASS);
-			if (isAvailable(dtoParentClassName)) {
-				dtoParentClass = Class.forName(dtoParentClassName, false, loader);
+			String entityParentClassName = properties.getProperty(Constants.ENTITY_PARENT_CLASS);
+			if (isAvailable(entityParentClassName)) {
+				entityParentClass = Class.forName(entityParentClassName, false, loader);
 			} else {
-				dtoParentClass = null;
+				entityParentClass = null;
 			}
 
 			String queryParentClassName = properties.getProperty(Constants.QUERY_PARENT_CLASS);

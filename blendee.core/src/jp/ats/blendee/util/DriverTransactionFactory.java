@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 import jp.ats.blendee.jdbc.Configure;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BTransaction;
 import jp.ats.blendee.jdbc.TransactionFactory;
@@ -32,7 +32,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	 * @throws Exception ドライバークラスのロード時に発生した例外
 	 */
 	public DriverTransactionFactory() throws Exception {
-		Configure config = BContext.get(BlendeeManager.class).getConfigure();
+		Configure config = BlendeeContext.get(BlendeeManager.class).getConfigure();
 
 		Class.forName(
 			Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()),

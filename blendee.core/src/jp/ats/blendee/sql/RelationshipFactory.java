@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.ats.blendee.internal.CollectionMap;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.ManagementSubject;
 import jp.ats.blendee.jdbc.MetadataUtilities;
@@ -27,9 +27,9 @@ public class RelationshipFactory implements ManagementSubject {
 	/**
 	 * このクラスのコンストラクタです。
 	 * <br>
-	 * {@link BContext} 管理対象です。
+	 * {@link BlendeeContext} 管理対象です。
 	 *
-	 * @see BContext#get(Class)
+	 * @see BlendeeContext#get(Class)
 	 */
 	public RelationshipFactory() {}
 
@@ -101,7 +101,7 @@ public class RelationshipFactory implements ManagementSubject {
 	}
 
 	private void prepareLocationIdMap() {
-		String[] schemaNames = BContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
+		String[] schemaNames = BlendeeContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		int counter = 0;
 		for (String name : schemaNames) {
 			ResourceLocator[] locators = MetadataUtilities.getTables(name);
@@ -128,7 +128,7 @@ public class RelationshipFactory implements ManagementSubject {
 			null,
 			locator,
 			locationId,
-			BContext.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
+			BlendeeContext.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<ResourceLocator, Relationship>());
 	}
 }

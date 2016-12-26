@@ -20,7 +20,7 @@ public class MetadataUtilities {
 	 * @return スキーマに存在する全てのテーブル
 	 */
 	public static ResourceLocator[] getTables(final String schemaName) {
-		return BContext.get(BlendeeManager.class).getConnection().getTables(schemaName);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getTables(schemaName);
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class MetadataUtilities {
 	 * @return テーブルに存在する全てのカラム
 	 */
 	public static ColumnMetadata[] getColumnMetadatas(final ResourceLocator locator) {
-		return BContext.get(BlendeeManager.class).getConnection().getColumnMetadatas(locator);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getColumnMetadatas(locator);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class MetadataUtilities {
 	 * @return 主キーを構成するカラム
 	 */
 	public static String[] getPrimaryKeyColumnNames(final ResourceLocator locator) {
-		return BContext.get(BlendeeManager.class).getConnection().getPrimaryKeyMetadata(locator).getColumnNames();
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getPrimaryKeyMetadata(locator).getColumnNames();
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class MetadataUtilities {
 	 * @return 主キー名
 	 */
 	public static String getPrimaryKeyName(ResourceLocator locator) {
-		return BContext.get(BlendeeManager.class).getConnection().getPrimaryKeyMetadata(locator).getName();
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getPrimaryKeyMetadata(locator).getName();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class MetadataUtilities {
 	 * @return 参照しているテーブル
 	 */
 	public static ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator) {
-		return BContext.get(BlendeeManager.class).getConnection().getResourcesOfImportedKey(locator);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getResourcesOfImportedKey(locator);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class MetadataUtilities {
 	 * @return 参照されているテーブル
 	 */
 	public static ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator) {
-		return BContext.get(BlendeeManager.class).getConnection().getResourcesOfExportedKey(locator);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getResourcesOfExportedKey(locator);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class MetadataUtilities {
 	 * @return テーブル間の関係情報
 	 */
 	public static CrossReference[] getCrossReferences(ResourceLocator exported, ResourceLocator imported) {
-		return BContext.get(BlendeeManager.class).getConnection().getCrossReferences(exported, imported);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().getCrossReferences(exported, imported);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class MetadataUtilities {
 	 * @return 標準化された名称
 	 */
 	public static String regularize(String name) {
-		return BContext.get(BlendeeManager.class).getConnection().regularize(name);
+		return BlendeeContext.get(BlendeeManager.class).getConnection().regularize(name);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class MetadataUtilities {
 	public static String[] regularize(String[] names) {
 		String[] regularized = new String[names.length];;
 
-		BConnection connection = BContext.get(BlendeeManager.class).getConnection();
+		BConnection connection = BlendeeContext.get(BlendeeManager.class).getConnection();
 		for (int i = 0; i < names.length; i++) {
 			regularized[i] = connection.regularize(names[i]);
 		}

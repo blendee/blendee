@@ -1,6 +1,6 @@
 package jp.ats.blendee.internal;
 
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BTransaction;
 
@@ -11,7 +11,7 @@ import jp.ats.blendee.jdbc.BTransaction;
  */
 public abstract class TransactionShell implements Shell {
 
-	private final BlendeeManager manager = BContext.get(BlendeeManager.class);
+	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
 	private final BTransaction transaction;
 

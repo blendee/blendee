@@ -17,12 +17,11 @@ import jp.ats.blendee.sql.Relationship;
  * 検索結果から {@link DataObject} を生成するクラスです。
  *
  * @author 千葉 哲嗣
- * @param <E> 要素
  * @see DataAccessHelper#getDataObjects(Optimizer, Condition, OrderByClause, QueryOption...)
  * @see DataAccessHelper#regetDataObjects(Optimizer)
  */
-public class DataObjectIterator<E extends DataObject>
-	implements AutoCloseable, Iterable<E>, Iterator<E> {
+public class DataObjectIterator
+	implements AutoCloseable, Iterable<DataObject>, Iterator<DataObject> {
 
 	private final Relationship relationship;
 
@@ -40,7 +39,7 @@ public class DataObjectIterator<E extends DataObject>
 	}
 
 	@Override
-	public Iterator<E> iterator() {
+	public Iterator<DataObject> iterator() {
 		return this;
 	}
 
@@ -49,7 +48,7 @@ public class DataObjectIterator<E extends DataObject>
 	 *
 	 * @return {@link Stream}
 	 */
-	public Stream<E> stream() {
+	public Stream<DataObject> stream() {
 		return StreamSupport.stream(
 			Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED),
 			false);
@@ -60,11 +59,10 @@ public class DataObjectIterator<E extends DataObject>
 		return iterator.hasNext();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public E next() {
-		if (readonly) return (E) new DataObject(relationship, iterator.next());
-		return (E) new UpdatableDataObject(relationship, iterator.next());
+	public DataObject next() {
+		if (readonly) return new DataObject(relationship, iterator.next());
+		return new DataObject(relationship, iterator.next());
 	}
 
 	/**
@@ -74,15 +72,6 @@ public class DataObjectIterator<E extends DataObject>
 	 */
 	public DataObject nextDataObject() {
 		return new DataObject(relationship, iterator.next());
-	}
-
-	/**
-	 * 検索結果の一行を {@link UpdatableDataObject} として返します。
-	 *
-	 * @return 検索結果の一行
-	 */
-	public UpdatableDataObject nextUpdatableDataObject() {
-		return new UpdatableDataObject(relationship, iterator.next());
 	}
 
 	/**

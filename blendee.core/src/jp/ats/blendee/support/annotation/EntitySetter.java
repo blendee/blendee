@@ -6,28 +6,26 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jp.ats.blendee.support.DTO;
-
 /**
- * DTO の 他 DTO への参照を表すアノテーションです。
+ * Entity の setter 情報を表すアノテーションです。
  *
  * @author 千葉 哲嗣
  */
 @Target({ METHOD })
 @Retention(RUNTIME)
-public @interface DTORelationship {
+public @interface EntitySetter {
 
 	/**
-	 * FK 名
+	 * カラム名
 	 *
-	 * @return FK 名
+	 * @return カラム名
 	 */
-	String fk();
+	String column();
 
 	/**
-	 * 参照テーブル
+	 * 型
 	 *
-	 * @return 参照テーブル
+	 * @return 型
 	 */
-	Class<? extends DTO> referenced();
+	Class<?> type();
 }

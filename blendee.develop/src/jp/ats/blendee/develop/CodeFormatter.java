@@ -37,40 +37,40 @@ public interface CodeFormatter {
 	String formatConstantsRelationshipPart(String template, String... arguments);
 
 	/**
-	 * {@link DAOBase} をテンプレートとしたコードを組み立てます。
+	 * {@link ManagerBase} をテンプレートとしたコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatDAO(String template, String... arguments);
+	String formatEntityManager(String template, String... arguments);
 
 	/**
-	 * {@link DTOBase} をテンプレートとしたコードを組み立てます。
+	 * {@link EntityBase} をテンプレートとしたコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatDTO(String template, String... arguments);
+	String formatEntity(String template, String... arguments);
 
 	/**
-	 * {@link DTOBase} の setter getter 生成部分のコードを組み立てます。
+	 * {@link EntityBase} の setter getter 生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatDTOPropertyAccessorPart(String template, String... arguments);
+	String formatEntityPropertyAccessorPart(String template, String... arguments);
 
 	/**
-	 * {@link DTOBase} のリレーション生成部分のコードを組み立てます。
+	 * {@link EntityBase} のリレーション生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatDTORelationshipPart(String template, String... arguments);
+	String formatEntityRelationshipPart(String template, String... arguments);
 
 	/**
 	 * {@link QueryBase} をテンプレートとしたコードを組み立てます。

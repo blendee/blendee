@@ -9,7 +9,7 @@ import jp.ats.blendee.jdbc.impl.SimpleContextStrategy;
  *
  * @author 千葉 哲嗣
  */
-public class BContext {
+public class BlendeeContext {
 
 	private static final Object lock = new Object();
 
@@ -60,7 +60,7 @@ public class BContext {
 	 */
 	public static void newStrategy(ContextStrategy strategy) {
 		synchronized (lock) {
-			BContext.strategy = strategy;
+			BlendeeContext.strategy = strategy;
 		}
 	}
 

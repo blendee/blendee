@@ -3,7 +3,7 @@ package jp.ats.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BPreparedStatement;
 import jp.ats.blendee.jdbc.ResourceLocator;
 
@@ -14,7 +14,7 @@ import jp.ats.blendee.jdbc.ResourceLocator;
  */
 public class UpdateDMLBuilder extends Updater {
 
-	private final RelationshipFactory factory = BContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
 	private Condition condition = ConditionFactory.createCondition();
 

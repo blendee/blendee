@@ -25,22 +25,22 @@ public class DefaultCodeFormatter implements CodeFormatter {
 	}
 
 	@Override
-	public String formatDAO(String template, String... arguments) {
+	public String formatEntityManager(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}
 
 	@Override
-	public String formatDTO(String template, String... arguments) {
+	public String formatEntity(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}
 
 	@Override
-	public String formatDTOPropertyAccessorPart(String template, String... arguments) {
+	public String formatEntityPropertyAccessorPart(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}
 
 	@Override
-	public String formatDTORelationshipPart(String template, String... arguments) {
+	public String formatEntityRelationshipPart(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}
 

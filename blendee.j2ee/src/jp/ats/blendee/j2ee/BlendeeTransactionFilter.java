@@ -13,7 +13,7 @@ import javax.servlet.ServletResponse;
 
 import jp.ats.blendee.internal.TransactionManager;
 import jp.ats.blendee.internal.TransactionShell;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BTransaction;
 import jp.ats.blendee.util.Blendee;
@@ -49,7 +49,7 @@ public class BlendeeTransactionFilter implements Filter {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 		throws IOException, ServletException {
-		if (BContext.get(BlendeeManager.class).hasConnection()) {
+		if (BlendeeContext.get(BlendeeManager.class).hasConnection()) {
 			chain.doFilter(request, response);
 			return;
 		}

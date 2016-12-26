@@ -206,7 +206,7 @@ public final class Configure {
 	 * @return 現在の Blendee の設定かどうか
 	 */
 	public boolean isCurrent() {
-		return BContext.get(BlendeeManager.class).isCurrent(this);
+		return BlendeeContext.get(BlendeeManager.class).isCurrent(this);
 	}
 
 	/**

@@ -5,18 +5,18 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import jp.ats.blendee.orm.DataObjectIterator;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 import jp.ats.blendee.sql.Relationship;
 
 class DataObjectManager {
 
-	private final DataObjectIterator<UpdatableDataObject> iterator;
+	private final DataObjectIterator iterator;
 
 	private final LinkedList<QueryRelationship> route;
 
-	Map<Relationship, UpdatableDataObject> current;
+	Map<Relationship, DataObject> current;
 
-	DataObjectManager(DataObjectIterator<UpdatableDataObject> iterator, LinkedList<QueryRelationship> relations) {
+	DataObjectManager(DataObjectIterator iterator, LinkedList<QueryRelationship> relations) {
 		this.iterator = iterator;
 		route = new LinkedList<>(relations);
 		route.pop();
@@ -36,12 +36,12 @@ class DataObjectManager {
 		current = convert(iterator.next());
 	}
 
-	UpdatableDataObject current(Relationship key) {
+	DataObject current(Relationship key) {
 		return current == null ? null : current.get(key);
 	}
 
-	private Map<Relationship, UpdatableDataObject> convert(UpdatableDataObject source) {
-		Map<Relationship, UpdatableDataObject> map = new HashMap<>();
+	private Map<Relationship, DataObject> convert(DataObject source) {
+		Map<Relationship, DataObject> map = new HashMap<>();
 		map.put(source.getRelationship(), source);
 		for (QueryRelationship relation : route) {
 			Relationship include = relation.getRelationship();

@@ -7,23 +7,23 @@ import jp.ats.blendee.orm.DataAccessHelper;
 import jp.ats.blendee.orm.DataObjectIterator;
 import jp.ats.blendee.orm.QueryOption;
 import jp.ats.blendee.orm.RowLockOption;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 import jp.ats.blendee.selector.Optimizer;
 import jp.ats.blendee.selector.SimpleOptimizer;
 import jp.ats.blendee.sql.Condition;
 import jp.ats.blendee.sql.OrderByClause;
-import jp.ats.blendee.support.DAO;
-import jp.ats.blendee.support.DTOIterator;
+import jp.ats.blendee.support.BEntityManager;
+import jp.ats.blendee.support.EntityIterator;
 
 /**
- * 自動生成された '{'@link DAO'}' の実装クラスです。
+ * 自動生成された '{'@link BEntityManager'}' の実装クラスです。
  *
 {3}
  */
 @Generated(value = /*++'++*/{/*++'++*/"{4}"/*++'++*/}/*++'++*/)
-public class /*++{1}DAO++*//*--*/DAOBase/*--*/
+public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements DAO</*++{1}++*//*--*/DTOBase/*--*/> /*++'++*/{/*++'++*/
+	implements BEntityManager</*++{1}++*//*--*/EntityBase/*--*/> /*++'++*/{/*++'++*/
 
 	private final DataAccessHelper helper = new DataAccessHelper(false);
 
@@ -35,7 +35,7 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
-	 * @return '{'@link DTOIterator'}'
+	 * @return '{'@link EntityIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Condition condition,
@@ -57,7 +57,7 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	 *
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @return '{'@link DTOIterator'}'
+	 * @return '{'@link EntityIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Condition condition,
@@ -76,14 +76,14 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
-	 * @return '{'@link DTOIterator'}'
+	 * @return '{'@link EntityIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
 		Condition condition,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
-		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(helper.getUpdatableDataObjects(
+		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(helper.getDataObjects(
 			optimizer,
 			condition,
 			order,
@@ -98,7 +98,7 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @return '{'@link DTOIterator'}'
+	 * @return '{'@link EntityIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
@@ -113,8 +113,8 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}++*//*--*/DTOBase/*--*/ createDTO(UpdatableDataObject data) /*++'++*/{/*++'++*/
-		return new /*++{1}++*//*--*/DTOBase/*--*/(data);
+	public /*++{1}++*//*--*/EntityBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
+		return new /*++{1}++*//*--*/EntityBase/*--*/(data);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -128,10 +128,10 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * '{'@link {1}DAO'}' が使用する Iterator クラスです。
+	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
 	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
-		extends /*++DTOIterator<{1}>++*//*--*/DTOIterator<DTOBase>/*--*/ /*++'++*/{/*++'++*/
+		extends /*++EntityIterator<{1}>++*//*--*/EntityIterator<EntityBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。
@@ -139,13 +139,13 @@ public class /*++{1}DAO++*//*--*/DAOBase/*--*/
 		 * @param iterator 
 		 */
 		private /*++{1}Iterator++*//*--*/IteratorBase/*--*/(
-			DataObjectIterator<UpdatableDataObject> iterator) /*++'++*/{/*++'++*/
+			DataObjectIterator iterator) /*++'++*/{/*++'++*/
 			super(iterator);
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/DTOBase/*--*/ next() /*++'++*/{/*++'++*/
-			return createDTO(nextDataObject());
+		public /*++{1}++*//*--*/EntityBase/*--*/ next() /*++'++*/{/*++'++*/
+			return createEntity(nextDataObject());
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 /*++'++*/}/*++'++*/

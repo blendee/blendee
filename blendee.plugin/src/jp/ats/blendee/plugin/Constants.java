@@ -26,9 +26,9 @@ public class Constants {
 
 	public static final String METADATA_FACTORY_CLASS = "metadataFactoryClass";
 
-	public static final String DAO_PARENT_CLASS = "daoParentClass";
+	public static final String ENTITY_MANAGER_PARENT_CLASS = "entityManagerParentClass";
 
-	public static final String DTO_PARENT_CLASS = "dtoParentClass";
+	public static final String ENTITY_PARENT_CLASS = "entityParentClass";
 
 	public static final String QUERY_PARENT_CLASS = "queryParentClass";
 

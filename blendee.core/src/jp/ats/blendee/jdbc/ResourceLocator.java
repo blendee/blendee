@@ -81,7 +81,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 		if (schemaName != null) return schemaName;
 
 		//Blendee 初期化以前にインスタンス化されても大丈夫なように、デフォルトスキーマ名は、この時点で取得する
-		String[] schemaNames = BContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
+		String[] schemaNames = BlendeeContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		if (schemaNames.length > 1) throw new IllegalStateException("スキーマ名が複数設定されています");
 
 		return schemaNames[0];

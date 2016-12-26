@@ -3,7 +3,7 @@ package jp.ats.blendee.selector;
 import java.util.Objects;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BResult;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.sql.Column;
@@ -18,7 +18,7 @@ public class RuntimeOptimizer implements Optimizer {
 
 	private final ResourceLocator locator;
 
-	private final ValueExtractors extractors = BContext.get(SelectorConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
 
 	private final SelectClause select = new SelectClause();
 

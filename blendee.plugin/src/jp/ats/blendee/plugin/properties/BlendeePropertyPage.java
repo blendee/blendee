@@ -317,9 +317,9 @@ public class BlendeePropertyPage
 		addField(metadataFactoryClassEditor);
 
 		/*---------------------------------------------------*/
-		ClassFieldEditor daoParentClassEditor = new ClassFieldEditor(
-			Constants.DAO_PARENT_CLASS,
-			"自動生成 DAO の親クラス",
+		ClassFieldEditor managerParentClassEditor = new ClassFieldEditor(
+			Constants.ENTITY_MANAGER_PARENT_CLASS,
+			"自動生成 EntityManager の親クラス",
 			element.getProject(),
 			getFieldEditorParent()) {
 
@@ -335,14 +335,14 @@ public class BlendeePropertyPage
 			}
 		};
 
-		daoParentClassEditor.setChangeButtonText("参照...");
-		daoParentClassEditor.setEmptyStringAllowed(true);
-		addField(daoParentClassEditor);
+		managerParentClassEditor.setChangeButtonText("参照...");
+		managerParentClassEditor.setEmptyStringAllowed(true);
+		addField(managerParentClassEditor);
 
 		/*---------------------------------------------------*/
-		ClassFieldEditor dtoParentClassEditor = new ClassFieldEditor(
-			Constants.DTO_PARENT_CLASS,
-			"自動生成 DTO の親クラス",
+		ClassFieldEditor entityParentClassEditor = new ClassFieldEditor(
+			Constants.ENTITY_PARENT_CLASS,
+			"自動生成 Entity の親クラス",
 			element.getProject(),
 			getFieldEditorParent()) {
 
@@ -358,9 +358,9 @@ public class BlendeePropertyPage
 			}
 		};
 
-		dtoParentClassEditor.setChangeButtonText("参照...");
-		dtoParentClassEditor.setEmptyStringAllowed(true);
-		addField(dtoParentClassEditor);
+		entityParentClassEditor.setChangeButtonText("参照...");
+		entityParentClassEditor.setEmptyStringAllowed(true);
+		addField(entityParentClassEditor);
 
 		/*---------------------------------------------------*/
 		ClassFieldEditor queryParentClassEditor = new ClassFieldEditor(
@@ -418,7 +418,7 @@ public class BlendeePropertyPage
 		/*---------------------------------------------------*/
 		BooleanFieldEditor useNumberClassEditor = new BooleanFieldEditor(
 			Constants.USE_NUMBER_CLASS,
-			"DTO の数値項目を Number に統一",
+			"Entity の数値項目を Number に統一",
 			BooleanFieldEditor.SEPARATE_LABEL,
 			getFieldEditorParent());
 		addField(useNumberClassEditor);
@@ -426,7 +426,7 @@ public class BlendeePropertyPage
 		/*---------------------------------------------------*/
 		BooleanFieldEditor notUseNullGuardEditor = new BooleanFieldEditor(
 			Constants.NOT_USE_NULL_GUARD,
-			"DTO の項目で null 保護機能を使用しない",
+			"Entity の項目で null 保護機能を使用しない",
 			BooleanFieldEditor.SEPARATE_LABEL,
 			getFieldEditorParent());
 		addField(notUseNullGuardEditor);
@@ -489,9 +489,9 @@ public class BlendeePropertyPage
 
 		changed |= checkAndSetValue(store, properties, Constants.METADATA_FACTORY_CLASS);
 
-		changed |= checkAndSetValue(store, properties, Constants.DAO_PARENT_CLASS);
+		changed |= checkAndSetValue(store, properties, Constants.ENTITY_MANAGER_PARENT_CLASS);
 
-		changed |= checkAndSetValue(store, properties, Constants.DTO_PARENT_CLASS);
+		changed |= checkAndSetValue(store, properties, Constants.ENTITY_PARENT_CLASS);
 
 		changed |= checkAndSetValue(store, properties, Constants.QUERY_PARENT_CLASS);
 
@@ -582,12 +582,12 @@ public class BlendeePropertyPage
 			store.getString(Constants.METADATA_FACTORY_CLASS));
 
 		store.setDefault(
-			Constants.DAO_PARENT_CLASS,
-			store.getString(Constants.DAO_PARENT_CLASS));
+			Constants.ENTITY_MANAGER_PARENT_CLASS,
+			store.getString(Constants.ENTITY_MANAGER_PARENT_CLASS));
 
 		store.setDefault(
-			Constants.DTO_PARENT_CLASS,
-			store.getString(Constants.DTO_PARENT_CLASS));
+			Constants.ENTITY_PARENT_CLASS,
+			store.getString(Constants.ENTITY_PARENT_CLASS));
 
 		store.setDefault(
 			Constants.QUERY_PARENT_CLASS,

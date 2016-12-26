@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * DTO のもととなったテーブルを表すアノテーションです。
+ * Entity のもととなったテーブルを表すアノテーションです。
  *
  * @author 千葉 哲嗣
  */

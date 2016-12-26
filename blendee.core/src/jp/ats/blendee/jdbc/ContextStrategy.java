@@ -1,7 +1,7 @@
 package jp.ats.blendee.jdbc;
 
 /**
- * {@link BContext} で扱われるインスタンスの管理方法を表すインターフェイスです。
+ * {@link BlendeeContext} で扱われるインスタンスの管理方法を表すインターフェイスです。
  *
  * @author 千葉 哲嗣
  */

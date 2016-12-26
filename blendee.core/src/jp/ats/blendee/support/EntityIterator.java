@@ -8,24 +8,25 @@ import java.util.stream.StreamSupport;
 
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.orm.DataObjectIterator;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 
 /**
- * 自動生成される DAO の実装が使用する Iterator クラスです。
+ * 自動生成される EntityManager の実装が使用する Iterator クラスです。
  *
  * @author 千葉 哲嗣
  * @param <E> 要素
  */
-public abstract class DTOIterator<E extends DTO> implements AutoCloseable, Iterable<E>, Iterator<E> {
+public abstract class EntityIterator<E extends BEntity>
+	implements AutoCloseable, Iterable<E>, Iterator<E> {
 
-	private final DataObjectIterator<UpdatableDataObject> iterator;
+	private final DataObjectIterator iterator;
 
 	/**
 	 * 唯一のコンストラクタです。
 	 * 
 	 * @param iterator 検索結果オブジェクト
 	 */
-	public DTOIterator(DataObjectIterator<UpdatableDataObject> iterator) {
+	public EntityIterator(DataObjectIterator iterator) {
 		this.iterator = iterator;
 	}
 
@@ -53,7 +54,7 @@ public abstract class DTOIterator<E extends DTO> implements AutoCloseable, Itera
 	 *
 	 * @return 検索結果一件
 	 */
-	protected UpdatableDataObject nextDataObject() {
+	protected DataObject nextDataObject() {
 		return iterator.next();
 	}
 
@@ -62,7 +63,7 @@ public abstract class DTOIterator<E extends DTO> implements AutoCloseable, Itera
 	 *
 	 * @return 検索結果オブジェクト
 	 */
-	protected DataObjectIterator<UpdatableDataObject> getDataObjectIterator() {
+	protected DataObjectIterator getDataObjectIterator() {
 		return iterator;
 	}
 

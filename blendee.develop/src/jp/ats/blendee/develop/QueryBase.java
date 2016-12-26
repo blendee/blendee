@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.annotation.Generated;
 
-import /*++{0}.{1}DAO.{1}Iterator++*//*--*/jp.ats.blendee.develop.DAOBase.IteratorBase/*--*/;
+import /*++{0}.{1}Manager.{1}Iterator++*//*--*/jp.ats.blendee.develop.ManagerBase.IteratorBase/*--*/;
 import jp.ats.blendee.support.AbstractOrderQueryColumn;
 import jp.ats.blendee.support.AbstractSelectQueryColumn;
 /*++{8}++*/
@@ -25,10 +25,10 @@ import jp.ats.blendee.support.SelectOfferFunction.SelectOffers;
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.support.Subquery;
 import jp.ats.blendee.support.WhereQueryColumn;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.orm.QueryOption;
-import jp.ats.blendee.orm.UpdatableDataObject;
+import jp.ats.blendee.orm.DataObject;
 import jp.ats.blendee.selector.AnchorOptimizerFactory;
 import jp.ats.blendee.selector.Optimizer;
 import jp.ats.blendee.selector.RuntimeOptimizer;
@@ -56,7 +56,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/>> whereContext =  QueryContext.newBuilder();
 
-	private final /*++{1}DAO++*//*--*/DAOBase/*--*/ dao = new /*++{1}DAO()++*//*--*/DAOBase()/*--*/;
+	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 	/**
 	 * WHERE 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -160,7 +160,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
-		optimizer = BContext.get(AnchorOptimizerFactory.class).getInstance(
+		optimizer = BlendeeContext.get(AnchorOptimizerFactory.class).getInstance(
 			id,
 			/*++{1}Constants++*//*--*/Constants/*--*/.RESOURCE_LOCATOR,
 			using);
@@ -236,7 +236,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public Relationship getRootRealtionship() /*++'++*/{/*++'++*/
-		return BContext.get(RelationshipFactory.class).getInstance(dao.getResourceLocator());
+		return BlendeeContext.get(RelationshipFactory.class).getInstance(manager.getResourceLocator());
 	/*++'++*/}/*++'++*/
 
 	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
@@ -247,47 +247,47 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), condition, orderByClause);
+		return manager.select(getOptimizer(), condition, orderByClause);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(QueryOption... options) /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), condition, orderByClause, options);
+		return manager.select(getOptimizer(), condition, orderByClause, options);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> willUnique() /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> willUnique() /*++'++*/{/*++'++*/
 		return getUnique(execute());
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
 		return getUnique(execute(options));
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), primaryKeyMembers);
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), primaryKeyMembers);
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), options, primaryKeyMembers);
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/DTOBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		return dao.select(getOptimizer(), options, primaryKeyMembers);
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public int count() /*++'++*/{/*++'++*/
-		return dao.count(condition);
+		return manager.count(condition);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -331,7 +331,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M>
-		extends OneToManyExecutor</*++{1}++*//*--*/DTOBase/*--*/, M> /*++'++*/{/*++'++*/
+		extends OneToManyExecutor</*++{1}++*//*--*/EntityBase/*--*/, M> /*++'++*/{/*++'++*/
 
 		private /*++{1}Executor++*//*--*/O2MExecutor/*--*/(QueryRelationship parent) /*++'++*/{/*++'++*/
 			super(parent);
@@ -346,14 +346,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
-	private static Optional</*++{1}++*//*--*/DTOBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
+	private static Optional</*++{1}++*//*--*/EntityBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
 		if (!iterator.hasNext()) return Optional.empty();
 
-		/*++{1}++*//*--*/DTOBase/*--*/ dto = iterator.next();
+		/*++{1}++*//*--*/EntityBase/*--*/ entity = iterator.next();
 
 		if (iterator.hasNext()) throw new NotUniqueException();
 
-		return Optional.of(dto);
+		return Optional.of(entity);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -377,7 +377,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final ResourceLocator $locator;
 
-		private final /*++{1}DAO++*//*--*/DAOBase/*--*/ $dao = new /*++{1}DAO()++*//*--*/DAOBase()/*--*/;
+		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ $manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 /*++{3}++*/
 /*==ColumnPart1==*/
@@ -440,7 +440,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		/**
-		 * この '{'@link QueryRelationship'}' が表すテーブルの '{'@link DTO'}' を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
+		 * この '{'@link QueryRelationship'}' が表すテーブルの '{'@link Entity'}' を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
 		 *
 		 * @return 自動生成された  '{'@link OneToManyExecutor'}' のサブクラス
 		 */
@@ -462,7 +462,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				return $parent.getRelationship().find($fkName);
 			/*++'++*/}/*++'++*/
 
-			return BContext.get(RelationshipFactory.class).getInstance($query.dao.getResourceLocator());
+			return BlendeeContext.get(RelationshipFactory.class).getInstance($query.manager.getResourceLocator());
 		/*++'++*/}/*++'++*/
 
 		@Override
@@ -518,8 +518,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/DTOBase/*--*/ createDTO(UpdatableDataObject data) /*++'++*/{/*++'++*/
-			return $dao.createDTO(data);
+		public /*++{1}++*//*--*/EntityBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
+			return $manager.createEntity(data);
 		/*++'++*/}/*++'++*/
 
 		@Override

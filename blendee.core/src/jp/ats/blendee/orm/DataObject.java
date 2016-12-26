@@ -5,6 +5,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,35 +17,68 @@ import jp.ats.blendee.internal.Traversable;
 import jp.ats.blendee.internal.TraversableNode;
 import jp.ats.blendee.internal.Traverser;
 import jp.ats.blendee.internal.TraverserOperator;
-import jp.ats.blendee.internal.U;
+import jp.ats.blendee.jdbc.BlendeeContext;
+import jp.ats.blendee.jdbc.BResult;
+import jp.ats.blendee.jdbc.BatchStatement;
+import jp.ats.blendee.orm.DataAccessHelper.BatchStatementFacade;
+import jp.ats.blendee.orm.DataAccessHelper.StatementFacade;
 import jp.ats.blendee.selector.Optimizer;
 import jp.ats.blendee.selector.SelectedValues;
+import jp.ats.blendee.sql.Bindable;
 import jp.ats.blendee.sql.Binder;
 import jp.ats.blendee.sql.Column;
 import jp.ats.blendee.sql.NotFoundException;
 import jp.ats.blendee.sql.Relationship;
+import jp.ats.blendee.sql.RelationshipFactory;
+import jp.ats.blendee.sql.Updatable;
+import jp.ats.blendee.sql.UpdateDMLBuilder;
+import jp.ats.blendee.sql.Updater;
+import jp.ats.blendee.sql.binder.BigDecimalBinder;
+import jp.ats.blendee.sql.binder.BlobBinder;
+import jp.ats.blendee.sql.binder.BooleanBinder;
+import jp.ats.blendee.sql.binder.ByteArrayBinder;
+import jp.ats.blendee.sql.binder.ClobBinder;
+import jp.ats.blendee.sql.binder.DoubleBinder;
+import jp.ats.blendee.sql.binder.FloatBinder;
+import jp.ats.blendee.sql.binder.IntBinder;
+import jp.ats.blendee.sql.binder.LongBinder;
+import jp.ats.blendee.sql.binder.NullBinder;
+import jp.ats.blendee.sql.binder.ObjectBinder;
+import jp.ats.blendee.sql.binder.StringBinder;
+import jp.ats.blendee.sql.binder.TimestampBinder;
+import jp.ats.blendee.sql.binder.UUIDBinder;
 
 /**
  * データベースの一行を表すクラスです。
  * <br>
- * このクラスのインスタンスを使用して、データベースの一行に対する参照が可能です。
+ * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
  *
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, QueryOption...)
  * @see DataAccessHelper#regetDataObject(Optimizer)
  * @see DataObjectIterator#next()
  */
-public class DataObject implements Traversable {
+public class DataObject
+	implements Updatable, Traversable {
+
+	private static final NullSelectedValues nullSelectedValues = new NullSelectedValues();
 
 	/**
 	 * このインスタンスが表すテーブルの {@link Relationship}
 	 */
-	protected final Relationship relationship;
+	private final Relationship relationship;
 
 	/**
 	 * このインスタンスが持つ値
 	 */
-	protected final SelectedValues values;
+	private final SelectedValues values;
+
+	private Map<String, UpdateValue> updateValues;
+
+	/**
+	 * このインスタンスが持つ値が更新された場合、ずっと true
+	 */
+	private boolean changed = false;
 
 	/**
 	 * {@link DataObject} からこのクラスのインスタンスを生成するコピーコンストラクタです。
@@ -53,6 +87,16 @@ public class DataObject implements Traversable {
 	 */
 	public DataObject(DataObject dataObject) {
 		this(dataObject.relationship, dataObject.values);
+	}
+
+	/**
+	 * このクラスのインスタンスを、単に INSERT 用等の Updatable として使用するためのコンストラクタです。
+	 *
+	 * @param relationship INSERT 対象のテーブル
+	 */
+	public DataObject(Relationship relationship) {
+		this.relationship = relationship;
+		values = nullSelectedValues;
 	}
 
 	DataObject(Relationship relationship, SelectedValues values) {
@@ -65,8 +109,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public boolean getBoolean(String columnName) {
+		BooleanBinder binder = (BooleanBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getBooleanValue();
 		return values.getBoolean(relationship.getColumn(columnName));
 	}
 
@@ -75,8 +122,14 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public double getDouble(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) {
+			return ((Number) binder.getValue()).doubleValue();
+		}
+
 		return values.getDouble(relationship.getColumn(columnName));
 	}
 
@@ -85,8 +138,14 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public float getFloat(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) {
+			return ((Number) binder.getValue()).floatValue();
+		}
+
 		return values.getFloat(relationship.getColumn(columnName));
 	}
 
@@ -95,8 +154,14 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public int getInt(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) {
+			return ((Number) binder.getValue()).intValue();
+		}
+
 		return values.getInt(relationship.getColumn(columnName));
 	}
 
@@ -105,8 +170,14 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public long getLong(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) {
+			return ((Number) binder.getValue()).longValue();
+		}
+
 		return values.getLong(relationship.getColumn(columnName));
 	}
 
@@ -115,8 +186,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public String getString(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) return binder.getValue().toString();
 		return values.getString(relationship.getColumn(columnName));
 	}
 
@@ -125,8 +199,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Timestamp getTimestamp(String columnName) {
+		TimestampBinder binder = (TimestampBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getTimestampValue();
 		return values.getTimestamp(relationship.getColumn(columnName));
 	}
 
@@ -135,8 +212,16 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public BigDecimal getBigDecimal(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) {
+			Number number = (Number) binder.getValue();
+			if (number instanceof BigDecimal) return (BigDecimal) number;
+			return new BigDecimal(number.toString());
+		}
+
 		return values.getBigDecimal(relationship.getColumn(columnName));
 	}
 
@@ -145,8 +230,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public UUID getUUID(String columnName) {
+		UUIDBinder binder = (UUIDBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getUUIDValue();
 		return values.getUUID(relationship.getColumn(columnName));
 	}
 
@@ -155,8 +243,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Object getObject(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) return binder.getValue();
 		return values.getObject(relationship.getColumn(columnName));
 	}
 
@@ -165,8 +256,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public byte[] getBytes(String columnName) {
+		ByteArrayBinder binder = (ByteArrayBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getByteArrayValue();
 		return values.getBytes(relationship.getColumn(columnName));
 	}
 
@@ -175,8 +269,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Blob getBlob(String columnName) {
+		BlobBinder binder = (BlobBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getBlobValue();
 		return values.getBlob(relationship.getColumn(columnName));
 	}
 
@@ -185,8 +282,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Clob getClob(String columnName) {
+		ClobBinder binder = (ClobBinder) getUpdateValue(columnName);
+		if (binder != null) return binder.getClobValue();
 		return values.getClob(relationship.getColumn(columnName));
 	}
 
@@ -195,8 +295,11 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Binder getBinder(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) return binder;
 		return values.getBinder(relationship.getColumn(columnName));
 	}
 
@@ -205,18 +308,12 @@ public class DataObject implements Traversable {
 	 *
 	 * @param columnName カラム名
 	 * @return カラムの値が NULL の場合、true
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public boolean isNull(String columnName) {
+		Binder binder = getUpdateValue(columnName);
+		if (binder != null) return binder instanceof NullBinder || binder.getValue() == null;
 		return values.isNull(relationship.getColumn(columnName));
-	}
-
-	/**
-	 * キーが項目名、値がその項目の値となるMapを返します。
-	 *
-	 * @return 全値を持つ {@link Map}
-	 */
-	public Map<String, Object> getValues() {
-		return new ValuesMap();
 	}
 
 	/**
@@ -230,6 +327,15 @@ public class DataObject implements Traversable {
 	}
 
 	/**
+	 * キーがFK名、値がこのクラスのインスタンスとなるMapを返します。
+	 *
+	 * @return このインスタンスのテーブルが参照している全テーブルの {@link DataObject} の {@link Map}
+	 */
+	public Map<String, DataObject> getDataObjects() {
+		return new DataObjectsMap();
+	}
+
+	/**
 	 * このインスタンスのテーブルが参照しているテーブルの {@link DataObject} を生成し、返します。
 	 *
 	 * @param foreignKeyColumnNames 外部キーを構成するカラム名
@@ -240,12 +346,248 @@ public class DataObject implements Traversable {
 	}
 
 	/**
-	 * キーがFK名、値がこのクラスのインスタンスとなるMapを返します。
+	 * キーが項目名、値がその項目の値となるMapを返します。
 	 *
-	 * @return このインスタンスのテーブルが参照している全テーブルの {@link DataObject} の {@link Map}
+	 * @return 全値を持つ {@link Map}
 	 */
-	public Map<String, DataObject> getDataObjects() {
-		return new DataObjectsMap();
+	public Map<String, Object> getValues() {
+		return new ValuesMap();
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの boolean 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setBoolean(String columnName, boolean value) {
+		setValue(columnName, new BooleanBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの double 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setDouble(String columnName, double value) {
+		setValue(columnName, new DoubleBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの float 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setFloat(String columnName, float value) {
+		setValue(columnName, new FloatBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの int 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setInt(String columnName, int value) {
+		setValue(columnName, new IntBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの long 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setLong(String columnName, long value) {
+		setValue(columnName, new LongBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link String} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setString(String columnName, String value) {
+		setValue(columnName, new StringBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Timestamp} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setTimestamp(String columnName, Timestamp value) {
+		setValue(columnName, new TimestampBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link BigDecimal} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setBigDecimal(String columnName, BigDecimal value) {
+		setValue(columnName, new BigDecimalBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link UUID} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setUUID(String columnName, UUID value) {
+		setValue(columnName, new UUIDBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Object} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setObject(String columnName, Object value) {
+		setValue(columnName, new ObjectBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの byte 配列で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setBytes(String columnName, byte[] value) {
+		setValue(columnName, new ByteArrayBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Blob} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setBlob(String columnName, Blob value) {
+		setValue(columnName, new BlobBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Clob} 値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setClob(String columnName, Clob value) {
+		setValue(columnName, new ClobBinder(value));
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setValue(String columnName, Bindable value) {
+		Binder binder = value.toBinder();
+		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
+		changed = true;
+	}
+
+	/**
+	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
+	 * <br>
+	 * {@link #setValue(String, Bindable)} との違いとして、検索時の値と比較せずに、必ずセットされた値で更新を行います。
+	 *
+	 * @param columnName 対象カラム
+	 * @param value 更新値
+	 */
+	public void setValueForcibly(String columnName, Bindable value) {
+		Binder binder = value.toBinder();
+		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
+		changed = true;
+	}
+
+	/**
+	 * 現在保持している値を、全て検索時の値で強制的に更新したことにします。
+	 * <br>
+	 * 用途としては、このインスタンスを用いてデータをコピーしたい場合、検索してきた値をそのまま INSERT する場合が考えられます。
+	 * <br>
+	 * 既に値が置き換えられている場合、置き換えられた値はそのまま保持されています。
+	 */
+	public void setAllValuesForcibly() {
+		Map<String, UpdateValue> updateValues = getUpdateValues();
+		for (Column column : relationship.getColumns()) {
+			String name = column.getName();
+			if (updateValues.containsKey(name)) continue;
+			setValueForcibly(name, getBinder(name));
+		}
+		changed = true;
+	}
+
+	/**
+	 * 指定されたカラムの更新された値を返します。
+	 * <br>
+	 * 指定されたカラムが更新されていない場合、 null を返します。
+	 *
+	 * @param columnName 対象カラム
+	 * @return 更新された値
+	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
+	 */
+	public Binder getUpdateValue(String columnName) {
+		if (!changed) return null;
+		Binder value;
+		value = getUpdateValueInternal(updateValues, columnName);
+		return value;
+	}
+
+	/**
+	 * 指定されたカラムの更新された値を除去します。
+	 *
+	 * @param columnName 対象カラム
+	 */
+	public void removeUpdateValue(String columnName) {
+		getUpdateValues().remove(columnName);
+		changed = true;
+	}
+
+	/**
+	 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文を設定します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param sqlFragment SQL 文の一部
+	 */
+	public void setSQLFragment(String columnName, String sqlFragment) {
+		getUpdateValues().put(columnName, new SQLFragmentUpdateValue(sqlFragment));
+		changed = true;
+	}
+
+	/**
+	 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文とそのプレースホルダの値を設定します。
+	 *
+	 * @param columnName 対象カラム
+	 * @param sqlFragment SQL 文の一部
+	 * @param value プレースホルダの値
+	 */
+	public void setSQLFragmentAndValue(
+		String columnName,
+		String sqlFragment,
+		Bindable value) {
+		getUpdateValues().put(
+			columnName,
+			new SQLFragmentAndBinderUpdateValue(sqlFragment, value.toBinder()));
+		changed = true;
+	}
+
+	/**
+	 * このインスタンスが持つ値が更新されているかどうかを判定します。
+	 *
+	 * @return 更新されている場合、 true
+	 */
+	public boolean isValueUpdated() {
+		return changed;
 	}
 
 	/**
@@ -261,10 +603,9 @@ public class DataObject implements Traversable {
 	public TraversableNode getSubNode() {
 		TraversableNode node = new TraversableNode();
 		Relationship[] sub = relationship.getRelationships();
-		for (int i = 0; i < sub.length; i++) {
-			node.add(new DataObject(sub[i], values));
+		for (Relationship relationship : sub) {
+			node.add(new DataObject(relationship, values));
 		}
-
 		return node;
 	}
 
@@ -336,9 +677,76 @@ public class DataObject implements Traversable {
 		return values;
 	}
 
+	/**
+	 * 更新された値をデータベースに反映させるため、 UPDATE を実行します。
+	 * <br>
+	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
+	 *
+	 * @return 更新された値が一件も無かった場合、 false
+	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
+	 */
+	public boolean update() {
+		return updateInternal(DataAccessHelper.getThreadStatement());
+	}
+
+	/**
+	 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。
+	 * <br>
+	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
+	 *
+	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
+	 */
+	public void update(BatchStatement statement) {
+		updateInternal(new BatchStatementFacade(statement));
+	}
+
 	@Override
-	public String toString() {
-		return U.toString(this);
+	public void setValuesTo(Updater updater) {
+		if (updateValues == null) return;
+
+		for (Entry<String, UpdateValue> entry : updateValues.entrySet()) {
+			UpdateValue updateValue = entry.getValue();
+			updateValue.add(entry.getKey(), updater);
+		}
+	}
+
+	private static Binder getUpdateValueInternal(
+		Map<String, UpdateValue> map,
+		String columnName) {
+		if (map == null) return null;
+		UpdateValue updateValue = map.get(columnName);
+		if (updateValue == null) return null;
+		return updateValue.getValue(columnName);
+	}
+
+	/**
+	 * @throws NullPrimaryKeyException
+	 */
+	private boolean updateInternal(StatementFacade statement) {
+		if (updateValues == null || updateValues.size() == 0) return false;
+
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(relationship.getResourceLocator());
+		setValuesTo(builder);
+
+		Column[] primaryKeyColumns = relationship.getPrimaryKeyColumns();
+		if (!relationship.isRoot()) {
+			//root でないと、 Condition を作る際に、チェックに引っかかるので
+			//root の Relationship のカラムに変換しておく
+			Relationship root = BlendeeContext.get(RelationshipFactory.class).getInstance(relationship.getResourceLocator());
+			for (int i = 0; i < primaryKeyColumns.length; i++) {
+				primaryKeyColumns[i] = root.getColumn(primaryKeyColumns[i].getName());
+			}
+		}
+
+		builder.setCondition(PartialData.createCondition(primaryKeyColumns, getPrimaryKeyBinders()));
+
+		statement.process(builder.toString(), builder);
+		int result = statement.execute();
+
+		if (result == 1 || result == BatchStatementFacade.DUMMY_RESULT) return true;
+
+		throw new IllegalStateException("更新結果が " + result + " 件です");
 	}
 
 	/**
@@ -348,7 +756,7 @@ public class DataObject implements Traversable {
 	 * @throws IllegalStateException このテーブルが主キーを持たない場合
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
-	protected Binder[] getPrimaryKeyBinders() {
+	private Binder[] getPrimaryKeyBinders() {
 		Column[] columns = relationship.getPrimaryKeyColumns();
 		if (columns.length == 0)
 			throw new IllegalStateException(relationship.getResourceLocator() + " は PK を持ちません");
@@ -363,85 +771,75 @@ public class DataObject implements Traversable {
 		return binders;
 	}
 
-	/**
-	 * マップを変更するメソッドと、（値の選択の最適化の関係上）
-	 * 全ての値にアクセスするメソッドは使用できません。
-	 */
-	private class ValuesMap implements Map<String, Object> {
+	private Map<String, UpdateValue> getUpdateValues() {
+		if (updateValues == null) updateValues = new LinkedHashMap<>();
+		return updateValues;
+	}
 
-		private ValuesMap() {}
+	private static abstract class UpdateValue {
 
-		@Override
-		public void clear() {
-			throw new UnsupportedOperationException();
+		abstract void add(String columnName, Updater updater);
+
+		abstract Binder getValue(String columnName);
+	}
+
+	private static class BinderUpdateValue extends UpdateValue {
+
+		private final Binder value;
+
+		private BinderUpdateValue(Binder value) {
+			this.value = value;
 		}
 
 		@Override
-		public boolean containsKey(Object key) {
-			return relationship.getColumn((String) key) != null;
+		void add(String columnName, Updater updater) {
+			updater.add(columnName, value);
 		}
 
 		@Override
-		public boolean containsValue(Object value) {
-			throw new UnsupportedOperationException();
+		Binder getValue(String columnName) {
+			return value;
+		}
+	}
+
+	private static class SQLFragmentUpdateValue extends UpdateValue {
+
+		private final String sqlFragment;
+
+		private SQLFragmentUpdateValue(String sqlFragment) {
+			this.sqlFragment = sqlFragment;
 		}
 
 		@Override
-		public Set<Entry<String, Object>> entrySet() {
-			Column[] columns = relationship.getColumns();
-			Set<Entry<String, Object>> result = new LinkedHashSet<>();
-			for (Column column : columns) {
-				String key = column.getName();
-				result.add(new DataObjectEntry<Object>(key, get(key)));
-			}
-
-			return result;
+		void add(String columnName, Updater updater) {
+			updater.addSQLFragment(columnName, sqlFragment);
 		}
 
 		@Override
-		public Object get(Object key) {
-			return getObject((String) key);
+		Binder getValue(String columnName) {
+			throw new UnknownValueException(columnName, sqlFragment);
+		}
+	}
+
+	private static class SQLFragmentAndBinderUpdateValue extends UpdateValue {
+
+		private final String sqlFragment;
+
+		private final Binder value;
+
+		private SQLFragmentAndBinderUpdateValue(String sqlFragment, Binder value) {
+			this.sqlFragment = sqlFragment;
+			this.value = value;
 		}
 
 		@Override
-		public boolean isEmpty() {
-			return false;
+		void add(String columnName, Updater updater) {
+			updater.addBindableSQLFragment(columnName, sqlFragment, value);
 		}
 
 		@Override
-		public Set<String> keySet() {
-			Column[] columns = relationship.getColumns();
-			Set<String> result = new LinkedHashSet<>();
-			for (Column column : columns) {
-				result.add(column.getName());
-			}
-
-			return result;
-		}
-
-		@Override
-		public Object put(String key, Object value) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void putAll(Map<? extends String, ? extends Object> map) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Object remove(Object key) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int size() {
-			return relationship.getColumns().length;
-		}
-
-		@Override
-		public Collection<Object> values() {
-			throw new UnsupportedOperationException();
+		Binder getValue(String columnName) {
+			throw new UnknownValueException(columnName, sqlFragment);
 		}
 	}
 
@@ -537,6 +935,88 @@ public class DataObject implements Traversable {
 		}
 	}
 
+	/**
+	 * マップを変更するメソッドと、（値の選択の最適化の関係上）
+	 * 全ての値にアクセスするメソッドは使用できません。
+	 */
+	private class ValuesMap implements Map<String, Object> {
+
+		private ValuesMap() {}
+
+		@Override
+		public void clear() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean containsKey(Object key) {
+			return relationship.getColumn((String) key) != null;
+		}
+
+		@Override
+		public boolean containsValue(Object value) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Set<Entry<String, Object>> entrySet() {
+			Column[] columns = relationship.getColumns();
+			Set<Entry<String, Object>> result = new LinkedHashSet<>();
+			for (Column column : columns) {
+				String key = column.getName();
+				result.add(new DataObjectEntry<Object>(key, get(key)));
+			}
+
+			return result;
+		}
+
+		@Override
+		public Object get(Object key) {
+			return getObject((String) key);
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return false;
+		}
+
+		@Override
+		public Set<String> keySet() {
+			Column[] columns = relationship.getColumns();
+			Set<String> result = new LinkedHashSet<>();
+			for (Column column : columns) {
+				result.add(column.getName());
+			}
+
+			return result;
+		}
+
+		@Override
+		public Object put(String key, Object value) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void putAll(Map<? extends String, ? extends Object> map) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object remove(Object key) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public int size() {
+			return relationship.getColumns().length;
+		}
+
+		@Override
+		public Collection<Object> values() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	private static class DataObjectEntry<V> implements Entry<String, V> {
 
 		private final String key;
@@ -573,6 +1053,101 @@ public class DataObject implements Traversable {
 		@Override
 		public int hashCode() {
 			return Objects.hash(key, value);
+		}
+	}
+
+	private static class NullSelectedValues implements SelectedValues {
+
+		private static final Column[] emptyArray = {};
+
+		@Override
+		public BigDecimal getBigDecimal(Column column) {
+			return null;
+		}
+
+		@Override
+		public Binder getBinder(Column column) {
+			return null;
+		}
+
+		@Override
+		public Blob getBlob(Column column) {
+			return null;
+		}
+
+		@Override
+		public boolean getBoolean(Column column) {
+			return false;
+		}
+
+		@Override
+		public byte[] getBytes(Column column) {
+			return null;
+		}
+
+		@Override
+		public Clob getClob(Column column) {
+			return null;
+		}
+
+		@Override
+		public double getDouble(Column column) {
+			return 0;
+		}
+
+		@Override
+		public float getFloat(Column column) {
+			return 0;
+		}
+
+		@Override
+		public int getInt(Column column) {
+			return 0;
+		}
+
+		@Override
+		public long getLong(Column column) {
+			return 0;
+		}
+
+		@Override
+		public Object getObject(Column column) {
+			return null;
+		}
+
+		@Override
+		public Column[] getSelectedColumns() {
+			return emptyArray;
+		}
+
+		@Override
+		public String getString(Column column) {
+			return null;
+		}
+
+		@Override
+		public Timestamp getTimestamp(Column column) {
+			return null;
+		}
+
+		@Override
+		public UUID getUUID(Column column) {
+			return null;
+		}
+
+		@Override
+		public boolean isNull(Column column) {
+			return false;
+		}
+
+		@Override
+		public BResult getResult() {
+			return null;
+		}
+
+		@Override
+		public boolean isSelected(Column column) {
+			return false;
 		}
 	}
 }

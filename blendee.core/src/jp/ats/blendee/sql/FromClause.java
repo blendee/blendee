@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import jp.ats.blendee.jdbc.CrossReference;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ResourceLocator;
 
 /**
@@ -82,7 +82,7 @@ public class FromClause {
 	 * @param locator テーブルのルート
 	 */
 	public FromClause(ResourceLocator locator) {
-		root = BContext.get(RelationshipFactory.class).getInstance(locator);
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
 		localRelationships.add(new RelationshipContainer(root));
 	}
 

@@ -40,7 +40,7 @@ public interface Executor<I, E> {
 	 * <br>
 	 * 検索条件として、ユニークキーが指定されていることを想定しているメソッドです。
 	 *
-	 * @return DTO
+	 * @return Entity
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
 	E willUnique();
@@ -51,50 +51,50 @@ public interface Executor<I, E> {
 	 * 検索条件として、ユニークキーが指定されていることを想定しているメソッドです。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
-	 * @return DTO
+	 * @return Entity
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
 	E willUnique(QueryOption... options);
 
 	/**
-	 * 主キーから DTO 一件を選択するメソッドです。
+	 * 主キーから Entity 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return DTO
+	 * @return Entity
 	 */
 	E fetch(String... primaryKeyMembers);
 
 	/**
-	 * 主キーから DTO 一件を選択するメソッドです。
+	 * 主キーから Entity 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return DTO
+	 * @return Entity
 	 */
 	E fetch(Bindable... primaryKeyMembers);
 
 	/**
-	 * 主キーから DTO 一件を選択するメソッドです。
+	 * 主キーから Entity 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return DTO
+	 * @return Entity
 	 */
 	E fetch(QueryOptions options, String... primaryKeyMembers);
 
 	/**
-	 * 主キーから DTO 一件を選択するメソッドです。
+	 * 主キーから Entity 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return DTO
+	 * @return Entity
 	 */
 	E fetch(QueryOptions options, Bindable... primaryKeyMembers);
 

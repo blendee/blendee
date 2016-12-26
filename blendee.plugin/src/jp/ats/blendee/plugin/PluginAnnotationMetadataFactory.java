@@ -1,11 +1,11 @@
 package jp.ats.blendee.plugin;
 
-import jp.ats.blendee.support.DTO;
+import jp.ats.blendee.support.BEntity;
 import jp.ats.blendee.util.AnnotationMetadataFactory;
 
 public class PluginAnnotationMetadataFactory extends AnnotationMetadataFactory {
 
-	private static final String dtoClassName = DTO.class.getName();
+	private static final String entityClassName = BEntity.class.getName();
 
 	private static ClassLoader loader;
 
@@ -20,12 +20,12 @@ public class PluginAnnotationMetadataFactory extends AnnotationMetadataFactory {
 
 	@Override
 	protected boolean matches(Class<?> clazz) {
-		return hasDTO(clazz.getInterfaces()) && !clazz.isInterface();
+		return hasEntity(clazz.getInterfaces()) && !clazz.isInterface();
 	}
 
-	private static boolean hasDTO(Class<?>[] interfaces) {
+	private static boolean hasEntity(Class<?>[] interfaces) {
 		for (Class<?> clazz : interfaces) {
-			if (clazz.getName().equals(dtoClassName)) return true;
+			if (clazz.getName().equals(entityClassName)) return true;
 		}
 
 		return false;

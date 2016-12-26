@@ -121,9 +121,9 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<String> JDBC_PASSWORD = new ParsableOptionKey<>("jdbc-password", TO_STRING);
 
 	/**
-	 * (String[]) ANNOTATED_DTO_PACKAGES
+	 * (String[]) ANNOTATED_ENTITY_PACKAGES
 	 */
-	public static final ParsableOptionKey<String[]> ANNOTATED_DTO_PACKAGES = new ParsableOptionKey<>(
-		"annotated-dto-packages",
+	public static final ParsableOptionKey<String[]> ANNOTATED_ENTITY_PACKAGES = new ParsableOptionKey<>(
+		"annotated-entity-packages",
 		TO_STRING_ARRAY);
 }

@@ -7,7 +7,7 @@ import jp.ats.blendee.internal.U;
 /**
  * @author 千葉 哲嗣
  */
-class EmptyDataObjectIterator<E extends DataObject> extends DataObjectIterator<E> {
+class EmptyDataObjectIterator extends DataObjectIterator {
 
 	EmptyDataObjectIterator() {
 		super(null, null, false);
@@ -19,17 +19,12 @@ class EmptyDataObjectIterator<E extends DataObject> extends DataObjectIterator<E
 	}
 
 	@Override
-	public E next() {
+	public DataObject next() {
 		throw new NoSuchElementException();
 	}
 
 	@Override
 	public DataObject nextDataObject() {
-		throw new NoSuchElementException();
-	}
-
-	@Override
-	public UpdatableDataObject nextUpdatableDataObject() {
 		throw new NoSuchElementException();
 	}
 

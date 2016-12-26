@@ -9,7 +9,7 @@ import java.util.Set;
 
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.jdbc.CrossReference;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BStatement;
 import jp.ats.blendee.jdbc.MetadataUtilities;
@@ -206,7 +206,7 @@ public class PrimaryKey extends PartialData {
 
 			builder.setCondition(primaryKey.getReferencesInternal(reference).getCondition());
 
-			try (BStatement statement = BContext.get(BlendeeManager.class)
+			try (BStatement statement = BlendeeContext.get(BlendeeManager.class)
 				.getConnection()
 				.getStatement(builder.toString(), builder)) {
 				statement.executeUpdate();
@@ -265,7 +265,7 @@ public class PrimaryKey extends PartialData {
 		final Condition condition = from.getCondition();
 		sql.append(condition.toString(false));
 
-		try (BStatement statement = BContext.get(BlendeeManager.class).getConnection().getStatement(sql.toString(), s -> {
+		try (BStatement statement = BlendeeContext.get(BlendeeManager.class).getConnection().getStatement(sql.toString(), s -> {
 			int i = 0;
 			for (; i < to.bindables.length; i++) {
 				to.bindables[i].toBinder().bind(i + 1, s);
@@ -284,7 +284,7 @@ public class PrimaryKey extends PartialData {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyResource());
 		builder.setCondition(from.getCondition());
 		builder.add(to);
-		try (BStatement statement = BContext.get(BlendeeManager.class)
+		try (BStatement statement = BlendeeContext.get(BlendeeManager.class)
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
 			statement.executeUpdate();

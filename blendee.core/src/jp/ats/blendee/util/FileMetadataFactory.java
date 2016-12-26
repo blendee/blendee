@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Optional;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.Metadata;
 import jp.ats.blendee.jdbc.MetadataFactory;
@@ -35,7 +35,7 @@ public class FileMetadataFactory implements MetadataFactory {
 	 * @throws ClassNotFoundException XML 内で定義されている項目の型のクラスが存在しない場合
 	 */
 	public FileMetadataFactory() throws IOException, ClassNotFoundException {
-		BlendeeManager manager = BContext.get(BlendeeManager.class);
+		BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
 		Optional<String> fileOfOption = manager.getConfigure().getOption(BlendeeConstants.METADATTA_XML_FILE);
 

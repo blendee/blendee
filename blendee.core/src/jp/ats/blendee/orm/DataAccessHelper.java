@@ -5,13 +5,13 @@ import java.util.Map;
 
 import jp.ats.blendee.internal.LRUCache;
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BatchStatement;
-import jp.ats.blendee.jdbc.DuplicateKeyException;
 import jp.ats.blendee.jdbc.BConnection;
-import jp.ats.blendee.jdbc.BContext;
-import jp.ats.blendee.jdbc.BlendeeManager;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BResultSet;
 import jp.ats.blendee.jdbc.BStatement;
+import jp.ats.blendee.jdbc.BatchStatement;
+import jp.ats.blendee.jdbc.BlendeeManager;
+import jp.ats.blendee.jdbc.DuplicateKeyException;
 import jp.ats.blendee.jdbc.PreparedStatementComplementer;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.selector.Optimizer;
@@ -43,18 +43,18 @@ public class DataAccessHelper {
 	/**
 	 * 空の検索結果
 	 */
-	public static final DataObjectIterator<DataObject> EMPTY_DATA_OBJECT_ITERATOR = new EmptyDataObjectIterator<DataObject>();
+	public static final DataObjectIterator EMPTY_DATA_OBJECT_ITERATOR = new EmptyDataObjectIterator();
 
 	/**
 	 * 空の検索結果
 	 */
-	public static final DataObjectIterator<UpdatableDataObject> EMPTY_UPDATABLE_DATA_OBJECT_ITERATOR = new EmptyDataObjectIterator<UpdatableDataObject>();
+	public static final DataObjectIterator EMPTY_UPDATABLE_DATA_OBJECT_ITERATOR = new EmptyDataObjectIterator();
 
 	private static final ThreadLocal<StatementFacade> threadStatement = new ThreadLocal<StatementFacade>();
 
-	private final BlendeeManager manager = BContext.get(BlendeeManager.class);
+	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
-	private final RelationshipFactory factory = BContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
 	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
 
@@ -91,37 +91,13 @@ public class DataAccessHelper {
 		PrimaryKey primaryKey,
 		QueryOption... options) {
 		checkArgument(optimizer, primaryKey);
-		DataObjectIterator<DataObject> iterator = select(
-			optimizer,
-			primaryKey.getCondition(),
-			null,
-			options,
-			true);
-		return getFirst(iterator);
-	}
-
-	/**
-	 * パラメータの主キーの値を持つ {@link UpdatableDataObject} を検索し返します。
-	 *
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param primaryKey 主キー
-	 * @param options 検索オプション
-	 * @return 主キーにマッチする {@link UpdatableDataObject}
-	 * @throws DataObjectNotFoundException データが存在しなかった場合
-	 * @throws IllegalStateException 検索結果が複数件存在した場合
-	 */
-	public UpdatableDataObject getUpdatableDataObject(
-		Optimizer optimizer,
-		PrimaryKey primaryKey,
-		QueryOption... options) {
-		checkArgument(optimizer, primaryKey);
-		DataObjectIterator<UpdatableDataObject> iterator = select(
+		DataObjectIterator iterator = select(
 			optimizer,
 			primaryKey.getCondition(),
 			null,
 			options,
 			false);
-		return (UpdatableDataObject) getFirst(iterator);
+		return getFirst(iterator);
 	}
 
 	/**
@@ -133,25 +109,7 @@ public class DataAccessHelper {
 	 * @param options 検索オプション
 	 * @return 条件にマッチする {@link DataObject} を持つ {@link DataObjectIterator}
 	 */
-	public DataObjectIterator<DataObject> getDataObjects(
-		Optimizer optimizer,
-		Condition condition,
-		OrderByClause order,
-		QueryOption... options) {
-		adjustArgument(optimizer, condition, order);
-		return select(optimizer, condition, order, options, true);
-	}
-
-	/**
-	 * パラメータの条件にマッチする {@link UpdatableDataObject} を検索し返します。
-	 *
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param condition WHERE 句となる条件
-	 * @param order ORDER 句
-	 * @param options 検索オプション
-	 * @return 条件にマッチする {@link UpdatableDataObject} を持つ {@link DataObjectIterator}
-	 */
-	public DataObjectIterator<UpdatableDataObject> getUpdatableDataObjects(
+	public DataObjectIterator getDataObjects(
 		Optimizer optimizer,
 		Condition condition,
 		OrderByClause order,
@@ -212,27 +170,7 @@ public class DataAccessHelper {
 			if (selector == null)
 				throw new IllegalStateException("この optimizer を使用して、一度 getDataObject か study を実行してください");
 
-			return getFirst(select(selector, true));
-		}
-	}
-
-	/**
-	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 *
-	 * @param optimizer キーとなる {@link Optimizer}
-	 * @return 再実行結果の {@link UpdatableDataObject}
-	 * @throws DataObjectNotFoundException データが存在しなかった場合
-	 * @throws IllegalStateException 検索結果が複数件存在した場合
-	 */
-	public UpdatableDataObject regetUpdatableDataObject(Optimizer optimizer) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		synchronized (selectorCache) {
-			Selector selector = selectorCache.get(optimizer);
-			if (selector == null)
-				throw new IllegalStateException("この optimizer を使用して、一度 getDataObject か study を実行してください");
-
-			return (UpdatableDataObject) getFirst(select(selector, false));
+			return getFirst(select(selector, false));
 		}
 	}
 
@@ -242,24 +180,7 @@ public class DataAccessHelper {
 	 * @param optimizer キーとなる {@link Optimizer}
 	 * @return 再実行結果の {@link DataObject} を持つ {@link DataObjectIterator}
 	 */
-	public DataObjectIterator<DataObject> regetDataObjects(Optimizer optimizer) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		synchronized (selectorCache) {
-			Selector selector = selectorCache.get(optimizer);
-			if (selector == null) throw new IllegalStateException("この optimizer を使用して、一度 select か study を実行してください");
-
-			return select(selector, true);
-		}
-	}
-
-	/**
-	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 *
-	 * @param optimizer キーとなる {@link Optimizer}
-	 * @return 再実行結果の {@link UpdatableDataObject} を持つ {@link DataObjectIterator}
-	 */
-	public DataObjectIterator<UpdatableDataObject> regetUpdatableDataObjects(Optimizer optimizer) {
+	public DataObjectIterator regetDataObjects(Optimizer optimizer) {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
 		synchronized (selectorCache) {
@@ -562,7 +483,7 @@ public class DataAccessHelper {
 		return deleteInternal(getThreadStatement(), locator, condition);
 	}
 
-	private <E extends DataObject> DataObjectIterator<E> select(
+	private DataObjectIterator select(
 		Optimizer optimizer,
 		Condition condition,
 		OrderByClause order,
@@ -602,10 +523,10 @@ public class DataAccessHelper {
 		return selector;
 	}
 
-	private <E extends DataObject> DataObjectIterator<E> select(
+	private DataObjectIterator select(
 		Selector selector,
 		boolean readonly) {
-		return new DataObjectIterator<E>(
+		return new DataObjectIterator(
 			factory.getInstance(selector.getResourceLocator()),
 			selector.select(),
 			readonly);
@@ -624,8 +545,8 @@ public class DataAccessHelper {
 		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getResourceLocator()));
 	}
 
-	private static <E extends DataObject> DataObject getFirst(
-		DataObjectIterator<E> iterator) {
+	private static DataObject getFirst(
+		DataObjectIterator iterator) {
 		DataObject dataObject;
 		try {
 			if (!iterator.hasNext()) throw new DataObjectNotFoundException("検索結果が 0 件です");
@@ -770,7 +691,7 @@ public class DataAccessHelper {
 
 		@Override
 		void process(String sql, PreparedStatementComplementer complementer) {
-			statement = BContext.get(BlendeeManager.class).getConnection().getStatement(sql, complementer);
+			statement = BlendeeContext.get(BlendeeManager.class).getConnection().getStatement(sql, complementer);
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 package jp.ats.blendee.sql;
 
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BPreparedStatement;
 import jp.ats.blendee.jdbc.PreparedStatementComplementer;
 import jp.ats.blendee.jdbc.ResourceLocator;
@@ -12,7 +12,7 @@ import jp.ats.blendee.jdbc.ResourceLocator;
  */
 public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
-	private final RelationshipFactory factory = BContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
 	private final ResourceLocator locator;
 

@@ -14,7 +14,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.sql.Column;
 import jp.ats.blendee.sql.NotFoundException;
@@ -26,7 +26,7 @@ import jp.ats.blendee.sql.RelationshipFactory;
  */
 abstract class AbstractColumnRepository implements ColumnRepository {
 
-	private final RelationshipFactory factory = BContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
 	private final Map<String, LocationSource> locationMap = new TreeMap<>();
 

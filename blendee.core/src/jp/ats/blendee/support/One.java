@@ -3,14 +3,14 @@ package jp.ats.blendee.support;
 import jp.ats.blendee.internal.U;
 
 /**
- * {@link DTO} 一件と同一であり、それを参照する {@link DTO} も併せ持ちます。
+ * {@link BEntity} 一件と同一であり、それを参照する {@link BEntity} も併せ持ちます。
  *
  * @author 千葉 哲嗣
  *
  * @param <O> One　一対多の一側の型
  * @param <M> Many　一対多の多側の型連鎖
  */
-public class One<O extends DTO, M> {
+public class One<O extends BEntity, M> {
 
 	private final O oneself;
 
@@ -22,16 +22,16 @@ public class One<O extends DTO, M> {
 	}
 
 	/**
-	 * このインスタンスと同一の {@link DTO} を返します。
+	 * このインスタンスと同一の {@link BEntity} を返します。
 	 *
-	 * @return {@link DTO}
+	 * @return {@link BEntity}
 	 */
 	public O oneself() {
 		return oneself;
 	}
 
 	/**
-	 * このインスタンスを参照しているテーブルの {@link DTO} と、さらに参照している {@link DTO} を返します。
+	 * このインスタンスを参照しているテーブルの {@link BEntity} と、さらに参照している {@link BEntity} を返します。
 	 *
 	 * @return {@link Many}
 	 */

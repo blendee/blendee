@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BStatement;
 import jp.ats.blendee.jdbc.ResourceLocator;
@@ -30,7 +30,7 @@ public class Selector {
 	 */
 	public static final SelectedValuesIterator EMPTY_SELECTED_VALUES_ITERATOR = new EmptySelectedValuesIterator();
 
-	private final BlendeeManager manager = BContext.get(BlendeeManager.class);
+	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
 	private final Relationship root;
 
@@ -68,11 +68,11 @@ public class Selector {
 	 */
 	public Selector(Optimizer optimizer) {
 		ResourceLocator locator = optimizer.getResourceLocator();
-		root = BContext.get(RelationshipFactory.class).getInstance(locator);
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
 		builder = new QueryBuilder(new FromClause(locator));
 		this.optimizer = optimizer;
 
-		SelectorConfigure config = BContext.get(SelectorConfigure.class);
+		SelectorConfigure config = BlendeeContext.get(SelectorConfigure.class);
 
 		myForUpdateClause = config.getForUpdateClause();
 		myNowaitClause = config.getNowaitClause();

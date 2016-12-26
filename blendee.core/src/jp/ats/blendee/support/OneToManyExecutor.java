@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BResultSet;
 import jp.ats.blendee.jdbc.BStatement;
@@ -33,14 +33,14 @@ import jp.ats.blendee.sql.binder.StringBinder;
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。
  * <br>
- * {@link Executor} との違いは、参照する側のテーブルの {@link Query} を使用し、参照される側を辿り、そこで検索することで {@link DTO} を一対多で取得することができるようにするということです。
+ * {@link Executor} との違いは、参照する側のテーブルの {@link Query} を使用し、参照される側を辿り、そこで検索することで {@link BEntity} を一対多で取得することができるようにするということです。
  *
  * @author 千葉 哲嗣
  *
  * @param <O> One　一対多の一側の型
  * @param <M> Many　一対多の多側の型連鎖
  */
-public class OneToManyExecutor<O extends DTO, M>
+public class OneToManyExecutor<O extends BEntity, M>
 	implements Executor<Many<O, M>, Optional<One<O, M>>> {
 
 	private final QueryRelationship self;
@@ -75,7 +75,7 @@ public class OneToManyExecutor<O extends DTO, M>
 	@Override
 	public Many<O, M> execute() {
 		return new Many<>(
-			new DataObjectManager(helper.getUpdatableDataObjects(optimizer, condition, order, null, null), route),
+			new DataObjectManager(helper.getDataObjects(optimizer, condition, order, null, null), route),
 			null,
 			self,
 			route);
@@ -84,7 +84,7 @@ public class OneToManyExecutor<O extends DTO, M>
 	@Override
 	public Many<O, M> execute(QueryOption... options) {
 		return new Many<>(
-			new DataObjectManager(helper.getUpdatableDataObjects(optimizer, condition, order, options), route),
+			new DataObjectManager(helper.getDataObjects(optimizer, condition, order, options), route),
 			null,
 			self,
 			route);
@@ -130,7 +130,7 @@ public class OneToManyExecutor<O extends DTO, M>
 		return getUnique(
 			new Many<>(
 				new DataObjectManager(
-					helper.getUpdatableDataObjects(
+					helper.getDataObjects(
 						optimizer,
 						condition,
 						order,
@@ -148,7 +148,7 @@ public class OneToManyExecutor<O extends DTO, M>
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 
 		if (condition != null) builder.setWhereClause(condition);
-		try (BStatement statement = BContext.get(BlendeeManager.class)
+		try (BStatement statement = BlendeeContext.get(BlendeeManager.class)
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
 			try (BResultSet result = statement.executeQuery()) {

@@ -3,7 +3,7 @@ package jp.ats.blendee.orm;
 import java.math.BigInteger;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BResultSet;
 import jp.ats.blendee.jdbc.BStatement;
@@ -101,7 +101,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 */
 	@Override
 	public Bindable next(Condition depends) {
-		BlendeeManager manager = BContext.get(BlendeeManager.class);
+		BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
 		BStatement statement;
 		if (depends.isAvailable()) {

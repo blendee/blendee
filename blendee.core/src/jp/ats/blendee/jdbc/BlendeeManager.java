@@ -118,7 +118,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * {@link Configure#usesMetadataCache() } を使用した場合にできるキャッシュを空にします。
 	 */
 	public void clearMetadataCache() {
-		BContext.get(MetadataCache.class).clearCache();
+		BlendeeContext.get(MetadataCache.class).clearCache();
 	}
 
 	Transactions getTransactions() {

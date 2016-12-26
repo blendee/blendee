@@ -19,13 +19,13 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 
-import jp.ats.blendee.plugin.Constants;
-import jp.ats.blendee.plugin.BlendeePlugin;
-import jp.ats.blendee.plugin.views.ClassBuilderView;
 import jp.ats.blendee.develop.ORMGenerator;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.ResourceLocator;
+import jp.ats.blendee.plugin.BlendeePlugin;
+import jp.ats.blendee.plugin.Constants;
+import jp.ats.blendee.plugin.views.ClassBuilderView;
 import jp.ats.blendee.sql.Relationship;
 import jp.ats.blendee.sql.RelationshipFactory;
 
@@ -131,18 +131,18 @@ public class TableElement extends PropertySourceElement {
 		}
 
 		ORMGenerator generator = new ORMGenerator(
-			BContext.get(BlendeeManager.class).getConnection(),
+			BlendeeContext.get(BlendeeManager.class).getConnection(),
 			fragment.getElementName(),
 			parent.getName(),
-			plugin.getDAOParentClass(),
-			plugin.getDTOParentClass(),
+			plugin.getEntityManagerParentClass(),
+			plugin.getEntityParentClass(),
 			plugin.getQueryParentClass(),
 			plugin.getCodeFormatter(),
 			plugin.useNumberClass(),
 			!plugin.notUseNullGuard(),
 			jp.ats.blendee.plugin.ORMGenerator.class.getName());
 
-		Relationship relation = BContext.get(RelationshipFactory.class).getInstance(locator);
+		Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
 		String tableName = locator.getTableName();
 		try {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));
@@ -152,13 +152,13 @@ public class TableElement extends PropertySourceElement {
 				fragment,
 				format(formatter, generator.buildConstants(relation)));
 			createSource(
-				ORMGenerator.createDAOCompilationUnitName(tableName),
+				ORMGenerator.createEntityManagerCompilationUnitName(tableName),
 				fragment,
-				format(formatter, generator.buildDAO(relation)));
+				format(formatter, generator.buildEntityManager(relation)));
 			createSource(
-				ORMGenerator.createDTOCompilationUnitName(tableName),
+				ORMGenerator.createEntityCompilationUnitName(tableName),
 				fragment,
-				format(formatter, generator.buildDTO(relation)));
+				format(formatter, generator.buildEntity(relation)));
 			createSource(
 				ORMGenerator.createQueryCompilationUnitName(tableName),
 				fragment,

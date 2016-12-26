@@ -1,7 +1,7 @@
 package jp.ats.blendee.selector;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BContext;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BResult;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.sql.Column;
@@ -20,7 +20,7 @@ public class SimpleOptimizer implements Optimizer {
 
 	private final SelectClause select = new SelectClause();
 
-	private final ValueExtractors extractors = BContext.get(SelectorConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
 
 	/**
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。
@@ -30,7 +30,7 @@ public class SimpleOptimizer implements Optimizer {
 	 * @param locator SELECT 句に使用するカラムを持つテーブル
 	 */
 	public SimpleOptimizer(ResourceLocator locator) {
-		root = BContext.get(RelationshipFactory.class).getInstance(locator);
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
 	}
 
 	@Override
