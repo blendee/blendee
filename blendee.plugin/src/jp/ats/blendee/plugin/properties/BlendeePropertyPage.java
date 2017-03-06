@@ -31,7 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 
-import jp.ats.blendee.develop.CodeFormatter;
+import jp.ats.blendee.develop.ormgen.CodeFormatter;
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.jdbc.MetadataFactory;
 import jp.ats.blendee.jdbc.TransactionFactory;

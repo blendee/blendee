@@ -1,11 +1,11 @@
-/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/jp.ats.blendee.develop/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/jp.ats.blendee.develop.ormgen/*--*/;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Generated;
 
-import /*++{0}.{1}Manager.{1}Iterator++*//*--*/jp.ats.blendee.develop.ManagerBase.IteratorBase/*--*/;
+import /*++{0}.{1}Manager.{1}Iterator++*//*--*/jp.ats.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import jp.ats.blendee.support.AbstractOrderQueryColumn;
 import jp.ats.blendee.support.AbstractSelectQueryColumn;
 /*++{8}++*/

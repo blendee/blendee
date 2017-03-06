@@ -18,7 +18,7 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
-import jp.ats.blendee.develop.IDGenerator;
+import jp.ats.blendee.develop.ormgen.IDGenerator;
 import jp.ats.blendee.support.Query;
 
 public class QueryAssist implements IJavaCompletionProposalComputer {

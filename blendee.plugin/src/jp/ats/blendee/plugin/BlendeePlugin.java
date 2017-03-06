@@ -34,7 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import jp.ats.blendee.develop.CodeFormatter;
+import jp.ats.blendee.develop.ormgen.CodeFormatter;
 import jp.ats.blendee.internal.HomeStorage;
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.jdbc.BTransaction;

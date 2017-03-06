@@ -1,4 +1,4 @@
-package jp.ats.blendee.develop;
+package jp.ats.blendee.develop.ormgen;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

@@ -19,7 +19,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 
-import jp.ats.blendee.develop.ORMGenerator;
+import jp.ats.blendee.develop.ormgen.ORMGenerator;
 import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.ResourceLocator;

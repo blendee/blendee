@@ -1,4 +1,4 @@
-package jp.ats.blendee.develop;
+package jp.ats.blendee.develop.ormgen;
 
 import java.text.MessageFormat;
 
