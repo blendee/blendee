@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import jp.ats.blendee.internal.U;
 import jp.ats.blendee.jdbc.BlendeeContext;
@@ -55,11 +54,11 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void addColumn(String id, Column column, Class<?>... usings) {
+	public synchronized void addColumn(String id, Column column, String... usingClassNames) {
 		LocationSource locationSource = setResourceLocatorInternal(
 			id,
 			column.getRelationship().getRoot().getResourceLocator(),
-			convert(usings));
+			Arrays.asList(usingClassNames));
 		if (!locationSource.add(column)) return;
 		changed = true;
 	}
@@ -73,12 +72,15 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void renameID(String oldID, String newId, Class<?>... usings) {
+	public synchronized void renameID(String oldID, String newId, String... usingClassNames) {
 		if (oldID.equals(newId)) return;
 		LocationSource oldLocation = locationMap.remove(oldID);
 		if (oldLocation == null) return;
 		locationMap.remove(newId);
-		LocationSource newLocation = setResourceLocatorInternal(newId, oldLocation.getLocator(), convert(usings));
+		LocationSource newLocation = setResourceLocatorInternal(
+			newId,
+			oldLocation.getLocator(),
+			Arrays.asList(usingClassNames));
 		oldLocation.putAllColumns(newLocation);
 		changed = true;
 	}
@@ -117,10 +119,10 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void markColumn(String id, Column column, Class<?>... usings) {
+	public synchronized void markColumn(String id, Column column, String... usingClassNames) {
 		LocationSource locationSource = locationMap.get(id);
 		if (locationSource == null) return;
-		changed |= locationSource.addUsingClasses(convert(usings));
+		changed |= locationSource.addUsingClasses(Arrays.asList(usingClassNames));
 		ColumnSource columnSource = locationSource.get(column);
 		if (columnSource == null || columnSource.mark) return;
 		columnSource.mark = true;
@@ -159,8 +161,8 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void add(String id, ResourceLocator locator, Class<?>... using) {
-		setResourceLocatorInternal(id, locator, convert(using));
+	public synchronized void add(String id, ResourceLocator locator, String... usingClassNames) {
+		setResourceLocatorInternal(id, locator, Arrays.asList(usingClassNames));
 	}
 
 	@Override
@@ -247,10 +249,6 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	abstract void read(Map<String, LocationSource> locationMap);
 
 	abstract void write(Map<String, LocationSource> locationMap);
-
-	private static Collection<String> convert(Class<?>[] usings) {
-		return Arrays.asList(usings).stream().map(c -> c.getName()).collect(Collectors.toList());
-	}
 
 	private LocationSource setResourceLocatorInternal(String id, ResourceLocator locator, Collection<String> usings) {
 		LocationSource source = locationMap.get(id);

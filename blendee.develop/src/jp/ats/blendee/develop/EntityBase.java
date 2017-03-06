@@ -42,7 +42,7 @@ import jp.ats.blendee.sql.RelationshipFactory;
 	/**
 	 * 参照、更新用コンストラクタです。
 	 *
-	 * @param data 値を持つ '{'@link UpdatableDataObject'}'
+	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
 	public /*++{2}++*//*--*/EntityBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
 		relationship = BlendeeContext.get(RelationshipFactory.class).getInstance(/*++{2}Constants++*//*--*/Constants/*--*/.RESOURCE_LOCATOR);

@@ -3,8 +3,8 @@ package jp.ats.blendee.selector;
 import java.util.Objects;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BResult;
+import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.ResourceLocator;
 import jp.ats.blendee.sql.Column;
 import jp.ats.blendee.sql.SelectClause;
@@ -59,7 +59,7 @@ public class AnchorOptimizer implements Optimizer {
 		ResourceLocator locator = repository.getResourceLocator(id);
 		if (locator == null) {
 			if (canAddNewEntries && hint != null) {
-				repository.add(id, hint, using);
+				repository.add(id, hint, using.getName());
 				return hint;
 			}
 
@@ -139,10 +139,10 @@ public class AnchorOptimizer implements Optimizer {
 			try {
 				return super.isNull(column);
 			} catch (IllegalValueException e) {
-				repository.addColumn(id, column, using);
+				repository.addColumn(id, column, using.getName());
 				throw newException(e, id);
 			} finally {
-				repository.markColumn(id, column, using);
+				repository.markColumn(id, column, using.getName());
 				repository.commit();
 			}
 		}
@@ -152,10 +152,10 @@ public class AnchorOptimizer implements Optimizer {
 			try {
 				return super.getObject(column);
 			} catch (IllegalValueException e) {
-				repository.addColumn(id, column, using);
+				repository.addColumn(id, column, using.getName());
 				throw newException(e, id);
 			} finally {
-				repository.markColumn(id, column, using);
+				repository.markColumn(id, column, using.getName());
 				repository.commit();
 			}
 		}

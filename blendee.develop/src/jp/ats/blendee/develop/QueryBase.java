@@ -327,7 +327,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 自動生成された '{'@link Executor'}' の実装クラスです。
+	 * 自動生成された '{'@link OneToManyExecutor'}' の実装クラスです。
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M>
@@ -361,7 +361,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * <br>
 	 * 条件として使用できるカラムと、参照しているテーブルを内包しており、それらを使用して検索 SQL を生成可能にします。
 	 *
-	 * @param <T> 使用されるカラムのタイプ（ '{'@link #orderBy'}', '{'@link #where'}', '{'@link #and'}', '{'@link #or'}', '{'@link #rel'}' ）にあった型
+	 * @param <T> 使用されるカラムのタイプ（ '{'@link #select'}', '{'@link #orderBy'}', '{'@link #WHERE'}', '{'@link #AND'}', '{'@link #OR'}', '{'@link #self'}' ）にあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, M>
@@ -440,7 +440,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		/**
-		 * この '{'@link QueryRelationship'}' が表すテーブルの '{'@link Entity'}' を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
+		 * この '{'@link QueryRelationship'}' が表すテーブルの Entity を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
 		 *
 		 * @return 自動生成された  '{'@link OneToManyExecutor'}' のサブクラス
 		 */

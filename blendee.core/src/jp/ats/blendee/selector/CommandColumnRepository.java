@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -25,7 +24,7 @@ import jp.ats.blendee.sql.Column;
  */
 public class CommandColumnRepository implements ColumnRepository {
 
-	private final Map<String, Container> addIDs = new HashMap<>();
+	private final Map<String, LocatorContainer> addIDs = new HashMap<>();
 
 	private final Set<String> removeIDs = new HashSet<>();
 
@@ -62,15 +61,15 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized ResourceLocator getResourceLocator(String id) {
-		Container container = addIDs.get(id);
+		LocatorContainer container = addIDs.get(id);
 		if (container != null) return container.locator;
 		if (removeIDs.contains(id)) return null;
 		return repository.getResourceLocator(id);
 	}
 
 	@Override
-	public synchronized void add(String id, ResourceLocator locator, Class<?>... usings) {
-		addCommand(new AddIdCommand(id, locator, convertUsing(usings)));
+	public synchronized void add(String id, ResourceLocator locator, String... usingClassNames) {
+		addCommand(new AddIdCommand(id, locator, usingClassNames));
 	}
 
 	@Override
@@ -82,8 +81,8 @@ public class CommandColumnRepository implements ColumnRepository {
 	public synchronized String[] getUsingClassNames(String id) {
 		if (clears.containsKey(id)) return U.STRING_EMPTY_ARRAY;
 
-		Container container = addIDs.get(id);
-		if (container != null) return container.usings;
+		LocatorContainer container = addIDs.get(id);
+		if (container != null) return container.usingClassNames;
 
 		if (removeIDs.contains(id)) return null;
 
@@ -91,10 +90,10 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void renameID(String oldId, String newId, Class<?>... usings) {
+	public synchronized void renameID(String oldId, String newId, String... usingClassNames) {
 		if (oldId.equals(newId)) return;
 		if (getResourceLocator(oldId) == null) return;
-		addCommand(new RenameIdCommand(oldId, newId, convertUsing(usings)));
+		addCommand(new RenameIdCommand(oldId, newId, usingClassNames));
 	}
 
 	@Override
@@ -102,7 +101,7 @@ public class CommandColumnRepository implements ColumnRepository {
 		if (getResourceLocator(id) == null) return Column.EMPTY_ARRAY;
 		Set<Column> columns = new HashSet<>();
 		columns.addAll(Arrays.asList(repository.getColumns(id)));
-		columns.removeAll(removeColumns.get(id));
+		columns.removeAll(removeColumns.get(id).stream().map(c -> c.column).collect(Collectors.toList()));
 		columns.addAll(addColumns.get(id).stream().map(c -> c.column).collect(Collectors.toList()));
 		Column[] result = columns.toArray(new Column[columns.size()]);
 		Arrays.sort(result);
@@ -110,8 +109,8 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void addColumn(String id, Column column, Class<?>... usings) {
-		addCommand(new AddColumnCommand(id, column, convertUsing(usings)));
+	public synchronized void addColumn(String id, Column column, String... usingClassNames) {
+		addCommand(new AddColumnCommand(id, column, usingClassNames));
 	}
 
 	@Override
@@ -128,8 +127,8 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized boolean containsColumn(String id, Column column) {
-		if (removeColumns.get(id).contains(column)) return false;
-		if (addColumns.get(id).contains(column)) return true;
+		if (removeColumns.get(id).contains(new ColumnContainer(column))) return false;
+		if (addColumns.get(id).contains(new ColumnContainer(column))) return true;
 		return repository.containsColumn(id, column);
 	}
 
@@ -141,7 +140,7 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void markColumn(String id, Column column, Class<?>... usings) {
+	public void markColumn(String id, Column column, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -185,17 +184,17 @@ public class CommandColumnRepository implements ColumnRepository {
 	@Override
 	public synchronized void commit() {
 		addIDs.forEach(
-			(key, value) -> repository.add(key, value.locator, convert(value.usings)));
+			(key, value) -> repository.add(key, value.locator, value.usingClassNames));
 
 		for (String id : removeIDs)
 			repository.remove(id);
 
 		for (String id : addColumns.keySet())
-			for (Container container : addColumns.get(id))
-				repository.addColumn(id, container.column, convert(container.usings));
+			for (ColumnContainer container : addColumns.get(id))
+				repository.addColumn(id, container.column, container.usingClassNames);
 
 		for (String id : removeColumns.keySet())
-			for (Container container : removeColumns.get(id))
+			for (ColumnContainer container : removeColumns.get(id))
 				repository.removeColumn(id, container.column);
 
 		for (Entry<String, Long> entry : clears.entrySet())
@@ -273,49 +272,50 @@ public class CommandColumnRepository implements ColumnRepository {
 		current.redo();
 	}
 
-	private static String[] convertUsing(Class<?>[] usings) {
-		List<String> names = Arrays.asList(usings).stream().map(
-			c -> c.getName()).collect(Collectors.toList());
-		return names.toArray(new String[names.size()]);
-	}
-
-	private static Class<?>[] convert(String[] classNames) {
-		List<Class<?>> list = Arrays.asList(classNames).stream().flatMap(name -> {
-			try {
-				return Arrays.asList(Class.forName(name)).stream();
-			} catch (Exception e) {
-				return Arrays.asList(new Class<?>[] {}).stream();
-			}
-		}).collect(Collectors.toList());
-
-		return list.toArray(new Class<?>[list.size()]);
-	}
-
-	private static class Container {
+	private static class LocatorContainer {
 
 		private final ResourceLocator locator;
 
-		private final Column column;
+		private final String[] usingClassNames;
 
-		private final String[] usings;
-
-		private Container(ResourceLocator locator, String[] usings) {
+		private LocatorContainer(ResourceLocator locator, String[] usingClassNames) {
 			this.locator = locator;
-			column = null;
-			this.usings = usings;
-		}
-
-		private Container(Column column, String[] usings) {
-			locator = null;
-			this.column = column;
-			this.usings = usings;
+			this.usingClassNames = usingClassNames;
 		}
 	}
 
-	private static class MyCollectionMap extends CollectionMap<String, Container> {
+	private static class ColumnContainer {
+
+		private final Column column;
+
+		private final String[] usingClassNames;
+
+		private ColumnContainer(Column column) {
+			this.column = column;
+			this.usingClassNames = U.STRING_EMPTY_ARRAY;
+		}
+
+		private ColumnContainer(Column column, String[] usingClassNames) {
+			this.column = column;
+			this.usingClassNames = usingClassNames;
+		}
 
 		@Override
-		protected Collection<Container> createNewCollection() {
+		public boolean equals(Object others) {
+			if (!(others instanceof ColumnContainer)) return false;
+			return column.equals(((ColumnContainer) others).column);
+		}
+
+		@Override
+		public int hashCode() {
+			return column.hashCode();
+		}
+	}
+
+	private static class MyCollectionMap extends CollectionMap<String, ColumnContainer> {
+
+		@Override
+		protected Collection<ColumnContainer> createNewCollection() {
 			return new HashSet<>();
 		}
 	}
@@ -380,7 +380,7 @@ public class CommandColumnRepository implements ColumnRepository {
 			if (removeId != null) removeId.redo();
 			removeIDs.remove(id);
 
-			addIDs.put(id, new Container(locator, usings));
+			addIDs.put(id, new LocatorContainer(locator, usings));
 			clears.put(id, timestamp);
 		}
 	}
@@ -406,7 +406,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		@Override
 		void undo() {
-			addIDs.put(id, new Container(locator, usings));
+			addIDs.put(id, new LocatorContainer(locator, usings));
 			removeIDs.remove(id);
 			for (RemoveColumnCommand command : availableColumnCommands)
 				command.undo();
@@ -494,15 +494,17 @@ public class CommandColumnRepository implements ColumnRepository {
 		@Override
 		void undo() {
 			if (addId != null) addId.undo();
-			removeColumns.get(id).add(new Container(column, usings));
-			addColumns.get(id).remove(column);
+			ColumnContainer container = new ColumnContainer(column, usings);
+			removeColumns.get(id).add(container);
+			addColumns.get(id).remove(container);
 		}
 
 		@Override
 		void redo() {
 			if (addId != null) addId.redo();
-			removeColumns.get(id).remove(column);
-			addColumns.get(id).add(new Container(column, usings));
+			ColumnContainer container = new ColumnContainer(column, usings);
+			removeColumns.get(id).remove(container);
+			addColumns.get(id).add(container);
 		}
 	}
 
@@ -520,14 +522,16 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		@Override
 		void undo() {
-			addColumns.get(id).add(new Container(column, usings));
-			removeColumns.get(id).remove(column);
+			ColumnContainer container = new ColumnContainer(column, usings);
+			addColumns.get(id).add(container);
+			removeColumns.get(id).remove(container);
 		}
 
 		@Override
 		void redo() {
-			addColumns.get(id).remove(column);
-			removeColumns.get(id).add(new Container(column, usings));
+			ColumnContainer container = new ColumnContainer(column, usings);
+			addColumns.get(id).remove(container);
+			removeColumns.get(id).add(container);
 		}
 	}
 

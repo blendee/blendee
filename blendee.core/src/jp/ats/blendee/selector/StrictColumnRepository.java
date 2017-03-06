@@ -50,7 +50,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void add(String id, ResourceLocator locator, Class<?>... usings) {
+	public void add(String id, ResourceLocator locator, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -60,7 +60,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void renameID(String oldId, String newId, Class<?>... usings) {
+	public void renameID(String oldId, String newId, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -71,7 +71,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void addColumn(String id, Column column, Class<?>... usings) {
+	public void addColumn(String id, Column column, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -102,7 +102,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void markColumn(String id, Column column, Class<?>... usings) {
+	public void markColumn(String id, Column column, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -141,7 +141,7 @@ public class ColumnElement extends AbstractColumnElement {
 	private void add() {
 		Arrays.asList(repository.getUsingClassNames(id)).forEach(c -> {
 			try {
-				repository.addColumn(id, column, Class.forName(c));
+				repository.addColumn(id, column, c);
 			} catch (Exception e) {
 				repository.addColumn(id, column);
 			}
@@ -183,6 +183,7 @@ public class ColumnElement extends AbstractColumnElement {
 			} else {
 				column.remove();
 			}
+
 			column.operateView(selected);
 		}
 	}

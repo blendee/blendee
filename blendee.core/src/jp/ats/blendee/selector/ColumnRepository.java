@@ -29,9 +29,9 @@ public interface ColumnRepository extends Transaction {
 	 *
 	 * @param id ID
 	 * @param locator 対応するテーブル
-	 * @param usings id が使用されているクラス
+	 * @param usingClassNames id が使用されているクラス
 	 */
-	void add(String id, ResourceLocator locator, Class<?>... usings);
+	void add(String id, ResourceLocator locator, String... usingClassNames);
 
 	/**
 	 * ID と、それに対応するテーブルをリポジトリから削除します。
@@ -47,9 +47,9 @@ public interface ColumnRepository extends Transaction {
 	 *
 	 * @param oldId 旧 ID
 	 * @param newId 新 ID
-	 * @param usings id が使用されているクラス
+	 * @param usingClassNames id が使用されているクラス
 	 */
-	void renameID(String oldId, String newId, Class<?>... usings);
+	void renameID(String oldId, String newId, String... usingClassNames);
 
 	/**
 	 * ID が持つ全カラムを返します。
@@ -68,9 +68,9 @@ public interface ColumnRepository extends Transaction {
 	 *
 	 * @param id ID
 	 * @param column 新しいカラム
-	 * @param usings id が使用されているクラス
+	 * @param usingClassNames id が使用されているクラス
 	 */
-	void addColumn(String id, Column column, Class<?>... usings);
+	void addColumn(String id, Column column, String... usingClassNames);
 
 	/**
 	 * パラメータの ID から、指定されたカラムを削除します。
@@ -110,9 +110,9 @@ public interface ColumnRepository extends Transaction {
 	 *
 	 * @param id ID
 	 * @param column マークするカラム
-	 * @param usings id が使用されているクラス
+	 * @param usingClassNames id が使用されているクラス
 	 */
-	void markColumn(String id, Column column, Class<?>... usings);
+	void markColumn(String id, Column column, String... usingClassNames);
 
 	/**
 	 * パラメータの ID が持つ全カラムの使用マークと使用クラスを削除し、削除時刻としてパラメータで指定された時刻を設定します。
