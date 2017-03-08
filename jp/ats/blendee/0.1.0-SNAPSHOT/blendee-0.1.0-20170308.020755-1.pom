@@ -18,8 +18,6 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<github.global.server>github</github.global.server>
-		<repositoryName>blendee</repositoryName>
-		<repositoryOwner>blendee</repositoryOwner>
 	</properties>
 
 	<distributionManagement>
@@ -44,7 +42,7 @@
 					<includes>
 						<include>**/*</include>
 					</includes>
-					<merge>true</merge>
+					<merge>false</merge>
 				</configuration>
 				<executions>
 					<execution>
