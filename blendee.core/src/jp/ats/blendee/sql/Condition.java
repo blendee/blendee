@@ -83,33 +83,40 @@ public class Condition extends QueryClause {
 	 * このインスタンスが表す条件に、新たな条件を AND 追加します。
 	 *
 	 * @param target 追加する条件
+	 * @return このインスタンス
 	 */
-	public void and(Condition target) {
+	public Condition and(Condition target) {
 		//append が ProxyCondition でオーバーライドされているので、
 		//このメソッドは ProxyCondition でオーバーライドしなくても OK
 		append(LogicalOperator.AND, target);
+		return this;
 	}
 
 	/**
 	 * このインスタンスが表す条件に、新たな条件を OR 追加します。
 	 *
 	 * @param target 追加する条件
+	 * @return このインスタンス
 	 */
-	public void or(Condition target) {
+	public Condition or(Condition target) {
 		//append が ProxyCondition でオーバーライドされているので、
 		//このメソッドは ProxyCondition でオーバーライドしなくても OK
 		append(LogicalOperator.OR, target);
+		return this;
 	}
 
 	/**
 	 * この条件を反転させます。
 	 * <br>
 	 * 具体的には、条件の先頭に NOT を付加します。
+	 *
+	 * @return このインスタンス
 	 */
-	public void reverse() {
+	public Condition reverse() {
 		clearCache();
 		clause = "NOT (" + clause + ")";
 		current = null;
+		return this;
 	}
 
 	/**
@@ -304,9 +311,10 @@ public class Condition extends QueryClause {
 		}
 
 		@Override
-		public void reverse() {
-			if (inclusion == null) return;
+		public Condition reverse() {
+			if (inclusion == null) return this;
 			inclusion.reverse();
+			return this;
 		}
 
 		@Override
