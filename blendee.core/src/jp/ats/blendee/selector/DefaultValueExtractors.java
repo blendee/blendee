@@ -4,13 +4,14 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.DataTypeConverter;
 import jp.ats.blendee.jdbc.BResult;
+import jp.ats.blendee.jdbc.DataTypeConverter;
 import jp.ats.blendee.sql.Binder;
 import jp.ats.blendee.sql.binder.BigDecimalBinder;
 import jp.ats.blendee.sql.binder.BlobBinder;
@@ -21,6 +22,7 @@ import jp.ats.blendee.sql.binder.DoubleBinder;
 import jp.ats.blendee.sql.binder.FloatBinder;
 import jp.ats.blendee.sql.binder.IntBinder;
 import jp.ats.blendee.sql.binder.LongBinder;
+import jp.ats.blendee.sql.binder.NullBinder;
 import jp.ats.blendee.sql.binder.ObjectBinder;
 import jp.ats.blendee.sql.binder.StringBinder;
 import jp.ats.blendee.sql.binder.TimestampBinder;
@@ -146,11 +148,14 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(BResult result, int columnIndex) {
-			return Boolean.valueOf(result.getBoolean(columnIndex));
+			boolean value = result.getBoolean(columnIndex);
+			if (result.wasNull()) return null;
+			return Boolean.valueOf(value);
 		}
 
 		@Override
 		public Binder extractAsBinder(Object value) {
+			if (value == null) return new NullBinder(Types.BOOLEAN);
 			return new BooleanBinder(((Boolean) value).booleanValue());
 		}
 	}
@@ -214,11 +219,14 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(BResult result, int columnIndex) {
-			return Double.valueOf(result.getDouble(columnIndex));
+			double value = result.getDouble(columnIndex);
+			if (result.wasNull()) return null;
+			return Double.valueOf(value);
 		}
 
 		@Override
 		public Binder extractAsBinder(Object value) {
+			if (value == null) return new NullBinder(Types.DOUBLE);
 			return new DoubleBinder(((Double) value).doubleValue());
 		}
 	}
@@ -231,11 +239,14 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(BResult result, int columnIndex) {
-			return Float.valueOf(result.getFloat(columnIndex));
+			float value = result.getFloat(columnIndex);
+			if (result.wasNull()) return null;
+			return Float.valueOf(value);
 		}
 
 		@Override
 		public Binder extractAsBinder(Object value) {
+			if (value == null) return new NullBinder(Types.FLOAT);
 			return new FloatBinder(((Float) value).floatValue());
 		}
 	}
@@ -248,11 +259,14 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(BResult result, int columnIndex) {
-			return Integer.valueOf(result.getInt(columnIndex));
+			int value = result.getInt(columnIndex);
+			if (result.wasNull()) return null;
+			return Integer.valueOf(value);
 		}
 
 		@Override
 		public Binder extractAsBinder(Object value) {
+			if (value == null) return new NullBinder(Types.INTEGER);
 			return new IntBinder(((Integer) value).intValue());
 		}
 	}
@@ -265,11 +279,14 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(BResult result, int columnIndex) {
-			return Long.valueOf(result.getLong(columnIndex));
+			long value = result.getLong(columnIndex);
+			if (result.wasNull()) return null;
+			return Long.valueOf(value);
 		}
 
 		@Override
 		public Binder extractAsBinder(Object value) {
+			if (value == null) return new NullBinder(Types.BIGINT);
 			return new LongBinder(((Long) value).longValue());
 		}
 	}
