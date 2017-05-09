@@ -96,7 +96,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<ReferenceQueryColumn, None> self =
+	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<ReferenceQueryColumn, None> rel =
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			QueryContext.REFERENCE,
