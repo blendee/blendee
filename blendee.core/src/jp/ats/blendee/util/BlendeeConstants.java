@@ -81,7 +81,7 @@ public interface BlendeeConstants {
 	 * (Boolean) CAN_ADD_NEW_ENTRIES
 	 */
 	public static final ParsableOptionKey<Boolean> CAN_ADD_NEW_ENTRIES = new ParsableOptionKey<>(
-		"can_add_new_entries",
+		"can-add-new-entries",
 		TO_BOOLEAN);
 
 	/**
