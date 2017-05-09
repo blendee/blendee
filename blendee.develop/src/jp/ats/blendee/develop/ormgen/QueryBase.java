@@ -442,7 +442,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Entity を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
 		 *
-		 * @return 自動生成された  '{'@link OneToManyExecutor'}' のサブクラス
+		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
 		public /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M> intercept() /*++'++*/{/*++'++*/
 			if ($query != null) throw new IllegalStateException($locator.getSchemaName() + " から直接使用することはできません");

@@ -21,11 +21,13 @@ public interface QueryRelationship {
 
 	/**
 	 * {@link SelectOfferFunction} 内で使用する SELECT 句生成用メソッドです。
+	 * <br>
+	 * パラメータの項目を SELECT 句に割り当てます。
 	 *
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 * @return SELECT 句
 	 */
-	default SelectOffers assign(SelectOffer... offers) {
+	default SelectOffers as(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		Arrays.asList(offers).forEach(offer -> offer.accept(visitor));
 		return visitor;
@@ -33,10 +35,12 @@ public interface QueryRelationship {
 
 	/**
 	 * {@link SelectOfferFunction} 内で使用する SELECT 句生成用メソッドです。
+	 * <br>
+	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
 	 *
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 */
-	default void assign(OrderByOffer... offers) {
+	default void as(OrderByOffer... offers) {
 		Arrays.asList(offers).forEach(offer -> offer.offer());
 	}
 
