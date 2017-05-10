@@ -108,17 +108,13 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 
 	/**
 	 * スキーマ名、テーブル名を元に、テーブルを一意で特定する指標となる文字列を返します。
-	 * <br>
-	 * Blendee にスキーマが一つしか設定されていない場合、テーブル名のみとなります。
-	 * スキーマが複数設定されている場合、 schemaName.tableName という形式になります。
 	 *
 	 * @return テーブルを一意で特定する指標
 	 * @see Initializer#addSchemaName(String)
 	 */
 	@Override
 	public String toString() {
-		if (schemaName == null) return tableName;
-		return schemaName + delimiter + tableName;
+		return getSchemaName() + delimiter + tableName;
 	}
 
 	@Override
@@ -153,7 +149,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 	 * 大文字、小文字を意識しないようにする比較用の文字列
 	 */
 	private String id() {
-		return (getSchemaName() + delimiter + tableName).toUpperCase();
+		return toString().toUpperCase();
 	}
 
 	private static void checkObjectName(String type, String name) {
