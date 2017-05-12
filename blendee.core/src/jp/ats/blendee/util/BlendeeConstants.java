@@ -126,4 +126,15 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<String[]> ANNOTATED_ENTITY_PACKAGES = new ParsableOptionKey<>(
 		"annotated-entity-packages",
 		TO_STRING_ARRAY);
+
+	/**
+	 * 文字列のキーからこのクラスのメンバーに変換します。
+	 *
+	 * @param <T> オプション値の型
+	 * @param key 変換前のキー
+	 * @return 変換後のキー
+	 */
+	public static <T> ParsableOptionKey<T> convert(String key) {
+		return ParsableOptionKey.convert(key);
+	}
 }

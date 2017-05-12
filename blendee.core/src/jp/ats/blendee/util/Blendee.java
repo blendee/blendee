@@ -42,7 +42,7 @@ public class Blendee {
 		Map<OptionKey<?>, Object> param = new HashMap<>();
 
 		initValues.forEach((k, v) -> {
-			ParsableOptionKey<?> key = ParsableOptionKey.convert((String) k);
+			ParsableOptionKey<?> key = BlendeeConstants.convert((String) k);
 			param.put(key, key.parse((String) v));
 		});
 

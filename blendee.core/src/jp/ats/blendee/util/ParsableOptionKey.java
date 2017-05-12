@@ -66,15 +66,8 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 
 	private final OptionValueParser parser;
 
-	/**
-	 * 文字列のキーからこのクラスのインスタンスに変換します。
-	 *
-	 * @param <T> オプション値の型
-	 * @param key 変換前のキー
-	 * @return 変換後のキー
-	 */
 	@SuppressWarnings("unchecked")
-	public static <T> ParsableOptionKey<T> convert(String key) {
+	static <T> ParsableOptionKey<T> convert(String key) {
 		synchronized (lock) {
 			return (ParsableOptionKey<T>) map.get(key);
 		}
