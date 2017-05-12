@@ -2,7 +2,7 @@
 <feature
       id="blendee.devtools"
       label="Blendee Development Tools"
-      version="0.1.1.qualifier"
+      version="0.1.2.qualifier"
       provider-name="ats.jp">
 
    <description url="http://www.example.com/description">
