@@ -3,14 +3,15 @@ package jp.ats.blendee.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import jp.ats.blendee.internal.TransactionManager;
 import jp.ats.blendee.internal.TransactionShell;
-import jp.ats.blendee.jdbc.Initializer;
+import jp.ats.blendee.jdbc.BTransaction;
 import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
-import jp.ats.blendee.jdbc.BTransaction;
+import jp.ats.blendee.jdbc.Initializer;
 import jp.ats.blendee.jdbc.MetadataFactory;
 import jp.ats.blendee.jdbc.OptionKey;
 import jp.ats.blendee.jdbc.TransactionFactory;
@@ -31,6 +32,22 @@ public class Blendee {
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
+
+	/**
+	 * Blendee を使用可能な状態にします。
+	 *
+	 * @param initValues Blendee を初期化するための値
+	 */
+	public void start(Properties initValues) {
+		Map<OptionKey<?>, Object> param = new HashMap<>();
+
+		initValues.forEach((k, v) -> {
+			ParsableOptionKey<?> key = ParsableOptionKey.convert((String) k);
+			param.put(key, key.parse((String) v));
+		});
+
+		start(param);
+	}
 
 	/**
 	 * Blendee を使用可能な状態にします。
