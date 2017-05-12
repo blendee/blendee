@@ -43,7 +43,7 @@ public class Blendee {
 
 		initValues.forEach((k, v) -> {
 			ParsableOptionKey<?> key = BlendeeConstants.convert((String) k);
-			param.put(key, key.parse((String) v));
+			param.put(key, key.parse((String) v).get());
 		});
 
 		start(param);
