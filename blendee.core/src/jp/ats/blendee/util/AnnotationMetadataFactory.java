@@ -13,9 +13,9 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.ColumnMetadata;
 import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
+import jp.ats.blendee.jdbc.ColumnMetadata;
 import jp.ats.blendee.jdbc.Metadata;
 import jp.ats.blendee.jdbc.MetadataFactory;
 import jp.ats.blendee.jdbc.ResourceLocator;
@@ -119,7 +119,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		return new ForeignKeySource(
 			annotation.name(),
 			annotation.columns(),
-			new ResourceLocator(annotation.references()));
+			ResourceLocator.parse(annotation.references()));
 	}
 
 	private List<Class<?>> listClasses(ClassLoader loader, String packageName) {
