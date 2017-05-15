@@ -41,7 +41,7 @@ SOFTWARE.
          id="jp.ats.blendee.plugin"
          download-size="0"
          install-size="0"
-         version="0.8.0"
+         version="0.1.2"
          unpack="false"/>
 
 </feature>
