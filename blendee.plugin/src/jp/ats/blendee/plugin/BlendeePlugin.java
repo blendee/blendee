@@ -385,8 +385,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		try {
 			loader = new JavaProjectClassLoader(
 				getClass().getClassLoader(),
-				currentProject,
-				true);
+				currentProject);
 		} catch (JavaModelException e) {
 			throw new JavaProjectException(e);
 		}
@@ -474,8 +473,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			if (isAvailable(codeFormatterClassName)) {
 				ClassLoader pluginLoader = new JavaProjectClassLoader(
 					getClass().getClassLoader(),
-					currentProject,
-					true);
+					currentProject);
 				codeFormatter = (CodeFormatter) Class.forName(codeFormatterClassName, false, pluginLoader).newInstance();
 			} else {
 				codeFormatter = null;

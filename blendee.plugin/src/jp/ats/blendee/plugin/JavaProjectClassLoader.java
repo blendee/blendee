@@ -23,18 +23,12 @@ import jp.ats.blendee.internal.U;
 
 class JavaProjectClassLoader extends ClassLoader {
 
-	private final boolean ignoreClasspathExport;
-
-	private final ClassLoader[] allLoaders;
-
-	private final ClassLoader[] exportedLoaders;
+	private final ClassLoader[] loaders;
 
 	JavaProjectClassLoader(
 		ClassLoader parent,
-		IJavaProject project,
-		boolean ignoreClasspathExport) throws JavaModelException {
+		IJavaProject project) throws JavaModelException {
 		super(parent);
-		this.ignoreClasspathExport = ignoreClasspathExport;
 		List<ClassLoader> allList = new LinkedList<>();
 		List<ClassLoader> exportedList = new LinkedList<>();
 		ClassLoader defaultOutputClassLoader = createClassLoader(
@@ -50,15 +44,13 @@ class JavaProjectClassLoader extends ClassLoader {
 			if (entry.isExported()) exportedList.add(loader);
 		}
 
-		allLoaders = allList.toArray(new ClassLoader[allList.size()]);
-		exportedLoaders = exportedList.toArray(
-			new ClassLoader[exportedList.size()]);
+		loaders = allList.toArray(new ClassLoader[allList.size()]);
 	}
 
 	@Override
 	protected Class<?> findClass(String className)
 		throws ClassNotFoundException {
-		for (ClassLoader loader : allLoaders) {
+		for (ClassLoader loader : loaders) {
 			URL url = loader.getResource(className.replace('.', '/') + ".class");
 			if (url == null) continue;
 			return defineClass(url);
@@ -82,9 +74,6 @@ class JavaProjectClassLoader extends ClassLoader {
 
 	@Override
 	public Enumeration<URL> getResources(String name) throws IOException {
-		ClassLoader[] loaders = ignoreClasspathExport
-			? allLoaders
-			: exportedLoaders;
 		List<URL> results = new LinkedList<>();
 		for (ClassLoader loader : loaders) {
 			Enumeration<URL> resources = loader.getResources(name);
@@ -128,8 +117,7 @@ class JavaProjectClassLoader extends ClassLoader {
 		case IClasspathEntry.CPE_PROJECT:
 			return new JavaProjectClassLoader(
 				getClass().getClassLoader(),
-				createProject(entry),
-				false);
+				createProject(entry));
 		case IClasspathEntry.CPE_SOURCE:
 			IPath path = entry.getOutputLocation();
 			if (path == null) {
