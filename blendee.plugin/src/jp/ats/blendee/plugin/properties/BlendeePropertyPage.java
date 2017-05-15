@@ -13,7 +13,6 @@ import java.util.Properties;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -529,8 +528,7 @@ public class BlendeePropertyPage
 		try {
 			IType type = element.findType(typeName);
 			if (type == null
-				|| type.isInterface()
-				|| Flags.isAbstract(type.getFlags())) return null;
+				|| type.isInterface()) return null;
 
 			return type;
 		} catch (JavaModelException e) {
