@@ -88,10 +88,35 @@ public interface BEntityManager<T extends BEntity> {
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
+	 * @param options 行ロックオプション {@link RowLockOption} 等
+	 * @param primaryKeyMembers 主キーを構成する数値
+	 * @return {@link BEntity} 存在しなければ null
+	 */
+	default Optional<T> select(QueryOptions options, Number... primaryKeyMembers) {
+		return select(new SimpleOptimizer(getResourceLocator()), options, primaryKeyMembers);
+	}
+
+	/**
+	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * <br>
+	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 *
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link BEntity} 存在しなければ null
 	 */
 	default Optional<T> select(String... primaryKeyMembers) {
+		return select(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
+	}
+
+	/**
+	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * <br>
+	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 *
+	 * @param primaryKeyMembers 主キーを構成する数値
+	 * @return {@link BEntity} 存在しなければ null
+	 */
+	default Optional<T> select(Number... primaryKeyMembers) {
 		return select(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
@@ -146,10 +171,43 @@ public interface BEntityManager<T extends BEntity> {
 	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param primaryKeyMembers 主キーを構成する値
+	 * @param options 行ロックオプション {@link RowLockOption} 等
+	 * @param primaryKeyMembers 主キーを構成する数値
+	 * @return {@link BEntity} 存在しなければ null
+	 */
+	default Optional<T> select(Optimizer optimizer, QueryOptions options, Number... primaryKeyMembers) {
+		DataObject object;
+		try {
+			object = getDataAccessHelper().getDataObject(
+				optimizer,
+				PrimaryKey.getInstance(getResourceLocator(), primaryKeyMembers),
+				QueryOptions.care(options).get());
+		} catch (DataObjectNotFoundException e) {
+			return Optional.empty();
+		}
+
+		return Optional.of(createEntity(object));
+	}
+
+	/**
+	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 *
+	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link BEntity} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, String... primaryKeyMembers) {
+		return select(optimizer, QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
+	}
+
+	/**
+	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 *
+	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param primaryKeyMembers 主キーを構成する数値
+	 * @return {@link BEntity} 存在しなければ null
+	 */
+	default Optional<T> select(Optimizer optimizer, Number... primaryKeyMembers) {
 		return select(optimizer, QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 

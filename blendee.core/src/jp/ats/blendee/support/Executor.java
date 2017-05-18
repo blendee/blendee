@@ -74,6 +74,16 @@ public interface Executor<I, E> {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return Entity
 	 */
+	E fetch(Number... primaryKeyMembers);
+
+	/**
+	 * 主キーから Entity 一件を選択するメソッドです。
+	 * <br>
+	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
+	 *
+	 * @param primaryKeyMembers 主キーの検索値
+	 * @return Entity
+	 */
 	E fetch(Bindable... primaryKeyMembers);
 
 	/**
@@ -86,6 +96,17 @@ public interface Executor<I, E> {
 	 * @return Entity
 	 */
 	E fetch(QueryOptions options, String... primaryKeyMembers);
+
+	/**
+	 * 主キーから Entity 一件を選択するメソッドです。
+	 * <br>
+	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
+	 *
+	 * @param options 行ロックオプション {@link RowLockOption} 等
+	 * @param primaryKeyMembers 主キーの検索値
+	 * @return Entity
+	 */
+	E fetch(QueryOptions options, Number... primaryKeyMembers);
 
 	/**
 	 * 主キーから Entity 一件を選択するメソッドです。

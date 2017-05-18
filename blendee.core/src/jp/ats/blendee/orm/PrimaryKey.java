@@ -8,17 +8,17 @@ import java.util.Objects;
 import java.util.Set;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.CrossReference;
+import jp.ats.blendee.jdbc.BStatement;
 import jp.ats.blendee.jdbc.BlendeeContext;
 import jp.ats.blendee.jdbc.BlendeeManager;
-import jp.ats.blendee.jdbc.BStatement;
+import jp.ats.blendee.jdbc.CrossReference;
 import jp.ats.blendee.jdbc.MetadataUtilities;
 import jp.ats.blendee.jdbc.ResourceLocator;
+import jp.ats.blendee.selector.BindableConverter;
 import jp.ats.blendee.sql.Bindable;
 import jp.ats.blendee.sql.Condition;
 import jp.ats.blendee.sql.Relationship;
 import jp.ats.blendee.sql.UpdateDMLBuilder;
-import jp.ats.blendee.sql.binder.StringBinder;
 
 /**
  * {@link DataObject} 内の主キー部分を表し、主キーに関連した操作を行うことができるクラスです。
@@ -40,11 +40,20 @@ public class PrimaryKey extends PartialData {
 	public static PrimaryKey getInstance(
 		ResourceLocator locator,
 		String... keyMembers) {
-		Bindable[] bindables = new Bindable[keyMembers.length];
-		for (int i = 0; i < keyMembers.length; i++) {
-			bindables[i] = new StringBinder(keyMembers[i]);
-		}
-		return new PrimaryKey(locator, bindables);
+		return new PrimaryKey(locator, BindableConverter.convert(keyMembers));
+	}
+
+	/**
+	 * 数値からこのクラスのインスタンスを作り出す簡易コンストラクタです。
+	 *
+	 * @param locator 対象となるテーブル
+	 * @param keyMembers 主キーを構成する値
+	 * @return このクラスのインスタンス
+	 */
+	public static PrimaryKey getInstance(
+		ResourceLocator locator,
+		Number... keyMembers) {
+		return new PrimaryKey(locator, BindableConverter.convert(keyMembers));
 	}
 
 	/**
@@ -56,7 +65,7 @@ public class PrimaryKey extends PartialData {
 	 */
 	public PrimaryKey(
 		ResourceLocator locator,
-		Bindable[] bindables) {
+		Bindable... bindables) {
 		super(locator, MetadataUtilities.getPrimaryKeyColumnNames(locator), bindables);
 		Object[] objects = new Object[bindables.length + 1];
 		objects[0] = locator;

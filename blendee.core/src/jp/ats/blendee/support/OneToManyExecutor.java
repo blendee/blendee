@@ -11,12 +11,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import jp.ats.blendee.internal.U;
-import jp.ats.blendee.jdbc.BlendeeContext;
-import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.jdbc.BResultSet;
 import jp.ats.blendee.jdbc.BStatement;
+import jp.ats.blendee.jdbc.BlendeeContext;
+import jp.ats.blendee.jdbc.BlendeeManager;
 import jp.ats.blendee.orm.DataAccessHelper;
 import jp.ats.blendee.orm.QueryOption;
+import jp.ats.blendee.selector.BindableConverter;
 import jp.ats.blendee.selector.Optimizer;
 import jp.ats.blendee.sql.Bindable;
 import jp.ats.blendee.sql.Column;
@@ -24,11 +25,10 @@ import jp.ats.blendee.sql.Condition;
 import jp.ats.blendee.sql.ConditionFactory;
 import jp.ats.blendee.sql.FromClause;
 import jp.ats.blendee.sql.OrderByClause;
+import jp.ats.blendee.sql.OrderByClause.DirectionalColumn;
 import jp.ats.blendee.sql.QueryBuilder;
 import jp.ats.blendee.sql.Relationship;
 import jp.ats.blendee.sql.SelectClause;
-import jp.ats.blendee.sql.OrderByClause.DirectionalColumn;
-import jp.ats.blendee.sql.binder.StringBinder;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。
@@ -102,7 +102,12 @@ public class OneToManyExecutor<O extends BEntity, M>
 
 	@Override
 	public Optional<One<O, M>> fetch(String... primaryKeyMembers) {
-		return fetch(convert(primaryKeyMembers));
+		return fetch(BindableConverter.convert(primaryKeyMembers));
+	}
+
+	@Override
+	public Optional<One<O, M>> fetch(Number... primaryKeyMembers) {
+		return fetch(BindableConverter.convert(primaryKeyMembers));
 	}
 
 	@Override
@@ -112,7 +117,12 @@ public class OneToManyExecutor<O extends BEntity, M>
 
 	@Override
 	public Optional<One<O, M>> fetch(QueryOptions options, String... primaryKeyMembers) {
-		return fetch(options, convert(primaryKeyMembers));
+		return fetch(options, BindableConverter.convert(primaryKeyMembers));
+	}
+
+	@Override
+	public Optional<One<O, M>> fetch(QueryOptions options, Number... primaryKeyMembers) {
+		return fetch(options, BindableConverter.convert(primaryKeyMembers));
 	}
 
 	@Override
@@ -217,15 +227,6 @@ public class OneToManyExecutor<O extends BEntity, M>
 		if (many.hasNext()) throw new NotUniqueException();
 
 		return Optional.of(one);
-	}
-
-	private static final Bindable[] convert(String[] members) {
-		Bindable[] bindables = new Bindable[members.length];
-		for (int i = 0; i < bindables.length; i++) {
-			bindables[i] = new StringBinder(members[i]);
-		}
-
-		return bindables;
 	}
 
 	private static SelectClause createCountClause(Column[] columns) {

@@ -271,12 +271,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), primaryKeyMembers);
+	/*++'++*/}/*++'++*/
+
+	@Override
 	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
+		return manager.select(getOptimizer(), options, primaryKeyMembers);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
