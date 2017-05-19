@@ -407,7 +407,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 /*==RelationshipPart1==*/
 
-		/*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
+		/**
+		 * 直接使用しないでください。
+		 *
+		 * @param builder
+		 * @param parent
+		 * @param fkName
+		 * @param locator
+		 * @param root
+		 */
+		public /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
 			QueryContext<T> builder,
 			QueryRelationship parent,
 			String fkName,
