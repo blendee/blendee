@@ -139,7 +139,7 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 	 * @param columnNames SQL 文に含まれるカラム
 	 * @see SQLFragmentFormat
 	 */
-	public void add(String template, String... columnNames) {
+	public void addWithTemplate(String template, String... columnNames) {
 		add(template, PhantomColumn.convert(columnNames));
 	}
 
