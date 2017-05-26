@@ -186,11 +186,22 @@ public class Condition extends QueryClause {
 	@Override
 	public Condition replicate() {
 		Binder[] replicateBinders = new Binder[binders.size()];
-		int counter = 0;
-		for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
-			replicateBinders[counter] = i.next().replicate();
+		{
+			int counter = 0;
+			for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
+				replicateBinders[counter] = i.next().replicate();
+			}
 		}
-		Condition clone = new Condition(clause, columns.toArray(new Column[columns.size()]), replicateBinders);
+
+		Column[] replicateColumns = new Column[columns.size()];
+		{
+			int counter = 0;
+			for (Iterator<Column> i = columns.iterator(); i.hasNext(); counter++) {
+				replicateColumns[counter] = i.next().replicate();
+			}
+		}
+
+		Condition clone = new Condition(clause, replicateColumns, replicateBinders);
 		clone.current = current;
 		clone.keyword = keyword;
 		return clone;

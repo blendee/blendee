@@ -36,7 +36,9 @@ abstract class SimpleQueryClause<T extends SimpleQueryClause<?>> extends QueryCl
 	public T replicate() {
 		T clone = createNewInstance();
 		clone.templates.addAll(templates);
-		clone.columns.addAll(columns);
+
+		columns.forEach(c -> clone.columns.add(c.replicate()));
+
 		return clone;
 	}
 

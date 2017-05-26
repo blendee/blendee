@@ -187,6 +187,10 @@ public class Column implements Comparable<Column> {
 		return relationship.belongsPrimaryKey(this);
 	}
 
+	Column replicate() {
+		return this;
+	}
+
 	void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		if (!relationship.getRoot().equals(sqlRoot))

@@ -146,6 +146,11 @@ public class PhantomColumn extends Column {
 		return getSubstanceWithCheck().isPrimaryKey();
 	}
 
+	@Override
+	Column replicate() {
+		return new PhantomColumn(locator, name);
+	}
+
 	/**
 	 * このインスタンスの Relationship ルートを決定します。
 	 *
@@ -154,7 +159,7 @@ public class PhantomColumn extends Column {
 	 * @throws IllegalStateException このインスタンスに既に別のルートが決定しているとき
 	 */
 	@Override
-	public void prepareForSQL(Relationship sqlRoot) {
+	void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		synchronized (lock) {
 			if (substance != null && !substance.getRelationship().getRoot().equals(sqlRoot))
