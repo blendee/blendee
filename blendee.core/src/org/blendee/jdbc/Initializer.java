@@ -33,7 +33,7 @@ public final class Initializer {
 
 	private PrintStream logOutput = System.out;
 
-	private Pattern logStackTracePattern = Pattern.compile("^(?!jp\\.ats\\.)");
+	private Pattern logStackTracePattern = Pattern.compile("^(?!org\\.blendee\\.)");
 
 	private int maxStatementsPerConnection = Integer.MAX_VALUE;
 
