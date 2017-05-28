@@ -7,7 +7,7 @@ Blendee build.xml
 
 	<property name="title" value="blendee.develop" />
 	<property name="version" value="0.1-XXXXXXXXx" />
-	<property name="vendor" value="ats.jp" />
+	<property name="vendor" value="blendee.org" />
 
 	<path id="develop.classpath">
 		<pathelement location="build" />
