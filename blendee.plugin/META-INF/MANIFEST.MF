@@ -6,7 +6,7 @@ Bundle-Version: 0.1.5
 Bundle-ClassPath: blendee.jar,
  blendee.plugin.jar
 Bundle-Activator: org.blendee.plugin.BlendeePlugin
-Bundle-Vendor: ats
+Bundle-Vendor: blendee.org
 Export-Package: .,
  org.blendee.plugin,
  org.blendee.plugin.popup.actions,
