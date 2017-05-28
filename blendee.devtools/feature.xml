@@ -38,7 +38,7 @@ SOFTWARE.
    </license>
 
    <plugin
-         id="jp.ats.blendee.plugin"
+         id="org.blendee.plugin"
          download-size="0"
          install-size="0"
          version="0.1.5"

@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="jp.ats.blendee.plugin.properties.BlendeePropertyPage"
-            id="jp.ats.blendee.plugin.propertyPage"
+            class="org.blendee.plugin.properties.BlendeePropertyPage"
+            id="org.blendee.plugin.propertyPage"
             name="Blendee">
          <filter
                name="nature"
@@ -22,28 +22,28 @@
          point="org.eclipse.ui.views">
       <category
             name="Blendee"
-            id="jp.ats.blendee.plugin"/>
+            id="org.blendee.plugin"/>
       <view
-            class="jp.ats.blendee.plugin.views.QueryEditorView"
+            class="org.blendee.plugin.views.QueryEditorView"
             icon="icons/blendee.png"
-            category="jp.ats.blendee.plugin"
+            category="org.blendee.plugin"
             name="Blendee Query Editor"
-            id="jp.ats.blendee.plugin.queryEditorView"/>
+            id="org.blendee.plugin.queryEditorView"/>
       <view
-            category="jp.ats.blendee.plugin"
-            class="jp.ats.blendee.plugin.views.ClassBuilderView"
+            category="org.blendee.plugin"
+            class="org.blendee.plugin.views.ClassBuilderView"
             icon="icons/blendee.png"
-            id="jp.ats.blendee.plugin.classBuilderView"
+            id="org.blendee.plugin.classBuilderView"
             name="Blendee ORM Generator">
       </view>
    </extension>
    <extension
-         id="jp.ats.blendee.queryAssist"
+         id="org.blendee.queryAssist"
          point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
       <javaCompletionProposalComputer
             activate="true"
             categoryId="org.eclipse.jdt.ui.defaultProposalCategory"
-            class="jp.ats.blendee.plugin.QueryAssist"
+            class="org.blendee.plugin.QueryAssist"
             needsSortingAfterFiltering="false">
          <partition
                type="__dftl_partition_content_type">
@@ -53,29 +53,29 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="jp.ats.blendee.plugin.commandCategory"
+            id="org.blendee.plugin.commandCategory"
             name="Blendee">
       </category>
       <command
-            categoryId="jp.ats.blendee.plugin.commandCategory"
-            id="jp.ats.blendee.plugin.restartQueryEditor"
+            categoryId="org.blendee.plugin.commandCategory"
+            id="org.blendee.plugin.restartQueryEditor"
             name="restartQueryEditor">
       </command>
       <command
-            categoryId="jp.ats.blendee.plugin.commandCategory"
-            id="jp.ats.blendee.plugin.restartORMGenerator"
+            categoryId="org.blendee.plugin.commandCategory"
+            id="org.blendee.plugin.restartORMGenerator"
             name="restartORMGenerator">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="jp.ats.blendee.plugin.popup.actions.ChangeProjectHandler"
-            commandId="jp.ats.blendee.plugin.restartQueryEditor">
+            class="org.blendee.plugin.popup.actions.ChangeProjectHandler"
+            commandId="org.blendee.plugin.restartQueryEditor">
       </handler>
       <handler
-            class="jp.ats.blendee.plugin.popup.actions.ChangeProjectHandler"
-            commandId="jp.ats.blendee.plugin.restartORMGenerator">
+            class="org.blendee.plugin.popup.actions.ChangeProjectHandler"
+            commandId="org.blendee.plugin.restartORMGenerator">
       </handler>
    </extension>
    <extension
@@ -97,13 +97,13 @@
               </with>
            </visibleWhen>
             <command
-                  commandId="jp.ats.blendee.plugin.restartQueryEditor"
+                  commandId="org.blendee.plugin.restartQueryEditor"
                   icon="icons/blendee.png"
                   label="Query Editor を起動する"
                   style="push">
             </command>
             <command
-                  commandId="jp.ats.blendee.plugin.restartORMGenerator"
+                  commandId="org.blendee.plugin.restartORMGenerator"
                   icon="icons/blendee.png"
                   label="ORM Generator を起動する"
                   style="push">

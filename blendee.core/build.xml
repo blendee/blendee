@@ -64,7 +64,7 @@ Blendee build.xml
 	-->
 	<target name="javadoc" depends="cleanup">
 		<mkdir dir="blendee-api" />
-		<javadoc packagenames="jp.ats.blendee.*" destdir="blendee-api" windowtitle="Blendee API" doctitle="Blendee API" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
+		<javadoc packagenames="org.blendee.*" destdir="blendee-api" windowtitle="Blendee API" doctitle="Blendee API" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
 			<sourcepath path="src" />
 			<link offline="true" href="https://docs.oracle.com/javase/jp/8/docs/api/" packagelistLoc="." />
 		</javadoc>
