@@ -10,7 +10,7 @@ import org.blendee.jdbc.ResourceLocator;
 {5}
  */
 @Generated(value = /*++'++*/{/*++'++*/"{6}"/*++'++*/}/*++'++*/)
-public final class /*++{2}Constants++*//*--*/Constants/*--*/ /*++'++*/{/*++'++*/
+public final class /*++{2}Constants++*//*--*/ConstantsBase/*--*/ /*++'++*/{/*++'++*/
 
 	/**
 	 * この定数クラスのスキーマ名
@@ -44,5 +44,5 @@ public final class /*++{2}Constants++*//*--*/Constants/*--*/ /*++'++*/{/*++'++*/
 	public static final String /*++{0}++*/_BY_/*++{1}++*/ = "{1}";
 
 /*==RelationshipPart==*/
-	private /*++{2}Constants++*//*--*/Constants/*--*/() /*++'++*/{}/*++'++*/
+	private /*++{2}Constants++*//*--*/ConstantsBase/*--*/() /*++'++*/{}/*++'++*/
 /*++'++*/}/*++'++*/

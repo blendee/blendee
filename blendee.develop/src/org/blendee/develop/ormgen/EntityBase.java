@@ -35,7 +35,7 @@ import org.blendee.sql.RelationshipFactory;
 	 * 登録用コンストラクタです。
 	 */
 	public /*++{2}++*//*--*/EntityBase/*--*/() /*++'++*/{/*++'++*/
-		relationship = BlendeeContext.get(RelationshipFactory.class).getInstance(/*++{2}Constants++*//*--*/Constants/*--*/.RESOURCE_LOCATOR);
+		relationship = BlendeeContext.get(RelationshipFactory.class).getInstance(/*++{2}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR);
 		data = new DataObject(relationship);
 	/*++'++*/}/*++'++*/
 
@@ -45,7 +45,7 @@ import org.blendee.sql.RelationshipFactory;
 	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
 	public /*++{2}++*//*--*/EntityBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
-		relationship = BlendeeContext.get(RelationshipFactory.class).getInstance(/*++{2}Constants++*//*--*/Constants/*--*/.RESOURCE_LOCATOR);
+		relationship = BlendeeContext.get(RelationshipFactory.class).getInstance(/*++{2}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR);
 		this.data = data;
 	/*++'++*/}/*++'++*/
 
@@ -99,7 +99,7 @@ import org.blendee.sql.RelationshipFactory;
 	@EntityRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/EntityBase/*--*/.class)
 	public /*++{0}++*//*--*/EntityBase/*--*/ /*++get{3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
 		return new /*++{0}++*//*--*/EntityBase/*--*/(
-			data.getDataObject(/*++{4}Constants++*//*--*/Constants/*--*/./*++{0}++*/_BY_/*++{1}++*/));
+			data.getDataObject(/*++{4}Constants++*//*--*/ConstantsBase/*--*/./*++{0}++*/_BY_/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 
 /*==EntityRelationshipPart==*/

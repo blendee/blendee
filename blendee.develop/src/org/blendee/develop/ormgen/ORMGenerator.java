@@ -110,7 +110,7 @@ public class ORMGenerator {
 		String charset = "UTF-8";
 
 		{
-			String source = readTemplate(Constants.class, charset);
+			String source = readTemplate(ConstantsBase.class, charset);
 			{
 				String[] result = pickupFromSource(source, "ColumnPart");
 				columnPartTemplate = convertToTemplate(result[0]);
