@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.sql.Statement;
+import java.util.function.Consumer;
 
 /**
  * {@link Statement} に似せ、機能を制限したインターフェイスです。
@@ -17,6 +18,17 @@ public interface BStatement extends AutoCloseable {
 	 * @return 検索結果
 	 */
 	BResultSet executeQuery();
+
+	/**
+	 * 検索を行います。
+	 *
+	 * @param consumer 検索結果を受け取る {@link Consumer}
+	 */
+	default void executeQuery(Consumer<BResultSet> consumer) {
+		try (BResultSet result = executeQuery()) {
+			consumer.accept(result);
+		}
+	}
 
 	/**
 	 * 更新を行います。

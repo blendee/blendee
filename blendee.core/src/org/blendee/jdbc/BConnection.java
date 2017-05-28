@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.sql.Connection;
+import java.util.function.Consumer;
 
 /**
  * {@link Connection} に似せ、機能を制限したインターフェイスです。
@@ -21,6 +22,18 @@ public interface BConnection extends Metadata {
 	BStatement getStatement(String sql);
 
 	/**
+	 * {@link #getStatement(String)} の簡易実行メソッドです。
+	 *
+	 * @param sql プレースホルダを持たない SQL
+	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
+	 */
+	default void statement(String sql, Consumer<BStatement> consumer) {
+		try (BStatement statement = getStatement(sql)) {
+			consumer.accept(statement);
+		}
+	}
+
+	/**
 	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。
 	 * <br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
@@ -32,6 +45,22 @@ public interface BConnection extends Metadata {
 	BStatement getStatement(String sql, PreparedStatementComplementer complementer);
 
 	/**
+	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
+	 *
+	 * @param sql プレースホルダを持つ SQL
+	 * @param complementer プレースホルダに結びつける値を持つ
+	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
+	 */
+	default void statement(
+		String sql,
+		PreparedStatementComplementer complementer,
+		Consumer<BStatement> consumer) {
+		try (BStatement statement = getStatement(sql, complementer)) {
+			consumer.accept(statement);
+		}
+	}
+
+	/**
 	 * SQL 文から {@link BPreparedStatement} のインスタンスを生成し、返します。
 	 * <br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
@@ -40,6 +69,18 @@ public interface BConnection extends Metadata {
 	 * @return {@link BPreparedStatement} のインスタンス
 	 */
 	BPreparedStatement prepareStatement(String sql);
+
+	/**
+	 * {@link #prepareStatement(String)} の簡易実行メソッドです。
+	 *
+	 * @param sql プレースホルダを持つ SQL
+	 * @param consumer {@link BPreparedStatement} を受け取る {@link Consumer}
+	 */
+	default void prepareStatement(String sql, Consumer<BPreparedStatement> consumer) {
+		try (BPreparedStatement statement = prepareStatement(sql)) {
+			consumer.accept(statement);
+		}
+	}
 
 	/**
 	 * {@link BatchStatement} のインスタンスを生成し、返します。
