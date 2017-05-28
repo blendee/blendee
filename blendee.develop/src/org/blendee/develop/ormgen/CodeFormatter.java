@@ -10,7 +10,7 @@ import java.text.MessageFormat;
 public interface CodeFormatter {
 
 	/**
-	 * {@link Constants} をテンプレートとしたコードを組み立てます。
+	 * {@link ConstantsBase} をテンプレートとしたコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
@@ -19,7 +19,7 @@ public interface CodeFormatter {
 	String formatConstants(String template, String... arguments);
 
 	/**
-	 * {@link Constants} の項目生成部分のコードを組み立てます。
+	 * {@link ConstantsBase} の項目生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
@@ -28,7 +28,7 @@ public interface CodeFormatter {
 	String formatConstantsColumnPart(String template, String... arguments);
 
 	/**
-	 * {@link Constants} のリレーション生成部分のコードを組み立てます。
+	 * {@link ConstantsBase} のリレーション生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
