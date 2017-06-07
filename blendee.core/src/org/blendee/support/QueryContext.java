@@ -21,10 +21,10 @@ public interface QueryContext<T> {
 	/**
 	 * WHERE 句用
 	 *
-	 * @param <Q> {@link Query} 実装
+	 * @param <O> {@link Query} 実装
 	 * @return WHERE 句用 QueryContext
 	 */
-	public static <Q> QueryContext<WhereQueryColumn<Q>> newBuilder() {
+	public static <O extends LogicalOperators> QueryContext<WhereQueryColumn<O>> newBuilder() {
 		return (relationship, name) -> new WhereQueryColumn<>(relationship, name);
 	}
 

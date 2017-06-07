@@ -2,13 +2,29 @@
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.Generated;
 
 import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
+import org.blendee.internal.U;
+import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ResourceLocator;
+import org.blendee.orm.DataObject;
+import org.blendee.orm.QueryOption;
+import org.blendee.selector.AnchorOptimizerFactory;
+import org.blendee.selector.Optimizer;
+import org.blendee.selector.RuntimeOptimizer;
+import org.blendee.selector.SimpleOptimizer;
+import org.blendee.sql.Bindable;
+import org.blendee.sql.Condition;
+import org.blendee.sql.OrderByClause;
+import org.blendee.sql.Relationship;
+import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.AbstractOrderQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
 /*++{8}++*/
+import org.blendee.support.LogicalOperators;
 import org.blendee.support.None;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
@@ -22,22 +38,8 @@ import org.blendee.support.ReferenceQueryColumn;
 import org.blendee.support.SelectOffer;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
-import org.blendee.internal.U;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
-import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
-import org.blendee.orm.QueryOption;
-import org.blendee.orm.DataObject;
-import org.blendee.selector.AnchorOptimizerFactory;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.RuntimeOptimizer;
-import org.blendee.selector.SimpleOptimizer;
-import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
-import org.blendee.sql.OrderByClause;
-import org.blendee.sql.Relationship;
-import org.blendee.sql.RelationshipFactory;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -54,44 +56,37 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/>> whereContext =  QueryContext.newBuilder();
+	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
 
 	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 	/**
-	 * WHERE 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
-	 * <br>
-	 * このインスタンスは WHERE 句を新設するときのみ使用してください。
-	 * <br>
-	 * 一度の検索内で複数回使用すると、 WHERE 句を上書きすることになってしまうため、その場合は例外が発生します。
+	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/>, None> WHERE =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-			this,
-			whereContext,
-			QueryConditionContext.WHERE);
+	public class /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ implements LogicalOperators /*++'++*/{/*++'++*/
 
-	/**
-	 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
-	 * <br>
-	 * 既存の条件に AND 結合させるために使用しますが、先に '{'@link #WHERE'}' を使用していない場合は単体の条件となります。
-	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/>, None> AND =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-			this,
-			whereContext,
-			QueryConditionContext.AND);
+		private /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/() /*++'++*/{}/*++'++*/
 
-	/**
-	 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
-	 * <br>
-	 * 既存の条件に OR 結合させるために使用しますが、先に '{'@link #WHERE'}' を使用していない場合は単体の条件となります。
-	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/>, None> OR =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-			this,
-			whereContext,
-			QueryConditionContext.OR);
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> AND =
+			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				whereContext,
+				QueryConditionContext.AND);
+
+		/**
+		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> OR =
+			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				whereContext,
+				QueryConditionContext.OR);
+	/*++'++*/}/*++'++*/
+
+	private final /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ operators = new /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/();
 
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
@@ -101,6 +96,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			this,
 			QueryContext.REFERENCE,
 			QueryConditionContext.NULL);
+
+	/**
+	 * WHERE 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
+	 */
+	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> WHERE =
+		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+			this,
+			whereContext,
+			QueryConditionContext.WHERE);
 
 	private Optimizer optimizer;
 
@@ -181,6 +185,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * WHERE 句を記述します。
+	 *
+	 * @param consumer
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
+		Consumer</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None>> consumer) /*++'++*/{/*++'++*/
+		consumer.accept(WHERE);
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * ORDER BY 句を記述します。
 	 *
 	 * @param function
@@ -211,12 +227,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void and(Condition condition) /*++'++*/{/*++'++*/
-		QueryConditionContext.AND.addCondition(AND, condition);
+		QueryConditionContext.AND.addCondition(operators.AND, condition);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void or(Condition condition) /*++'++*/{/*++'++*/
-		QueryConditionContext.OR.addCondition(OR, condition);
+		QueryConditionContext.OR.addCondition(operators.OR, condition);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -226,17 +242,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void and(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryConditionContext.AND.addCondition(AND, subquery.createCondition(this));
+		QueryConditionContext.AND.addCondition(operators.AND, subquery.createCondition(this));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void or(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryConditionContext.OR.addCondition(OR, subquery.createCondition(this));
+		QueryConditionContext.OR.addCondition(operators.OR, subquery.createCondition(this));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Relationship getRootRealtionship() /*++'++*/{/*++'++*/
 		return BlendeeContext.get(RelationshipFactory.class).getInstance(manager.getResourceLocator());
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public LogicalOperators getLogicalOperators() /*++'++*/{/*++'++*/
+		return operators;
 	/*++'++*/}/*++'++*/
 
 	private Optimizer getOptimizer() /*++'++*/{/*++'++*/

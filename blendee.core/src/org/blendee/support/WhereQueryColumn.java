@@ -26,9 +26,9 @@ import org.blendee.sql.binder.UUIDBinder;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  *
  * @author 千葉 哲嗣
- * @param <Q> 連続呼び出し用 {@link Query}
+ * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public class WhereQueryColumn<Q> {
+public class WhereQueryColumn<O extends LogicalOperators> {
 
 	private final QueryRelationship relationship;
 
@@ -51,11 +51,11 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(BigDecimal value) {
+	public O eq(BigDecimal value) {
 		relationship.getContext()
 			.addCondition(relationship, ConditionFactory.createCondition(column, new BigDecimalBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -64,12 +64,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(boolean value) {
+	public O eq(boolean value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new BooleanBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -78,12 +78,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(double value) {
+	public O eq(double value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new DoubleBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -92,12 +92,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(float value) {
+	public O eq(float value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new FloatBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -106,12 +106,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(int value) {
+	public O eq(int value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new IntBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -120,12 +120,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(long value) {
+	public O eq(long value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new LongBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -134,12 +134,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(String value) {
+	public O eq(String value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -148,12 +148,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(Timestamp value) {
+	public O eq(Timestamp value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new TimestampBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -162,12 +162,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(UUID value) {
+	public O eq(UUID value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, new UUIDBinder(value)));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -176,12 +176,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q eq(Bindable value) {
+	public O eq(Bindable value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -190,9 +190,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(BigDecimal value) {
+	public O ne(BigDecimal value) {
 		compare(ComparisonOperator.NE, new BigDecimalBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -201,9 +201,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(boolean value) {
+	public O ne(boolean value) {
 		compare(ComparisonOperator.NE, new BooleanBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -212,9 +212,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(double value) {
+	public O ne(double value) {
 		compare(ComparisonOperator.NE, new DoubleBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -223,9 +223,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(float value) {
+	public O ne(float value) {
 		compare(ComparisonOperator.NE, new FloatBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -234,9 +234,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(int value) {
+	public O ne(int value) {
 		compare(ComparisonOperator.NE, new IntBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -245,9 +245,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(long value) {
+	public O ne(long value) {
 		compare(ComparisonOperator.NE, new LongBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -256,9 +256,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(String value) {
+	public O ne(String value) {
 		compare(ComparisonOperator.NE, new StringBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -267,9 +267,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(Timestamp value) {
+	public O ne(Timestamp value) {
 		compare(ComparisonOperator.NE, new TimestampBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -278,9 +278,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(UUID value) {
+	public O ne(UUID value) {
 		compare(ComparisonOperator.NE, new UUIDBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -289,9 +289,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ne(Bindable value) {
+	public O ne(Bindable value) {
 		compare(ComparisonOperator.NE, value);
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -300,9 +300,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(BigDecimal value) {
+	public O lt(BigDecimal value) {
 		compare(ComparisonOperator.LT, new BigDecimalBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -311,9 +311,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(boolean value) {
+	public O lt(boolean value) {
 		compare(ComparisonOperator.LT, new BooleanBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -322,9 +322,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(double value) {
+	public O lt(double value) {
 		compare(ComparisonOperator.LT, new DoubleBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -333,9 +333,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(float value) {
+	public O lt(float value) {
 		compare(ComparisonOperator.LT, new FloatBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -344,9 +344,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(int value) {
+	public O lt(int value) {
 		compare(ComparisonOperator.LT, new IntBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -355,9 +355,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(long value) {
+	public O lt(long value) {
 		compare(ComparisonOperator.LT, new LongBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -366,9 +366,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(String value) {
+	public O lt(String value) {
 		compare(ComparisonOperator.LT, new StringBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -377,9 +377,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(Timestamp value) {
+	public O lt(Timestamp value) {
 		compare(ComparisonOperator.LT, new TimestampBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -388,9 +388,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(UUID value) {
+	public O lt(UUID value) {
 		compare(ComparisonOperator.LT, new UUIDBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -399,9 +399,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q lt(Bindable value) {
+	public O lt(Bindable value) {
 		compare(ComparisonOperator.LT, value);
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -410,9 +410,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(BigDecimal value) {
+	public O gt(BigDecimal value) {
 		compare(ComparisonOperator.GT, new BigDecimalBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -421,9 +421,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(boolean value) {
+	public O gt(boolean value) {
 		compare(ComparisonOperator.GT, new BooleanBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -432,9 +432,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(double value) {
+	public O gt(double value) {
 		compare(ComparisonOperator.GT, new DoubleBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -443,9 +443,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(float value) {
+	public O gt(float value) {
 		compare(ComparisonOperator.GT, new FloatBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -454,9 +454,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(int value) {
+	public O gt(int value) {
 		compare(ComparisonOperator.GT, new IntBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -465,9 +465,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(long value) {
+	public O gt(long value) {
 		compare(ComparisonOperator.GT, new LongBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -476,9 +476,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(String value) {
+	public O gt(String value) {
 		compare(ComparisonOperator.GT, new StringBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -487,9 +487,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(Timestamp value) {
+	public O gt(Timestamp value) {
 		compare(ComparisonOperator.GT, new TimestampBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -498,9 +498,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(UUID value) {
+	public O gt(UUID value) {
 		compare(ComparisonOperator.GT, new UUIDBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -509,9 +509,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q gt(Bindable value) {
+	public O gt(Bindable value) {
 		compare(ComparisonOperator.GT, value);
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -520,9 +520,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(BigDecimal value) {
+	public O le(BigDecimal value) {
 		compare(ComparisonOperator.LE, new BigDecimalBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -531,9 +531,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(boolean value) {
+	public O le(boolean value) {
 		compare(ComparisonOperator.LE, new BooleanBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -542,9 +542,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(double value) {
+	public O le(double value) {
 		compare(ComparisonOperator.LE, new DoubleBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -553,9 +553,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(float value) {
+	public O le(float value) {
 		compare(ComparisonOperator.LE, new FloatBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -564,9 +564,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(int value) {
+	public O le(int value) {
 		compare(ComparisonOperator.LE, new IntBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -575,9 +575,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(long value) {
+	public O le(long value) {
 		compare(ComparisonOperator.LE, new LongBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -586,9 +586,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(String value) {
+	public O le(String value) {
 		compare(ComparisonOperator.LE, new StringBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -597,9 +597,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(Timestamp value) {
+	public O le(Timestamp value) {
 		compare(ComparisonOperator.LE, new TimestampBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -608,9 +608,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(UUID value) {
+	public O le(UUID value) {
 		compare(ComparisonOperator.LE, new UUIDBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -619,9 +619,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q le(Bindable value) {
+	public O le(Bindable value) {
 		compare(ComparisonOperator.LE, value);
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -630,9 +630,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(BigDecimal value) {
+	public O ge(BigDecimal value) {
 		compare(ComparisonOperator.GE, new BigDecimalBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -641,9 +641,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(boolean value) {
+	public O ge(boolean value) {
 		compare(ComparisonOperator.GE, new BooleanBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -652,9 +652,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(double value) {
+	public O ge(double value) {
 		compare(ComparisonOperator.GE, new DoubleBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -663,9 +663,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(float value) {
+	public O ge(float value) {
 		compare(ComparisonOperator.GE, new FloatBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -674,9 +674,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(int value) {
+	public O ge(int value) {
 		compare(ComparisonOperator.GE, new IntBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -685,9 +685,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(long value) {
+	public O ge(long value) {
 		compare(ComparisonOperator.GE, new LongBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -696,9 +696,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(String value) {
+	public O ge(String value) {
 		compare(ComparisonOperator.GE, new StringBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -707,9 +707,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(Timestamp value) {
+	public O ge(Timestamp value) {
 		compare(ComparisonOperator.GE, new TimestampBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -718,9 +718,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(UUID value) {
+	public O ge(UUID value) {
 		compare(ComparisonOperator.GE, new UUIDBinder(value));
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -729,9 +729,9 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q ge(Bindable value) {
+	public O ge(Bindable value) {
 		compare(ComparisonOperator.GE, value);
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -742,12 +742,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q compare(ComparisonOperator operator, Bindable value) {
+	public O compare(ComparisonOperator operator, Bindable value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createComparisonCondition(operator, column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -758,12 +758,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q LIKE(Match type, String value) {
+	public O LIKE(Match type, String value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createLikeCondition(type, column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -774,12 +774,12 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q NOT_LIKE(Match type, String value) {
+	public O NOT_LIKE(Match type, String value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createNotLikeCondition(type, column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -788,12 +788,12 @@ public class WhereQueryColumn<Q> {
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q IN(String... values) {
+	public O IN(String... values) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createInCondition(column, values));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -802,12 +802,12 @@ public class WhereQueryColumn<Q> {
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q IN(Bindable... values) {
+	public O IN(Bindable... values) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createInCondition(column, values));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -815,12 +815,12 @@ public class WhereQueryColumn<Q> {
 	 *
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q IS_NULL() {
+	public O IS_NULL() {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createNullCondition(NullComparisonOperator.IS_NULL, column));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -828,12 +828,12 @@ public class WhereQueryColumn<Q> {
 	 *
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q IS_NOT_NULL() {
+	public O IS_NOT_NULL() {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createNullCondition(NullComparisonOperator.IS_NOT_NULL, column));
 
-		return root();
+		return logocalOperators();
 	}
 
 	/**
@@ -844,16 +844,16 @@ public class WhereQueryColumn<Q> {
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public Q add(String clause, Bindable value) {
+	public O add(String clause, Bindable value) {
 		relationship.getContext().addCondition(
 			relationship,
 			ConditionFactory.createCondition(clause, column, value));
 
-		return root();
+		return logocalOperators();
 	}
 
 	@SuppressWarnings("unchecked")
-	private Q root() {
-		return (Q) relationship.getRoot();
+	private O logocalOperators() {
+		return (O) relationship.getRoot().getLogicalOperators();
 	}
 }

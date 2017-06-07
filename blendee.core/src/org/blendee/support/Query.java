@@ -88,4 +88,11 @@ public interface Query extends Executor<EntityIterator<? extends BEntity>, Optio
 	 * @return ルート {@link Relationship}
 	 */
 	public Relationship getRootRealtionship();
+
+	/**
+	 * この Query の {@link LogicalOperators} を返します。
+	 *
+	 * @return {@link LogicalOperators}
+	 */
+	public LogicalOperators getLogicalOperators();
 }
