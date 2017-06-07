@@ -392,7 +392,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * <br>
 	 * 条件として使用できるカラムと、参照しているテーブルを内包しており、それらを使用して検索 SQL を生成可能にします。
 	 *
-	 * @param <T> 使用されるカラムのタイプ（ '{'@link #select'}', '{'@link #orderBy'}', '{'@link #WHERE'}', '{'@link #AND'}', '{'@link #OR'}', '{'@link #rel'}' ）にあった型
+	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, M>
