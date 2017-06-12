@@ -8,6 +8,8 @@ import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.ResourceLocator;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.ValueExtractors;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * static かつ final なフィールドを ID として {@link ColumnRepository} から SELECT 句構成カラムを取得する {@link Optimizer} です。
@@ -20,7 +22,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	private final boolean canAddNewEntries;
 
-	private final ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	private final String id;
 

@@ -10,11 +10,11 @@ import org.blendee.support.annotation.Resource;
 /*++{8}++*/
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.orm.DataObject;
-import org.blendee.selector.SelectorConfigure;
-import org.blendee.selector.ValueExtractor;
+import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.ValueExtractor;
 
 /**
  * 自動生成された '{'@link BEntity'}' の実装クラスです。
@@ -65,7 +65,7 @@ import org.blendee.sql.RelationshipFactory;
 	 */
 	@EntitySetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class)
 	public void set/*++{0}++*/(/*++{2}++*//*--*/Object/*--*/ value) /*++'++*/{/*++'++*/
-		/*++{4}++*/ValueExtractor valueExtractor = BlendeeContext.get(SelectorConfigure.class).getValueExtractors().selectValueExtractor(
+		/*++{4}++*/ValueExtractor valueExtractor = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
 			relationship.getColumn("{1}").getType());
 		data.setValue("{1}", valueExtractor.extractAsBinder(value));
 	/*++'++*/}/*++'++*/

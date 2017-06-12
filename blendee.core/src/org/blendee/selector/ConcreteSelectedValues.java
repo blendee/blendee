@@ -13,6 +13,8 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
+import org.blendee.sql.ValueExtractor;
+import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.binder.NullBinder;
 
 /**

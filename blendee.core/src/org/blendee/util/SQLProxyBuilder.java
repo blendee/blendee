@@ -11,9 +11,9 @@ import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.selector.SelectorConfigure;
-import org.blendee.selector.ValueExtractors;
 import org.blendee.sql.Binder;
+import org.blendee.sql.ValueExtractors;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * あらかじめ用意しておいた SQL 文を実行する Proxy クラスを生成するビルダクラスです。
@@ -104,7 +104,7 @@ public class SQLProxyBuilder {
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
 
-			ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
+			ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			final Binder[] binders = new Binder[parameterTypes.length];
 			for (int i = 0; i < parameterTypes.length; i++) {

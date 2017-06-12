@@ -8,6 +8,8 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.ValueExtractors;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * 指定されたカラムで検索を行う {@link Optimizer} です。
@@ -20,7 +22,7 @@ public class SimpleOptimizer implements Optimizer {
 
 	private final SelectClause select = new SelectClause();
 
-	private final ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	/**
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。

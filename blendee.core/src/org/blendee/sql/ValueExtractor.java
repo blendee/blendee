@@ -1,7 +1,6 @@
-package org.blendee.selector;
+package org.blendee.sql;
 
 import org.blendee.jdbc.BResult;
-import org.blendee.sql.Binder;
 
 /**
  * 検索結果からどの型の値でも取得可能とするためのインターフェイスです。

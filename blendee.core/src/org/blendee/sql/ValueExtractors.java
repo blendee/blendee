@@ -1,10 +1,10 @@
-package org.blendee.selector;
+package org.blendee.sql;
 
 /**
  * 値のクラスから、 {@link ValueExtractor} を決定する機能を定義したインターフェイスです。
  *
  * @author 千葉 哲嗣
- * @see SelectorConfigure#setValueExtractors(ValueExtractors)
+ * @see ValueExtractorsConfigure#setValueExtractors(ValueExtractors)
  */
 @FunctionalInterface
 public interface ValueExtractors {

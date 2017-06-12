@@ -1,4 +1,4 @@
-package org.blendee.selector;
+package org.blendee.sql;
 
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
 import org.blendee.jdbc.DataTypeConverter;
-import org.blendee.sql.Binder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BlobBinder;
 import org.blendee.sql.binder.BooleanBinder;

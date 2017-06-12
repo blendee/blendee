@@ -17,8 +17,8 @@ import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.selector.SelectorConfigure;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * Blendee 全体を対象とする、簡易操作クラスです。
@@ -93,7 +93,7 @@ public class Blendee {
 		BlendeeContext.get(BlendeeManager.class).initialize(init);
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
-			.ifPresent(clazz -> BlendeeContext.get(SelectorConfigure.class).setValueExtractorsClass(clazz));
+			.ifPresent(clazz -> BlendeeContext.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
 
 		AnchorOptimizerFactory anchorOptimizerFactory = BlendeeContext.get(AnchorOptimizerFactory.class);
 

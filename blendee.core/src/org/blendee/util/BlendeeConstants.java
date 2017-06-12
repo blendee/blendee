@@ -9,7 +9,7 @@ import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.selector.ValueExtractors;
+import org.blendee.sql.ValueExtractors;
 
 /**
  * Blendee の起動に必要となる情報のキーを定めた定数インターフェイスです

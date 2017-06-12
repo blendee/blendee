@@ -9,6 +9,8 @@ import org.blendee.jdbc.ResourceLocator;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.ValueExtractors;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  *
@@ -18,7 +20,7 @@ public class RuntimeOptimizer implements Optimizer {
 
 	private final ResourceLocator locator;
 
-	private final ValueExtractors extractors = BlendeeContext.get(SelectorConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	private final SelectClause select = new SelectClause();
 

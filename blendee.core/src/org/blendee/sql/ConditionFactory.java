@@ -182,6 +182,17 @@ public class ConditionFactory {
 	/**
 	 * = を使用した簡単な条件句を生成します。
 	 *
+	 * @param column 対象となるカラム
+	 * @param value 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Condition createCondition(Column column, Number value) {
+		return ComparisonOperator.EQ.create(column, BindableConverter.convert(value)[0]);
+	}
+
+	/**
+	 * = を使用した簡単な条件句を生成します。
+	 *
 	 * @param columnName 対象となるカラム
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
@@ -201,6 +212,19 @@ public class ConditionFactory {
 		return ComparisonOperator.EQ.create(
 			new PhantomColumn(columnName),
 			new StringBinder(value));
+	}
+
+	/**
+	 * = を使用した簡単な条件句を生成します。
+	 *
+	 * @param columnName 対象となるカラム
+	 * @param value 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Condition createCondition(String columnName, Number value) {
+		return ComparisonOperator.EQ.create(
+			new PhantomColumn(columnName),
+			BindableConverter.convert(value)[0]);
 	}
 
 	/**
@@ -258,6 +282,22 @@ public class ConditionFactory {
 	 */
 	public static Condition createInCondition(
 		Column column,
+		Number... values) {
+		return createCondition(
+			buildInClause(values.length),
+			new Column[] { column },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 *
+	 * @param column 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Condition createInCondition(
+		Column column,
 		Bindable... values) {
 		return createCondition(
 			buildInClause(values.length),
@@ -279,6 +319,22 @@ public class ConditionFactory {
 			buildInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
 			toBindables(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 *
+	 * @param columnName 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Condition createInCondition(
+		String columnName,
+		Number... values) {
+		return createCondition(
+			buildInClause(values.length),
+			new Column[] { new PhantomColumn(columnName) },
+			BindableConverter.convert(values));
 	}
 
 	/**
