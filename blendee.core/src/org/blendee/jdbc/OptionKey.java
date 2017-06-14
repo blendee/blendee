@@ -21,6 +21,11 @@ public class OptionKey<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public Optional<T> extract(Map<OptionKey<?>, ?> options) {
-		return Optional.ofNullable((T) Objects.requireNonNull(options).get(this));
+		T value = (T) Objects.requireNonNull(options).get(this);
+
+		//値が既にOptionalだった場合、そのまま返す
+		if (value instanceof Optional) return (Optional<T>) value;
+
+		return Optional.ofNullable(value);
 	}
 }
