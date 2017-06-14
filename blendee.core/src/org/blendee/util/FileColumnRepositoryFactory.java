@@ -21,7 +21,7 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 	/**
 	 * デフォルトリポジトリファイル名
 	 */
-	public static final String DEFAULT_COLUMN_REPOSITORY_FILE = "blendee-column-repository";
+	public static final String DEFAULT_COLUMN_REPOSITORY_FILE = "org.blendee.repository";
 
 	/**
 	 * {@link HomeStorage} に格納するリポジトリファイル用エントリのキー
