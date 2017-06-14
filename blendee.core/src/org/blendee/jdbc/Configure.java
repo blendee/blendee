@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public final class Configure {
 		this.logOutput = logOutput;
 		this.logStackTracePattern = logStackTracePattern;
 		this.maxStatementsPerConnection = maxStatementsPerConnection;
-		this.options = options;
+		this.options = Collections.unmodifiableMap(options);
 	}
 
 	/**

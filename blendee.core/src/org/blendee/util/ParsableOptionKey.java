@@ -64,6 +64,8 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 
 	private static final Map<String, ParsableOptionKey<?>> map = new HashMap<>();
 
+	private final String key;
+
 	private final OptionValueParser parser;
 
 	@SuppressWarnings("unchecked")
@@ -74,6 +76,7 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 	}
 
 	ParsableOptionKey(String key, OptionValueParser parser) {
+		this.key = key;
 		synchronized (lock) {
 			map.put(key, this);
 		}
@@ -89,5 +92,10 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 	 */
 	public Optional<T> parse(String value) {
 		return Optional.ofNullable(value).map(v -> parser.parse(v));
+	}
+
+	@Override
+	public String toString() {
+		return key + " [" + parser.name() + "]";
 	}
 }
