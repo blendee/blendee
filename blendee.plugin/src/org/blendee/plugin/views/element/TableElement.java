@@ -147,10 +147,6 @@ public class TableElement extends PropertySourceElement {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));
 
 			createSource(
-				ORMGenerator.createConstantsCompilationUnitName(tableName),
-				fragment,
-				format(formatter, generator.buildConstants(relation)));
-			createSource(
 				ORMGenerator.createEntityManagerCompilationUnitName(tableName),
 				fragment,
 				format(formatter, generator.buildEntityManager(relation)));

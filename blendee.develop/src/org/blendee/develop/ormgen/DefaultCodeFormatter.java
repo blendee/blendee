@@ -10,21 +10,6 @@ import java.text.MessageFormat;
 public class DefaultCodeFormatter implements CodeFormatter {
 
 	@Override
-	public String formatConstants(String template, String... arguments) {
-		return MessageFormat.format(template, (Object[]) arguments);
-	}
-
-	@Override
-	public String formatConstantsColumnPart(String template, String... arguments) {
-		return MessageFormat.format(template, (Object[]) arguments);
-	}
-
-	@Override
-	public String formatConstantsRelationshipPart(String template, String... arguments) {
-		return MessageFormat.format(template, (Object[]) arguments);
-	}
-
-	@Override
 	public String formatEntityManager(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}

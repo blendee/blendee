@@ -119,7 +119,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 
 	@Override
 	public ResourceLocator getResourceLocator() /*++'++*/{/*++'++*/
-		return /*++{1}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR;
+		return /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
 	/*++'++*/}/*++'++*/
 
 	@Override

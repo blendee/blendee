@@ -157,7 +157,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
 		optimizer = BlendeeContext.get(AnchorOptimizerFactory.class).getInstance(
 			id,
-			/*++{1}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR,
+			/*++{1}++*//*--*/EntityBase/*--*/.$TABLE,
 			using);
 	/*++'++*/}/*++'++*/
 
@@ -169,7 +169,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
 		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, None>> function) /*++'++*/{/*++'++*/
-		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR);
+		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
 		return this;
@@ -243,7 +243,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
 		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(/*++{1}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR);
+		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
 		return optimizer;
 	/*++'++*/}/*++'++*/
 
@@ -430,13 +430,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			$fkName = fkName;
 			$locator = locator;
 
-/*==ColumnPart2==*//*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
-				this, /*++{1}Constants++*//*--*/ConstantsBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
+/*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
+				this, /*++{1}++*//*--*/EntityBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
 /*++{5}++*/
 
-/*==RelationshipPart2==*//*--*/relationshipName/*--*//*++{2}++*/ = locator.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}Constants++*//*--*/ConstantsBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{0}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR, root);
+/*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = locator.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
+				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, root);
 /*==RelationshipPart2==*/
 /*++{6}++*/
 		/*++'++*/}/*++'++*/
@@ -449,13 +449,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			$context = context;
 			$parent = null;
 			$fkName = null;
-			$locator = /*++{1}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR;
+			$locator = /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
 
-			/*--*/columnName = builder.buildQueryColumn(this, "columnName");/*--*/
+			/*--*/columnName = null;/*--*/
 /*++{5}++*/
 
-/*==RelationshipPart3==*//*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}Constants++*//*--*/ConstantsBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{0}Constants++*//*--*/ConstantsBase/*--*/.RESOURCE_LOCATOR, $locator);
+/*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
+				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, $locator);
 /*==RelationshipPart3==*/
 /*++{7}++*/
 		/*++'++*/}/*++'++*/

@@ -47,17 +47,11 @@ public class ORMGenerator {
 
 	private static final CodeFormatter defaultCodeFormatter = new DefaultCodeFormatter();
 
-	private static final String constantsTemplate;
-
 	private static final String managerTemplate;
 
 	private static final String entityTemplate;
 
 	private static final String queryTemplate;
-
-	private static final String columnPartTemplate;
-
-	private static final String relationshipPartTemplate;
 
 	private static final String entityPropertyAccessorPartTemplate;
 
@@ -110,19 +104,6 @@ public class ORMGenerator {
 		String charset = "UTF-8";
 
 		{
-			String source = readTemplate(ConstantsBase.class, charset);
-			{
-				String[] result = pickupFromSource(source, "ColumnPart");
-				columnPartTemplate = convertToTemplate(result[0]);
-				source = result[1];
-			}
-			{
-				String[] result = pickupFromSource(source, "RelationshipPart");
-				relationshipPartTemplate = convertToTemplate(result[0]);
-				source = result[1];
-			}
-
-			constantsTemplate = convertToTemplate(source);
 			managerTemplate = convertToTemplate(readTemplate(ManagerBase.class, charset));
 		}
 
@@ -234,11 +215,6 @@ public class ORMGenerator {
 			String tableName = relation.getResourceLocator().getTableName();
 
 			write(
-				new File(packageDir, createConstantsCompilationUnitName(tableName)),
-				buildConstants(relation),
-				srcCharset);
-
-			write(
 				new File(packageDir, createEntityManagerCompilationUnitName(tableName)),
 				buildEntityManager(relation),
 				srcCharset);
@@ -253,16 +229,6 @@ public class ORMGenerator {
 				buildQuery(relation),
 				srcCharset);
 		}
-	}
-
-	/**
-	 * このクラスが生成する定数クラスのコンパイル単位名を返します。
-	 *
-	 * @param tableName 対象となるテーブル名
-	 * @return コンパイル単位名
-	 */
-	public static String createConstantsCompilationUnitName(String tableName) {
-		return tableName + "Constants.java";
 	}
 
 	/**
@@ -293,53 +259,6 @@ public class ORMGenerator {
 	 */
 	public static String createQueryCompilationUnitName(String tableName) {
 		return tableName + "Query.java";
-	}
-
-	/**
-	 * 定数クラスを一件作成します。
-	 *
-	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
-	 * @return 生成されたソース
-	 */
-	public String buildConstants(Relationship relation) {
-		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
-
-		String columnPart;
-		{
-			List<String> list = new LinkedList<>();
-			for (Column column : relation.getColumns()) {
-				list.add(codeFormatter.formatConstantsColumnPart(
-					columnPartTemplate,
-					column.getName(),
-					buildColumnComment(column)));
-			}
-			columnPart = String.join("", list);
-		}
-
-		String relationshipPart;
-		{
-			List<String> list = new LinkedList<>();
-			for (Relationship child : relation.getRelationships()) {
-				String foreignKey = child.getCrossReference().getForeignKeyName();
-				list.add(codeFormatter.formatConstantsRelationshipPart(
-					relationshipPartTemplate,
-					child.getResourceLocator().getTableName(),
-					foreignKey));
-			}
-			relationshipPart = String.join("", list);
-		}
-
-		ResourceLocator target = relation.getResourceLocator();
-
-		return codeFormatter.formatConstants(
-			constantsTemplate,
-			packageName,
-			schemaName,
-			target.getTableName(),
-			columnPart,
-			relationshipPart,
-			buildTableComment(metadata, target),
-			getGenerator());
 	}
 
 	/**
@@ -485,7 +404,8 @@ public class ORMGenerator {
 				list2.add(codeFormatter.formatQueryColumnPart2(
 					queryColumnPart2Template,
 					column.getName(),
-					rootTableName));
+					rootTableName,
+					packageName));
 			}
 
 			columnPart1 = String.join("", list1);
@@ -523,7 +443,8 @@ public class ORMGenerator {
 					foreignKey,
 					relationship,
 					rootTableName,
-					typeParam));
+					typeParam,
+					packageName));
 
 				list3.add(codeFormatter.formatQueryRelationshipPart1(
 					queryRelationshipPart3Template,
@@ -531,7 +452,8 @@ public class ORMGenerator {
 					foreignKey,
 					relationship,
 					rootTableName,
-					typeParam));
+					typeParam,
+					packageName));
 			}
 
 			relationshipPart1 = String.join("", list1);

@@ -10,33 +10,6 @@ import java.text.MessageFormat;
 public interface CodeFormatter {
 
 	/**
-	 * {@link ConstantsBase} をテンプレートとしたコードを組み立てます。
-	 *
-	 * @param template {@link MessageFormat} 形式テンプレート
-	 * @param arguments 引数
-	 * @return 生成後のコード
-	 */
-	String formatConstants(String template, String... arguments);
-
-	/**
-	 * {@link ConstantsBase} の項目生成部分のコードを組み立てます。
-	 *
-	 * @param template {@link MessageFormat} 形式テンプレート
-	 * @param arguments 引数
-	 * @return 生成後のコード
-	 */
-	String formatConstantsColumnPart(String template, String... arguments);
-
-	/**
-	 * {@link ConstantsBase} のリレーション生成部分のコードを組み立てます。
-	 *
-	 * @param template {@link MessageFormat} 形式テンプレート
-	 * @param arguments 引数
-	 * @return 生成後のコード
-	 */
-	String formatConstantsRelationshipPart(String template, String... arguments);
-
-	/**
 	 * {@link ManagerBase} をテンプレートとしたコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
