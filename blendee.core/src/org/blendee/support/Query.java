@@ -31,14 +31,6 @@ public interface Query extends Executor<EntityIterator<? extends BEntity>, Optio
 	public void orderBy(OrderByClause clause);
 
 	/**
-	 * 新規に WHERE 句をセットします。
-	 *
-	 * @param condition 新 WHERE 句
-	 * @throws IllegalStateException 既に WHERE 句がセットされている場合
-	 */
-	public void where(Condition condition);
-
-	/**
 	 * 現時点の WHERE 句に新たな条件を AND 結合します。
 	 * <br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
@@ -55,14 +47,6 @@ public interface Query extends Executor<EntityIterator<? extends BEntity>, Optio
 	 * @param condition OR 結合する新条件
 	 */
 	public void or(Condition condition);
-
-	/**
-	 * 新規にサブクエリを WHERE 句にセットします。
-	 *
-	 * @param subquery 新 WHERE 句
-	 * @throws IllegalStateException 既に WHERE 句がセットされている場合
-	 */
-	public void where(Subquery subquery);
 
 	/**
 	 * 現時点の WHERE 句に新たなサブクエリ条件を AND 結合します。

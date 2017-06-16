@@ -97,15 +97,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			QueryContext.REFERENCE,
 			QueryConditionContext.NULL);
 
-	/**
-	 * WHERE 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
-	 */
-	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> WHERE =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-			this,
-			whereContext,
-			QueryConditionContext.WHERE);
-
 	private Optimizer optimizer;
 
 	private Condition condition;
@@ -192,7 +183,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
 		Consumer</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None>> consumer) /*++'++*/{/*++'++*/
-		consumer.accept(WHERE);
+		consumer.accept(operators.AND);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -221,11 +212,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void where(Condition condition) /*++'++*/{/*++'++*/
-		QueryConditionContext.WHERE.addCondition(WHERE, condition);
-	/*++'++*/}/*++'++*/
-
-	@Override
 	public void and(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.AND.addCondition(operators.AND, condition);
 	/*++'++*/}/*++'++*/
@@ -233,11 +219,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public void or(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.OR.addCondition(operators.OR, condition);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public void where(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryConditionContext.WHERE.addCondition(WHERE, subquery.createCondition(this));
 	/*++'++*/}/*++'++*/
 
 	@Override

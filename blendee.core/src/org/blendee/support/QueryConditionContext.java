@@ -13,19 +13,6 @@ import org.blendee.sql.ConditionFactory;
 public enum QueryConditionContext {
 
 	/**
-	 * WHERE 句開始
-	 */
-	WHERE {
-
-		@Override
-		public void addCondition(QueryRelationship relationship, Condition condition) {
-			if (relationship.getWhereClause() != null)
-				throw new IllegalStateException("既に where は使用されています");
-			relationship.setWhereClause(condition);
-		}
-	},
-
-	/**
 	 * 条件 AND 結合
 	 */
 	AND {
