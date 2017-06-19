@@ -241,12 +241,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return operators;
 	/*++'++*/}/*++'++*/
 
-	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
-		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
-		return optimizer;
-	/*++'++*/}/*++'++*/
-
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), condition, orderByClause);
@@ -348,6 +342,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		private /*++{1}Executor++*//*--*/O2MExecutor/*--*/(QueryRelationship parent) /*++'++*/{/*++'++*/
 			super(parent);
 		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
+		if (optimizer != null) return optimizer;
+		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
+		return optimizer;
 	/*++'++*/}/*++'++*/
 
 	private static Class<?> getUsing(StackTraceElement element) /*++'++*/{/*++'++*/
