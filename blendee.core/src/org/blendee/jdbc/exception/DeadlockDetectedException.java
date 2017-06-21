@@ -1,4 +1,6 @@
-package org.blendee.jdbc;
+package org.blendee.jdbc.exception;
+
+import org.blendee.jdbc.BlendeeException;
 
 /**
  * デッドロックが発生した場合に使用する例外です。

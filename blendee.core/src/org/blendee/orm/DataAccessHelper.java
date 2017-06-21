@@ -11,9 +11,9 @@ import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.DuplicateKeyException;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.exception.UniqueConstraintViolationException;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.Selector;
 import org.blendee.sql.Bindable;
@@ -609,7 +609,7 @@ public class DataAccessHelper {
 				statement.process(builder.toString(), builder);
 				statement.execute();
 				return bindable;
-			} catch (DuplicateKeyException e) {}
+			} catch (UniqueConstraintViolationException e) {}
 		}
 
 		throw new IllegalStateException("retry 回数を超えてしまいました");
