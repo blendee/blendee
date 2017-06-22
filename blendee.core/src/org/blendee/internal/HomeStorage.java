@@ -2,13 +2,13 @@ package org.blendee.internal;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -23,6 +23,8 @@ public class HomeStorage {
 
 	private static final String DEFAULT_IDENTIFIER = "DEFAULT";
 
+	private final Path directory = Paths.get(System.getProperty("user.home"), ".blendee");
+
 	private final String fileName;
 
 	public HomeStorage() {
@@ -32,7 +34,7 @@ public class HomeStorage {
 	public HomeStorage(String identifier) {
 		if (!U.isAvailable(identifier)) throw new IllegalArgumentException(
 			"identifier " + identifier + " が存在しません");
-		fileName = ".blendee-" + identifier + ".properties";
+		fileName = identifier + ".properties";
 	}
 
 	public String getFileName() {
@@ -42,7 +44,7 @@ public class HomeStorage {
 	public Properties loadProperties() {
 		Properties properties = new Properties();
 		try (InputStream input = new BufferedInputStream(
-			new FileInputStream(preparePropertiesFile()))) {
+			Files.newInputStream(preparePropertiesFile()))) {
 			try {
 				properties.load(input);
 			} finally {
@@ -57,23 +59,25 @@ public class HomeStorage {
 
 	public void storeProperties(Properties properties) {
 		try (OutputStream output = new BufferedOutputStream(
-			new FileOutputStream(preparePropertiesFile()))) {
+			Files.newOutputStream(preparePropertiesFile()))) {
 			properties.store(output, "");
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
 	}
 
-	public File getPropertiesFile() {
-		return new File(System.getProperty("user.home"), fileName);
+	public Path getPropertiesFile() {
+		return directory.resolve(fileName);
 	}
 
-	private File preparePropertiesFile() throws IOException {
-		File file = getPropertiesFile();
-		if (!file.exists()) {
-			file.createNewFile();
+	private Path preparePropertiesFile() throws IOException {
+		if (!Files.exists(directory)) Files.createDirectory(directory);
 
-			try (OutputStream output = new BufferedOutputStream(new FileOutputStream(file))) {
+		Path file = getPropertiesFile();
+		if (!Files.exists(file)) {
+			Files.createFile(file);
+
+			try (OutputStream output = new BufferedOutputStream(Files.newOutputStream(file))) {
 				new Properties().store(output, "");
 			}
 		}

@@ -53,14 +53,14 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 					String repositoryFileString = storage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE_KEY);
 
 					if (!U.isAvailable(repositoryFileString)) throw new IllegalStateException(
-						storage.getPropertiesFile().getAbsolutePath()
+						storage.getPropertiesFile().toAbsolutePath()
 							+ " に、キー "
 							+ COLUMN_REPOSITORY_FILE_KEY
 							+ " の値が存在しません");
 
 					File repositoryFile = new File(repositoryFileString);
 					if (!repositoryFile.exists()) throw new IllegalStateException(
-						storage.getPropertiesFile().getAbsolutePath()
+						storage.getPropertiesFile().toAbsolutePath()
 							+ " 内に記述されている "
 							+ repositoryFileString
 							+ " は存在しません");
