@@ -21,13 +21,28 @@ import java.util.Properties;
 @SuppressWarnings("javadoc")
 public class HomeStorage {
 
-	public static final String FILE_NAME = ".blendee.properties";
+	private static final String DEFAULT_IDENTIFIER = "DEFAULT";
 
-	public static Properties loadProperties() {
+	private final String fileName;
+
+	public HomeStorage() {
+		this(DEFAULT_IDENTIFIER);
+	}
+
+	public HomeStorage(String identifier) {
+		if (!U.isAvailable(identifier)) throw new IllegalArgumentException(
+			"identifier " + identifier + " が存在しません");
+		fileName = ".blendee-" + identifier + ".properties";
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public Properties loadProperties() {
 		Properties properties = new Properties();
-		try {
-			InputStream input = new BufferedInputStream(
-				new FileInputStream(preparePropertiesFile()));
+		try (InputStream input = new BufferedInputStream(
+			new FileInputStream(preparePropertiesFile()))) {
 			try {
 				properties.load(input);
 			} finally {
@@ -40,7 +55,7 @@ public class HomeStorage {
 		return properties;
 	}
 
-	public static void storeProperties(Properties properties) {
+	public void storeProperties(Properties properties) {
 		try (OutputStream output = new BufferedOutputStream(
 			new FileOutputStream(preparePropertiesFile()))) {
 			properties.store(output, "");
@@ -49,11 +64,11 @@ public class HomeStorage {
 		}
 	}
 
-	public static File getPropertiesFile() {
-		return new File(System.getProperty("user.home"), FILE_NAME);
+	public File getPropertiesFile() {
+		return new File(System.getProperty("user.home"), fileName);
 	}
 
-	private static File preparePropertiesFile() throws IOException {
+	private File preparePropertiesFile() throws IOException {
 		File file = getPropertiesFile();
 		if (!file.exists()) {
 			file.createNewFile();

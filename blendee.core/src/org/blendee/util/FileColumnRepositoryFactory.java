@@ -7,6 +7,7 @@ import org.blendee.internal.HomeStorage;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.Configure;
 import org.blendee.selector.ColumnRepository;
 import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.selector.StreamColumnRepository;
@@ -26,7 +27,7 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 	/**
 	 * {@link HomeStorage} に格納するリポジトリファイル用エントリのキー
 	 */
-	public static final String COLUMN_REPOSITORY_FILE = "column-repository-file";
+	public static final String COLUMN_REPOSITORY_FILE_KEY = "column-repository-file";
 
 	private final File repositoryFile;
 
@@ -36,23 +37,33 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 	public FileColumnRepositoryFactory() {
 		BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
 
-		repositoryFile = manager
-			.getConfigure()
+		Configure config = manager.getConfigure();
+
+		repositoryFile = config
 			.getOption(BlendeeConstants.COLUMN_REPOSITORY_FILE)
 			.map(file -> new File(file))
-			.orElseGet(() -> manager
-				.getConfigure()
+			.orElseGet(() -> config
 				.getOption(BlendeeConstants.CAN_ADD_NEW_ENTRIES)
 				.filter(flag -> flag)
 				.map(flag -> {
-					String repositoryFileString = HomeStorage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE);
+					HomeStorage storage = config.getOption(BlendeeConstants.HOME_STORAGE_IDENTIFIER)
+						.map(i -> new HomeStorage(i))
+						.orElse(new HomeStorage());
+
+					String repositoryFileString = storage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE_KEY);
+
+					if (!U.isAvailable(repositoryFileString)) throw new IllegalStateException(
+						storage.getPropertiesFile().getAbsolutePath()
+							+ " に、キー "
+							+ COLUMN_REPOSITORY_FILE_KEY
+							+ " の値が存在しません");
 
 					File repositoryFile = new File(repositoryFileString);
 					if (!repositoryFile.exists()) throw new IllegalStateException(
-						HomeStorage.getPropertiesFile().getAbsolutePath()
+						storage.getPropertiesFile().getAbsolutePath()
 							+ " 内に記述されている "
 							+ repositoryFileString
-							+ " は存在しません。");
+							+ " は存在しません");
 
 					return repositoryFile;
 				})

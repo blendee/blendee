@@ -477,6 +477,7 @@ public class BlendeePropertyPage
 		changed |= checkAndSetValue(store, properties, Constants.COLUMN_REPOSITORY_FILE);
 
 		BlendeePlugin.storeColumnRepositoryFileToHome(
+			element.getElementName(),
 			BlendeePlugin.generalizeColumnRepositoryFilePath(
 				element,
 				properties.getProperty(Constants.COLUMN_REPOSITORY_FILE, "")));

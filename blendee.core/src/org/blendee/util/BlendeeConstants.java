@@ -85,6 +85,13 @@ public interface BlendeeConstants {
 		TO_BOOLEAN);
 
 	/**
+	 * (String) HOME_STORAGE_IDENTIFIER
+	 */
+	public static final ParsableOptionKey<String> HOME_STORAGE_IDENTIFIER = new ParsableOptionKey<>(
+		"home-storage-identifier",
+		TO_STRING);
+
+	/**
 	 * (String) COLUMN_REPOSITORY_FILE
 	 */
 	public static final ParsableOptionKey<String> COLUMN_REPOSITORY_FILE = new ParsableOptionKey<>(

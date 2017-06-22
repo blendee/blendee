@@ -378,7 +378,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		init.put(BlendeeConstants.COLUMN_REPOSITORY_FILE, columnRepositoryFile);
 
 		//初回まだ保存されていないのでここでとりあえず
-		storeColumnRepositoryFileToHome(columnRepositoryFile);
+		storeColumnRepositoryFileToHome(currentProject.getElementName(), columnRepositoryFile);
 
 		JavaProjectClassLoader loader;
 		try {
@@ -539,10 +539,11 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		return false;
 	}
 
-	public static void storeColumnRepositoryFileToHome(String file) {
-		Properties properties = HomeStorage.loadProperties();
-		properties.put(FileColumnRepositoryFactory.COLUMN_REPOSITORY_FILE, file);
-		HomeStorage.storeProperties(properties);
+	public static void storeColumnRepositoryFileToHome(String projectName, String file) {
+		HomeStorage storage = new HomeStorage(projectName);
+		Properties properties = storage.loadProperties();
+		properties.put(FileColumnRepositoryFactory.COLUMN_REPOSITORY_FILE_KEY, file);
+		storage.storeProperties(properties);
 	}
 
 	private static File getPropertiesFile(IJavaProject project) throws IOException {
