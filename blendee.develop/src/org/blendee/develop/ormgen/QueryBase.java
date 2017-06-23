@@ -52,6 +52,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements Query /*++'++*/{/*++'++*/
 
+	private static final QueryContext<SelectQueryColumn> selectContext = (relationship, name) -> new SelectQueryColumn(relationship, name);
+
+	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
+
+	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
+
+	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
@@ -78,6 +86,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				QueryConditionContext.OR);
 	/*++'++*/}/*++'++*/
 
+	private final /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ operators = new /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/();
+
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
@@ -86,16 +96,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			this,
 			QueryContext.REFERENCE,
 			QueryConditionContext.NULL);
-
-	private static final QueryContext<SelectQueryColumn> selectContext = (relationship, name) -> new SelectQueryColumn(relationship, name);
-
-	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
-
-	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
-
-	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
-
-	private final /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ operators = new /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/();
 
 	private Optimizer optimizer;
 
