@@ -27,25 +27,25 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
-	private final Map<String, LocationSource> locationMap = new TreeMap<>();
+	private final Map<String, TablePathSource> tablePathMap = new TreeMap<>();
 
 	private boolean changed = false;
 
 	@Override
 	public synchronized Column[] getColumns(String id) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return Column.EMPTY_ARRAY;
+		TablePathSource table = tablePathMap.get(id);
+		if (table == null) return Column.EMPTY_ARRAY;
 
-		TablePath path = locationSource.getTablePath();
+		TablePath path = table.getTablePath();
 		if (!path.exists()) return Column.EMPTY_ARRAY;
 
-		Collection<ColumnSource> columns = locationSource.getColumnSources();
+		Collection<ColumnSource> columns = table.getColumnSources();
 		if (columns.size() == 0) return Column.EMPTY_ARRAY;
 		Relationship root = factory.getInstance(path);
 		List<Column> list = new LinkedList<>();
-		for (ColumnSource source : columns) {
+		for (ColumnSource column : columns) {
 			try {
-				list.add(source.find(root));
+				list.add(column.find(root));
 			} catch (NotFoundException e) {}
 		}
 
@@ -55,51 +55,51 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized void addColumn(String id, Column column, String... usingClassNames) {
-		LocationSource locationSource = setTablePathInternal(
+		TablePathSource source = setTablePathInternal(
 			id,
 			column.getRelationship().getRoot().getTablePath(),
 			Arrays.asList(usingClassNames));
-		if (!locationSource.add(column)) return;
+		if (!source.add(column)) return;
 		changed = true;
 	}
 
 	@Override
 	public synchronized void removeColumn(String id, Column column) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return;
-		if (!locationSource.remove(column)) return;
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return;
+		if (!source.remove(column)) return;
 		changed = true;
 	}
 
 	@Override
 	public synchronized void renameID(String oldID, String newId, String... usingClassNames) {
 		if (oldID.equals(newId)) return;
-		LocationSource oldLocation = locationMap.remove(oldID);
-		if (oldLocation == null) return;
-		locationMap.remove(newId);
-		LocationSource newLocation = setTablePathInternal(
+		TablePathSource oldPath = tablePathMap.remove(oldID);
+		if (oldPath == null) return;
+		tablePathMap.remove(newId);
+		TablePathSource newPath = setTablePathInternal(
 			newId,
-			oldLocation.getTablePath(),
+			oldPath.getTablePath(),
 			Arrays.asList(usingClassNames));
-		oldLocation.putAllColumns(newLocation);
+		oldPath.putAllColumns(newPath);
 		changed = true;
 	}
 
 	@Override
 	public synchronized boolean contains(String id) {
-		return locationMap.containsKey(id);
+		return tablePathMap.containsKey(id);
 	}
 
 	@Override
 	public synchronized boolean containsColumn(String id, Column column) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return false;
-		return locationSource.contains(column);
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return false;
+		return source.contains(column);
 	}
 
 	@Override
 	public synchronized String[] getIDs() {
-		Set<String> keys = locationMap.keySet();
+		Set<String> keys = tablePathMap.keySet();
 		String[] result = keys.toArray(new String[keys.size()]);
 		Arrays.sort(result);
 		return result;
@@ -107,23 +107,23 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized void remove(String id) {
-		if (locationMap.remove(id) == null) return;
+		if (tablePathMap.remove(id) == null) return;
 		changed = true;
 	}
 
 	@Override
 	public synchronized long getMarkClearedTimestamp(String id) {
-		LocationSource source = locationMap.get(id);
+		TablePathSource source = tablePathMap.get(id);
 		if (source == null) throw new IllegalStateException(id + " は存在しません");
 		return source.timestamp;
 	}
 
 	@Override
 	public synchronized void markColumn(String id, Column column, String... usingClassNames) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return;
-		changed |= locationSource.addUsingClasses(Arrays.asList(usingClassNames));
-		ColumnSource columnSource = locationSource.get(column);
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return;
+		changed |= source.addUsingClasses(Arrays.asList(usingClassNames));
+		ColumnSource columnSource = source.get(column);
 		if (columnSource == null || columnSource.mark) return;
 		columnSource.mark = true;
 		changed = true;
@@ -131,33 +131,33 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized void clear(String id, long timestamp) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return;
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return;
 
-		locationSource.clearUsingClasses();
+		source.clearUsingClasses();
 
-		for (ColumnSource columnSource : locationSource.getColumnSources())
+		for (ColumnSource columnSource : source.getColumnSources())
 			columnSource.mark = false;
 
-		locationSource.timestamp = timestamp;
+		source.timestamp = timestamp;
 		changed = true;
 	}
 
 	@Override
 	public synchronized boolean marks(String id, Column column) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return false;
-		ColumnSource columnSource = locationSource.get(column);
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return false;
+		ColumnSource columnSource = source.get(column);
 		if (columnSource == null) return false;
 		return columnSource.mark;
 	}
 
 	@Override
 	public String[] getUsingClassNames(String id) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return U.STRING_EMPTY_ARRAY;
+		TablePathSource source = tablePathMap.get(id);
+		if (source == null) return U.STRING_EMPTY_ARRAY;
 
-		return locationSource.usings.toArray(new String[locationSource.usings.size()]);
+		return source.usings.toArray(new String[source.usings.size()]);
 	}
 
 	@Override
@@ -167,27 +167,27 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized TablePath getTablePath(String id) {
-		LocationSource source = locationMap.get(id);
+		TablePathSource source = tablePathMap.get(id);
 		if (source == null) return null;
 		return source.getTablePath();
 	}
 
 	@Override
 	public synchronized String[] getErrorMessages(String id) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return new String[0];
+		TablePathSource table = tablePathMap.get(id);
+		if (table == null) return new String[0];
 
-		TablePath path = locationSource.getTablePath();
+		TablePath path = table.getTablePath();
 		if (!path.exists()) return new String[] { path + " は存在しません" };
 
-		Collection<ColumnSource> columns = locationSource.getColumnSources();
+		Collection<ColumnSource> columns = table.getColumnSources();
 		if (columns.size() == 0) return new String[0];
 
 		Relationship root = factory.getInstance(path);
 		List<String> messages = new LinkedList<>();
-		for (ColumnSource source : columns) {
+		for (ColumnSource column : columns) {
 			try {
-				source.find(root);
+				column.find(root);
 			} catch (NotFoundException e) {
 				messages.add(e.getLocalizedMessage());
 			}
@@ -197,20 +197,20 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized void correctErrors(String id) {
-		LocationSource locationSource = locationMap.get(id);
-		if (locationSource == null) return;
+		TablePathSource table = tablePathMap.get(id);
+		if (table == null) return;
 
-		TablePath path = locationSource.getTablePath();
+		TablePath path = table.getTablePath();
 		if (!path.exists()) return;
 
-		Collection<ColumnSource> columns = locationSource.getColumnSources();
+		Collection<ColumnSource> columns = table.getColumnSources();
 		if (columns.size() == 0) return;
 
 		Relationship root = factory.getInstance(path);
 		for (Iterator<ColumnSource> i = columns.iterator(); i.hasNext();) {
-			ColumnSource source = i.next();
+			ColumnSource column = i.next();
 			try {
-				source.find(root);
+				column.find(root);
 			} catch (NotFoundException e) {
 				i.remove();
 				changed = true;
@@ -221,14 +221,14 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	@Override
 	public synchronized void commit() {
 		if (!changed) return;
-		write(locationMap);
+		write(tablePathMap);
 		changed = false;
 	}
 
 	@Override
 	public synchronized void rollback() {
-		locationMap.clear();
-		read(locationMap);
+		tablePathMap.clear();
+		read(tablePathMap);
 		changed = false;
 	}
 
@@ -243,43 +243,43 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	void initialize() {
-		read(locationMap);
+		read(tablePathMap);
 	}
 
-	abstract void read(Map<String, LocationSource> locationMap);
+	abstract void read(Map<String, TablePathSource> tablePathMap);
 
-	abstract void write(Map<String, LocationSource> locationMap);
+	abstract void write(Map<String, TablePathSource> tablePathMap);
 
-	private LocationSource setTablePathInternal(String id, TablePath path, Collection<String> usings) {
-		LocationSource source = locationMap.get(id);
+	private TablePathSource setTablePathInternal(String id, TablePath path, Collection<String> usings) {
+		TablePathSource source = tablePathMap.get(id);
 		if (source != null) {
 			if (source.getTablePath().equals(path)) {
 				changed |= source.addUsingClasses(usings);
 				return source;
 			}
 
-			source = new LocationSource(
+			source = new TablePathSource(
 				id,
 				path,
 				source.getUsingClasses(),
 				System.currentTimeMillis());
 		} else {
-			source = new LocationSource(
+			source = new TablePathSource(
 				id,
 				path,
 				usings,
 				System.currentTimeMillis());
 		}
 
-		source = new LocationSource(id, path, source.getUsingClasses(), System.currentTimeMillis());
+		source = new TablePathSource(id, path, source.getUsingClasses(), System.currentTimeMillis());
 		source.addUsingClasses(usings);
-		locationMap.put(id, source);
+		tablePathMap.put(id, source);
 		changed = true;
 
 		return source;
 	}
 
-	static class LocationSource {
+	static class TablePathSource {
 
 		private final String id;
 
@@ -291,14 +291,14 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 		private long timestamp;
 
-		LocationSource(String id, TablePath path, Collection<String> usings, long timestamp) {
+		TablePathSource(String id, TablePath path, Collection<String> usings, long timestamp) {
 			this.id = id;
 			this.path = path;
 			this.usings.addAll(usings);
 			this.timestamp = timestamp;
 		}
 
-		LocationSource(
+		TablePathSource(
 			String id,
 			TablePath path,
 			Collection<String> using,
@@ -375,7 +375,7 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 			return true;
 		}
 
-		void putAllColumns(LocationSource another) {
+		void putAllColumns(TablePathSource another) {
 			another.columnMap.putAll(columnMap);
 		}
 

@@ -22,7 +22,7 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, Relationship> relationshipCache = new HashMap<>();
 
-	private final Map<TablePath, String> locationIdMap = new HashMap<>();
+	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
 	/**
 	 * このクラスのコンストラクタです。
@@ -41,7 +41,7 @@ public class RelationshipFactory implements ManagementSubject {
 	 */
 	public Relationship getInstance(TablePath path) {
 		synchronized (lock) {
-			if (locationIdMap.size() == 0) prepareLocationIdMap();
+			if (pathIDMap.size() == 0) preparePathIDMap();
 			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
 				relationship = createRelationship(path);
@@ -86,7 +86,7 @@ public class RelationshipFactory implements ManagementSubject {
 	public void clearCache() {
 		synchronized (lock) {
 			relationshipCache.clear();
-			locationIdMap.clear();
+			pathIDMap.clear();
 		}
 	}
 
@@ -100,7 +100,7 @@ public class RelationshipFactory implements ManagementSubject {
 		return new DecimalFormat(zeros.toString());
 	}
 
-	private void prepareLocationIdMap() {
+	private void preparePathIDMap() {
 		String[] schemaNames = BlendeeContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		int counter = 0;
 		for (String name : schemaNames) {
@@ -113,21 +113,21 @@ public class RelationshipFactory implements ManagementSubject {
 		for (String name : schemaNames) {
 			TablePath[] paths = MetadataUtilities.getTables(name);
 			for (TablePath path : paths) {
-				locationIdMap.put(path, "t" + format.format(counter));
+				pathIDMap.put(path, "t" + format.format(counter));
 				counter++;
 			}
 		}
 	}
 
 	private Relationship createRelationship(final TablePath path) {
-		final String locationId = locationIdMap.get(path);
-		if (locationId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+		final String pathID = pathIDMap.get(path);
+		if (pathID == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
 		return new Relationship(
 			null,
 			null,
 			null,
 			path,
-			locationId,
+			pathID,
 			BlendeeContext.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<TablePath, Relationship>());
 	}

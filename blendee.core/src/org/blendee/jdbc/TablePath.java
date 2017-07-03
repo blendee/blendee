@@ -63,7 +63,7 @@ public class TablePath implements Comparable<TablePath> {
 	 * テーブルを一意で特定する指標から、このクラスのインスタンスを生成します。
 	 *
 	 * @param tablePath テーブルを一意で特定する指標
-	 * @return location に対応するインスタンス
+	 * @return tablePath に対応するインスタンス
 	 * @see TablePath#toString()
 	 */
 	public static TablePath parse(String tablePath) {

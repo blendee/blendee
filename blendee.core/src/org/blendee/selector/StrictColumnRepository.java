@@ -18,7 +18,7 @@ import org.blendee.sql.Column;
  */
 class StrictColumnRepository implements ColumnRepository {
 
-	private final Map<String, TablePath> locationMap = new TreeMap<>();
+	private final Map<String, TablePath> tableMap = new TreeMap<>();
 
 	private final CollectionMap<String, Column> columnMap = new CollectionMap<String, Column>(TreeMap.class) {
 
@@ -36,7 +36,7 @@ class StrictColumnRepository implements ColumnRepository {
 		final String[] ids = repository.getIDs();
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
-			locationMap.put(id, repository.getTablePath(id));
+			tableMap.put(id, repository.getTablePath(id));
 			Column[] columns = repository.getColumns(id);
 			columnMap.get(id).addAll(Arrays.asList(columns));
 			usingMap.get(id).addAll(Arrays.asList(repository.getUsingClassNames(id)));
@@ -46,7 +46,7 @@ class StrictColumnRepository implements ColumnRepository {
 
 	@Override
 	public TablePath getTablePath(String id) {
-		return locationMap.get(id);
+		return tableMap.get(id);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ class StrictColumnRepository implements ColumnRepository {
 
 	@Override
 	public boolean contains(String id) {
-		return locationMap.containsKey(id);
+		return tableMap.containsKey(id);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ class StrictColumnRepository implements ColumnRepository {
 
 	@Override
 	public String[] getIDs() {
-		Set<String> ids = locationMap.keySet();
+		Set<String> ids = tableMap.keySet();
 		return ids.toArray(new String[ids.size()]);
 	}
 

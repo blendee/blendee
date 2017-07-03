@@ -48,7 +48,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 	private static final ChangeModeAction changeModeAction = new ChangeModeAction();
 
-	private static final ChangeLocationAction changeLocationAction = new ChangeLocationAction();
+	private static final ChangeTableAction changeLocationAction = new ChangeTableAction();
 
 	private static final ChangeIDAction changeIdAction = new ChangeIDAction();
 
@@ -358,11 +358,11 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			.setSelection(new StructuredSelection(this));
 	}
 
-	private static class ChangeLocationAction extends Action {
+	private static class ChangeTableAction extends Action {
 
 		private AnchorElement element;
 
-		private ChangeLocationAction() {
+		private ChangeTableAction() {
 			String text = "テーブルの変更";
 			setText(text);
 			setToolTipText(text);
@@ -375,7 +375,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 				.getTablePath(element.id);
 			QueryEditorView view = BlendeePlugin.getDefault()
 				.getQueryEditorView();
-			InputDialog dialog = view.createLocationDialog(
+			InputDialog dialog = view.createTableDialog(
 				path.toString(),
 				"（エラーカラムの参照するテーブルを正しい名称に直す目的で変更する場合"
 					+ U.LINE_SEPARATOR

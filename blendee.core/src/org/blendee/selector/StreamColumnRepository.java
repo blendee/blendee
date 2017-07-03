@@ -24,8 +24,8 @@ import org.blendee.jdbc.TablePath;
  */
 public class StreamColumnRepository extends AbstractColumnRepository {
 
-	private static final Pattern locationLinePattern = Pattern
-		.compile("^id=([^&]+)&location=([^&]*)&using=\\{([^\\}]*)\\}&timestamp=(\\d+)$");
+	private static final Pattern tableLinePattern = Pattern
+		.compile("^id=([^&]+)&path=([^&]*)&using=\\{([^\\}]*)\\}&timestamp=(\\d+)$");
 
 	private static final Pattern columnLinePattern = Pattern.compile("^id=([^&]+)&column=([^&]+)&mark=(true|false)$");
 
@@ -42,7 +42,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	}
 
 	@Override
-	void read(Map<String, LocationSource> locationMap) {
+	void read(Map<String, TablePathSource> tablePathMap) {
 		String[] lines;
 		try (InputStream input = new BufferedInputStream(repository.getInputStream())) {
 			lines = SimpleResourceReader.readLines(input);
@@ -54,23 +54,23 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
-			Matcher locationMatcher = locationLinePattern.matcher(line);
+			Matcher tableMatcher = tableLinePattern.matcher(line);
 			Matcher columnMatcher = columnLinePattern.matcher(line);
-			if (locationMatcher.matches()) {
-				LocationSource locationSource = new LocationSource(
-					locationMatcher.group(1),
-					TablePath.parse(locationMatcher.group(2)),
-					Arrays.asList(locationMatcher.group(3).split(","))
+			if (tableMatcher.matches()) {
+				TablePathSource source = new TablePathSource(
+					tableMatcher.group(1),
+					TablePath.parse(tableMatcher.group(2)),
+					Arrays.asList(tableMatcher.group(3).split(","))
 						.stream()
 						.filter(e -> e.length() > 0)
 						.collect(Collectors.toList()),
-					Long.parseLong(locationMatcher.group(4)));
-				locationMap.put(locationSource.getId(), locationSource);
+					Long.parseLong(tableMatcher.group(4)));
+				tablePathMap.put(source.getId(), source);
 			} else if (columnMatcher.matches()) {
-				LocationSource locationSource = locationMap.get(columnMatcher.group(1));
-				if (locationSource == null) throw new IllegalStateException("IDが存在しません " + "[" + line + "]");
+				TablePathSource source = tablePathMap.get(columnMatcher.group(1));
+				if (source == null) throw new IllegalStateException("IDが存在しません " + "[" + line + "]");
 
-				locationSource.add(
+				source.add(
 					new ColumnSource(
 						new ColumnPath(columnMatcher.group(2)),
 						Boolean.parseBoolean(columnMatcher.group(3))));
@@ -81,14 +81,14 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	}
 
 	@Override
-	void write(Map<String, LocationSource> locationMap) {
+	void write(Map<String, TablePathSource> tablePathMap) {
 		try (PrintWriter writer = new PrintWriter(
 			new BufferedWriter(new OutputStreamWriter(repository.getOutputStream())))) {
 			String[] ids = getIDs();
 			for (String id : ids) {
-				LocationSource locationSource = locationMap.get(id);
-				writer.println(locationSource);
-				for (ColumnSource columnSource : locationSource.getColumnSources())
+				TablePathSource source = tablePathMap.get(id);
+				writer.println(source);
+				for (ColumnSource columnSource : source.getColumnSources())
 					writer.println("id=" + id + "&column=" + columnSource);
 				writer.println();
 				writer.flush();

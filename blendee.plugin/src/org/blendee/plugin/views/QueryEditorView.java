@@ -31,7 +31,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 
 public class QueryEditorView extends AbstractView {
 
-	private static final IInputValidator locationValidator = new IInputValidator() {
+	private static final IInputValidator tablePathValidator = new IInputValidator() {
 
 		@Override
 		public String isValid(String path) {
@@ -219,8 +219,8 @@ public class QueryEditorView extends AbstractView {
 		return viewer;
 	}
 
-	public InputDialog createLocationDialog(
-		String defaultLocation,
+	public InputDialog createTableDialog(
+		String defaultTablePath,
 		String addition) {
 		String message = "新しいテーブル名を入力してください";
 
@@ -228,8 +228,8 @@ public class QueryEditorView extends AbstractView {
 			null,
 			Constants.TITLE,
 			addition == null ? message : message + U.LINE_SEPARATOR + addition,
-			defaultLocation,
-			locationValidator);
+			defaultTablePath,
+			tablePathValidator);
 	}
 
 	@Override
