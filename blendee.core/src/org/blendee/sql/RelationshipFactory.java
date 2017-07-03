@@ -9,7 +9,7 @@ import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ManagementSubject;
 import org.blendee.jdbc.MetadataUtilities;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Relationship} の生成、管理を行うファクトリクラスです。
@@ -20,9 +20,9 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Object lock = new Object();
 
-	private final Map<ResourceLocator, Relationship> relationshipCache = new HashMap<>();
+	private final Map<TablePath, Relationship> relationshipCache = new HashMap<>();
 
-	private final Map<ResourceLocator, String> locationIdMap = new HashMap<>();
+	private final Map<TablePath, String> locationIdMap = new HashMap<>();
 
 	/**
 	 * このクラスのコンストラクタです。
@@ -34,18 +34,18 @@ public class RelationshipFactory implements ManagementSubject {
 	public RelationshipFactory() {}
 
 	/**
-	 * {@link ResourceLocator} が表すテーブルをルートとするテーブルツリーを作成します。
+	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。
 	 *
-	 * @param locator ルートとなるテーブル
+	 * @param path ルートとなるテーブル
 	 * @return ツリーのルート要素
 	 */
-	public Relationship getInstance(ResourceLocator locator) {
+	public Relationship getInstance(TablePath path) {
 		synchronized (lock) {
 			if (locationIdMap.size() == 0) prepareLocationIdMap();
-			Relationship relationship = relationshipCache.get(locator);
+			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
-				relationship = createRelationship(locator);
-				relationshipCache.put(locator, relationship);
+				relationship = createRelationship(path);
+				relationshipCache.put(path, relationship);
 			}
 
 			return relationship;
@@ -61,7 +61,7 @@ public class RelationshipFactory implements ManagementSubject {
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
 	 */
-	public static Relationship convert(Relationship root, ResourceLocator target) {
+	public static Relationship convert(Relationship root, TablePath target) {
 		//問題となるカラムが含まれる Relationship を元になる SQL 文の Relationship ツリーから取得
 		Relationship[] converted = root.convert(target);
 		if (converted.length == 1) {
@@ -104,31 +104,31 @@ public class RelationshipFactory implements ManagementSubject {
 		String[] schemaNames = BlendeeContext.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		int counter = 0;
 		for (String name : schemaNames) {
-			ResourceLocator[] locators = MetadataUtilities.getTables(name);
-			counter += locators.length;
+			TablePath[] paths = MetadataUtilities.getTables(name);
+			counter += paths.length;
 		}
 
 		DecimalFormat format = createDigitFormat(counter);
 		counter = 0;
 		for (String name : schemaNames) {
-			ResourceLocator[] locators = MetadataUtilities.getTables(name);
-			for (ResourceLocator locator : locators) {
-				locationIdMap.put(locator, "t" + format.format(counter));
+			TablePath[] paths = MetadataUtilities.getTables(name);
+			for (TablePath path : paths) {
+				locationIdMap.put(path, "t" + format.format(counter));
 				counter++;
 			}
 		}
 	}
 
-	private Relationship createRelationship(final ResourceLocator locator) {
-		final String locationId = locationIdMap.get(locator);
-		if (locationId == null) throw new IllegalArgumentException(locator + " は使用できるテーブルに含まれていません");
+	private Relationship createRelationship(final TablePath path) {
+		final String locationId = locationIdMap.get(path);
+		if (locationId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
 		return new Relationship(
 			null,
 			null,
 			null,
-			locator,
+			path,
 			locationId,
 			BlendeeContext.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
-			new CollectionMap<ResourceLocator, Relationship>());
+			new CollectionMap<TablePath, Relationship>());
 	}
 }

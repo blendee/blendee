@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SelectClause;
@@ -18,7 +18,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
  */
 public class RuntimeOptimizer implements Optimizer {
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 
@@ -27,10 +27,10 @@ public class RuntimeOptimizer implements Optimizer {
 	/**
 	 * インスタンスを生成します。
 	 *
-	 * @param locator 対象テーブル
+	 * @param path 対象テーブル
 	 */
-	public RuntimeOptimizer(ResourceLocator locator) {
-		this.locator = Objects.requireNonNull(locator);
+	public RuntimeOptimizer(TablePath path) {
+		this.path = Objects.requireNonNull(path);
 	}
 
 	/**
@@ -58,8 +58,8 @@ public class RuntimeOptimizer implements Optimizer {
 	}
 
 	@Override
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class RuntimeOptimizer implements Optimizer {
 	}
 
 	void check(Relationship root) {
-		if (!locator.equals(root.getResourceLocator()))
-			throw new IllegalArgumentException(locator + " でなければなりません");
+		if (!path.equals(root.getTablePath()))
+			throw new IllegalArgumentException(path + " でなければなりません");
 	}
 }

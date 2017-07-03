@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.CrossReference;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link CrossReference} の簡易実装クラスです。
@@ -20,9 +20,9 @@ public class SimpleCrossReference implements CrossReference {
 
 	private final String foreignKeyName;
 
-	private final ResourceLocator primaryKeyResource;
+	private final TablePath primaryKeyResource;
 
-	private final ResourceLocator foreignKeyResource;
+	private final TablePath foreignKeyResource;
 
 	private final List<String> primaryKeyColumns;
 
@@ -44,8 +44,8 @@ public class SimpleCrossReference implements CrossReference {
 	public SimpleCrossReference(
 		String primaryKeyName,
 		String foreignKeyName,
-		ResourceLocator primaryKeyResource,
-		ResourceLocator foreignKeyResource,
+		TablePath primaryKeyResource,
+		TablePath foreignKeyResource,
 		String[] primaryKeyColumns,
 		String[] foreignKeyColumns,
 		boolean isPseudo) {
@@ -69,12 +69,12 @@ public class SimpleCrossReference implements CrossReference {
 	}
 
 	@Override
-	public ResourceLocator getPrimaryKeyResource() {
+	public TablePath getPrimaryKeyTable() {
 		return primaryKeyResource;
 	}
 
 	@Override
-	public ResourceLocator getForeignKeyResource() {
+	public TablePath getForeignKeyTable() {
 		return foreignKeyResource;
 	}
 

@@ -9,7 +9,7 @@ import org.blendee.support.annotation.EntitySetter;
 import org.blendee.support.annotation.Resource;
 /*++{8}++*/
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.Binder;
@@ -39,9 +39,9 @@ import org.blendee.sql.ValueExtractor;
 	public static final String TABLE = "{2}";
 
 	/**
-	 * この定数クラスのテーブルを指す '{'@link ResourceLocator'}'
+	 * この定数クラスのテーブルを指す '{'@link TablePath'}'
 	 */
-	public static final ResourceLocator $TABLE = new ResourceLocator(SCHEMA, TABLE);
+	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
 	private final DataObject $data;
 

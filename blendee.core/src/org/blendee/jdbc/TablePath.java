@@ -5,12 +5,12 @@ package org.blendee.jdbc;
  *
  * @author 千葉 哲嗣
  */
-public class ResourceLocator implements Comparable<ResourceLocator> {
+public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * 空の配列
 	 */
-	public static final ResourceLocator[] EMPTY_ARRAY = {};
+	public static final TablePath[] EMPTY_ARRAY = {};
 
 	private static final char[] illegalChars = "!@#$%^&*()-=+\\|`~[]{};:'\",.<>/? ".toCharArray();
 
@@ -27,7 +27,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 	 * @param tableName テーブル名
 	 * @throws IllegalArgumentException 使用不可能な文字を使用した場合
 	 */
-	public ResourceLocator(String schemaName, String tableName) {
+	public TablePath(String schemaName, String tableName) {
 		checkObjectName("schemaName", schemaName);
 		checkObjectName("tableName", tableName);
 		this.schemaName = schemaName;
@@ -44,7 +44,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 	 * @throws IllegalArgumentException 使用不可能な文字を使用した場合
 	 * @see Initializer#addSchemaName(String)
 	 */
-	public ResourceLocator(String tableName) {
+	public TablePath(String tableName) {
 		checkObjectName("tableName", tableName);
 		schemaName = null;
 		this.tableName = tableName;
@@ -53,23 +53,23 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 	/**
 	 * コピーコンストラクタです。
 	 *
-	 * @param locator コピーされるインスタンス
+	 * @param path コピーされるインスタンス
 	 */
-	public ResourceLocator(ResourceLocator locator) {
-		this(locator.getSchemaName(), locator.getTableName());
+	public TablePath(TablePath path) {
+		this(path.getSchemaName(), path.getTableName());
 	}
 
 	/**
 	 * テーブルを一意で特定する指標から、このクラスのインスタンスを生成します。
 	 *
-	 * @param location テーブルを一意で特定する指標
+	 * @param tablePath テーブルを一意で特定する指標
 	 * @return location に対応するインスタンス
-	 * @see ResourceLocator#toString()
+	 * @see TablePath#toString()
 	 */
-	public static ResourceLocator parse(String location) {
-		int index = location.indexOf(delimiter);
-		if (index == -1) return new ResourceLocator(location);
-		return new ResourceLocator(location.substring(0, index), location.substring(index + 1));
+	public static TablePath parse(String tablePath) {
+		int index = tablePath.indexOf(delimiter);
+		if (index == -1) return new TablePath(tablePath);
+		return new TablePath(tablePath.substring(0, index), tablePath.substring(index + 1));
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof ResourceLocator && id().equals(((ResourceLocator) o).id());
+		return o instanceof TablePath && id().equals(((TablePath) o).id());
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ResourceLocator implements Comparable<ResourceLocator> {
 	}
 
 	@Override
-	public int compareTo(ResourceLocator target) {
+	public int compareTo(TablePath target) {
 		return id().compareTo(target.id());
 	}
 

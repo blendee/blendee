@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の UPDATE 文を生成するクラスです。
@@ -21,10 +21,10 @@ public class UpdateDMLBuilder extends Updater {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 *
-	 * @param locator UPDATE 対象テーブル
+	 * @param path UPDATE 対象テーブル
 	 */
-	public UpdateDMLBuilder(ResourceLocator locator) {
-		super(locator);
+	public UpdateDMLBuilder(TablePath path) {
+		super(path);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class UpdateDMLBuilder extends Updater {
 	 * @param searchable {@link Searchable}
 	 */
 	public void setSearchable(Searchable searchable) {
-		setCondition(searchable.getCondition(factory.getInstance(getResourceLocator())));
+		setCondition(searchable.getCondition(factory.getInstance(getTablePath())));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class UpdateDMLBuilder extends Updater {
 	 */
 	public void setCondition(Condition condition) {
 		this.condition = condition.replicate();
-		this.condition.adjustColumns(factory.getInstance(getResourceLocator()));
+		this.condition.adjustColumns(factory.getInstance(getTablePath()));
 	}
 
 	@Override
@@ -61,6 +61,6 @@ public class UpdateDMLBuilder extends Updater {
 			list.add(columnName + " = " + getPlaceHolderOrFragment(columnName));
 		}
 		condition.setKeyword("WHERE");
-		return "UPDATE " + getResourceLocator() + " SET " + String.join(", ", list) + condition.toString(false);
+		return "UPDATE " + getTablePath() + " SET " + String.join(", ", list) + condition.toString(false);
 	}
 }

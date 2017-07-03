@@ -633,7 +633,7 @@ public class DataObject
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
 	public PrimaryKey getPrimaryKey() {
-		return new PrimaryKey(relationship.getResourceLocator(), getPrimaryKeyBinders());
+		return new PrimaryKey(relationship.getTablePath(), getPrimaryKeyBinders());
 	}
 
 	/**
@@ -645,7 +645,7 @@ public class DataObject
 	 */
 	public ForeignKey getForeignKey(String foreignKeyName) {
 		return getDataObject(foreignKeyName).getPrimaryKey()
-			.getReferences(relationship.getResourceLocator(), foreignKeyName);
+			.getReferences(relationship.getTablePath(), foreignKeyName);
 	}
 
 	/**
@@ -657,7 +657,7 @@ public class DataObject
 	 */
 	public ForeignKey getForeignKey(String[] foreignKeyColumnNames) {
 		return getDataObject(foreignKeyColumnNames).getPrimaryKey()
-			.getReferences(relationship.getResourceLocator(), foreignKeyColumnNames);
+			.getReferences(relationship.getTablePath(), foreignKeyColumnNames);
 	}
 
 	/**
@@ -727,14 +727,14 @@ public class DataObject
 	private boolean updateInternal(StatementFacade statement) {
 		if (updateValues == null || updateValues.size() == 0) return false;
 
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(relationship.getResourceLocator());
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(relationship.getTablePath());
 		setValuesTo(builder);
 
 		Column[] primaryKeyColumns = relationship.getPrimaryKeyColumns();
 		if (!relationship.isRoot()) {
 			//root でないと、 Condition を作る際に、チェックに引っかかるので
 			//root の Relationship のカラムに変換しておく
-			Relationship root = BlendeeContext.get(RelationshipFactory.class).getInstance(relationship.getResourceLocator());
+			Relationship root = BlendeeContext.get(RelationshipFactory.class).getInstance(relationship.getTablePath());
 			for (int i = 0; i < primaryKeyColumns.length; i++) {
 				primaryKeyColumns[i] = root.getColumn(primaryKeyColumns[i].getName());
 			}
@@ -760,7 +760,7 @@ public class DataObject
 	private Binder[] getPrimaryKeyBinders() {
 		Column[] columns = relationship.getPrimaryKeyColumns();
 		if (columns.length == 0)
-			throw new IllegalStateException(relationship.getResourceLocator() + " は PK を持ちません");
+			throw new IllegalStateException(relationship.getTablePath() + " は PK を持ちません");
 
 		Binder[] binders = new Binder[columns.length];
 		for (int i = 0; i < columns.length; i++) {

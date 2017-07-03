@@ -2,7 +2,7 @@
 
 import javax.annotation.Generated;
 
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.orm.QueryOption;
@@ -42,7 +42,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
 		return select(
-			new SimpleOptimizer(getResourceLocator()),
+			new SimpleOptimizer(getTablePath()),
 			condition,
 			order,
 			options);
@@ -118,7 +118,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public ResourceLocator getResourceLocator() /*++'++*/{/*++'++*/
+	public TablePath getTablePath() /*++'++*/{/*++'++*/
 		return /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
 	/*++'++*/}/*++'++*/
 

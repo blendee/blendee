@@ -2,7 +2,7 @@ package org.blendee.selector;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.ManagementSubject;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link AnchorOptimizer} を生成するためのファクトリクラスです。
@@ -80,7 +80,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, ResourceLocator hint) {
+	public AnchorOptimizer getInstance(String id, TablePath hint) {
 		return new AnchorOptimizer(
 			this,
 			id,
@@ -108,7 +108,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, ResourceLocator hint, Class<?> using) {
+	public AnchorOptimizer getInstance(String id, TablePath hint, Class<?> using) {
 		return new AnchorOptimizer(this, id, hint, using, canAddNewEntries());
 	}
 

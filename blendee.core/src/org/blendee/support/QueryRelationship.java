@@ -2,7 +2,7 @@ package org.blendee.support;
 
 import java.util.Arrays;
 
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Condition;
@@ -96,9 +96,9 @@ public interface QueryRelationship {
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 *
-	 * @return このインスタンスが表す {@link ResourceLocator}
+	 * @return このインスタンスが表す {@link TablePath}
 	 */
-	ResourceLocator getResourceLocator();
+	TablePath getTablePath();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

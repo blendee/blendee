@@ -3,7 +3,7 @@ package org.blendee.selector;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -27,17 +27,17 @@ public class SimpleOptimizer implements Optimizer {
 	/**
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。
 	 * <br>
-	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は locator の全カラムが使用されます。
+	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
 	 *
-	 * @param locator SELECT 句に使用するカラムを持つテーブル
+	 * @param path SELECT 句に使用するカラムを持つテーブル
 	 */
-	public SimpleOptimizer(ResourceLocator locator) {
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
+	public SimpleOptimizer(TablePath path) {
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
 	}
 
 	@Override
-	public ResourceLocator getResourceLocator() {
-		return root.getResourceLocator();
+	public TablePath getTablePath() {
+		return root.getTablePath();
 	}
 
 	@Override

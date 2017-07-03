@@ -1,7 +1,7 @@
 package org.blendee.plugin.views;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.BlendeePlugin.JavaProjectException;
 import org.blendee.plugin.Constants;
@@ -34,10 +34,10 @@ public class QueryEditorView extends AbstractView {
 	private static final IInputValidator locationValidator = new IInputValidator() {
 
 		@Override
-		public String isValid(String location) {
-			if (location.length() == 0) return "未入力です";
-			if (ResourceLocator.parse(location).exists()) return null;
-			return location + " は存在しません";
+		public String isValid(String path) {
+			if (path.length() == 0) return "未入力です";
+			if (TablePath.parse(path).exists()) return null;
+			return path + " は存在しません";
 		}
 	};
 

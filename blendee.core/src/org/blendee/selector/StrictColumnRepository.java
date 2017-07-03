@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import org.blendee.internal.CollectionMap;
 import org.blendee.internal.U;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 
 /**
@@ -18,7 +18,7 @@ import org.blendee.sql.Column;
  */
 class StrictColumnRepository implements ColumnRepository {
 
-	private final Map<String, ResourceLocator> locationMap = new TreeMap<>();
+	private final Map<String, TablePath> locationMap = new TreeMap<>();
 
 	private final CollectionMap<String, Column> columnMap = new CollectionMap<String, Column>(TreeMap.class) {
 
@@ -36,7 +36,7 @@ class StrictColumnRepository implements ColumnRepository {
 		final String[] ids = repository.getIDs();
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
-			locationMap.put(id, repository.getResourceLocator(id));
+			locationMap.put(id, repository.getTablePath(id));
 			Column[] columns = repository.getColumns(id);
 			columnMap.get(id).addAll(Arrays.asList(columns));
 			usingMap.get(id).addAll(Arrays.asList(repository.getUsingClassNames(id)));
@@ -45,12 +45,12 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public ResourceLocator getResourceLocator(String id) {
+	public TablePath getTablePath(String id) {
 		return locationMap.get(id);
 	}
 
 	@Override
-	public void add(String id, ResourceLocator locator, String... usingClassNames) {
+	public void add(String id, TablePath path, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 

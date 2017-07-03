@@ -12,7 +12,7 @@ import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.Selector;
@@ -194,12 +194,12 @@ public class DataAccessHelper {
 	/**
 	 * パラメータの条件にマッチする件数を返します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
 	 * @return パラメータの条件にマッチする件数
 	 */
-	public int count(ResourceLocator locator, Condition condition) {
-		QueryBuilder builder = new QueryBuilder(new FromClause(locator));
+	public int count(TablePath path, Condition condition) {
+		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(SelectClause.COUNT_CLAUSE);
 		if (condition != null) builder.setWhereClause(condition);
 		BConnection connection = manager.getConnection();
@@ -232,37 +232,37 @@ public class DataAccessHelper {
 	/**
 	 * パラメータのテーブルに対して INSERT を行います。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	public void insert(
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		SQLAdjuster adjuster) {
-		insertInternal(getThreadStatement(), locator, updatable, adjuster);
+		insertInternal(getThreadStatement(), path, updatable, adjuster);
 	}
 
 	/**
 	 * パラメータのテーブルに対して INSERT をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	public void insert(
 		BatchStatement statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		SQLAdjuster adjuster) {
-		insertInternal(new BatchStatementFacade(statement), locator, updatable, adjuster);
+		insertInternal(new BatchStatementFacade(statement), path, updatable, adjuster);
 	}
 
 	/**
 	 * 連続値を持つテーブルに対して INSERT を行います。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
@@ -270,14 +270,14 @@ public class DataAccessHelper {
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
-		ResourceLocator locator,
+		TablePath path,
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
 		SQLAdjuster adjuster) {
 		return insertInternal(
 			getThreadStatement(),
-			locator,
+			path,
 			generator,
 			updatable,
 			retry,
@@ -290,7 +290,7 @@ public class DataAccessHelper {
 	 * バッチ実行では、実際に値が登録されるのは後になるので、そのことを考慮した {@link SequenceGenerator} を用意する必要があります。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
@@ -299,14 +299,14 @@ public class DataAccessHelper {
 	 */
 	public Bindable insert(
 		BatchStatement statement,
-		ResourceLocator locator,
+		TablePath path,
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
 		SQLAdjuster adjuster) {
 		return insertInternal(
 			new BatchStatementFacade(statement),
-			locator,
+			path,
 			generator,
 			updatable,
 			retry,
@@ -316,20 +316,20 @@ public class DataAccessHelper {
 	/**
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE を実行します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param condition WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 * @return 更新件数
 	 */
 	public int update(
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		Condition condition,
 		SQLAdjuster adjuster) {
 		return updateInternal(
 			getThreadStatement(),
-			locator,
+			path,
 			updatable,
 			condition,
 			adjuster);
@@ -339,20 +339,20 @@ public class DataAccessHelper {
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param condition WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 */
 	public void update(
 		BatchStatement statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		Condition condition,
 		SQLAdjuster adjuster) {
 		updateInternal(
 			new BatchStatementFacade(statement),
-			locator,
+			path,
 			updatable,
 			condition,
 			adjuster);
@@ -361,19 +361,19 @@ public class DataAccessHelper {
 	/**
 	 * 対象となるテーブルの、全レコードに対して UPDATE を実行します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 * @return 更新件数
 	 */
 	public int update(
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		SQLAdjuster adjuster) {
 		StatementFacade statement = getThreadStatement();
 		return updateInternalFinally(
 			statement,
-			locator,
+			path,
 			updatable,
 			null,
 			adjuster);
@@ -383,18 +383,18 @@ public class DataAccessHelper {
 	 * 対象となるテーブルの、全レコードに対して UPDATE をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 */
 	public void update(
 		BatchStatement statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		SQLAdjuster adjuster) {
 		updateInternalFinally(
 			new BatchStatementFacade(statement),
-			locator,
+			path,
 			updatable,
 			null,
 			adjuster);
@@ -403,49 +403,49 @@ public class DataAccessHelper {
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE を実行します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
 	 * @return 削除件数
 	 */
-	public int delete(ResourceLocator locator, Condition condition) {
-		return deleteInternal(getThreadStatement(), locator, condition);
+	public int delete(TablePath path, Condition condition) {
+		return deleteInternal(getThreadStatement(), path, condition);
 	}
 
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
 	 */
 	public void delete(
 		BatchStatement statement,
-		ResourceLocator locator,
+		TablePath path,
 		Condition condition) {
 		deleteInternal(
 			new BatchStatementFacade(statement),
-			locator,
+			path,
 			condition);
 	}
 
 	/**
 	 * 対象となるテーブルに対して、全レコードに対する DELETE を実行します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @return 削除件数
 	 */
-	public int delete(ResourceLocator locator) {
-		return deleteInternalFinally(getThreadStatement(), locator, null);
+	public int delete(TablePath path) {
+		return deleteInternalFinally(getThreadStatement(), path, null);
 	}
 
 	/**
 	 * 対象となるテーブルに対して、全レコードに対する DELETE をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 */
-	public void delete(BatchStatement statement, ResourceLocator locator) {
-		deleteInternalFinally(new BatchStatementFacade(statement), locator, null);
+	public void delete(BatchStatement statement, TablePath path) {
+		deleteInternalFinally(new BatchStatementFacade(statement), path, null);
 	}
 
 	/**
@@ -479,8 +479,8 @@ public class DataAccessHelper {
 		return statement;
 	}
 
-	static int deleteInternal(ResourceLocator locator, Condition condition) {
-		return deleteInternal(getThreadStatement(), locator, condition);
+	static int deleteInternal(TablePath path, Condition condition) {
+		return deleteInternal(getThreadStatement(), path, condition);
 	}
 
 	private DataObjectIterator select(
@@ -527,13 +527,13 @@ public class DataAccessHelper {
 		Selector selector,
 		boolean readonly) {
 		return new DataObjectIterator(
-			factory.getInstance(selector.getResourceLocator()),
+			factory.getInstance(selector.getTablePath()),
 			selector.select(),
 			readonly);
 	}
 
 	private static void checkArgument(Optimizer optimizer, PrimaryKey primaryKey) {
-		if (!optimizer.getResourceLocator().equals(primaryKey.getResourceLocator()))
+		if (!optimizer.getTablePath().equals(primaryKey.getTablePath()))
 			throw new IllegalArgumentException("optimizer と primaryKey のテーブルが違います");
 	}
 
@@ -541,8 +541,8 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Condition condition,
 		OrderByClause order) {
-		if (condition != null) condition.adjustColumns(factory.getInstance(optimizer.getResourceLocator()));
-		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getResourceLocator()));
+		if (condition != null) condition.adjustColumns(factory.getInstance(optimizer.getTablePath()));
+		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getTablePath()));
 	}
 
 	private static DataObject getFirst(
@@ -561,10 +561,10 @@ public class DataAccessHelper {
 
 	private static void insertInternal(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		SQLAdjuster adjuster) {
-		InsertDMLBuilder builder = new InsertDMLBuilder(locator);
+		InsertDMLBuilder builder = new InsertDMLBuilder(path);
 		if (adjuster != null) builder.setSQLAdjuster(adjuster);
 		builder.add(updatable);
 		statement.process(builder.toString(), builder);
@@ -573,13 +573,13 @@ public class DataAccessHelper {
 
 	private Bindable insertInternal(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		SequenceGenerator sequencer,
 		Updatable updatable,
 		int retry,
 		SQLAdjuster adjuster) {
 		final Map<String, Bindable> map = new HashMap<>();
-		InsertDMLBuilder builder = new InsertDMLBuilder(locator) {
+		InsertDMLBuilder builder = new InsertDMLBuilder(path) {
 
 			@Override
 			public void add(String columnName, Bindable bindable) {
@@ -594,7 +594,7 @@ public class DataAccessHelper {
 
 		String[] depends = sequencer.getDependsColumnNames();
 		Condition condition = ConditionFactory.createCondition();
-		Relationship relationship = factory.getInstance(locator);
+		Relationship relationship = factory.getInstance(path);
 		for (String columnName : depends) {
 			condition.and(ConditionFactory.createCondition(relationship.getColumn(columnName), map.get(columnName)));
 		}
@@ -617,21 +617,21 @@ public class DataAccessHelper {
 
 	private static int updateInternal(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		Condition condition,
 		SQLAdjuster adjuster) {
 		if (!condition.isAvailable()) throw new IllegalArgumentException("条件がありません");
-		return updateInternalFinally(statement, locator, updatable, condition, adjuster);
+		return updateInternalFinally(statement, path, updatable, condition, adjuster);
 	}
 
 	private static int updateInternalFinally(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		Updatable updatable,
 		Condition condition,
 		SQLAdjuster adjuster) {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(locator);
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 		if (adjuster != null) builder.setSQLAdjuster(adjuster);
 		builder.add(updatable);
 		if (condition != null) builder.setCondition(condition);
@@ -641,17 +641,17 @@ public class DataAccessHelper {
 
 	private static int deleteInternal(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		Condition condition) {
 		if (!condition.isAvailable()) throw new IllegalArgumentException("条件がありません");
-		return deleteInternalFinally(statement, locator, condition);
+		return deleteInternalFinally(statement, path, condition);
 	}
 
 	private static int deleteInternalFinally(
 		StatementFacade statement,
-		ResourceLocator locator,
+		TablePath path,
 		Condition condition) {
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(locator);
+		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
 		if (condition != null) builder.setCondition(condition);
 		statement.process(builder.toString(), builder);
 		return statement.execute();

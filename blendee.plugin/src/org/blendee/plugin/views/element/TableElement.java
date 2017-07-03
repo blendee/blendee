@@ -6,7 +6,7 @@ import java.util.List;
 import org.blendee.develop.ormgen.ORMGenerator;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.blendee.plugin.views.ClassBuilderView;
@@ -38,11 +38,11 @@ public class TableElement extends PropertySourceElement {
 
 	private final SchemaElement parent;
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
-	TableElement(SchemaElement parent, ResourceLocator locator) {
+	TableElement(SchemaElement parent, TablePath path) {
 		this.parent = parent;
-		this.locator = locator;
+		this.path = path;
 	}
 
 	@Override
@@ -52,12 +52,12 @@ public class TableElement extends PropertySourceElement {
 
 	@Override
 	public String getName() {
-		return locator.getTableName();
+		return path.getTableName();
 	}
 
 	@Override
 	public String getPath() {
-		return locator.toString();
+		return path.toString();
 	}
 
 	@Override
@@ -141,8 +141,8 @@ public class TableElement extends PropertySourceElement {
 			!plugin.notUseNullGuard(),
 			org.blendee.plugin.ORMGenerator.class.getName());
 
-		Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
-		String tableName = locator.getTableName();
+		Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		String tableName = path.getTableName();
 		try {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));
 
@@ -172,7 +172,7 @@ public class TableElement extends PropertySourceElement {
 			".",
 			new String[] {
 				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
-				locator.getTableName() });
+				path.getTableName() });
 		try {
 			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
 			return false;

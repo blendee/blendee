@@ -14,7 +14,7 @@ import org.blendee.internal.CollectionMap;
 import org.blendee.internal.Queue;
 import org.blendee.internal.QueueElement;
 import org.blendee.internal.U;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 
 /**
@@ -24,7 +24,7 @@ import org.blendee.sql.Column;
  */
 public class CommandColumnRepository implements ColumnRepository {
 
-	private final Map<String, LocatorContainer> addIDs = new HashMap<>();
+	private final Map<String, TablePathContainer> addIDs = new HashMap<>();
 
 	private final Set<String> removeIDs = new HashSet<>();
 
@@ -60,15 +60,15 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized ResourceLocator getResourceLocator(String id) {
-		LocatorContainer container = addIDs.get(id);
-		if (container != null) return container.locator;
+	public synchronized TablePath getTablePath(String id) {
+		TablePathContainer container = addIDs.get(id);
+		if (container != null) return container.path;
 		if (removeIDs.contains(id)) return null;
-		return repository.getResourceLocator(id);
+		return repository.getTablePath(id);
 	}
 
 	@Override
-	public synchronized void add(String id, ResourceLocator locator, String... usingClassNames) {
+	public synchronized void add(String id, TablePath locator, String... usingClassNames) {
 		addCommand(new AddIdCommand(id, locator, usingClassNames));
 	}
 
@@ -81,7 +81,7 @@ public class CommandColumnRepository implements ColumnRepository {
 	public synchronized String[] getUsingClassNames(String id) {
 		if (clears.containsKey(id)) return U.STRING_EMPTY_ARRAY;
 
-		LocatorContainer container = addIDs.get(id);
+		TablePathContainer container = addIDs.get(id);
 		if (container != null) return container.usingClassNames;
 
 		if (removeIDs.contains(id)) return null;
@@ -92,13 +92,13 @@ public class CommandColumnRepository implements ColumnRepository {
 	@Override
 	public synchronized void renameID(String oldId, String newId, String... usingClassNames) {
 		if (oldId.equals(newId)) return;
-		if (getResourceLocator(oldId) == null) return;
+		if (getTablePath(oldId) == null) return;
 		addCommand(new RenameIdCommand(oldId, newId, usingClassNames));
 	}
 
 	@Override
 	public synchronized Column[] getColumns(String id) {
-		if (getResourceLocator(id) == null) return Column.EMPTY_ARRAY;
+		if (getTablePath(id) == null) return Column.EMPTY_ARRAY;
 		Set<Column> columns = new HashSet<>();
 		columns.addAll(Arrays.asList(repository.getColumns(id)));
 		columns.removeAll(removeColumns.get(id).stream().map(c -> c.column).collect(Collectors.toList()));
@@ -184,7 +184,7 @@ public class CommandColumnRepository implements ColumnRepository {
 	@Override
 	public synchronized void commit() {
 		addIDs.forEach(
-			(key, value) -> repository.add(key, value.locator, value.usingClassNames));
+			(key, value) -> repository.add(key, value.path, value.usingClassNames));
 
 		for (String id : removeIDs)
 			repository.remove(id);
@@ -272,14 +272,14 @@ public class CommandColumnRepository implements ColumnRepository {
 		current.redo();
 	}
 
-	private static class LocatorContainer {
+	private static class TablePathContainer {
 
-		private final ResourceLocator locator;
+		private final TablePath path;
 
 		private final String[] usingClassNames;
 
-		private LocatorContainer(ResourceLocator locator, String[] usingClassNames) {
-			this.locator = locator;
+		private TablePathContainer(TablePath path, String[] usingClassNames) {
+			this.path = path;
 			this.usingClassNames = usingClassNames;
 		}
 	}
@@ -345,7 +345,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	private class AddIdCommand extends Command {
 
-		private final ResourceLocator locator;
+		private final TablePath locator;
 
 		private final RemoveIdCommand removeId;
 
@@ -353,10 +353,10 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		private final long timestamp = System.currentTimeMillis();
 
-		private AddIdCommand(String id, ResourceLocator locator, String[] usings) {
+		private AddIdCommand(String id, TablePath locator, String[] usings) {
 			super(id);
 
-			ResourceLocator removeLocator = getResourceLocator(id);
+			TablePath removeLocator = getTablePath(id);
 			if (removeLocator != null) {
 				removeId = new RemoveIdCommand(id, usings);
 			} else {
@@ -380,14 +380,14 @@ public class CommandColumnRepository implements ColumnRepository {
 			if (removeId != null) removeId.redo();
 			removeIDs.remove(id);
 
-			addIDs.put(id, new LocatorContainer(locator, usings));
+			addIDs.put(id, new TablePathContainer(locator, usings));
 			clears.put(id, timestamp);
 		}
 	}
 
 	private class RemoveIdCommand extends Command {
 
-		private final ResourceLocator locator;
+		private final TablePath locator;
 
 		private final RemoveColumnCommand[] availableColumnCommands;
 
@@ -395,7 +395,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		private RemoveIdCommand(String id, String[] usings) {
 			super(id);
-			locator = getResourceLocator(id);
+			locator = getTablePath(id);
 			this.usings = usings;
 			Column[] availables = getColumns(id);
 			availableColumnCommands = new RemoveColumnCommand[availables.length];
@@ -406,7 +406,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		@Override
 		void undo() {
-			addIDs.put(id, new LocatorContainer(locator, usings));
+			addIDs.put(id, new TablePathContainer(locator, usings));
 			removeIDs.remove(id);
 			for (RemoveColumnCommand command : availableColumnCommands)
 				command.undo();
@@ -435,13 +435,13 @@ public class CommandColumnRepository implements ColumnRepository {
 			super(null);
 
 			removeOldIdCommand = new RemoveIdCommand(oldId, usings);
-			if (getResourceLocator(newId) != null) {
+			if (getTablePath(newId) != null) {
 				removeNewIdCommand = new RemoveIdCommand(newId, usings);
 			} else {
 				removeNewIdCommand = null;
 			}
 
-			addIdCommand = new AddIdCommand(newId, getResourceLocator(oldId), usings);
+			addIdCommand = new AddIdCommand(newId, getTablePath(oldId), usings);
 			Column[] columns = getColumns(oldId);
 			addColumnCommands = new AddColumnCommand[columns.length];
 			for (int i = 0; i < columns.length; i++) {
@@ -481,10 +481,10 @@ public class CommandColumnRepository implements ColumnRepository {
 			super(id);
 			this.column = column;
 			this.usings = usings;
-			if (getResourceLocator(id) == null) {
+			if (getTablePath(id) == null) {
 				addId = new AddIdCommand(
 					id,
-					column.getRelationship().getRoot().getResourceLocator(),
+					column.getRelationship().getRoot().getTablePath(),
 					usings);
 			} else {
 				addId = null;

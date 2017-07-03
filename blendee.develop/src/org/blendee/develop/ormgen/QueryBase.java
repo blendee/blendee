@@ -9,7 +9,7 @@ import javax.annotation.Generated;
 import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.QueryOption;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -233,7 +233,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public Relationship getRootRealtionship() /*++'++*/{/*++'++*/
-		return BlendeeContext.get(RelationshipFactory.class).getInstance(manager.getResourceLocator());
+		return BlendeeContext.get(RelationshipFactory.class).getInstance(manager.getTablePath());
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -387,7 +387,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final String $fkName;
 
-		private final ResourceLocator $locator;
+		private final TablePath $path;
 
 		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ $manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -415,27 +415,27 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @param builder
 		 * @param parent
 		 * @param fkName
-		 * @param locator
+		 * @param path
 		 * @param root
 		 */
 		public /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
 			QueryContext<T> builder,
 			QueryRelationship parent,
 			String fkName,
-			ResourceLocator locator,
-			ResourceLocator root) /*++'++*/{/*++'++*/
+			TablePath path,
+			TablePath root) /*++'++*/{/*++'++*/
 			$query = null;
 			$context = null;
 			$parent = parent;
 			$fkName = fkName;
-			$locator = locator;
+			$path = path;
 
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
 				this, /*++{1}++*//*--*/EntityBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
 /*++{5}++*/
 
-/*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = locator.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
+/*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = path.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
 				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, root);
 /*==RelationshipPart2==*/
 /*++{6}++*/
@@ -449,13 +449,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			$context = context;
 			$parent = null;
 			$fkName = null;
-			$locator = /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
+			$path = /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
 
 			/*--*/columnName = null;/*--*/
 /*++{5}++*/
 
 /*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, $locator);
+				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, $path);
 /*==RelationshipPart3==*/
 /*++{7}++*/
 		/*++'++*/}/*++'++*/
@@ -466,7 +466,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
 		public /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M> intercept() /*++'++*/{/*++'++*/
-			if ($query != null) throw new IllegalStateException($locator.getSchemaName() + " から直接使用することはできません");
+			if ($query != null) throw new IllegalStateException($path.getSchemaName() + " から直接使用することはできません");
 			return new /*++{1}Executor++*//*--*/O2MExecutor/*--*/<>(this);
 		/*++'++*/}/*++'++*/
 
@@ -483,7 +483,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				return $parent.getRelationship().find($fkName);
 			/*++'++*/}/*++'++*/
 
-			return BlendeeContext.get(RelationshipFactory.class).getInstance($query.manager.getResourceLocator());
+			return BlendeeContext.get(RelationshipFactory.class).getInstance($query.manager.getTablePath());
 		/*++'++*/}/*++'++*/
 
 		@Override
@@ -528,8 +528,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public ResourceLocator getResourceLocator() /*++'++*/{/*++'++*/
-			return $locator;
+		public TablePath getTablePath() /*++'++*/{/*++'++*/
+			return $path;
 		/*++'++*/}/*++'++*/
 
 		@Override

@@ -13,7 +13,7 @@ import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.MetadataUtilities;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Condition;
@@ -33,42 +33,42 @@ public class PrimaryKey extends PartialData {
 	/**
 	 * 文字列からこのクラスのインスタンスを作り出す簡易コンストラクタです。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param keyMembers 主キーを構成する値
 	 * @return このクラスのインスタンス
 	 */
 	public static PrimaryKey getInstance(
-		ResourceLocator locator,
+		TablePath path,
 		String... keyMembers) {
-		return new PrimaryKey(locator, BindableConverter.convert(keyMembers));
+		return new PrimaryKey(path, BindableConverter.convert(keyMembers));
 	}
 
 	/**
 	 * 数値からこのクラスのインスタンスを作り出す簡易コンストラクタです。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param keyMembers 主キーを構成する値
 	 * @return このクラスのインスタンス
 	 */
 	public static PrimaryKey getInstance(
-		ResourceLocator locator,
+		TablePath path,
 		Number... keyMembers) {
-		return new PrimaryKey(locator, BindableConverter.convert(keyMembers));
+		return new PrimaryKey(path, BindableConverter.convert(keyMembers));
 	}
 
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param bindables 値
-	 * @throws IllegalArgumentException locator の主キーのカラム数と bindables の要素数が違う場合
+	 * @throws IllegalArgumentException path の主キーのカラム数と bindables の要素数が違う場合
 	 */
 	public PrimaryKey(
-		ResourceLocator locator,
+		TablePath path,
 		Bindable... bindables) {
-		super(locator, MetadataUtilities.getPrimaryKeyColumnNames(locator), bindables);
+		super(path, MetadataUtilities.getPrimaryKeyColumnNames(path), bindables);
 		Object[] objects = new Object[bindables.length + 1];
-		objects[0] = locator;
+		objects[0] = path;
 		System.arraycopy(bindables, 0, objects, 1, bindables.length);
 		hashCode = Objects.hash(objects);
 	}
@@ -82,7 +82,7 @@ public class PrimaryKey extends PartialData {
 	public boolean equals(Object o) {
 		if (!(o instanceof PrimaryKey)) return false;
 		PrimaryKey target = (PrimaryKey) o;
-		return locator.equals(target.locator) && U.equals(bindables, target.bindables);
+		return path.equals(target.path) && U.equals(bindables, target.bindables);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class PrimaryKey extends PartialData {
 	 * @return この主キーの名前
 	 */
 	public String getName() {
-		return MetadataUtilities.getPrimaryKeyName(locator);
+		return MetadataUtilities.getPrimaryKeyName(path);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class PrimaryKey extends PartialData {
 	 * @return この主キーを参照している全外部キーのインスタンス
 	 */
 	public ForeignKey[] getAllReferences() {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(locator);
+		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
 		ForeignKey[] keys = new ForeignKey[references.length];
 		for (int i = 0; i < references.length; i++) {
 			CrossReference reference = references[i];
@@ -117,41 +117,48 @@ public class PrimaryKey extends PartialData {
 	/**
 	 * この主キーを参照している外部キーのインスタンスを返します。
 	 *
-	 * @param referencesLocator 参照しているテーブル
+	 * @param referencesPath 参照しているテーブル
 	 * @param columnNames 参照している外部キーのカラム
 	 * @return この主キーを参照している外部キーのインスタンス
-	 * @throws IllegalArgumentException referencesLocator に columnNames で構成される外部キーがない場合
+	 * @throws IllegalArgumentException referencesPath に columnNames で構成される外部キーがない場合
 	 */
 	public ForeignKey getReferences(
-		ResourceLocator referencesLocator,
+		TablePath referencesPath,
 		String[] columnNames) {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(locator);
+		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
 		String[] myColumns = columnNames.clone();
 		Arrays.sort(myColumns);
 		for (int i = 0; i < references.length; i++) {
 			CrossReference reference = references[i];
 			String[] foreignKeyColumnNames = reference.getForeignKeyColumnNames();
 			Arrays.sort(foreignKeyColumnNames);
-			if (U.equals(myColumns, foreignKeyColumnNames)) return getReferencesInternal(reference);
+			if (referencesPath.equals(reference.getForeignKeyTable())
+				&&
+				U.equals(myColumns, foreignKeyColumnNames))
+				return getReferencesInternal(reference);
 		}
+
 		throw new IllegalArgumentException("外部キーが見つかりません");
 	}
 
 	/**
 	 * この主キーを参照している外部キーのインスタンスを返します。
 	 *
-	 * @param referencesLocator 参照しているテーブル
+	 * @param referencesPath 参照しているテーブル
 	 * @param foreignKeyName 参照している外部キーの名前
 	 * @return この主キーを参照している外部キーのインスタンス
-	 * @throws IllegalArgumentException referencesLocator に foreignKeyName という外部キーがない場合
+	 * @throws IllegalArgumentException referencesPath に foreignKeyName という外部キーがない場合
 	 */
 	public ForeignKey getReferences(
-		ResourceLocator referencesLocator,
+		TablePath referencesPath,
 		String foreignKeyName) {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(locator);
+		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
 		for (int i = 0; i < references.length; i++) {
 			CrossReference reference = references[i];
-			if (foreignKeyName.equals(reference.getForeignKeyName())) return getReferencesInternal(reference);
+			if (referencesPath.equals(reference.getForeignKeyTable())
+				&&
+				foreignKeyName.equals(reference.getForeignKeyName()))
+				return getReferencesInternal(reference);
 		}
 		throw new IllegalArgumentException("外部キーが見つかりません");
 	}
@@ -164,7 +171,7 @@ public class PrimaryKey extends PartialData {
 	 * @param to 変更する値
 	 */
 	public void switchReferences(PrimaryKey to) {
-		switchAllReferences(MetadataUtilities.getCrossReferencesOfExportedKeys(locator), this, to);
+		switchAllReferences(MetadataUtilities.getCrossReferencesOfExportedKeys(path), this, to);
 	}
 
 	/**
@@ -172,17 +179,17 @@ public class PrimaryKey extends PartialData {
 	 * 参照している項目がそのテーブルの主キーに含まれている場合、 NULL にはできません
 	 */
 	public void eraseReferences() {
-		ResourceLocator[] tables = MetadataUtilities.getResourcesOfExportedKey(locator);
-		for (ResourceLocator table : tables) {
-			CrossReference[] references = MetadataUtilities.getCrossReferences(locator, table);
+		TablePath[] tables = MetadataUtilities.getResourcesOfExportedKey(path);
+		for (TablePath table : tables) {
+			CrossReference[] references = MetadataUtilities.getCrossReferences(path, table);
 			eraseReferences(table, references, this);
 		}
 	}
 
 	private ForeignKey getReferencesInternal(CrossReference reference) {
-		//MetadataUtilities.getPrimaryKeyColumnNames(locator)の返す
+		//MetadataUtilities.getPrimaryKeyColumnNames(path)の返す
 		//項目名の順にbindablesを並び替え
-		String[] columnNames = MetadataUtilities.getPrimaryKeyColumnNames(locator);
+		String[] columnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
 		Map<String, Bindable> map = new HashMap<>();
 		for (int i = 0; i < columnNames.length; i++) {
 			map.put(reference.convertToForeignKeyColumnName(columnNames[i]), bindables[i]);
@@ -195,7 +202,7 @@ public class PrimaryKey extends PartialData {
 		}
 
 		return new ForeignKey(
-			reference.getForeignKeyResource(),
+			reference.getForeignKeyTable(),
 			reference.getForeignKeyName(),
 			foreignKeyColumnNames,
 			foreignKeyBindables,
@@ -203,11 +210,11 @@ public class PrimaryKey extends PartialData {
 	}
 
 	private static void eraseReferences(
-		ResourceLocator locator,
+		TablePath path,
 		CrossReference[] references,
 		PrimaryKey primaryKey) {
 		for (CrossReference reference : references) {
-			UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyResource());
+			UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
 			String[] columnNames = reference.getForeignKeyColumnNames();
 			for (String columnName : columnNames) {
 				builder.addSQLFragment(columnName, "NULL");
@@ -240,23 +247,23 @@ public class PrimaryKey extends PartialData {
 		to = convertToReferences(reference, to);
 		Set<String> checker = createChecker(to.getColumnNames());
 
-		ResourceLocator foreignKeyTable = reference.getForeignKeyResource();
+		TablePath foreignKeyTable = reference.getForeignKeyTable();
 
 		String[] keyNames = MetadataUtilities.getPrimaryKeyColumnNames(foreignKeyTable);
 		for (String keyName : keyNames) {
 			if (!checker.contains(keyName)) continue;
 			CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(foreignKeyTable);
 			if (references.length == 0) break;
-			copy(reference.getForeignKeyResource(), from, to);
+			copy(reference.getForeignKeyTable(), from, to);
 			switchAllReferences(references, from, to);
-			DataAccessHelper.deleteInternal(from.locator, from.getCondition());
+			DataAccessHelper.deleteInternal(from.path, from.getCondition());
 			return;
 		}
 		update(reference, from, to);
 	}
 
 	private static void copy(
-		ResourceLocator foreignKeyTable,
+		TablePath foreignKeyTable,
 		PartialData from,
 		final PartialData to) {
 		StringBuilder sql = new StringBuilder("INSERT INTO " + foreignKeyTable + " SELECT ");
@@ -290,7 +297,7 @@ public class PrimaryKey extends PartialData {
 		CrossReference reference,
 		PartialData from,
 		PartialData to) {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyResource());
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
 		builder.setCondition(from.getCondition());
 		builder.add(to);
 		try (BStatement statement = BlendeeContext.get(BlendeeManager.class)
@@ -316,6 +323,6 @@ public class PrimaryKey extends PartialData {
 		for (int i = 0; i < columnNames.length; i++) {
 			referencesNames[i] = reference.convertToForeignKeyColumnName(columnNames[i]);
 		}
-		return new PartialData(reference.getForeignKeyResource(), referencesNames, persistence.bindables);
+		return new PartialData(reference.getForeignKeyTable(), referencesNames, persistence.bindables);
 	}
 }

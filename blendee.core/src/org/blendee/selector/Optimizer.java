@@ -1,7 +1,7 @@
 package org.blendee.selector;
 
 import org.blendee.jdbc.BResult;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
 
@@ -18,7 +18,7 @@ public interface Optimizer {
 	 *
 	 * @return 対象となるテーブル
 	 */
-	ResourceLocator getResourceLocator();
+	TablePath getTablePath();
 
 	/**
 	 * 検索に使用する SELECT 句です。

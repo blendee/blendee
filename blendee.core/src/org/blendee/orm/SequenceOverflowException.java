@@ -1,7 +1,7 @@
 package org.blendee.orm;
 
 import org.blendee.jdbc.BlendeeException;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Condition;
 import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.Updatable;
@@ -11,7 +11,7 @@ import org.blendee.sql.Updatable;
  *
  * @author 千葉 哲嗣
  * @see SequenceGenerator#next(Condition)
- * @see DataAccessHelper#insert(ResourceLocator, SequenceGenerator, Updatable, int, SQLAdjuster)
+ * @see DataAccessHelper#insert(TablePath, SequenceGenerator, Updatable, int, SQLAdjuster)
  */
 public class SequenceOverflowException extends BlendeeException {
 

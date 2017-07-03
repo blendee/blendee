@@ -18,7 +18,7 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.support.BEntity;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
@@ -104,7 +104,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		if (fk != null) fkSources.add(createSource(fk));
 
 		return new TableSource(
-			new ResourceLocator(clazz.getSimpleName()),
+			new TablePath(clazz.getSimpleName()),
 			null,
 			emptyColumns,
 			pk == null ? null : createSource(pk),
@@ -119,7 +119,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		return new ForeignKeySource(
 			annotation.name(),
 			annotation.columns(),
-			ResourceLocator.parse(annotation.references()));
+			TablePath.parse(annotation.references()));
 	}
 
 	private List<Class<?>> listClasses(ClassLoader loader, String packageName) {

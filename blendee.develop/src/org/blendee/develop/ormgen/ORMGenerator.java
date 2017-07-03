@@ -27,7 +27,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
@@ -208,11 +208,11 @@ public class ORMGenerator {
 		File packageDir = new File(home, String.join("/", packageName.split("\\.")));
 		packageDir.mkdirs();
 
-		ResourceLocator[] tables = metadata.getTables(schemaName);
-		for (ResourceLocator table : tables) {
+		TablePath[] tables = metadata.getTables(schemaName);
+		for (TablePath table : tables) {
 			Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(table);
 
-			String tableName = relation.getResourceLocator().getTableName();
+			String tableName = relation.getTablePath().getTableName();
 
 			write(
 				new File(packageDir, createEntityManagerCompilationUnitName(tableName)),
@@ -270,7 +270,7 @@ public class ORMGenerator {
 	public String buildEntityManager(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
-		ResourceLocator target = relation.getResourceLocator();
+		TablePath target = relation.getTablePath();
 
 		return codeFormatter.formatEntityManager(
 			managerTemplate,
@@ -290,7 +290,7 @@ public class ORMGenerator {
 	public String buildEntity(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
-		ResourceLocator target = relation.getResourceLocator();
+		TablePath target = relation.getTablePath();
 		String tableName = target.getTableName();
 
 		Set<String> importPart = new LinkedHashSet<>();
@@ -351,12 +351,12 @@ public class ORMGenerator {
 				CrossReference crossReference = child.getCrossReference();
 				String foreignKey = crossReference.getForeignKeyName();
 
-				String childTableName = child.getResourceLocator().getTableName();
+				String childTableName = child.getTablePath().getTableName();
 				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
 
 				list.add(codeFormatter.formatEntityRelationshipPart(
 					entityRelationshipPartTemplate,
-					child.getResourceLocator().getTableName(),
+					child.getTablePath().getTableName(),
 					foreignKey,
 					String.join(", ", crossReference.getForeignKeyColumnNames()),
 					toUpperCaseFirstLetter(methodName),
@@ -391,7 +391,7 @@ public class ORMGenerator {
 	public String buildQuery(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
-		String rootTableName = relation.getResourceLocator().getTableName();
+		String rootTableName = relation.getTablePath().getTableName();
 		String columnPart1, columnPart2;
 		{
 			List<String> list1 = new LinkedList<>();
@@ -420,11 +420,11 @@ public class ORMGenerator {
 			List<String> list2 = new LinkedList<>();
 			List<String> list3 = new LinkedList<>();
 			for (Relationship child : relation.getRelationships()) {
-				ResourceLocator childResourceLocator = child.getResourceLocator();
+				TablePath childTablePath = child.getTablePath();
 
 				String foreignKey = child.getCrossReference().getForeignKeyName();
 
-				String tableName = childResourceLocator.getTableName();
+				String tableName = childTablePath.getTableName();
 
 				String relationship = checker.get(tableName) ? tableName + "_BY_" + foreignKey : tableName;
 
@@ -461,7 +461,7 @@ public class ORMGenerator {
 			relationshipPart3 = String.join("", list3);
 		}
 
-		String tableName = relation.getResourceLocator().getTableName();
+		String tableName = relation.getTablePath().getTableName();
 
 		return codeFormatter.formatQuery(
 			queryTemplate,
@@ -489,7 +489,7 @@ public class ORMGenerator {
 		List<String> result = new LinkedList<>();
 
 		String pkPart = buildPKAnnotation(
-			metadata.getPrimaryKeyMetadata(relation.getResourceLocator()));
+			metadata.getPrimaryKeyMetadata(relation.getTablePath()));
 
 		if (pkPart.length() > 0) {
 			importPart.add(buildImportPart(PseudoPK.class));
@@ -531,7 +531,7 @@ public class ORMGenerator {
 		return buildFKAnnotation(
 			PseudoFK.class,
 			fk.getForeignKeyName(),
-			fk.getPrimaryKeyResource().toString(),
+			fk.getPrimaryKeyTable().toString(),
 			columnNames);
 	}
 
@@ -580,7 +580,7 @@ public class ORMGenerator {
 	private static Map<String, Boolean> createDuprecateChecker(Relationship relation) {
 		Map<String, Boolean> checker = new HashMap<>();
 		for (Relationship child : relation.getRelationships()) {
-			String tableName = child.getResourceLocator().getTableName();
+			String tableName = child.getTablePath().getTableName();
 			if (checker.containsKey(tableName)) {
 				checker.put(tableName, true);
 			} else {
@@ -627,7 +627,7 @@ public class ORMGenerator {
 
 	private static String buildTableComment(
 		Metadata metadata,
-		ResourceLocator target) {
+		TablePath target) {
 		TableMetadata tableMetadata = metadata.getTableMetadata(target);
 
 		StringBuilder builder = new StringBuilder();

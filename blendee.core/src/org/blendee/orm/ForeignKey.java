@@ -3,7 +3,7 @@ package org.blendee.orm;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 
 /**
@@ -11,8 +11,8 @@ import org.blendee.sql.Bindable;
  *
  * @author 千葉 哲嗣
  * @see PrimaryKey#getAllReferences()
- * @see PrimaryKey#getReferences(ResourceLocator, String)
- * @see PrimaryKey#getReferences(ResourceLocator, String[])
+ * @see PrimaryKey#getReferences(TablePath, String)
+ * @see PrimaryKey#getReferences(TablePath, String[])
  * @see DataObject#getForeignKey(String)
  * @see DataObject#getForeignKey(String[])
  */
@@ -25,16 +25,16 @@ public class ForeignKey extends PartialData {
 	private final PrimaryKey reference;
 
 	ForeignKey(
-		ResourceLocator locator,
+		TablePath path,
 		String name,
 		String[] columnNames,
 		Bindable[] bindables,
 		PrimaryKey reference) {
-		super(locator, columnNames, bindables);
+		super(path, columnNames, bindables);
 		this.name = name;
 		this.reference = reference;
 		Object[] objects = new Object[columnNames.length + bindables.length + 1];
-		objects[0] = locator;
+		objects[0] = path;
 		System.arraycopy(columnNames, 0, objects, 1, columnNames.length);
 		System.arraycopy(bindables, 0, objects, columnNames.length + 1, bindables.length);
 		hashCode = Objects.hash(objects);
@@ -62,7 +62,7 @@ public class ForeignKey extends PartialData {
 	public boolean equals(Object o) {
 		if (!(o instanceof ForeignKey)) return false;
 		ForeignKey target = (ForeignKey) o;
-		return locator.equals(target.locator)
+		return path.equals(target.path)
 			&& U.equals(columnNames, target.columnNames)
 			&& U.equals(bindables, target.bindables);
 	}

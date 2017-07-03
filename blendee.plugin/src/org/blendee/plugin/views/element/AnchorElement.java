@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.blendee.plugin.TextDialog;
@@ -152,7 +152,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			this,
 			repository.getColumns(id));
 
-		if (!repository.getResourceLocator(id).exists()) return new Element[0];
+		if (!repository.getTablePath(id).exists()) return new Element[0];
 
 		prepareRelationship();
 		return new Element[] { relationship };
@@ -325,16 +325,16 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			+ " - "
 			+ String.join(", ", allUsingClassNames)
 			+ " - "
-			+ repository.getResourceLocator(id);
+			+ repository.getTablePath(id);
 
-		name = id + " - " + repository.getResourceLocator(id);
+		name = id + " - " + repository.getTablePath(id);
 	}
 
 	private void prepareRelationship() {
 		if (relationship != null
 			&& !relationship.getRelationship()
-				.getResourceLocator()
-				.equals(repository.getResourceLocator(id)))
+				.getTablePath()
+				.equals(repository.getTablePath(id)))
 			relationship = null;
 
 		if (relationship != null) return;
@@ -345,7 +345,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			repository,
 			id,
 			BlendeeContext.get(RelationshipFactory.class).getInstance(
-				repository.getResourceLocator(id)),
+				repository.getTablePath(id)),
 			allColumns);
 		relationship.setParent(this);
 		relationship.setParentForPath(this);
@@ -371,19 +371,19 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 		@Override
 		public void run() {
-			ResourceLocator locator = element.repository
-				.getResourceLocator(element.id);
+			TablePath path = element.repository
+				.getTablePath(element.id);
 			QueryEditorView view = BlendeePlugin.getDefault()
 				.getQueryEditorView();
 			InputDialog dialog = view.createLocationDialog(
-				locator.toString(),
+				path.toString(),
 				"（エラーカラムの参照するテーブルを正しい名称に直す目的で変更する場合"
 					+ U.LINE_SEPARATOR
 					+ "変更を保管するまでエラーカラムの参照するテーブルは変更されません）");
 			if (dialog.open() != Window.OK) return;
 			element.repository.add(
 				element.id,
-				ResourceLocator.parse(dialog.getValue()));
+				TablePath.parse(dialog.getValue()));
 			element.prepareName();
 			element.relationship = null;
 			view.optimizeRepositoryActions(element.repository);
@@ -510,9 +510,9 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 		@Override
 		public void run() {
-			ResourceLocator locator = element.repository.getResourceLocator(element.id);
+			TablePath path = element.repository.getTablePath(element.id);
 			Column[] columns = element.repository.getColumns(element.id);
-			QueryBuilder builder = new QueryBuilder(new FromClause(locator));
+			QueryBuilder builder = new QueryBuilder(new FromClause(path));
 			SelectClause selectClause = new SelectClause();
 			for (int i = 0; i < columns.length; i++) {
 				selectClause.add(columns[i]);

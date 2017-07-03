@@ -4,7 +4,7 @@ package org.blendee.jdbc;
  * テーブル間の関係情報を表します。
  *
  * @author 千葉 哲嗣
- * @see Metadata#getCrossReferences(ResourceLocator, ResourceLocator)
+ * @see Metadata#getCrossReferences(TablePath, TablePath)
  */
 public interface CrossReference {
 
@@ -27,14 +27,14 @@ public interface CrossReference {
 	 *
 	 * @return 主キー側のテーブル名
 	 */
-	ResourceLocator getPrimaryKeyResource();
+	TablePath getPrimaryKeyTable();
 
 	/**
 	 * 外部キー側テーブル名を返します。
 	 *
 	 * @return 外部キー側のテーブル名
 	 */
-	ResourceLocator getForeignKeyResource();
+	TablePath getForeignKeyTable();
 
 	/**
 	 * 主キーを構成するカラム名を返します。

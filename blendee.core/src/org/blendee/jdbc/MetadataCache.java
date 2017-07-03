@@ -9,17 +9,17 @@ import java.util.Map;
  */
 public class MetadataCache implements ManagementSubject {
 
-	private final Map<String, ResourceLocator[]> tableNamesCache = new HashMap<>();
+	private final Map<String, TablePath[]> tableNamesCache = new HashMap<>();
 
-	private final Map<ResourceLocator, ColumnMetadata[]> columnMetadatasCache = new HashMap<>();
+	private final Map<TablePath, ColumnMetadata[]> columnMetadatasCache = new HashMap<>();
 
-	private final Map<ResourceLocator, PrimaryKeyMetadata> primaryKeyCache = new HashMap<>();
+	private final Map<TablePath, PrimaryKeyMetadata> primaryKeyCache = new HashMap<>();
 
-	private final Map<ResourceLocator, ResourceLocator[]> importedKeyCache = new HashMap<>();
+	private final Map<TablePath, TablePath[]> importedKeyCache = new HashMap<>();
 
-	private final Map<ResourceLocator, ResourceLocator[]> exportedKeyCache = new HashMap<>();
+	private final Map<TablePath, TablePath[]> exportedKeyCache = new HashMap<>();
 
-	private final Map<List<ResourceLocator>, CrossReference[]> crossReferencesCache = new HashMap<>();
+	private final Map<List<TablePath>, CrossReference[]> crossReferencesCache = new HashMap<>();
 
 	/**
 	 * キャッシュを消去します。
@@ -33,27 +33,27 @@ public class MetadataCache implements ManagementSubject {
 		clearCacheInternal(crossReferencesCache);
 	}
 
-	ResourceLocator[] getTables(Request<String, ResourceLocator[]> request) {
+	TablePath[] getTables(Request<String, TablePath[]> request) {
 		return execute(tableNamesCache, request);
 	}
 
-	ColumnMetadata[] getColumnMetadatas(Request<ResourceLocator, ColumnMetadata[]> request) {
+	ColumnMetadata[] getColumnMetadatas(Request<TablePath, ColumnMetadata[]> request) {
 		return execute(columnMetadatasCache, request);
 	}
 
-	PrimaryKeyMetadata getPrimaryKeyMetadata(Request<ResourceLocator, PrimaryKeyMetadata> request) {
+	PrimaryKeyMetadata getPrimaryKeyMetadata(Request<TablePath, PrimaryKeyMetadata> request) {
 		return execute(primaryKeyCache, request);
 	}
 
-	ResourceLocator[] getResourcesOfImportedKey(Request<ResourceLocator, ResourceLocator[]> request) {
+	TablePath[] getResourcesOfImportedKey(Request<TablePath, TablePath[]> request) {
 		return execute(importedKeyCache, request);
 	}
 
-	ResourceLocator[] getResourcesOfExportedKey(Request<ResourceLocator, ResourceLocator[]> request) {
+	TablePath[] getResourcesOfExportedKey(Request<TablePath, TablePath[]> request) {
 		return execute(exportedKeyCache, request);
 	}
 
-	CrossReference[] getCrossReferences(Request<List<ResourceLocator>, CrossReference[]> request) {
+	CrossReference[] getCrossReferences(Request<List<TablePath>, CrossReference[]> request) {
 		return execute(crossReferencesCache, request);
 	}
 

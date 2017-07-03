@@ -15,7 +15,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.DataTypeConverter;
 import org.blendee.jdbc.MetadataUtilities;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * 検索対象となるテーブルと、そのテーブルが参照しているテーブルのツリーを構成する要素を表すクラスです。
@@ -26,7 +26,7 @@ import org.blendee.jdbc.ResourceLocator;
  */
 public final class Relationship implements Traversable, Comparable<Relationship> {
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final Relationship root;
 
@@ -48,19 +48,19 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	private final Column[] primaryKeyColumns;
 
-	private final CollectionMap<ResourceLocator, Relationship> convertMap;
+	private final CollectionMap<TablePath, Relationship> convertMap;
 
 	Relationship(
 		Relationship root,
 		Relationship parent,
 		CrossReference reference,
-		ResourceLocator locator,
+		TablePath path,
 		String id,
 		DataTypeConverter converter,
-		CollectionMap<ResourceLocator, Relationship> convertMap) {
-		this.locator = locator;
+		CollectionMap<TablePath, Relationship> convertMap) {
+		this.path = path;
 
-		convertMap.put(locator, this);
+		convertMap.put(path, this);
 		this.convertMap = convertMap;
 
 		if (root == null) {
@@ -73,7 +73,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		this.reference = reference;
 		this.id = id;
 
-		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(locator);
+		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
 		columns = new Column[metadatas.length];
 		DecimalFormat columnFormat = RelationshipFactory.createDigitFormat(metadatas.length);
 		for (int i = 0; i < metadatas.length; i++) {
@@ -82,16 +82,16 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 			columns[i] = column;
 			columnMap.put(metadata.getName(), column);
 		}
-		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(locator);
+		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
 		primaryKeyColumns = new Column[primaryKeyColumnNames.length];
 		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
 			primaryKeyColumns[i] = columnMap.get(MetadataUtilities.regularize(primaryKeyColumnNames[i]));
 		}
 
 		//テーブルの参照が循環している場合、これ以上探索しない
-		if (isRecursive(parent, locator)) return;
+		if (isRecursive(parent, path)) return;
 
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(locator);
+		CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
 
 		DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
 
@@ -101,7 +101,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 				this.root,
 				this,
 				element,
-				element.getPrimaryKeyResource(),
+				element.getPrimaryKeyTable(),
 				id + "_" + relationshipFormat.format(i),
 				converter,
 				convertMap);
@@ -114,8 +114,8 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	@Override
 	public boolean equals(Object o) {
-		if (o != null && o.getClass().equals(ResourceLocator.class))
-			throw new IllegalStateException(ResourceLocator.class.getName() + " と比較することはできません");
+		if (o != null && o.getClass().equals(TablePath.class))
+			throw new IllegalStateException(TablePath.class.getName() + " と比較することはできません");
 
 		return o instanceof Relationship && id.equals(((Relationship) o).id);
 	}
@@ -130,8 +130,8 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 *
 	 * @return この要素が表すテーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	@Override
@@ -308,29 +308,29 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	/**
 	 * この Relationship が含まれるツリーに、パラメータのテーブルがある場合、それに対応する Relationship を返します。
 	 * <br>
-	 * このツリーに locator に対応する Relationship がない場合は、長さ 0 の配列、複数件ある場合は、全ての Relationship を持つ配列を返します。
+	 * このツリーに path に対応する Relationship がない場合は、長さ 0 の配列、複数件ある場合は、全ての Relationship を持つ配列を返します。
 	 *
-	 * @param locator 変換したい {@link ResourceLocator}
+	 * @param path 変換したい {@link TablePath}
 	 * @return 変換された {@link Relationship} の配列
 	 */
-	public Relationship[] convert(ResourceLocator locator) {
-		Collection<Relationship> list = convertMap.get(locator);
+	public Relationship[] convert(TablePath path) {
+		Collection<Relationship> list = convertMap.get(path);
 		return list.toArray(new Relationship[list.size()]);
 	}
 
 	@Override
 	public String toString() {
-		return locator + " " + id;
+		return path + " " + id;
 	}
 
 	private String createErrorMessage(String base) {
 		return this + " では " + base + " は使用できません";
 	}
 
-	private static boolean isRecursive(Relationship parent, ResourceLocator locator) {
+	private static boolean isRecursive(Relationship parent, TablePath path) {
 		if (parent == null) return false;
-		if (parent.getResourceLocator().equals(locator)) return true;
-		return isRecursive(parent.parent, locator);
+		if (parent.getTablePath().equals(path)) return true;
+		return isRecursive(parent.parent, path);
 	}
 
 	private static String createForeignKeyId(String[] foreignKeyColumnNames) {

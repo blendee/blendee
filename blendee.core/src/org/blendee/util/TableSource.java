@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Metadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 
 /**
@@ -16,7 +16,7 @@ import org.blendee.jdbc.TableMetadata;
  */
 public class TableSource {
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final TableMetadata tableMetadata;
 
@@ -29,19 +29,19 @@ public class TableSource {
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @param tableMetadata 対象となるテーブルのメタデータ
 	 * @param columnMetadatas 追加するカラム
 	 * @param pk 追加する主キー
 	 * @param fks 追加する外部キー
 	 */
 	public TableSource(
-		ResourceLocator locator,
+		TablePath path,
 		TableMetadata tableMetadata,
 		ColumnMetadata[] columnMetadatas,
 		PrimaryKeySource pk,
 		ForeignKeySource[] fks) {
-		this.locator = Objects.requireNonNull(locator);
+		this.path = Objects.requireNonNull(path);
 		this.columnMetadatas = Objects.requireNonNull(columnMetadatas);
 
 		this.tableMetadata = tableMetadata;
@@ -56,8 +56,8 @@ public class TableSource {
 	 *
 	 * @return 対象テーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	/**

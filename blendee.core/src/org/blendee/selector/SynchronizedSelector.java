@@ -1,6 +1,6 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Condition;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.SQLAdjuster;
@@ -18,10 +18,10 @@ public class SynchronizedSelector extends Selector {
 	 * <br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 *
-	 * @param locator ルートテーブル
+	 * @param path ルートテーブル
 	 */
-	public SynchronizedSelector(ResourceLocator locator) {
-		super(locator);
+	public SynchronizedSelector(TablePath path) {
+		super(path);
 	}
 
 	/**
@@ -34,8 +34,8 @@ public class SynchronizedSelector extends Selector {
 	}
 
 	@Override
-	public synchronized ResourceLocator getResourceLocator() {
-		return super.getResourceLocator();
+	public synchronized TablePath getTablePath() {
+		return super.getTablePath();
 	}
 
 	@Override

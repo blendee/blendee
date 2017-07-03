@@ -7,7 +7,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Condition;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
@@ -55,10 +55,10 @@ public class Selector {
 	 * <br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 *
-	 * @param locator ルートテーブル
+	 * @param path ルートテーブル
 	 */
-	public Selector(ResourceLocator locator) {
-		this(new SimpleOptimizer(locator));
+	public Selector(TablePath path) {
+		this(new SimpleOptimizer(path));
 	}
 
 	/**
@@ -67,9 +67,9 @@ public class Selector {
 	 * @param optimizer 使用する {@link Optimizer}
 	 */
 	public Selector(Optimizer optimizer) {
-		ResourceLocator locator = optimizer.getResourceLocator();
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
-		builder = new QueryBuilder(new FromClause(locator));
+		TablePath path = optimizer.getTablePath();
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		builder = new QueryBuilder(new FromClause(path));
 		this.optimizer = optimizer;
 
 		SelectorConfigure config = BlendeeContext.get(SelectorConfigure.class);
@@ -83,8 +83,8 @@ public class Selector {
 	 *
 	 * @return ルートテーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return root.getResourceLocator();
+	public TablePath getTablePath() {
+		return root.getTablePath();
 	}
 
 	/**

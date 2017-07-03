@@ -1,7 +1,7 @@
 package org.blendee.plugin.views.element;
 
 import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.eclipse.jface.action.Action;
@@ -23,7 +23,7 @@ public class SchemaElement extends PropertySourceElement {
 
 	SchemaElement(BConnection connection, String name) {
 		this.name = name;
-		ResourceLocator[] tables = connection.getTables(name);
+		TablePath[] tables = connection.getTables(name);
 		children = new TableElement[tables.length];
 		for (int i = 0; i < tables.length; i++) {
 			children[i] = new TableElement(this, tables[i]);

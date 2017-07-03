@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * SELECT 文の ORDER BY 句を表すクラスです。
@@ -50,14 +50,14 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 	/**
 	 * パラメータで示されたテーブルの主キーで ORDER 句を生成します。
 	 *
-	 * @param locator 対象テーブル
+	 * @param path 対象テーブル
 	 * @param direction 方向
 	 * @return 生成されたインスタンス
 	 */
 	public static OrderByClause createPrimaryKeyOrder(
-		ResourceLocator locator,
+		TablePath path,
 		Direction direction) {
-		Column[] columns = BlendeeContext.get(RelationshipFactory.class).getInstance(locator).getPrimaryKeyColumns();
+		Column[] columns = BlendeeContext.get(RelationshipFactory.class).getInstance(path).getPrimaryKeyColumns();
 		OrderByClause clause = new OrderByClause();
 		for (Column column : columns)
 			clause.add(column, direction);

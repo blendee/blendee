@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.ValueExtractors;
@@ -18,7 +18,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
  */
 public class AnchorOptimizer implements Optimizer {
 
-	private final ResourceLocator hint;
+	private final TablePath hint;
 
 	private final boolean canAddNewEntries;
 
@@ -38,7 +38,7 @@ public class AnchorOptimizer implements Optimizer {
 	AnchorOptimizer(
 		AnchorOptimizerFactory factory,
 		String id,
-		ResourceLocator hint,
+		TablePath hint,
 		Class<?> using,
 		boolean canAddNewEntries) {
 		Objects.requireNonNull(factory);
@@ -57,9 +57,9 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	@Override
-	public ResourceLocator getResourceLocator() {
-		ResourceLocator locator = repository.getResourceLocator(id);
-		if (locator == null) {
+	public TablePath getTablePath() {
+		TablePath path = repository.getTablePath(id);
+		if (path == null) {
 			if (canAddNewEntries && hint != null) {
 				repository.add(id, hint, using.getName());
 				return hint;
@@ -68,7 +68,7 @@ public class AnchorOptimizer implements Optimizer {
 			throw new IllegalStateException(id + " がリポジトリにありません");
 		}
 
-		return locator;
+		return path;
 	}
 
 	@Override

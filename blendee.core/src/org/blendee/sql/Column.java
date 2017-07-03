@@ -158,7 +158,7 @@ public class Column implements Comparable<Column> {
 		Relationship myRelation = relationship;
 		List<String[]> fks = new LinkedList<>();
 		while (true) {
-			if (myRelation.getResourceLocator().equals(another.getResourceLocator())) {
+			if (myRelation.getTablePath().equals(another.getTablePath())) {
 				//同じテーブルが見つかったら、今度は保存しておいた同じ FK を辿って
 				//目的のカラムを見つける
 				Relationship newRelation = another;

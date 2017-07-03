@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.CrossReference;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * SELECT 文の FROM 句を表すクラスです。
@@ -79,10 +79,10 @@ public class FromClause {
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
 	 *
-	 * @param locator テーブルのルート
+	 * @param path テーブルのルート
 	 */
-	public FromClause(ResourceLocator locator) {
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(locator);
+	public FromClause(TablePath path) {
+		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
 		localRelationships.add(new RelationshipContainer(root));
 	}
 
@@ -109,12 +109,12 @@ public class FromClause {
 	 * この FROM 句のテーブルをルートにした {@link Relationship} と結合します。
 	 *
 	 * @param type 結合方式
-	 * @param locator このインスタンスのルートのツリーに含まれる {@link ResourceLocator}
+	 * @param path このインスタンスのルートのツリーに含まれる {@link TablePath}
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
 	 */
-	public void join(JoinType type, ResourceLocator locator) {
-		Relationship relationship = RelationshipFactory.convert(root, locator);
+	public void join(JoinType type, TablePath path) {
+		Relationship relationship = RelationshipFactory.convert(root, path);
 		if (localRelationships.contains(relationship)) return;
 		cache = null;
 		Set<Relationship> set = new HashSet<>();
@@ -147,16 +147,16 @@ public class FromClause {
 	/**
 	 * 他の FROM 句と結合するためのジョイントを生成します。
 	 *
-	 * @param locator このインスタンスのルートのツリーに含まれていて、結合する {@link Relationship}
+	 * @param path このインスタンスのルートのツリーに含まれていて、結合する {@link Relationship}
 	 * @param columnNames base に属する結合するカラム
 	 * @return ジョイント
 	 * @throws IllegalArgumentException columnNames が空の場合
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
 	 */
-	public Joint getJoint(ResourceLocator locator, String[] columnNames) {
+	public Joint getJoint(TablePath path, String[] columnNames) {
 		if (columnNames.length < 1) throw new IllegalArgumentException("columnNames が空です");
-		Relationship base = RelationshipFactory.convert(root, locator);
+		Relationship base = RelationshipFactory.convert(root, path);
 		Column[] columns = new Column[columnNames.length];
 		for (int i = 0; i < columnNames.length; i++) {
 			columns[i] = base.getColumn(columnNames[i]);
@@ -177,10 +177,10 @@ public class FromClause {
 	public String toString() {
 		if (cache != null) return cache;
 		if (!isJoined()) {
-			cache = " FROM " + root.getResourceLocator();
+			cache = " FROM " + root.getTablePath();
 		} else {
 			LinkedList<String> result = process();
-			result.addFirst(root.getResourceLocator() + " " + root.getID());
+			result.addFirst(root.getTablePath() + " " + root.getID());
 			cache = " FROM " + String.join(" ", result);
 		}
 		return cache;
@@ -206,7 +206,7 @@ public class FromClause {
 	}
 
 	FromClause replicate() {
-		FromClause clone = new FromClause(root.getResourceLocator());
+		FromClause clone = new FromClause(root.getTablePath());
 
 		//中身はImmutableなのでそのままコピー
 		clone.localRelationships.addAll(localRelationships);
@@ -243,7 +243,7 @@ public class FromClause {
 
 		return type
 			+ " "
-			+ relationship.getResourceLocator()
+			+ relationship.getTablePath()
 			+ " "
 			+ relationship.getID()
 			+ " ON ("

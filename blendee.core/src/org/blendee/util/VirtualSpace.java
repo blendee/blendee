@@ -14,7 +14,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.impl.SimpleCrossReference;
 
@@ -29,19 +29,19 @@ public class VirtualSpace implements Metadata {
 
 	private static final ColumnMetadata[] emptyColumnMetadataArray = {};
 
-	private final Map<ResourceLocator, TableSource> tables = new HashMap<>();
+	private final Map<TablePath, TableSource> tables = new HashMap<>();
 
-	private final CollectionMap<String, ResourceLocator> schemas = new CollectionMap<String, ResourceLocator>() {
+	private final CollectionMap<String, TablePath> schemas = new CollectionMap<String, TablePath>() {
 
 		@Override
-		protected Collection<ResourceLocator> createNewCollection() {
+		protected Collection<TablePath> createNewCollection() {
 			return new LinkedHashSet<>();
 		}
 	};
 
-	private final Map<ResourceLocator, VirtualTable> virtualTables = new HashMap<>();
+	private final Map<TablePath, VirtualTable> virtualTables = new HashMap<>();
 
-	private final CollectionMapMap<ResourceLocator, ResourceLocator, CrossReference> crossReferences = CollectionMapMap.newInstance();
+	private final CollectionMapMap<TablePath, TablePath, CrossReference> crossReferences = CollectionMapMap.newInstance();
 
 	private boolean started = false;
 
@@ -51,9 +51,9 @@ public class VirtualSpace implements Metadata {
 	 * @param table 新しいテーブル情報
 	 */
 	public synchronized void addTable(TableSource table) {
-		ResourceLocator locator = table.getResourceLocator();
-		tables.put(locator, table);
-		schemas.put(locator.getSchemaName(), locator);
+		TablePath path = table.getTablePath();
+		tables.put(path, table);
+		schemas.put(path.getSchemaName(), path);
 	}
 
 	/**
@@ -64,10 +64,10 @@ public class VirtualSpace implements Metadata {
 	 */
 	public synchronized void start(Metadata depends) {
 		if (started) throw new IllegalStateException("既にスタートしています");
-		CollectionMap<ResourceLocator, ResourceLocator> exported = new CollectionMap<ResourceLocator, ResourceLocator>() {
+		CollectionMap<TablePath, TablePath> exported = new CollectionMap<TablePath, TablePath>() {
 
 			@Override
-			protected Collection<ResourceLocator> createNewCollection() {
+			protected Collection<TablePath> createNewCollection() {
 				return new HashSet<>();
 			}
 		};
@@ -91,40 +91,40 @@ public class VirtualSpace implements Metadata {
 	}
 
 	@Override
-	public synchronized ResourceLocator[] getTables(String schemaName) {
-		Collection<ResourceLocator> locators = schemas.get(schemaName);
-		return locators.toArray(new ResourceLocator[locators.size()]);
+	public synchronized TablePath[] getTables(String schemaName) {
+		Collection<TablePath> paths = schemas.get(schemaName);
+		return paths.toArray(new TablePath[paths.size()]);
 	}
 
 	@Override
-	public TableMetadata getTableMetadata(ResourceLocator locator) {
-		return getTable(locator).getTableMetadata();
+	public TableMetadata getTableMetadata(TablePath path) {
+		return getTable(path).getTableMetadata();
 	}
 
 	@Override
-	public ColumnMetadata[] getColumnMetadatas(ResourceLocator locator) {
-		return getTable(locator).getColumnMetadatas();
+	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
+		return getTable(path).getColumnMetadatas();
 	}
 
 	@Override
-	public PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator) {
-		return getTable(locator).getPrimaryKey();
+	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+		return getTable(path).getPrimaryKey();
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator) {
-		return getTable(locator).getResourcesOfImportedKey();
+	public TablePath[] getResourcesOfImportedKey(TablePath path) {
+		return getTable(path).getResourcesOfImportedKey();
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator) {
-		return getTable(locator).getResourcesOfExportedKey();
+	public TablePath[] getResourcesOfExportedKey(TablePath path) {
+		return getTable(path).getResourcesOfExportedKey();
 	}
 
 	@Override
 	public synchronized CrossReference[] getCrossReferences(
-		ResourceLocator exported,
-		ResourceLocator imported) {
+		TablePath exported,
+		TablePath imported) {
 		Collection<CrossReference> references = crossReferences.get(imported).get(exported);
 		return references.toArray(new CrossReference[references.size()]);
 	}
@@ -134,27 +134,27 @@ public class VirtualSpace implements Metadata {
 		return U.toString(this);
 	}
 
-	private synchronized VirtualTable getTable(ResourceLocator locator) {
-		VirtualTable table = virtualTables.get(locator);
+	private synchronized VirtualTable getTable(TablePath path) {
+		VirtualTable table = virtualTables.get(path);
 		if (table == null) return nullTable;
 		return table;
 	}
 
 	private void registTable(
 		TableSource table,
-		CollectionMap<ResourceLocator, ResourceLocator> exportedMap) {
+		CollectionMap<TablePath, TablePath> exportedMap) {
 		ForeignKeySource[] fks = table.getForeignKeySources();
 
-		Set<ResourceLocator> imported = new LinkedHashSet<>();
+		Set<TablePath> imported = new LinkedHashSet<>();
 		for (ForeignKeySource fk : fks)
 			imported.add(fk.getImportedTable());
 
-		ResourceLocator[] importedLocators = imported.toArray(new ResourceLocator[imported.size()]);
+		TablePath[] importedPaths = imported.toArray(new TablePath[imported.size()]);
 
-		ResourceLocator locator = table.getResourceLocator();
+		TablePath path = table.getTablePath();
 
-		Collection<ResourceLocator> exported = exportedMap.get(locator);
-		ResourceLocator[] exportedLocators = exported.toArray(new ResourceLocator[exported.size()]);
+		Collection<TablePath> exported = exportedMap.get(path);
+		TablePath[] exportedPaths = exported.toArray(new TablePath[exported.size()]);
 
 		PrimaryKeySource pk = table.getPrimaryKeySource();
 
@@ -164,28 +164,28 @@ public class VirtualSpace implements Metadata {
 				table.getTabelMetadata(),
 				table.getColumnMetadatas(),
 				null,
-				importedLocators,
-				exportedLocators);
+				importedPaths,
+				exportedPaths);
 		} else {
 			virtualTable = new VirtualTable(
 				table.getTabelMetadata(),
 				table.getColumnMetadatas(),
 				pk,
-				importedLocators,
-				exportedLocators);
+				importedPaths,
+				exportedPaths);
 		}
 
-		virtualTables.put(locator, virtualTable);
+		virtualTables.put(path, virtualTable);
 	}
 
 	private void processForExported(
 		TableSource table,
-		CollectionMap<ResourceLocator, ResourceLocator> exported,
+		CollectionMap<TablePath, TablePath> exported,
 		Metadata depends) {
 		ForeignKeySource[] fks = table.getForeignKeySources();
 		for (ForeignKeySource fk : fks) {
-			ResourceLocator importedTable = fk.getImportedTable();
-			exported.put(importedTable, table.getResourceLocator());
+			TablePath importedTable = fk.getImportedTable();
+			exported.put(importedTable, table.getTablePath());
 
 			TableSource pkTableBase = tables.get(importedTable);
 			TableSource pkTable;
@@ -195,13 +195,13 @@ public class VirtualSpace implements Metadata {
 				pkTable = pkTableBase;
 			}
 
-			crossReferences.get(table.getResourceLocator()).put(
-				pkTable.getResourceLocator(),
+			crossReferences.get(table.getTablePath()).put(
+				pkTable.getTablePath(),
 				new SimpleCrossReference(
 					pkTable.getPrimaryKeySource().getName(),
 					fk.getName(),
-					pkTable.getResourceLocator(),
-					table.getResourceLocator(),
+					pkTable.getTablePath(),
+					table.getTablePath(),
 					pkTable.getPrimaryKeySource().getColumnNames(),
 					fk.getColumns(),
 					true));
@@ -210,15 +210,15 @@ public class VirtualSpace implements Metadata {
 
 	private static TableSource createPrimaryKeyTableInformation(
 		Metadata depends,
-		ResourceLocator locator) {
-		PrimaryKeyMetadata pkMetadata = depends.getPrimaryKeyMetadata(locator);
+		TablePath path) {
+		PrimaryKeyMetadata pkMetadata = depends.getPrimaryKeyMetadata(path);
 
 		String[] pkColumnNames = pkMetadata.getColumnNames();
-		if (pkColumnNames.length == 0) throw new IllegalStateException("参照先の " + locator + " に PK が設定されていません");
+		if (pkColumnNames.length == 0) throw new IllegalStateException("参照先の " + path + " に PK が設定されていません");
 
 		return new TableSource(
-			locator,
-			depends.getTableMetadata(locator),
+			path,
+			depends.getTableMetadata(path),
 			emptyColumnMetadataArray,
 			new PrimaryKeySource(pkMetadata),
 			ForeignKeySource.EMPTY_ARRAY);
@@ -232,16 +232,16 @@ public class VirtualSpace implements Metadata {
 
 		private final PrimaryKeyMetadata primaryKey;
 
-		private final ResourceLocator[] importedKeyResources;
+		private final TablePath[] importedKeyResources;
 
-		private final ResourceLocator[] exportedKeyResources;
+		private final TablePath[] exportedKeyResources;
 
 		VirtualTable(
 			TableMetadata tableMetadata,
 			ColumnMetadata[] columnMetadatas,
 			PrimaryKeySource primaryKey,
-			ResourceLocator[] importedKeyResources,
-			ResourceLocator[] exportedKeyResources) {
+			TablePath[] importedKeyResources,
+			TablePath[] exportedKeyResources) {
 			this.tableMetadata = tableMetadata;
 			this.columnMetadatas = columnMetadatas;
 			this.primaryKey = primaryKey;
@@ -261,18 +261,18 @@ public class VirtualSpace implements Metadata {
 			return primaryKey;
 		}
 
-		ResourceLocator[] getResourcesOfImportedKey() {
+		TablePath[] getResourcesOfImportedKey() {
 			return importedKeyResources.clone();
 		}
 
-		ResourceLocator[] getResourcesOfExportedKey() {
+		TablePath[] getResourcesOfExportedKey() {
 			return exportedKeyResources.clone();
 		}
 	}
 
 	private static class NullVirtualTable extends VirtualTable {
 
-		private static final ResourceLocator[] emptyResourceLocators = {};
+		private static final TablePath[] emptyResourcePaths = {};
 
 		private NullVirtualTable() {
 			super(null, null, null, null, null);
@@ -289,13 +289,13 @@ public class VirtualSpace implements Metadata {
 		}
 
 		@Override
-		ResourceLocator[] getResourcesOfImportedKey() {
-			return emptyResourceLocators;
+		TablePath[] getResourcesOfImportedKey() {
+			return emptyResourcePaths;
 		}
 
 		@Override
-		ResourceLocator[] getResourcesOfExportedKey() {
-			return emptyResourceLocators;
+		TablePath[] getResourcesOfExportedKey() {
+			return emptyResourcePaths;
 		}
 	}
 }

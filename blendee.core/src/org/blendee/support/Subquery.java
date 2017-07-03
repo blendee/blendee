@@ -3,7 +3,7 @@ package org.blendee.support;
 import org.blendee.internal.Traversable;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Condition;
 import org.blendee.sql.ConditionFactory;
 import org.blendee.sql.Relationship;
@@ -58,7 +58,7 @@ public class Subquery {
 		Relationship myJoinPoint = joinPoint == null
 			? find(
 				subquery.getRootRealtionship(),
-				mainquery.getRootRealtionship().getResourceLocator())
+				mainquery.getRootRealtionship().getTablePath())
 			: joinPoint;
 
 		return ConditionFactory
@@ -68,7 +68,7 @@ public class Subquery {
 				subquery.getCondition());
 	}
 
-	private static Relationship find(Relationship root, ResourceLocator target) {
+	private static Relationship find(Relationship root, TablePath target) {
 		Relationship[] finded = { null };
 		TraverserOperator.operate(new Traverser() {
 
@@ -81,7 +81,7 @@ public class Subquery {
 			public void execute(Traversable traversable) {
 				Relationship relation = (Relationship) traversable;
 
-				if (target.equals(relation.getResourceLocator()))
+				if (target.equals(relation.getTablePath()))
 					if (finded[0] != null)
 						throw new SubqueryException(target + " が複数存在するため、結合箇所が特定できません。");
 				finded[0] = relation;

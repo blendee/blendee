@@ -153,7 +153,7 @@ public class OneToManyExecutor<O extends BEntity, M>
 
 	@Override
 	public int count() {
-		QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getResourceLocator()));
+		QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getTablePath()));
 
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 

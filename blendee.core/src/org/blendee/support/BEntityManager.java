@@ -3,7 +3,7 @@ package org.blendee.support;
 import java.util.Optional;
 
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectNotFoundException;
@@ -46,11 +46,11 @@ public interface BEntityManager<T extends BEntity> {
 	T createEntity(DataObject data);
 
 	/**
-	 * サブクラスで固有の {@link ResourceLocator} を返します。
+	 * サブクラスで固有の {@link TablePath} を返します。
 	 *
-	 * @return 固有の {@link ResourceLocator}
+	 * @return 固有の {@link TablePath}
 	 */
-	ResourceLocator getResourceLocator();
+	TablePath getTablePath();
 
 	/**
 	 * この EntityManager で使用する {@link DataAccessHelper}
@@ -80,7 +80,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return {@link BEntity} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, String... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getResourceLocator()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return {@link BEntity} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, Number... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getResourceLocator()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return {@link BEntity} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, Bindable... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getResourceLocator()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -158,7 +158,7 @@ public interface BEntityManager<T extends BEntity> {
 		try {
 			object = getDataAccessHelper().getDataObject(
 				optimizer,
-				PrimaryKey.getInstance(getResourceLocator(), primaryKeyMembers),
+				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
@@ -180,7 +180,7 @@ public interface BEntityManager<T extends BEntity> {
 		try {
 			object = getDataAccessHelper().getDataObject(
 				optimizer,
-				PrimaryKey.getInstance(getResourceLocator(), primaryKeyMembers),
+				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
@@ -224,7 +224,7 @@ public interface BEntityManager<T extends BEntity> {
 		try {
 			object = getDataAccessHelper().getDataObject(
 				optimizer,
-				new PrimaryKey(getResourceLocator(), primaryKeyMembers),
+				new PrimaryKey(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
@@ -250,7 +250,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return パラメータの条件にマッチする件数
 	 */
 	default int count(Condition condition) {
-		return getDataAccessHelper().count(getResourceLocator(), condition);
+		return getDataAccessHelper().count(getTablePath(), condition);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param entity INSERT 対象
 	 */
 	default void insert(T entity) {
-		getDataAccessHelper().insert(getResourceLocator(), entity, null);
+		getDataAccessHelper().insert(getTablePath(), entity, null);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param entity INSERT 対象
 	 */
 	default void insert(BatchStatement statement, T entity) {
-		getDataAccessHelper().insert(statement, getResourceLocator(), entity, null);
+		getDataAccessHelper().insert(statement, getTablePath(), entity, null);
 	}
 
 	/**
@@ -279,7 +279,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	default void insert(T entity, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(getResourceLocator(), entity, adjuster);
+		getDataAccessHelper().insert(getTablePath(), entity, adjuster);
 	}
 
 	/**
@@ -290,7 +290,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	default void insert(BatchStatement statement, T entity, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(statement, getResourceLocator(), entity, adjuster);
+		getDataAccessHelper().insert(statement, getTablePath(), entity, adjuster);
 	}
 
 	/**
@@ -302,7 +302,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(SequenceGenerator generator, T entity, int retry) {
-		return getDataAccessHelper().insert(getResourceLocator(), generator, entity, retry, null);
+		return getDataAccessHelper().insert(getTablePath(), generator, entity, retry, null);
 	}
 
 	/**
@@ -315,7 +315,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(BatchStatement statement, SequenceGenerator generator, T entity, int retry) {
-		return getDataAccessHelper().insert(statement, getResourceLocator(), generator, entity, retry, null);
+		return getDataAccessHelper().insert(statement, getTablePath(), generator, entity, retry, null);
 	}
 
 	/**
@@ -328,7 +328,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(SequenceGenerator generator, T entity, int retry, SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(getResourceLocator(), generator, entity, retry, adjuster);
+		return getDataAccessHelper().insert(getTablePath(), generator, entity, retry, adjuster);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public interface BEntityManager<T extends BEntity> {
 		T entity,
 		int retry,
 		SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(statement, getResourceLocator(), generator, entity, retry, adjuster);
+		return getDataAccessHelper().insert(statement, getTablePath(), generator, entity, retry, adjuster);
 	}
 
 	/**
@@ -357,7 +357,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return 削除が成功した場合、 true
 	 */
 	default boolean delete(T entity) {
-		int result = getDataAccessHelper().delete(getResourceLocator(), entity.getPrimaryKey().getCondition());
+		int result = getDataAccessHelper().delete(getTablePath(), entity.getPrimaryKey().getCondition());
 		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
 		return result == 1;
 	}
@@ -369,7 +369,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param entity DELETE 対象
 	 */
 	default void delete(BatchStatement statement, T entity) {
-		getDataAccessHelper().delete(statement, getResourceLocator(), entity.getPrimaryKey().getCondition());
+		getDataAccessHelper().delete(statement, getTablePath(), entity.getPrimaryKey().getCondition());
 	}
 
 	/**
@@ -380,7 +380,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return 更新件数
 	 */
 	default int update(Condition condition, Updatable updatable) {
-		return getDataAccessHelper().update(getResourceLocator(), updatable, condition, null);
+		return getDataAccessHelper().update(getTablePath(), updatable, condition, null);
 	}
 
 	/**
@@ -391,7 +391,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
 	default void update(BatchStatement statement, Condition condition, Updatable updatable) {
-		getDataAccessHelper().update(statement, getResourceLocator(), updatable, condition, null);
+		getDataAccessHelper().update(statement, getTablePath(), updatable, condition, null);
 	}
 
 	/**
@@ -403,7 +403,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return 更新件数
 	 */
 	default int update(Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		return getDataAccessHelper().update(getResourceLocator(), updatable, condition, adjuster);
+		return getDataAccessHelper().update(getTablePath(), updatable, condition, adjuster);
 	}
 
 	/**
@@ -415,7 +415,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
 	default void update(BatchStatement statement, Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		getDataAccessHelper().update(statement, getResourceLocator(), updatable, condition, adjuster);
+		getDataAccessHelper().update(statement, getTablePath(), updatable, condition, adjuster);
 	}
 
 	/**
@@ -425,7 +425,7 @@ public interface BEntityManager<T extends BEntity> {
 	 * @return 削除件数
 	 */
 	default int delete(Condition condition) {
-		return getDataAccessHelper().delete(getResourceLocator(), condition);
+		return getDataAccessHelper().delete(getTablePath(), condition);
 	}
 
 	/**
@@ -435,6 +435,6 @@ public interface BEntityManager<T extends BEntity> {
 	 * @param condition WHERE 句となる条件
 	 */
 	default void delete(BatchStatement statement, Condition condition) {
-		getDataAccessHelper().delete(statement, getResourceLocator(), condition);
+		getDataAccessHelper().delete(statement, getTablePath(), condition);
 	}
 }

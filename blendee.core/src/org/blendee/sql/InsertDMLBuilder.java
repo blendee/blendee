@@ -3,7 +3,7 @@ package org.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の INSERT 文を生成するクラスです。
@@ -15,10 +15,10 @@ public class InsertDMLBuilder extends Updater {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 *
-	 * @param locator INSERT 対象テーブル
+	 * @param path INSERT 対象テーブル
 	 */
-	public InsertDMLBuilder(ResourceLocator locator) {
-		super(locator);
+	public InsertDMLBuilder(TablePath path) {
+		super(path);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class InsertDMLBuilder extends Updater {
 			placeHolders.add(getPlaceHolderOrFragment(columnName));
 		}
 		return "INSERT INTO "
-			+ getResourceLocator()
+			+ getTablePath()
 			+ " ("
 			+ String.join(", ", columns)
 			+ ")"

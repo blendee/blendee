@@ -25,7 +25,7 @@ import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 
 /**
@@ -98,7 +98,7 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public ResourceLocator[] getTables(String schemaName) {
+	public TablePath[] getTables(String schemaName) {
 		if (!config.containsSchemaName(schemaName))
 			throw new IllegalArgumentException("設定されていないスキーマ名です");
 
@@ -112,23 +112,23 @@ class ConcreteConnection implements BConnection {
 			while (result.next()) {
 				String tableName = result.getString("TABLE_NAME");
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
-				if (!ResourceLocator.checkObjectName(tableName)) continue;
+				if (!TablePath.checkObjectName(tableName)) continue;
 				tables.add(tableName);
 			}
-			ResourceLocator[] locators = new ResourceLocator[tables.size()];
-			for (int i = 0; i < locators.length; i++) {
-				locators[i] = new ResourceLocator(schemaName, tables.get(i));
+			TablePath[] paths = new TablePath[tables.size()];
+			for (int i = 0; i < paths.length; i++) {
+				paths[i] = new TablePath(schemaName, tables.get(i));
 			}
-			return locators;
+			return paths;
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
 	}
 
 	@Override
-	public TableMetadata getTableMetadata(ResourceLocator locator) {
+	public TableMetadata getTableMetadata(TablePath path) {
 		try (ResultSet result = connection.getMetaData()
-			.getTables(null, regularize(locator.getSchemaName()), regularize(locator.getTableName()), null)) {
+			.getTables(null, regularize(path.getSchemaName()), regularize(path.getTableName()), null)) {
 
 			result.next();
 
@@ -139,9 +139,9 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public ColumnMetadata[] getColumnMetadatas(ResourceLocator locator) {
+	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
 		try (ResultSet result = connection.getMetaData()
-			.getColumns(null, regularize(locator.getSchemaName()), regularize(locator.getTableName()), null)) {
+			.getColumns(null, regularize(path.getSchemaName()), regularize(path.getTableName()), null)) {
 
 			List<ColumnMetadata> columns = new LinkedList<>();
 			while (result.next()) {
@@ -155,11 +155,11 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator) {
+	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
 		try (ResultSet result = connection.getMetaData().getPrimaryKeys(
 			null,
-			regularize(locator.getSchemaName()),
-			regularize(locator.getTableName()))) {
+			regularize(path.getSchemaName()),
+			regularize(path.getTableName()))) {
 
 			String name = null;
 			List<Column> columnList = new ArrayList<>();
@@ -184,13 +184,13 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator) {
+	public TablePath[] getResourcesOfImportedKey(TablePath path) {
 		try {
 			return getOtherResources(
 				connection.getMetaData().getImportedKeys(
 					null,
-					regularize(locator.getSchemaName()),
-					regularize(locator.getTableName())),
+					regularize(path.getSchemaName()),
+					regularize(path.getTableName())),
 				"PKTABLE_SCHEM",
 				"PKTABLE_NAME");
 		} catch (SQLException e) {
@@ -199,13 +199,13 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator) {
+	public TablePath[] getResourcesOfExportedKey(TablePath path) {
 		try {
 			return getOtherResources(
 				connection.getMetaData().getExportedKeys(
 					null,
-					regularize(locator.getSchemaName()),
-					regularize(locator.getTableName())),
+					regularize(path.getSchemaName()),
+					regularize(path.getTableName())),
 				"FKTABLE_SCHEM",
 				"FKTABLE_NAME");
 		} catch (SQLException e) {
@@ -214,7 +214,7 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public CrossReference[] getCrossReferences(ResourceLocator exportedTable, ResourceLocator importedTable) {
+	public CrossReference[] getCrossReferences(TablePath exportedTable, TablePath importedTable) {
 		List<CrossReferenceResult> resultList = new LinkedList<>();
 		try (ResultSet jdbcResult = connection.getMetaData().getCrossReference(
 			null,
@@ -308,20 +308,20 @@ class ConcreteConnection implements BConnection {
 		return statement;
 	}
 
-	private static final ResourceLocator[] getOtherResources(
+	private static final TablePath[] getOtherResources(
 		ResultSet result,
 		String schemaColumnName,
 		String tableColumnName) throws SQLException {
 		try {
-			Set<ResourceLocator> targets = new TreeSet<>();
+			Set<TablePath> targets = new TreeSet<>();
 			while (result.next()) {
 				String tableName = result.getString(tableColumnName);
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
-				if (!ResourceLocator.checkObjectName(tableName)) continue;
-				ResourceLocator locator = new ResourceLocator(result.getString(schemaColumnName), tableName);
-				targets.add(locator);
+				if (!TablePath.checkObjectName(tableName)) continue;
+				TablePath path = new TablePath(result.getString(schemaColumnName), tableName);
+				targets.add(path);
 			}
-			return targets.toArray(new ResourceLocator[targets.size()]);
+			return targets.toArray(new TablePath[targets.size()]);
 		} finally {
 			U.close(result);
 		}
@@ -394,9 +394,9 @@ class ConcreteConnection implements BConnection {
 
 		private final String fkName;
 
-		private final ResourceLocator pkTable;
+		private final TablePath pkTable;
 
-		private final ResourceLocator fkTable;
+		private final TablePath fkTable;
 
 		private final List<String> pkColumnNames = new ArrayList<>();
 
@@ -405,8 +405,8 @@ class ConcreteConnection implements BConnection {
 		private CrossReferenceBuilder(CrossReferenceResult result) {
 			pkName = result.pkName;
 			fkName = result.fkName;
-			pkTable = new ResourceLocator(result.pkSchema, result.pkTable);
-			fkTable = new ResourceLocator(result.fkSchema, result.fkTable);
+			pkTable = new TablePath(result.pkSchema, result.pkTable);
+			fkTable = new TablePath(result.fkSchema, result.fkTable);
 		}
 
 		private void add(CrossReferenceResult result) {

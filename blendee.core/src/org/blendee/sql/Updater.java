@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * 登録更新用 SQL 文を生成するための抽象基底クラスです。
@@ -18,7 +18,7 @@ import org.blendee.jdbc.ResourceLocator;
  */
 public abstract class Updater implements PreparedStatementComplementer {
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final Set<String> columns = new LinkedHashSet<>();
 
@@ -31,10 +31,10 @@ public abstract class Updater implements PreparedStatementComplementer {
 	/**
 	 * パラメータの表すテーブルに対する更新を行うインスタンスを生成します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 */
-	protected Updater(ResourceLocator locator) {
-		this.locator = locator;
+	protected Updater(TablePath path) {
+		this.path = path;
 	}
 
 	/**
@@ -120,8 +120,8 @@ public abstract class Updater implements PreparedStatementComplementer {
 	 *
 	 * @return 更新対象テーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	/**

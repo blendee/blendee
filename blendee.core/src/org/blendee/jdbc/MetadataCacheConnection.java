@@ -18,8 +18,8 @@ class MetadataCacheConnection extends ConnectionBase {
 	}
 
 	@Override
-	public ResourceLocator[] getTables(final String schemaName) {
-		ResourceLocator[] tables = cache.getTables(new Request<String, ResourceLocator[]>() {
+	public TablePath[] getTables(final String schemaName) {
+		TablePath[] tables = cache.getTables(new Request<String, TablePath[]>() {
 
 			@Override
 			String createCacheKey() {
@@ -27,7 +27,7 @@ class MetadataCacheConnection extends ConnectionBase {
 			}
 
 			@Override
-			ResourceLocator[] createCacheTarget() {
+			TablePath[] createCacheTarget() {
 				return MetadataCacheConnection.super.getTables(schemaName);
 			}
 		});
@@ -36,17 +36,17 @@ class MetadataCacheConnection extends ConnectionBase {
 	}
 
 	@Override
-	public ColumnMetadata[] getColumnMetadatas(final ResourceLocator locator) {
-		ColumnMetadata[] columnMetadatas = cache.getColumnMetadatas(new Request<ResourceLocator, ColumnMetadata[]>() {
+	public ColumnMetadata[] getColumnMetadatas(final TablePath path) {
+		ColumnMetadata[] columnMetadatas = cache.getColumnMetadatas(new Request<TablePath, ColumnMetadata[]>() {
 
 			@Override
-			ResourceLocator createCacheKey() {
-				return locator;
+			TablePath createCacheKey() {
+				return path;
 			}
 
 			@Override
 			ColumnMetadata[] createCacheTarget() {
-				return MetadataCacheConnection.super.getColumnMetadatas(locator);
+				return MetadataCacheConnection.super.getColumnMetadatas(path);
 			}
 		});
 
@@ -54,66 +54,66 @@ class MetadataCacheConnection extends ConnectionBase {
 	}
 
 	@Override
-	public PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator) {
-		return cache.getPrimaryKeyMetadata(new Request<ResourceLocator, PrimaryKeyMetadata>() {
+	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+		return cache.getPrimaryKeyMetadata(new Request<TablePath, PrimaryKeyMetadata>() {
 
 			@Override
-			ResourceLocator createCacheKey() {
-				return locator;
+			TablePath createCacheKey() {
+				return path;
 			}
 
 			@Override
 			PrimaryKeyMetadata createCacheTarget() {
-				return MetadataCacheConnection.super.getPrimaryKeyMetadata(locator);
+				return MetadataCacheConnection.super.getPrimaryKeyMetadata(path);
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfImportedKey(final ResourceLocator locator) {
-		ResourceLocator[] locators = cache.getResourcesOfImportedKey(new Request<ResourceLocator, ResourceLocator[]>() {
+	public TablePath[] getResourcesOfImportedKey(final TablePath path) {
+		TablePath[] paths = cache.getResourcesOfImportedKey(new Request<TablePath, TablePath[]>() {
 
 			@Override
-			ResourceLocator createCacheKey() {
-				return locator;
+			TablePath createCacheKey() {
+				return path;
 			}
 
 			@Override
-			ResourceLocator[] createCacheTarget() {
-				return MetadataCacheConnection.super.getResourcesOfImportedKey(locator);
+			TablePath[] createCacheTarget() {
+				return MetadataCacheConnection.super.getResourcesOfImportedKey(path);
 			}
 		});
 
-		return locators.clone();
+		return paths.clone();
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfExportedKey(final ResourceLocator locator) {
-		ResourceLocator[] locators = cache.getResourcesOfExportedKey(new Request<ResourceLocator, ResourceLocator[]>() {
+	public TablePath[] getResourcesOfExportedKey(final TablePath path) {
+		TablePath[] paths = cache.getResourcesOfExportedKey(new Request<TablePath, TablePath[]>() {
 
 			@Override
-			ResourceLocator createCacheKey() {
-				return locator;
+			TablePath createCacheKey() {
+				return path;
 			}
 
 			@Override
-			ResourceLocator[] createCacheTarget() {
-				return MetadataCacheConnection.super.getResourcesOfExportedKey(locator);
+			TablePath[] createCacheTarget() {
+				return MetadataCacheConnection.super.getResourcesOfExportedKey(path);
 			}
 		});
 
-		return locators.clone();
+		return paths.clone();
 	}
 
 	@Override
 	public CrossReference[] getCrossReferences(
-		final ResourceLocator exportedTable,
-		final ResourceLocator importedTable) {
-		CrossReference[] references = cache.getCrossReferences(new Request<List<ResourceLocator>, CrossReference[]>() {
+		final TablePath exportedTable,
+		final TablePath importedTable) {
+		CrossReference[] references = cache.getCrossReferences(new Request<List<TablePath>, CrossReference[]>() {
 
 			@Override
-			List<ResourceLocator> createCacheKey() {
-				List<ResourceLocator> key = new ArrayList<ResourceLocator>(2);
+			List<TablePath> createCacheKey() {
+				List<TablePath> key = new ArrayList<TablePath>(2);
 				key.add(exportedTable);
 				key.add(importedTable);
 				return key;

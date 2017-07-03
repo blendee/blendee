@@ -3,7 +3,7 @@ package org.blendee.sql;
 import java.util.Objects;
 
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。
@@ -16,7 +16,7 @@ public class PhantomColumn extends Column {
 
 	private final Object lock = new Object();
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final String name;
 
@@ -27,24 +27,24 @@ public class PhantomColumn extends Column {
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator このカラムが属するテーブル
+	 * @param path このカラムが属するテーブル
 	 * @param name カラム名
 	 */
-	public PhantomColumn(ResourceLocator locator, String name) {
-		this.locator = locator;
+	public PhantomColumn(TablePath path, String name) {
+		this.path = path;
 		this.name = name;
-		phantomHashCode = Objects.hash(locator, name);
+		phantomHashCode = Objects.hash(path, name);
 	}
 
 	/**
 	 * このクラスのインスタンスを生成します。
 	 * <br>
-	 * 使用される {@link ResourceLocator} は後に検索対象となる {@link Relationship} が持つものになります。
+	 * 使用される {@link TablePath} は後に検索対象となる {@link Relationship} が持つものになります。
 	 *
 	 * @param name カラム名
 	 */
 	public PhantomColumn(String name) {
-		this.locator = null;
+		this.path = null;
 		this.name = name;
 		phantomHashCode = name.hashCode();
 	}
@@ -52,7 +52,7 @@ public class PhantomColumn extends Column {
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラス独自のハッシュコードを返します。
 	 *
-	 * @return {@link Column} が決定すると、その {@link Column} のハッシュコード、そうでなければ locator と name から算出したハッシュコード
+	 * @return {@link Column} が決定すると、その {@link Column} のハッシュコード、そうでなければ path と name から算出したハッシュコード
 	 */
 	@Override
 	public int hashCode() {
@@ -64,7 +64,7 @@ public class PhantomColumn extends Column {
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラスのインスタンス同士の equals になります。
 	 *
-	 * @return {@link Column} が決定すると、その {@link Column} との equals 、そうでなければ locator と name での equals
+	 * @return {@link Column} が決定すると、その {@link Column} との equals 、そうでなければ path と name での equals
 	 */
 	@Override
 	public boolean equals(Object o) {
@@ -73,15 +73,15 @@ public class PhantomColumn extends Column {
 		if (!(o instanceof PhantomColumn)) return false;
 		PhantomColumn target = (PhantomColumn) o;
 
-		if (locator == null) return name.equals(target.name);
+		if (path == null) return name.equals(target.name);
 
-		return locator.equals(target.locator) && name.equals(target.name);
+		return path.equals(target.path) && name.equals(target.name);
 	}
 
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラスのインスタンス同士の比較値を返します。
 	 *
-	 * @return {@link Column} が決定すると、その {@link Column} との比較値 、そうでなければ locator と name での比較値
+	 * @return {@link Column} が決定すると、その {@link Column} との比較値 、そうでなければ path と name での比較値
 	 */
 	@Override
 	public int compareTo(Column target) {
@@ -90,10 +90,10 @@ public class PhantomColumn extends Column {
 		if (!(target instanceof PhantomColumn)) return -1;
 		PhantomColumn phantomColumnTarget = (PhantomColumn) target;
 
-		if (locator == null) return name.compareTo(phantomColumnTarget.name);
+		if (path == null) return name.compareTo(phantomColumnTarget.name);
 
-		int locatorResult = locator.compareTo(phantomColumnTarget.locator);
-		return locatorResult == 0 ? name.compareTo(phantomColumnTarget.name) : locatorResult;
+		int pathResult = path.compareTo(phantomColumnTarget.path);
+		return pathResult == 0 ? name.compareTo(phantomColumnTarget.name) : pathResult;
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class PhantomColumn extends Column {
 
 	@Override
 	Column replicate() {
-		return new PhantomColumn(locator, name);
+		return new PhantomColumn(path, name);
 	}
 
 	/**
@@ -166,10 +166,10 @@ public class PhantomColumn extends Column {
 				throw new IllegalStateException("このインスタンスは既に " + substance + " として使われています");
 
 			Relationship relation;
-			if (locator == null) {
-				relation = RelationshipFactory.convert(sqlRoot, sqlRoot.getResourceLocator());
+			if (path == null) {
+				relation = RelationshipFactory.convert(sqlRoot, sqlRoot.getTablePath());
 			} else {
-				relation = RelationshipFactory.convert(sqlRoot, locator);
+				relation = RelationshipFactory.convert(sqlRoot, path);
 			}
 
 			substance = relation.getColumn(name);

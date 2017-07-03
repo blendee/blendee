@@ -14,7 +14,7 @@ import java.util.TreeMap;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
 import org.blendee.sql.Relationship;
@@ -36,12 +36,12 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 		LocationSource locationSource = locationMap.get(id);
 		if (locationSource == null) return Column.EMPTY_ARRAY;
 
-		ResourceLocator locator = locationSource.getLocator();
-		if (!locator.exists()) return Column.EMPTY_ARRAY;
+		TablePath path = locationSource.getTablePath();
+		if (!path.exists()) return Column.EMPTY_ARRAY;
 
 		Collection<ColumnSource> columns = locationSource.getColumnSources();
 		if (columns.size() == 0) return Column.EMPTY_ARRAY;
-		Relationship root = factory.getInstance(locator);
+		Relationship root = factory.getInstance(path);
 		List<Column> list = new LinkedList<>();
 		for (ColumnSource source : columns) {
 			try {
@@ -55,9 +55,9 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	@Override
 	public synchronized void addColumn(String id, Column column, String... usingClassNames) {
-		LocationSource locationSource = setResourceLocatorInternal(
+		LocationSource locationSource = setTablePathInternal(
 			id,
-			column.getRelationship().getRoot().getResourceLocator(),
+			column.getRelationship().getRoot().getTablePath(),
 			Arrays.asList(usingClassNames));
 		if (!locationSource.add(column)) return;
 		changed = true;
@@ -77,9 +77,9 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 		LocationSource oldLocation = locationMap.remove(oldID);
 		if (oldLocation == null) return;
 		locationMap.remove(newId);
-		LocationSource newLocation = setResourceLocatorInternal(
+		LocationSource newLocation = setTablePathInternal(
 			newId,
-			oldLocation.getLocator(),
+			oldLocation.getTablePath(),
 			Arrays.asList(usingClassNames));
 		oldLocation.putAllColumns(newLocation);
 		changed = true;
@@ -161,15 +161,15 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void add(String id, ResourceLocator locator, String... usingClassNames) {
-		setResourceLocatorInternal(id, locator, Arrays.asList(usingClassNames));
+	public synchronized void add(String id, TablePath path, String... usingClassNames) {
+		setTablePathInternal(id, path, Arrays.asList(usingClassNames));
 	}
 
 	@Override
-	public synchronized ResourceLocator getResourceLocator(String id) {
+	public synchronized TablePath getTablePath(String id) {
 		LocationSource source = locationMap.get(id);
 		if (source == null) return null;
-		return source.getLocator();
+		return source.getTablePath();
 	}
 
 	@Override
@@ -177,13 +177,13 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 		LocationSource locationSource = locationMap.get(id);
 		if (locationSource == null) return new String[0];
 
-		ResourceLocator locator = locationSource.getLocator();
-		if (!locator.exists()) return new String[] { locator + " は存在しません" };
+		TablePath path = locationSource.getTablePath();
+		if (!path.exists()) return new String[] { path + " は存在しません" };
 
 		Collection<ColumnSource> columns = locationSource.getColumnSources();
 		if (columns.size() == 0) return new String[0];
 
-		Relationship root = factory.getInstance(locator);
+		Relationship root = factory.getInstance(path);
 		List<String> messages = new LinkedList<>();
 		for (ColumnSource source : columns) {
 			try {
@@ -200,13 +200,13 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 		LocationSource locationSource = locationMap.get(id);
 		if (locationSource == null) return;
 
-		ResourceLocator locator = locationSource.getLocator();
-		if (!locator.exists()) return;
+		TablePath path = locationSource.getTablePath();
+		if (!path.exists()) return;
 
 		Collection<ColumnSource> columns = locationSource.getColumnSources();
 		if (columns.size() == 0) return;
 
-		Relationship root = factory.getInstance(locator);
+		Relationship root = factory.getInstance(path);
 		for (Iterator<ColumnSource> i = columns.iterator(); i.hasNext();) {
 			ColumnSource source = i.next();
 			try {
@@ -250,28 +250,28 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 	abstract void write(Map<String, LocationSource> locationMap);
 
-	private LocationSource setResourceLocatorInternal(String id, ResourceLocator locator, Collection<String> usings) {
+	private LocationSource setTablePathInternal(String id, TablePath path, Collection<String> usings) {
 		LocationSource source = locationMap.get(id);
 		if (source != null) {
-			if (source.getLocator().equals(locator)) {
+			if (source.getTablePath().equals(path)) {
 				changed |= source.addUsingClasses(usings);
 				return source;
 			}
 
 			source = new LocationSource(
 				id,
-				locator,
+				path,
 				source.getUsingClasses(),
 				System.currentTimeMillis());
 		} else {
 			source = new LocationSource(
 				id,
-				locator,
+				path,
 				usings,
 				System.currentTimeMillis());
 		}
 
-		source = new LocationSource(id, locator, source.getUsingClasses(), System.currentTimeMillis());
+		source = new LocationSource(id, path, source.getUsingClasses(), System.currentTimeMillis());
 		source.addUsingClasses(usings);
 		locationMap.put(id, source);
 		changed = true;
@@ -283,7 +283,7 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 		private final String id;
 
-		private final ResourceLocator locator;
+		private final TablePath path;
 
 		private final Set<String> usings = new HashSet<>();
 
@@ -291,21 +291,21 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 		private long timestamp;
 
-		LocationSource(String id, ResourceLocator locator, Collection<String> usings, long timestamp) {
+		LocationSource(String id, TablePath path, Collection<String> usings, long timestamp) {
 			this.id = id;
-			this.locator = locator;
+			this.path = path;
 			this.usings.addAll(usings);
 			this.timestamp = timestamp;
 		}
 
 		LocationSource(
 			String id,
-			ResourceLocator locator,
+			TablePath path,
 			Collection<String> using,
 			Collection<ColumnSource> sources,
 			long timestamp) {
 			this.id = id;
-			this.locator = locator;
+			this.path = path;
 			this.usings.addAll(usings);
 			this.timestamp = timestamp;
 			for (ColumnSource source : sources) {
@@ -316,15 +316,15 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 		@Override
 		public String toString() {
 			String usingString = "{" + String.join(",", usings) + "}";
-			return "id=" + id + "&location=" + locator + "&using=" + usingString + "&timestamp=" + timestamp;
+			return "id=" + id + "&path=" + path + "&using=" + usingString + "&timestamp=" + timestamp;
 		}
 
 		String getId() {
 			return id;
 		}
 
-		ResourceLocator getLocator() {
-			return locator;
+		TablePath getTablePath() {
+			return path;
 		}
 
 		long getTimestamp() {

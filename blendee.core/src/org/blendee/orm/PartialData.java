@@ -2,7 +2,7 @@ package org.blendee.orm;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeContext;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Condition;
@@ -22,7 +22,7 @@ public class PartialData implements Searchable, Updatable {
 	/**
 	 * このインスタンスの属するテーブル。
 	 */
-	protected final ResourceLocator locator;
+	protected final TablePath path;
 
 	/**
 	 * このインスタンスが持つカラム。
@@ -37,18 +37,18 @@ public class PartialData implements Searchable, Updatable {
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator このインスタンスの属するテーブル
+	 * @param path このインスタンスの属するテーブル
 	 * @param columnNames このインスタンスが持つカラム
 	 * @param bindables このインスタンスが持つカラムの値
 	 * @throws IllegalArgumentException columnNames と bindables の要素数が一致しない場合
 	 */
 	public PartialData(
-		ResourceLocator locator,
+		TablePath path,
 		String[] columnNames,
 		Bindable[] bindables) {
 		if (columnNames.length != bindables.length)
 			throw new IllegalArgumentException("columnNames と bindables の要素数が一致しません");
-		this.locator = locator;
+		this.path = path;
 		this.columnNames = columnNames.clone();
 		this.bindables = bindables.clone();
 	}
@@ -58,8 +58,8 @@ public class PartialData implements Searchable, Updatable {
 	 *
 	 * @return このインスタンスの属するテーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class PartialData implements Searchable, Updatable {
 	 * @return 検索条件
 	 */
 	public Condition getCondition() {
-		return getCondition(BlendeeContext.get(RelationshipFactory.class).getInstance(locator));
+		return getCondition(BlendeeContext.get(RelationshipFactory.class).getInstance(path));
 	}
 
 	/**

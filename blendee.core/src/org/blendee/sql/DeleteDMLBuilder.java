@@ -3,7 +3,7 @@ package org.blendee.sql;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の DELETE 文を生成するクラスです。
@@ -14,17 +14,17 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private Condition condition = ConditionFactory.createCondition();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 *
-	 * @param locator DELETE 対象テーブル
+	 * @param path DELETE 対象テーブル
 	 */
-	public DeleteDMLBuilder(ResourceLocator locator) {
-		this.locator = locator;
+	public DeleteDMLBuilder(TablePath path) {
+		this.path = path;
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 	 * @param searchable {@link Searchable}
 	 */
 	public void setSearchable(Searchable searchable) {
-		setCondition(searchable.getCondition(factory.getInstance(locator)));
+		setCondition(searchable.getCondition(factory.getInstance(path)));
 	}
 
 	/**
@@ -43,13 +43,13 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 	 */
 	public void setCondition(Condition condition) {
 		this.condition = condition.replicate();
-		this.condition.adjustColumns(factory.getInstance(locator));
+		this.condition.adjustColumns(factory.getInstance(path));
 	}
 
 	@Override
 	public String toString() {
 		condition.setKeyword("WHERE");
-		return "DELETE FROM " + locator + condition.toString(false);
+		return "DELETE FROM " + path + condition.toString(false);
 	}
 
 	@Override

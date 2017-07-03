@@ -19,47 +19,47 @@ public interface Metadata {
 	 * @param schemaName 対象となるスキーマ名
 	 * @return 存在するテーブルの配列
 	 */
-	ResourceLocator[] getTables(String schemaName);
+	TablePath[] getTables(String schemaName);
 
 	/**
 	 * パラメータで指定されたテーブルの、定義情報を返します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @return テーブル定義情報
 	 */
-	TableMetadata getTableMetadata(ResourceLocator locator);
+	TableMetadata getTableMetadata(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルに存在するカラムの、定義情報を返します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @return カラム定義情報の配列
 	 */
-	ColumnMetadata[] getColumnMetadatas(ResourceLocator locator);
+	ColumnMetadata[] getColumnMetadatas(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルに存在する主キーを構成する情報を返します。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @return 主キーを構成する情報
 	 */
-	PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator);
+	PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルが外部キー参照しているテーブルを返します。
 	 *
-	 * @param locator 対象となるテーブル
-	 * @return locator が参照しているテーブル
+	 * @param path 対象となるテーブル
+	 * @return path が参照しているテーブル
 	 */
-	ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator);
+	TablePath[] getResourcesOfImportedKey(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルが外部キー参照されているテーブルを返します。
 	 *
-	 * @param locator 対象となるテーブル
-	 * @return locator が参照されているテーブル
+	 * @param path 対象となるテーブル
+	 * @return path が参照されているテーブル
 	 */
-	ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator);
+	TablePath[] getResourcesOfExportedKey(TablePath path);
 
 	/**
 	 * パラメータで指定された両テーブル間の関係情報を返します。
@@ -69,6 +69,6 @@ public interface Metadata {
 	 * @return 両テーブル間の関係情報の配列
 	 */
 	CrossReference[] getCrossReferences(
-		ResourceLocator exported,
-		ResourceLocator imported);
+		TablePath exported,
+		TablePath imported);
 }

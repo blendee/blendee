@@ -7,7 +7,7 @@ import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Condition;
 import org.blendee.sql.binder.StringBinder;
@@ -25,7 +25,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 	private static final char[] first = { '1' };
 
-	private final ResourceLocator locator;
+	private final TablePath path;
 
 	private final String[] dependsColumnNames;
 
@@ -38,17 +38,17 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator 対象テーブル
+	 * @param path 対象テーブル
 	 * @param dependsColumnNames 上位グループカラム
 	 * @param targetColumnName 対象カラム名
 	 * @param length サイズ
 	 */
 	public NumberSequenceGenerator(
-		ResourceLocator locator,
+		TablePath path,
 		String[] dependsColumnNames,
 		String targetColumnName,
 		int length) {
-		this.locator = locator;
+		this.path = path;
 		this.dependsColumnNames = dependsColumnNames.clone();
 		this.targetColumnName = targetColumnName;
 		this.length = length;
@@ -58,19 +58,19 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	/**
 	 * このクラスのインスタンスを生成します。
 	 *
-	 * @param locator 対象テーブル
+	 * @param path 対象テーブル
 	 * @param dependsColumnNames 上位グループカラム
 	 * @param targetColumnName 対象カラム名
 	 * @param length サイズ
 	 * @param firstValue 初期値
 	 */
 	public NumberSequenceGenerator(
-		ResourceLocator locator,
+		TablePath path,
 		String[] dependsColumnNames,
 		String targetColumnName,
 		int length,
 		BigInteger firstValue) {
-		this.locator = locator;
+		this.path = path;
 		this.dependsColumnNames = dependsColumnNames.clone();
 		this.targetColumnName = targetColumnName;
 		this.length = length;
@@ -82,8 +82,8 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 *
 	 * @return 対象テーブル
 	 */
-	public ResourceLocator getResourceLocator() {
-		return locator;
+	public TablePath getTablePath() {
+		return path;
 	}
 
 	@Override
@@ -109,13 +109,13 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 				"SELECT MAX("
 					+ getTargetColumnName()
 					+ ") FROM "
-					+ locator
+					+ path
 					+ " WHERE "
 					+ depends.toString(false).trim(),
 				depends.getComplementer());
 		} else {
 			statement = manager.getConnection()
-				.getStatement("SELECT MAX(" + getTargetColumnName() + ") FROM " + locator);
+				.getStatement("SELECT MAX(" + getTargetColumnName() + ") FROM " + path);
 		}
 
 		String max;

@@ -575,7 +575,7 @@ public class ConditionFactory {
 		Relationship mainRelationship,
 		Relationship subqueryRelationship,
 		Condition subqueryCondition) {
-		if (!mainRelationship.getResourceLocator().equals(subqueryRelationship.getResourceLocator()))
+		if (!mainRelationship.getTablePath().equals(subqueryRelationship.getTablePath()))
 			throw new SubqueryException("異なるテーブルを結合しようとしています");
 
 		return createSubqueryCondition(
@@ -602,7 +602,7 @@ public class ConditionFactory {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
 		QueryBuilder builder = new QueryBuilder(
-			new FromClause(subqueryColumns[0].getRelationship().getRoot().getResourceLocator()));
+			new FromClause(subqueryColumns[0].getRelationship().getRoot().getTablePath()));
 		builder.setWhereClause(subqueryCondition);
 		SelectClause selectClause = new SelectClause();
 		for (Column column : subqueryColumns) {

@@ -11,7 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -76,10 +76,10 @@ class FileVirtualSpaceFactory {
 		if (!isJavaIdentifierPart(tableName))
 			throw new IllegalStateException("テーブル名 " + tableName + " は使用できない文字を含んでいます");
 
-		ResourceLocator locator = new ResourceLocator(tableMetadata.getSchemaName(), tableName);
+		TablePath path = new TablePath(tableMetadata.getSchemaName(), tableName);
 
 		ColumnMetadata[] columnMetadatas = processColumnMetadatas(
-			locator,
+			path,
 			xpath,
 			(NodeList) xpath.evaluate("columns/column", table, XPathConstants.NODESET));
 
@@ -120,10 +120,10 @@ class FileVirtualSpaceFactory {
 			fks[i] = new ForeignKeySource(
 				foreignKeyName,
 				processColumnNames(xpath, (NodeList) xpath.evaluate("column", node, XPathConstants.NODESET)),
-				ResourceLocator.parse(xpath.evaluate("@references", node)));
+				TablePath.parse(xpath.evaluate("@references", node)));
 		}
 
-		return new TableSource(locator, tableMetadata, columnMetadatas, pk, fks);
+		return new TableSource(path, tableMetadata, columnMetadatas, pk, fks);
 	}
 
 	private static String[] processColumnNames(XPath xpath, NodeList list) throws XPathExpressionException {
@@ -144,7 +144,7 @@ class FileVirtualSpaceFactory {
 			xpath.evaluate("@remarks", table));
 	}
 
-	private static ColumnMetadata[] processColumnMetadatas(ResourceLocator locator, XPath xpath, NodeList list)
+	private static ColumnMetadata[] processColumnMetadatas(TablePath path, XPath xpath, NodeList list)
 		throws XPathExpressionException, ClassNotFoundException {
 		int length = list.getLength();
 		ColumnMetadata[] result = new ColumnMetadata[length];
@@ -186,8 +186,8 @@ class FileVirtualSpaceFactory {
 			boolean isNotNull = Boolean.parseBoolean(xpath.evaluate("@is-not-null", node));
 
 			VirtualColumnMetadata metadata = new VirtualColumnMetadata(
-				locator.getSchemaName(),
-				locator.getTableName(),
+				path.getSchemaName(),
+				path.getTableName(),
 				xpath.evaluate("@name", list.item(i)),
 				type,
 				typeName,

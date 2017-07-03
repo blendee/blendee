@@ -4,7 +4,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 
 /**
@@ -26,39 +26,39 @@ public abstract class MetadataBase implements Metadata {
 	}
 
 	@Override
-	public ResourceLocator[] getTables(String schemaName) {
+	public TablePath[] getTables(String schemaName) {
 		return base.getTables(schemaName);
 	}
 
 	@Override
-	public TableMetadata getTableMetadata(ResourceLocator locator) {
-		return base.getTableMetadata(locator);
+	public TableMetadata getTableMetadata(TablePath path) {
+		return base.getTableMetadata(path);
 	}
 
 	@Override
-	public ColumnMetadata[] getColumnMetadatas(ResourceLocator locator) {
-		return base.getColumnMetadatas(locator);
+	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
+		return base.getColumnMetadatas(path);
 	}
 
 	@Override
-	public PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator) {
-		return base.getPrimaryKeyMetadata(locator);
+	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+		return base.getPrimaryKeyMetadata(path);
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator) {
-		return base.getResourcesOfImportedKey(locator);
+	public TablePath[] getResourcesOfImportedKey(TablePath path) {
+		return base.getResourcesOfImportedKey(path);
 	}
 
 	@Override
-	public ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator) {
-		return base.getResourcesOfExportedKey(locator);
+	public TablePath[] getResourcesOfExportedKey(TablePath path) {
+		return base.getResourcesOfExportedKey(path);
 	}
 
 	@Override
 	public CrossReference[] getCrossReferences(
-		ResourceLocator exportedTable,
-		ResourceLocator importedTable) {
+		TablePath exportedTable,
+		TablePath importedTable) {
 		return base.getCrossReferences(exportedTable, importedTable);
 	}
 

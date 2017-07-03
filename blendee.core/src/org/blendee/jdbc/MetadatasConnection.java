@@ -29,13 +29,13 @@ class MetadatasConnection extends ConnectionBase {
 	/**
 	 * 前方にある {@link Metadata} の持つ {@link TableMetadata} が優先して使用されます。
 	 *
-	 * @param locator 対象となるテーブル
+	 * @param path 対象となるテーブル
 	 * @return テーブル定義情報
 	 */
 	@Override
-	public TableMetadata getTableMetadata(ResourceLocator locator) {
+	public TableMetadata getTableMetadata(TablePath path) {
 		for (Metadata metadata : metadatas) {
-			TableMetadata table = metadata.getTableMetadata(locator);
+			TableMetadata table = metadata.getTableMetadata(path);
 			if (table != null) return table;
 		}
 
@@ -46,10 +46,10 @@ class MetadatasConnection extends ConnectionBase {
 	 * 前方にある {@link Metadata} の持つ {@link ColumnMetadata} が優先して使用されます。
 	 */
 	@Override
-	public ColumnMetadata[] getColumnMetadatas(ResourceLocator locator) {
+	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
 		Map<String, ColumnMetadata> map = new LinkedHashMap<>();
 		for (Metadata metadata : metadatas) {
-			ColumnMetadata[] metadatas = metadata.getColumnMetadatas(locator);
+			ColumnMetadata[] metadatas = metadata.getColumnMetadatas(path);
 			for (ColumnMetadata column : metadatas) {
 				String name = column.getName();
 				if (!map.containsKey(name)) map.put(name, column);
@@ -63,9 +63,9 @@ class MetadatasConnection extends ConnectionBase {
 	 * 前方にある {@link Metadata} の持つ主キー情報が優先して使用されます。
 	 */
 	@Override
-	public PrimaryKeyMetadata getPrimaryKeyMetadata(ResourceLocator locator) {
+	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
 		for (Metadata metadata : metadatas) {
-			PrimaryKeyMetadata pk = metadata.getPrimaryKeyMetadata(locator);
+			PrimaryKeyMetadata pk = metadata.getPrimaryKeyMetadata(path);
 			if (pk != null) return pk;
 		}
 
@@ -76,31 +76,31 @@ class MetadatasConnection extends ConnectionBase {
 	 * 全ての {@link Metadata} の持つ情報が統合されます。
 	 */
 	@Override
-	public ResourceLocator[] getResourcesOfImportedKey(ResourceLocator locator) {
-		List<ResourceLocator> list = new LinkedList<>();
+	public TablePath[] getResourcesOfImportedKey(TablePath path) {
+		List<TablePath> list = new LinkedList<>();
 		for (Metadata metadata : metadatas)
-			list.addAll(Arrays.asList(metadata.getResourcesOfImportedKey(locator)));
+			list.addAll(Arrays.asList(metadata.getResourcesOfImportedKey(path)));
 
-		return list.toArray(new ResourceLocator[list.size()]);
+		return list.toArray(new TablePath[list.size()]);
 	}
 
 	/**
 	 * 全ての {@link Metadata} の持つ情報が統合されます。
 	 */
 	@Override
-	public ResourceLocator[] getResourcesOfExportedKey(ResourceLocator locator) {
-		List<ResourceLocator> list = new LinkedList<>();
+	public TablePath[] getResourcesOfExportedKey(TablePath path) {
+		List<TablePath> list = new LinkedList<>();
 		for (Metadata metadata : metadatas)
-			list.addAll(Arrays.asList(metadata.getResourcesOfExportedKey(locator)));
+			list.addAll(Arrays.asList(metadata.getResourcesOfExportedKey(path)));
 
-		return list.toArray(new ResourceLocator[list.size()]);
+		return list.toArray(new TablePath[list.size()]);
 	}
 
 	/**
 	 * 全ての {@link Metadata} の持つ情報が統合されます。
 	 */
 	@Override
-	public CrossReference[] getCrossReferences(ResourceLocator exported, ResourceLocator imported) {
+	public CrossReference[] getCrossReferences(TablePath exported, TablePath imported) {
 		List<CrossReference> list = new LinkedList<>();
 		for (Metadata metadata : metadatas)
 			list.addAll(Arrays.asList(metadata.getCrossReferences(exported, imported)));

@@ -3,14 +3,14 @@ package org.blendee.util;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link TableSource} を構成するために必要な主キー情報を表すクラスです。
  *
  * @author 千葉 哲嗣
- * @see TableSource#TableSource(ResourceLocator, TableMetadata, ColumnMetadata[], PrimaryKeySource, ForeignKeySource[])
+ * @see TableSource#TableSource(TablePath, TableMetadata, ColumnMetadata[], PrimaryKeySource, ForeignKeySource[])
  */
 public class PrimaryKeySource implements PrimaryKeyMetadata {
 

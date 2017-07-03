@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import org.blendee.internal.IOStream;
 import org.blendee.internal.U;
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link IOStream} から定義情報を読み込むことができる {@link ColumnRepository} です。
@@ -59,7 +59,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 			if (locationMatcher.matches()) {
 				LocationSource locationSource = new LocationSource(
 					locationMatcher.group(1),
-					ResourceLocator.parse(locationMatcher.group(2)),
+					TablePath.parse(locationMatcher.group(2)),
 					Arrays.asList(locationMatcher.group(3).split(","))
 						.stream()
 						.filter(e -> e.length() > 0)

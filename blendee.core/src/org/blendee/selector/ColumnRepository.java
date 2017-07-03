@@ -1,6 +1,6 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.ResourceLocator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.Transaction;
 import org.blendee.sql.Column;
 
@@ -20,7 +20,7 @@ public interface ColumnRepository extends Transaction {
 	 * @param id ID
 	 * @return 対応するテーブル
 	 */
-	ResourceLocator getResourceLocator(String id);
+	TablePath getTablePath(String id);
 
 	/**
 	 * ID と、それに対応するテーブルをリポジトリに登録します。
@@ -28,10 +28,10 @@ public interface ColumnRepository extends Transaction {
 	 * ID を探すヒントとして、使用しているクラスを渡すことができます。
 	 *
 	 * @param id ID
-	 * @param locator 対応するテーブル
+	 * @param path 対応するテーブル
 	 * @param usingClassNames id が使用されているクラス
 	 */
-	void add(String id, ResourceLocator locator, String... usingClassNames);
+	void add(String id, TablePath path, String... usingClassNames);
 
 	/**
 	 * ID と、それに対応するテーブルをリポジトリから削除します。

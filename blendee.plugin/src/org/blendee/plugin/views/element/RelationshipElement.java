@@ -67,7 +67,7 @@ public class RelationshipElement extends PropertySourceElement {
 				new PrimaryKeyElement(
 					this,
 					MetadataUtilities.getPrimaryKeyName(
-						relationship.getResourceLocator()),
+						relationship.getTablePath()),
 					pkColumnElements));
 		}
 
@@ -146,7 +146,7 @@ public class RelationshipElement extends PropertySourceElement {
 	}
 
 	static String createName(Relationship relationship) {
-		return relationship.getResourceLocator()
+		return relationship.getTablePath()
 			+ "("
 			+ relationship.getID()
 			+ ")";
