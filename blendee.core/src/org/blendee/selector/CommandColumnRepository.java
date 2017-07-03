@@ -68,13 +68,13 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void add(String id, TablePath locator, String... usingClassNames) {
-		addCommand(new AddIdCommand(id, locator, usingClassNames));
+	public synchronized void add(String id, TablePath path, String... usingClassNames) {
+		addCommand(new AddIDCommand(id, path, usingClassNames));
 	}
 
 	@Override
 	public synchronized void remove(String id) {
-		addCommand(new RemoveIdCommand(id, getUsingClassNames(id)));
+		addCommand(new RemoveIDCommand(id, getUsingClassNames(id)));
 	}
 
 	@Override
@@ -343,27 +343,27 @@ public class CommandColumnRepository implements ColumnRepository {
 		abstract void redo();
 	}
 
-	private class AddIdCommand extends Command {
+	private class AddIDCommand extends Command {
 
-		private final TablePath locator;
+		private final TablePath path;
 
-		private final RemoveIdCommand removeId;
+		private final RemoveIDCommand removeID;
 
 		private final String[] usings;
 
 		private final long timestamp = System.currentTimeMillis();
 
-		private AddIdCommand(String id, TablePath locator, String[] usings) {
+		private AddIDCommand(String id, TablePath path, String[] usings) {
 			super(id);
 
-			TablePath removeLocator = getTablePath(id);
-			if (removeLocator != null) {
-				removeId = new RemoveIdCommand(id, usings);
+			TablePath removePath = getTablePath(id);
+			if (removePath != null) {
+				removeID = new RemoveIDCommand(id, usings);
 			} else {
-				removeId = null;
+				removeID = null;
 			}
 
-			this.locator = locator;
+			this.path = path;
 			this.usings = usings;
 		}
 
@@ -372,30 +372,30 @@ public class CommandColumnRepository implements ColumnRepository {
 			removeIDs.add(id);
 			addIDs.remove(id);
 			clears.remove(id);
-			if (removeId != null) removeId.undo();
+			if (removeID != null) removeID.undo();
 		}
 
 		@Override
 		void redo() {
-			if (removeId != null) removeId.redo();
+			if (removeID != null) removeID.redo();
 			removeIDs.remove(id);
 
-			addIDs.put(id, new TablePathContainer(locator, usings));
+			addIDs.put(id, new TablePathContainer(path, usings));
 			clears.put(id, timestamp);
 		}
 	}
 
-	private class RemoveIdCommand extends Command {
+	private class RemoveIDCommand extends Command {
 
-		private final TablePath locator;
+		private final TablePath path;
 
 		private final RemoveColumnCommand[] availableColumnCommands;
 
 		private final String[] usings;
 
-		private RemoveIdCommand(String id, String[] usings) {
+		private RemoveIDCommand(String id, String[] usings) {
 			super(id);
-			locator = getTablePath(id);
+			path = getTablePath(id);
 			this.usings = usings;
 			Column[] availables = getColumns(id);
 			availableColumnCommands = new RemoveColumnCommand[availables.length];
@@ -406,7 +406,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		@Override
 		void undo() {
-			addIDs.put(id, new TablePathContainer(locator, usings));
+			addIDs.put(id, new TablePathContainer(path, usings));
 			removeIDs.remove(id);
 			for (RemoveColumnCommand command : availableColumnCommands)
 				command.undo();
@@ -423,29 +423,29 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	private class RenameIdCommand extends Command {
 
-		private final RemoveIdCommand removeOldIdCommand;
+		private final RemoveIDCommand removeOldIDCommand;
 
-		private final RemoveIdCommand removeNewIdCommand;
+		private final RemoveIDCommand removeNewIDCommand;
 
-		private final AddIdCommand addIdCommand;
+		private final AddIDCommand addIDCommand;
 
 		private final AddColumnCommand[] addColumnCommands;
 
-		private RenameIdCommand(String oldId, String newId, String[] usings) {
+		private RenameIdCommand(String oldID, String newID, String[] usings) {
 			super(null);
 
-			removeOldIdCommand = new RemoveIdCommand(oldId, usings);
-			if (getTablePath(newId) != null) {
-				removeNewIdCommand = new RemoveIdCommand(newId, usings);
+			removeOldIDCommand = new RemoveIDCommand(oldID, usings);
+			if (getTablePath(newID) != null) {
+				removeNewIDCommand = new RemoveIDCommand(newID, usings);
 			} else {
-				removeNewIdCommand = null;
+				removeNewIDCommand = null;
 			}
 
-			addIdCommand = new AddIdCommand(newId, getTablePath(oldId), usings);
-			Column[] columns = getColumns(oldId);
+			addIDCommand = new AddIDCommand(newID, getTablePath(oldID), usings);
+			Column[] columns = getColumns(oldID);
 			addColumnCommands = new AddColumnCommand[columns.length];
 			for (int i = 0; i < columns.length; i++) {
-				addColumnCommands[i] = new AddColumnCommand(newId, columns[i], usings);
+				addColumnCommands[i] = new AddColumnCommand(newID, columns[i], usings);
 			}
 		}
 
@@ -454,16 +454,16 @@ public class CommandColumnRepository implements ColumnRepository {
 			for (AddColumnCommand command : addColumnCommands)
 				command.undo();
 
-			addIdCommand.undo();
-			if (removeNewIdCommand != null) removeNewIdCommand.undo();
-			removeOldIdCommand.undo();
+			addIDCommand.undo();
+			if (removeNewIDCommand != null) removeNewIDCommand.undo();
+			removeOldIDCommand.undo();
 		}
 
 		@Override
 		void redo() {
-			removeOldIdCommand.redo();
-			if (removeNewIdCommand != null) removeNewIdCommand.redo();
-			addIdCommand.redo();
+			removeOldIDCommand.redo();
+			if (removeNewIDCommand != null) removeNewIDCommand.redo();
+			addIDCommand.redo();
 			for (AddColumnCommand command : addColumnCommands)
 				command.redo();
 		}
@@ -473,7 +473,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		private final Column column;
 
-		private final AddIdCommand addId;
+		private final AddIDCommand addID;
 
 		private final String[] usings;
 
@@ -482,18 +482,18 @@ public class CommandColumnRepository implements ColumnRepository {
 			this.column = column;
 			this.usings = usings;
 			if (getTablePath(id) == null) {
-				addId = new AddIdCommand(
+				addID = new AddIDCommand(
 					id,
 					column.getRelationship().getRoot().getTablePath(),
 					usings);
 			} else {
-				addId = null;
+				addID = null;
 			}
 		}
 
 		@Override
 		void undo() {
-			if (addId != null) addId.undo();
+			if (addID != null) addID.undo();
 			ColumnContainer container = new ColumnContainer(column, usings);
 			removeColumns.get(id).add(container);
 			addColumns.get(id).remove(container);
@@ -501,7 +501,7 @@ public class CommandColumnRepository implements ColumnRepository {
 
 		@Override
 		void redo() {
-			if (addId != null) addId.redo();
+			if (addID != null) addID.redo();
 			ColumnContainer container = new ColumnContainer(column, usings);
 			removeColumns.get(id).remove(container);
 			addColumns.get(id).add(container);

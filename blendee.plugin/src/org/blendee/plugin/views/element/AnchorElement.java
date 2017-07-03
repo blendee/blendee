@@ -48,15 +48,15 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 	private static final ChangeModeAction changeModeAction = new ChangeModeAction();
 
-	private static final ChangeTableAction changeLocationAction = new ChangeTableAction();
+	private static final ChangeTableAction changeTableAction = new ChangeTableAction();
 
-	private static final ChangeIDAction changeIdAction = new ChangeIDAction();
+	private static final ChangeIDAction changeIDAction = new ChangeIDAction();
 
 	private static final RemoveAction removeAction = new RemoveAction();
 
 	private static final ViewClassAction viewClassAction = new ViewClassAction();
 
-	private static final ViewSQLAction viewSqlAction = new ViewSQLAction();
+	private static final ViewSQLAction viewSQLAction = new ViewSQLAction();
 
 	private static final ViewErrorMessagesAction viewErrorMessagesAction = new ViewErrorMessagesAction();
 
@@ -73,16 +73,16 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		}
 	};
 
-	private static final String timestampId = "TIMESTAMP";
+	private static final String timestampID = "TIMESTAMP";
 
-	private static final String errorId = "ERROR";
+	private static final String errorID = "ERROR";
 
-	private static final String modeId = "MODE";
+	private static final String modeID = "MODE";
 
 	private static final PropertyDescriptor[] descripters = {
-		new PropertyDescriptor(timestampId, "利用マーク除去日"),
-		new PropertyDescriptor(errorId, "エラー"),
-		new PropertyDescriptor(modeId, "表示モード") };
+		new PropertyDescriptor(timestampID, "利用マーク除去日"),
+		new PropertyDescriptor(errorID, "エラー"),
+		new PropertyDescriptor(modeID, "表示モード") };
 
 	private final EditorRootElement root;
 
@@ -186,28 +186,28 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		changeModeAction.setText(changeModeActionText);
 		changeModeAction.setToolTipText(changeModeActionText);
 		if (repository.getColumns(id).length > 0) {
-			viewSqlAction.element = this;
-			viewSqlAction.setEnabled(true);
+			viewSQLAction.element = this;
+			viewSQLAction.setEnabled(true);
 			changeModeAction.element = this;
 			changeModeAction.setEnabled(true);
 		} else {
-			viewSqlAction.setEnabled(false);
+			viewSQLAction.setEnabled(false);
 			if (useColumnMode) {
 				changeModeAction.setEnabled(true);
 			} else {
 				changeModeAction.setEnabled(false);
 			}
 		}
-		manager.add(viewSqlAction);
+		manager.add(viewSQLAction);
 		manager.add(changeModeAction);
 
 		manager.add(new Separator());
 
-		changeLocationAction.element = this;
-		manager.add(changeLocationAction);
+		changeTableAction.element = this;
+		manager.add(changeTableAction);
 
-		changeIdAction.element = this;
-		manager.add(changeIdAction);
+		changeIDAction.element = this;
+		manager.add(changeIDAction);
 
 		manager.add(new Separator());
 
@@ -293,13 +293,13 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 	@Override
 	Object getMyPropertyValue(Object id) {
-		if (timestampId.equals(id))
+		if (timestampID.equals(id))
 			return DateFormat.getDateTimeInstance().format(
 				new Date(repository.getMarkClearedTimestamp(this.id)));
 
-		if (errorId.equals(id)) return (isValidAnchor()) ? "なし" : "あり";
+		if (errorID.equals(id)) return (isValidAnchor()) ? "なし" : "あり";
 
-		if (modeId.equals(id))
+		if (modeID.equals(id))
 			return useColumnMode ? "検索に使用するカラム一覧表示" : "ツリー表示";
 
 		throw new IllegalStateException();
@@ -412,10 +412,10 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 				element.id,
 				idValidator);
 			if (dialog.open() == Window.OK) {
-				String newId = dialog.getValue();
-				if (element.id.equals(newId)) return;
-				element.repository.renameID(element.id, newId);
-				element.id = newId;
+				String newID = dialog.getValue();
+				if (element.id.equals(newID)) return;
+				element.repository.renameID(element.id, newID);
+				element.id = newID;
 				element.prepareName();
 				element.relationship = null;
 				QueryEditorView view = BlendeePlugin.getDefault().getQueryEditorView();
