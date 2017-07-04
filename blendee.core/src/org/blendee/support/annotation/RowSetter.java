@@ -6,28 +6,26 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.blendee.support.Row;
-
 /**
- * Entity の 他 Entity への参照を表すアノテーションです。
+ * Row の setter 情報を表すアノテーションです。
  *
  * @author 千葉 哲嗣
  */
 @Target({ METHOD })
 @Retention(RUNTIME)
-public @interface EntityRelationship {
+public @interface RowSetter {
 
 	/**
-	 * FK 名
+	 * カラム名
 	 *
-	 * @return FK 名
+	 * @return カラム名
 	 */
-	String fk();
+	String column();
 
 	/**
-	 * 参照テーブル
+	 * 型
 	 *
-	 * @return 参照テーブル
+	 * @return 型
 	 */
-	Class<? extends Row> referenced();
+	Class<?> type();
 }

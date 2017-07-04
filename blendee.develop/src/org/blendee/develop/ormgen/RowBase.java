@@ -3,9 +3,9 @@
 import javax.annotation.Generated;
 
 import org.blendee.support.Row;
-import org.blendee.support.annotation.EntityGetter;
-/*--*/import org.blendee.support.annotation.EntityRelationship;/*--*/
-import org.blendee.support.annotation.EntitySetter;
+import org.blendee.support.annotation.RowGetter;
+/*--*/import org.blendee.support.annotation.RowRelationship;/*--*/
+import org.blendee.support.annotation.RowSetter;
 import org.blendee.support.annotation.Resource;
 /*++{8}++*/
 import org.blendee.jdbc.BlendeeContext;
@@ -18,7 +18,7 @@ import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.ValueExtractor;
 
 /**
- * 自動生成された '{'@link BEntity'}' の実装クラスです。
+ * 自動生成された '{'@link Row'}' の実装クラスです。
  *
 {6}
  */
@@ -71,7 +71,7 @@ import org.blendee.sql.ValueExtractor;
 	/*++'++*/}/*++'++*/
 
 /*++{4}++*/
-/*==EntityPropertyAccessorPart==*/
+/*==RowPropertyAccessorPart==*/
 	/**
 {3}
 	 */
@@ -84,7 +84,7 @@ import org.blendee.sql.ValueExtractor;
 	 *
 	 * @param value {2}
 	 */
-	@EntitySetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class)
+	@RowSetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class)
 	public void set/*++{0}++*/(/*++{2}++*//*--*/Object/*--*/ value) /*++'++*/{/*++'++*/
 		/*++{4}++*/ValueExtractor valueExtractor = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
 			$relationship.getColumn("{1}").getType());
@@ -98,16 +98,16 @@ import org.blendee.sql.ValueExtractor;
 	 *
 	 * @return {2}
 	 */
-	@EntityGetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class, optional = /*++{8}++*//*--*/false/*--*/)
+	@RowGetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class, optional = /*++{8}++*//*--*/false/*--*/)
 	public /*++{5}++*/ /*--*/String/*--*/get/*++{0}++*/() /*++'++*/{/*++'++*/
 		Binder binder = $data.getBinder("{1}");
 		if (binder == null) return null;
 		return /*++{6}++*/(/*++{2}++*//*--*/String/*--*/) binder.getValue()/*++{7}++*/;
 	/*++'++*/}/*++'++*/
 
-/*==EntityPropertyAccessorPart==*/
+/*==RowPropertyAccessorPart==*/
 /*++{5}++*/
-/*==EntityRelationshipPart==*/
+/*==RowRelationshipPart==*/
 	/**
 	 * 参照先テーブル名 {0}<br>
 	 * 外部キー名 {1}<br>
@@ -115,19 +115,19 @@ import org.blendee.sql.ValueExtractor;
 	public static final String /*++{0}++*/_BY_/*++{1}++*/ = "{1}";
 
 	/**
-	 * このレコードが参照しているレコードの Entity を返します。<br>
+	 * このレコードが参照しているレコードの Row を返します。<br>
 	 *
 	 * 参照先テーブル名 {0}<br>
 	 * 外部キー名 {1}<br>
 	 * 項目名 {2}<br>
 	 *
-	 * @return 参照しているレコードの Entity
+	 * @return 参照しているレコードの Row
 	 */
-	@EntityRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)
+	@RowRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)
 	public /*++{0}++*//*--*/RowBase/*--*/ /*++get{3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
 		return new /*++{0}++*//*--*/RowBase/*--*/(
 			$data.getDataObject(/*++{0}++*/_BY_/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 
-/*==EntityRelationshipPart==*/
+/*==RowRelationshipPart==*/
 /*++'++*/}/*++'++*/

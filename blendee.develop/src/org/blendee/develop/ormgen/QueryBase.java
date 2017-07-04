@@ -361,11 +361,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	private static Optional</*++{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
 		if (!iterator.hasNext()) return Optional.empty();
 
-		/*++{1}++*//*--*/RowBase/*--*/ entity = iterator.next();
+		/*++{1}++*//*--*/RowBase/*--*/ row = iterator.next();
 
 		if (iterator.hasNext()) throw new NotUniqueException();
 
-		return Optional.of(entity);
+		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -461,7 +461,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		/**
-		 * この '{'@link QueryRelationship'}' が表すテーブルの Entity を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
+		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
 		 *
 		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
@@ -539,8 +539,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/RowBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
-			return $manager.createEntity(data);
+		public /*++{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
+			return $manager.createRow(data);
 		/*++'++*/}/*++'++*/
 
 		@Override

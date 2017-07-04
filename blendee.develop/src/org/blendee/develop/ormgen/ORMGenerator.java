@@ -33,13 +33,13 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.Many;
-import org.blendee.support.annotation.EntityRelationship;
+import org.blendee.support.annotation.RowRelationship;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
 import org.blendee.support.annotation.PseudoPK;
 
 /**
- * データベースの構成を読み取り、各テーブルの EntityManager クラスと Entity クラスの Java ソースを生成するジェネレータクラスです。
+ * データベースの構成を読み取り、各テーブルの RowManager クラスと Row クラスの Java ソースを生成するジェネレータクラスです。
  *
  * @author 千葉 哲嗣
  */
@@ -49,13 +49,13 @@ public class ORMGenerator {
 
 	private static final String managerTemplate;
 
-	private static final String entityTemplate;
+	private static final String rowTemplate;
 
 	private static final String queryTemplate;
 
-	private static final String entityPropertyAccessorPartTemplate;
+	private static final String rowPropertyAccessorPartTemplate;
 
-	private static final String entityRelationshipPartTemplate;
+	private static final String rowRelationshipPartTemplate;
 
 	private static final String queryColumnPart1Template;
 
@@ -77,7 +77,7 @@ public class ORMGenerator {
 
 	private final Class<?> managerSuperclass;
 
-	private final Class<?> entitySuperclass;
+	private final Class<?> rowSuperclass;
 
 	private final Class<?> querySuperclass;
 
@@ -110,17 +110,17 @@ public class ORMGenerator {
 		{
 			String source = readTemplate(RowBase.class, charset);
 			{
-				String[] result = pickupFromSource(source, "EntityPropertyAccessorPart");
-				entityPropertyAccessorPartTemplate = convertToTemplate(result[0]);
+				String[] result = pickupFromSource(source, "RowPropertyAccessorPart");
+				rowPropertyAccessorPartTemplate = convertToTemplate(result[0]);
 				source = result[1];
 			}
 			{
-				String[] result = pickupFromSource(source, "EntityRelationshipPart");
-				entityRelationshipPartTemplate = convertToTemplate(result[0]);
+				String[] result = pickupFromSource(source, "RowRelationshipPart");
+				rowRelationshipPartTemplate = convertToTemplate(result[0]);
 				source = result[1];
 			}
 
-			entityTemplate = convertToTemplate(source);
+			rowTemplate = convertToTemplate(source);
 		}
 
 		{
@@ -161,22 +161,22 @@ public class ORMGenerator {
 	 * インスタンスを生成します。
 	 *
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
-	 * @param packageName EntityManager クラス、 Entity クラスが属するパッケージ名
+	 * @param packageName RowManager クラス、 Row クラスが属するパッケージ名
 	 * @param schemaName テーブルを読み込む対象となるスキーマ
-	 * @param entityManagerSuperclass EntityManager クラスの親クラス
-	 * @param entitySuperclass Entity クラスの親クラス
+	 * @param rowManagerSuperclass RowManager クラスの親クラス
+	 * @param rowSuperclass Row クラスの親クラス
 	 * @param querySuperclass Query クラスの親クラス
 	 * @param codeAdjuster {@link CodeFormatter}
-	 * @param useNumberClass Entity クラスの数値型項目を {@link Number} で統一する
-	 * @param useNullGuard Entity クラスの項目に null ガードを適用する
+	 * @param useNumberClass Row クラスの数値型項目を {@link Number} で統一する
+	 * @param useNullGuard Row クラスの項目に null ガードを適用する
 	 * @param generatorName ジェネレータ名
 	 */
 	public ORMGenerator(
 		Metadata metadata,
 		String packageName,
 		String schemaName,
-		Class<?> entityManagerSuperclass,
-		Class<?> entitySuperclass,
+		Class<?> rowManagerSuperclass,
+		Class<?> rowSuperclass,
 		Class<?> querySuperclass,
 		CodeFormatter codeAdjuster,
 		boolean useNumberClass,
@@ -186,8 +186,8 @@ public class ORMGenerator {
 		this.packageName = Objects.requireNonNull(packageName);
 
 		this.schemaName = schemaName;
-		this.managerSuperclass = entityManagerSuperclass != null ? entityManagerSuperclass : Object.class;
-		this.entitySuperclass = entitySuperclass != null ? entitySuperclass : Object.class;
+		this.managerSuperclass = rowManagerSuperclass != null ? rowManagerSuperclass : Object.class;
+		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;
 		this.querySuperclass = querySuperclass != null ? querySuperclass : Object.class;
 
 		this.codeFormatter = codeAdjuster == null ? defaultCodeFormatter : codeAdjuster;
@@ -215,13 +215,13 @@ public class ORMGenerator {
 			String tableName = relation.getTablePath().getTableName();
 
 			write(
-				new File(packageDir, createEntityManagerCompilationUnitName(tableName)),
-				buildEntityManager(relation),
+				new File(packageDir, createRowManagerCompilationUnitName(tableName)),
+				buildRowManager(relation),
 				srcCharset);
 
 			write(
-				new File(packageDir, createEntityCompilationUnitName(tableName)),
-				buildEntity(relation),
+				new File(packageDir, createRowCompilationUnitName(tableName)),
+				buildRow(relation),
 				srcCharset);
 
 			write(
@@ -232,22 +232,22 @@ public class ORMGenerator {
 	}
 
 	/**
-	 * このクラスが生成する EntityManager のコンパイル単位名を返します。
+	 * このクラスが生成する RowManager のコンパイル単位名を返します。
 	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
-	public static String createEntityManagerCompilationUnitName(String tableName) {
+	public static String createRowManagerCompilationUnitName(String tableName) {
 		return tableName + "Manager.java";
 	}
 
 	/**
-	 * このクラスが生成する Entity のコンパイル単位名を返します。
+	 * このクラスが生成する Row のコンパイル単位名を返します。
 	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
-	public static String createEntityCompilationUnitName(String tableName) {
+	public static String createRowCompilationUnitName(String tableName) {
 		return tableName + ".java";
 	}
 
@@ -262,17 +262,17 @@ public class ORMGenerator {
 	}
 
 	/**
-	 * EntityManager クラスを作成します。
+	 * RowManager クラスを作成します。
 	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
-	public String buildEntityManager(Relationship relation) {
+	public String buildRowManager(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
 		TablePath target = relation.getTablePath();
 
-		return codeFormatter.formatEntityManager(
+		return codeFormatter.formatRowManager(
 			managerTemplate,
 			packageName,
 			target.getTableName(),
@@ -282,12 +282,12 @@ public class ORMGenerator {
 	}
 
 	/**
-	 * Entity クラスを一件作成します。
+	 * Row クラスを一件作成します。
 	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
-	public String buildEntity(Relationship relation) {
+	public String buildRow(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
 		TablePath target = relation.getTablePath();
@@ -326,8 +326,8 @@ public class ORMGenerator {
 					}
 				}
 
-				list.add(codeFormatter.formatEntityPropertyAccessorPart(
-					entityPropertyAccessorPartTemplate,
+				list.add(codeFormatter.formatRowPropertyAccessorPart(
+					rowPropertyAccessorPartTemplate,
 					toUpperCaseFirstLetter(column.getName()),
 					column.getName(),
 					classNameString,
@@ -354,8 +354,8 @@ public class ORMGenerator {
 				String childTableName = child.getTablePath().getTableName();
 				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
 
-				list.add(codeFormatter.formatEntityRelationshipPart(
-					entityRelationshipPartTemplate,
+				list.add(codeFormatter.formatRowRelationshipPart(
+					rowRelationshipPartTemplate,
 					child.getTablePath().getTableName(),
 					foreignKey,
 					String.join(", ", crossReference.getForeignKeyColumnNames()),
@@ -363,17 +363,17 @@ public class ORMGenerator {
 					tableName));
 			}
 
-			if (list.size() > 0) importPart.add(buildImportPart(EntityRelationship.class));
+			if (list.size() > 0) importPart.add(buildImportPart(RowRelationship.class));
 
 			relationshipPart = String.join("", list);
 		}
 
-		return codeFormatter.formatEntity(
-			entityTemplate,
+		return codeFormatter.formatRow(
+			rowTemplate,
 			packageName,
 			schemaName,
 			tableName,
-			entitySuperclass.getName(),
+			rowSuperclass.getName(),
 			propertyAccessorPart,
 			relationshipPart,
 			buildTableComment(metadata, target),

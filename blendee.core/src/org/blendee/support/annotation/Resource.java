@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Entity のもととなったテーブルを表すアノテーションです。
+ * Row のもととなったテーブルを表すアノテーションです。
  *
  * @author 千葉 哲嗣
  */

@@ -316,8 +316,8 @@ public class BlendeePropertyPage
 
 		/*---------------------------------------------------*/
 		ClassFieldEditor managerParentClassEditor = new ClassFieldEditor(
-			Constants.ENTITY_MANAGER_PARENT_CLASS,
-			"自動生成 EntityManager の親クラス",
+			Constants.ROW_MANAGER_PARENT_CLASS,
+			"自動生成 RowManager の親クラス",
 			element.getProject(),
 			getFieldEditorParent()) {
 
@@ -338,9 +338,9 @@ public class BlendeePropertyPage
 		addField(managerParentClassEditor);
 
 		/*---------------------------------------------------*/
-		ClassFieldEditor entityParentClassEditor = new ClassFieldEditor(
-			Constants.ENTITY_PARENT_CLASS,
-			"自動生成 Entity の親クラス",
+		ClassFieldEditor rowParentClassEditor = new ClassFieldEditor(
+			Constants.ROW_PARENT_CLASS,
+			"自動生成 Row の親クラス",
 			element.getProject(),
 			getFieldEditorParent()) {
 
@@ -356,9 +356,9 @@ public class BlendeePropertyPage
 			}
 		};
 
-		entityParentClassEditor.setChangeButtonText("参照...");
-		entityParentClassEditor.setEmptyStringAllowed(true);
-		addField(entityParentClassEditor);
+		rowParentClassEditor.setChangeButtonText("参照...");
+		rowParentClassEditor.setEmptyStringAllowed(true);
+		addField(rowParentClassEditor);
 
 		/*---------------------------------------------------*/
 		ClassFieldEditor queryParentClassEditor = new ClassFieldEditor(
@@ -416,7 +416,7 @@ public class BlendeePropertyPage
 		/*---------------------------------------------------*/
 		BooleanFieldEditor useNumberClassEditor = new BooleanFieldEditor(
 			Constants.USE_NUMBER_CLASS,
-			"Entity の数値項目を Number に統一",
+			"Row の数値項目を Number に統一",
 			BooleanFieldEditor.SEPARATE_LABEL,
 			getFieldEditorParent());
 		addField(useNumberClassEditor);
@@ -424,7 +424,7 @@ public class BlendeePropertyPage
 		/*---------------------------------------------------*/
 		BooleanFieldEditor notUseNullGuardEditor = new BooleanFieldEditor(
 			Constants.NOT_USE_NULL_GUARD,
-			"Entity の項目で null 保護機能を使用しない",
+			"Row の項目で null 保護機能を使用しない",
 			BooleanFieldEditor.SEPARATE_LABEL,
 			getFieldEditorParent());
 		addField(notUseNullGuardEditor);
@@ -488,9 +488,9 @@ public class BlendeePropertyPage
 
 		changed |= checkAndSetValue(store, properties, Constants.METADATA_FACTORY_CLASS);
 
-		changed |= checkAndSetValue(store, properties, Constants.ENTITY_MANAGER_PARENT_CLASS);
+		changed |= checkAndSetValue(store, properties, Constants.ROW_MANAGER_PARENT_CLASS);
 
-		changed |= checkAndSetValue(store, properties, Constants.ENTITY_PARENT_CLASS);
+		changed |= checkAndSetValue(store, properties, Constants.ROW_PARENT_CLASS);
 
 		changed |= checkAndSetValue(store, properties, Constants.QUERY_PARENT_CLASS);
 
@@ -580,12 +580,12 @@ public class BlendeePropertyPage
 			store.getString(Constants.METADATA_FACTORY_CLASS));
 
 		store.setDefault(
-			Constants.ENTITY_MANAGER_PARENT_CLASS,
-			store.getString(Constants.ENTITY_MANAGER_PARENT_CLASS));
+			Constants.ROW_MANAGER_PARENT_CLASS,
+			store.getString(Constants.ROW_MANAGER_PARENT_CLASS));
 
 		store.setDefault(
-			Constants.ENTITY_PARENT_CLASS,
-			store.getString(Constants.ENTITY_PARENT_CLASS));
+			Constants.ROW_PARENT_CLASS,
+			store.getString(Constants.ROW_PARENT_CLASS));
 
 		store.setDefault(
 			Constants.QUERY_PARENT_CLASS,

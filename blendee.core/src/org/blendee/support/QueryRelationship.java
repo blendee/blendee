@@ -113,5 +113,5 @@ public interface QueryRelationship {
 	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
 	 * @return 生成された {@link Row}
 	 */
-	Row createEntity(DataObject data);
+	Row createRow(DataObject data);
 }

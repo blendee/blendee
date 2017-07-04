@@ -18,10 +18,10 @@ import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.Updatable;
 
 /**
- * 自動生成される EntityManager の共通の振る舞いを定義したインターフェイスです。
+ * 自動生成される RowManager の共通の振る舞いを定義したインターフェイスです。
  *
  * @author 千葉 哲嗣
- * @param <T> Entity
+ * @param <T> Row
  */
 public interface RowManager<T extends Row> {
 
@@ -38,12 +38,12 @@ public interface RowManager<T extends Row> {
 	};
 
 	/**
-	 * Entity を生成するメソッドです。
+	 * Row を生成するメソッドです。
 	 *
 	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
 	 * @return 生成された {@link Row}
 	 */
-	T createEntity(DataObject data);
+	T createRow(DataObject data);
 
 	/**
 	 * サブクラスで固有の {@link TablePath} を返します。
@@ -53,20 +53,20 @@ public interface RowManager<T extends Row> {
 	TablePath getTablePath();
 
 	/**
-	 * この EntityManager で使用する {@link DataAccessHelper}
+	 * この RowManager で使用する {@link DataAccessHelper}
 	 *
 	 * @return {@link DataAccessHelper}
 	 */
 	DataAccessHelper getDataAccessHelper();
 
 	/**
-	 * 空の EntityIterator を返します。
+	 * 空の RowIterator を返します。
 	 *
 	 * @param <T> {@link RowIterator} の要素型
 	 * @return {@link RowIterator}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Row> RowIterator<T> getEmptyEntityIterator() {
+	public static <T extends Row> RowIterator<T> getEmptyRowIterator() {
 		return (RowIterator<T>) EMPTY_ETERATOR;
 	}
 
@@ -164,7 +164,7 @@ public interface RowManager<T extends Row> {
 			return Optional.empty();
 		}
 
-		return Optional.of(createEntity(object));
+		return Optional.of(createRow(object));
 	}
 
 	/**
@@ -186,7 +186,7 @@ public interface RowManager<T extends Row> {
 			return Optional.empty();
 		}
 
-		return Optional.of(createEntity(object));
+		return Optional.of(createRow(object));
 	}
 
 	/**
@@ -229,7 +229,7 @@ public interface RowManager<T extends Row> {
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}
-		return Optional.of(createEntity(object));
+		return Optional.of(createRow(object));
 	}
 
 	/**
@@ -254,89 +254,89 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Entity の INSERT を行います。
+	 * パラメータの Row の INSERT を行います。
 	 *
-	 * @param entity INSERT 対象
+	 * @param row INSERT 対象
 	 */
-	default void insert(T entity) {
-		getDataAccessHelper().insert(getTablePath(), entity, null);
+	default void insert(T row) {
+		getDataAccessHelper().insert(getTablePath(), row, null);
 	}
 
 	/**
-	 * パラメータの Entity の INSERT をバッチ実行します。
-	 *
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param entity INSERT 対象
-	 */
-	default void insert(BatchStatement statement, T entity) {
-		getDataAccessHelper().insert(statement, getTablePath(), entity, null);
-	}
-
-	/**
-	 * パラメータの Entity の INSERT を行います。
-	 *
-	 * @param entity INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
-	 */
-	default void insert(T entity, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(getTablePath(), entity, adjuster);
-	}
-
-	/**
-	 * パラメータの Entity の INSERT をバッチ実行します。
+	 * パラメータの Row の INSERT をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param entity INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
+	 * @param row INSERT 対象
 	 */
-	default void insert(BatchStatement statement, T entity, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(statement, getTablePath(), entity, adjuster);
+	default void insert(BatchStatement statement, T row) {
+		getDataAccessHelper().insert(statement, getTablePath(), row, null);
 	}
 
 	/**
-	 * パラメータの Entity の INSERT を行います。
+	 * パラメータの Row の INSERT を行います。
+	 *
+	 * @param row INSERT 対象
+	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
+	 */
+	default void insert(T row, SQLAdjuster adjuster) {
+		getDataAccessHelper().insert(getTablePath(), row, adjuster);
+	}
+
+	/**
+	 * パラメータの Row の INSERT をバッチ実行します。
+	 *
+	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param row INSERT 対象
+	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
+	 */
+	default void insert(BatchStatement statement, T row, SQLAdjuster adjuster) {
+		getDataAccessHelper().insert(statement, getTablePath(), row, adjuster);
+	}
+
+	/**
+	 * パラメータの Row の INSERT を行います。
 	 *
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
-	 * @param entity INSERT 対象
+	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
 	 * @return INSERT された実際の連続値
 	 */
-	default Bindable insert(SequenceGenerator generator, T entity, int retry) {
-		return getDataAccessHelper().insert(getTablePath(), generator, entity, retry, null);
+	default Bindable insert(SequenceGenerator generator, T row, int retry) {
+		return getDataAccessHelper().insert(getTablePath(), generator, row, retry, null);
 	}
 
 	/**
-	 * パラメータの Entity の INSERT をバッチ実行します。
+	 * パラメータの Row の INSERT をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
-	 * @param entity INSERT 対象
+	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
 	 * @return INSERT された実際の連続値
 	 */
-	default Bindable insert(BatchStatement statement, SequenceGenerator generator, T entity, int retry) {
-		return getDataAccessHelper().insert(statement, getTablePath(), generator, entity, retry, null);
+	default Bindable insert(BatchStatement statement, SequenceGenerator generator, T row, int retry) {
+		return getDataAccessHelper().insert(statement, getTablePath(), generator, row, retry, null);
 	}
 
 	/**
-	 * パラメータの Entity の INSERT を行います。
+	 * パラメータの Row の INSERT を行います。
 	 *
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
-	 * @param entity INSERT 対象
+	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 * @return INSERT された実際の連続値
 	 */
-	default Bindable insert(SequenceGenerator generator, T entity, int retry, SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(getTablePath(), generator, entity, retry, adjuster);
+	default Bindable insert(SequenceGenerator generator, T row, int retry, SQLAdjuster adjuster) {
+		return getDataAccessHelper().insert(getTablePath(), generator, row, retry, adjuster);
 	}
 
 	/**
-	 * パラメータの Entity の INSERT をバッチ実行します。
+	 * パラメータの Row の INSERT をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
-	 * @param entity INSERT 対象
+	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 * @return INSERT された実際の連続値
@@ -344,32 +344,32 @@ public interface RowManager<T extends Row> {
 	default Bindable insert(
 		BatchStatement statement,
 		SequenceGenerator generator,
-		T entity,
+		T row,
 		int retry,
 		SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(statement, getTablePath(), generator, entity, retry, adjuster);
+		return getDataAccessHelper().insert(statement, getTablePath(), generator, row, retry, adjuster);
 	}
 
 	/**
-	 * パラメータの Entity の DELETE を行います。
+	 * パラメータの Row の DELETE を行います。
 	 *
-	 * @param entity DELETE 対象
+	 * @param row DELETE 対象
 	 * @return 削除が成功した場合、 true
 	 */
-	default boolean delete(T entity) {
-		int result = getDataAccessHelper().delete(getTablePath(), entity.getPrimaryKey().getCondition());
+	default boolean delete(T row) {
+		int result = getDataAccessHelper().delete(getTablePath(), row.getPrimaryKey().getCondition());
 		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
 		return result == 1;
 	}
 
 	/**
-	 * パラメータの Entity の DELETE をバッチ実行します。
+	 * パラメータの Row の DELETE をバッチ実行します。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param entity DELETE 対象
+	 * @param row DELETE 対象
 	 */
-	default void delete(BatchStatement statement, T entity) {
-		getDataAccessHelper().delete(statement, getTablePath(), entity.getPrimaryKey().getCondition());
+	default void delete(BatchStatement statement, T row) {
+		getDataAccessHelper().delete(statement, getTablePath(), row.getPrimaryKey().getCondition());
 	}
 
 	/**

@@ -77,7 +77,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	private Class<?> managerParentClass;
 
-	private Class<?> entityParentClass;
+	private Class<?> rowParentClass;
 
 	private Class<?> queryParentClass;
 
@@ -202,12 +202,12 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		return factory;
 	}
 
-	public Class<?> getEntityManagerParentClass() {
+	public Class<?> getRowManagerParentClass() {
 		return managerParentClass;
 	}
 
-	public Class<?> getEntityParentClass() {
-		return entityParentClass;
+	public Class<?> getRowParentClass() {
+		return rowParentClass;
 	}
 
 	public Class<?> getQueryParentClass() {
@@ -355,7 +355,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		Properties properties = getPersistentProperties(currentProject);
 
 		init.put(
-			BlendeeConstants.ANNOTATED_ENTITY_PACKAGES,
+			BlendeeConstants.ANNOTATED_ROW_PACKAGES,
 			splitByBlankAndRemoveEmptyString(properties.getProperty(
 				Constants.OUTPUT_PACKAGE_NAMES)));
 
@@ -447,18 +447,18 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		}
 
 		try {
-			String managerParentClassName = properties.getProperty(Constants.ENTITY_MANAGER_PARENT_CLASS);
+			String managerParentClassName = properties.getProperty(Constants.ROW_MANAGER_PARENT_CLASS);
 			if (isAvailable(managerParentClassName)) {
 				managerParentClass = Class.forName(managerParentClassName, false, loader);
 			} else {
 				managerParentClass = null;
 			}
 
-			String entityParentClassName = properties.getProperty(Constants.ENTITY_PARENT_CLASS);
-			if (isAvailable(entityParentClassName)) {
-				entityParentClass = Class.forName(entityParentClassName, false, loader);
+			String rowParentClassName = properties.getProperty(Constants.ROW_PARENT_CLASS);
+			if (isAvailable(rowParentClassName)) {
+				rowParentClass = Class.forName(rowParentClassName, false, loader);
 			} else {
-				entityParentClass = null;
+				rowParentClass = null;
 			}
 
 			String queryParentClassName = properties.getProperty(Constants.QUERY_PARENT_CLASS);

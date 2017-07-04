@@ -133,8 +133,8 @@ public class TableElement extends PropertySourceElement {
 			BlendeeContext.get(BlendeeManager.class).getConnection(),
 			fragment.getElementName(),
 			parent.getName(),
-			plugin.getEntityManagerParentClass(),
-			plugin.getEntityParentClass(),
+			plugin.getRowManagerParentClass(),
+			plugin.getRowParentClass(),
 			plugin.getQueryParentClass(),
 			plugin.getCodeFormatter(),
 			plugin.useNumberClass(),
@@ -147,13 +147,13 @@ public class TableElement extends PropertySourceElement {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));
 
 			createSource(
-				ORMGenerator.createEntityManagerCompilationUnitName(tableName),
+				ORMGenerator.createRowManagerCompilationUnitName(tableName),
 				fragment,
-				format(formatter, generator.buildEntityManager(relation)));
+				format(formatter, generator.buildRowManager(relation)));
 			createSource(
-				ORMGenerator.createEntityCompilationUnitName(tableName),
+				ORMGenerator.createRowCompilationUnitName(tableName),
 				fragment,
-				format(formatter, generator.buildEntity(relation)));
+				format(formatter, generator.buildRow(relation)));
 			createSource(
 				ORMGenerator.createQueryCompilationUnitName(tableName),
 				fragment,

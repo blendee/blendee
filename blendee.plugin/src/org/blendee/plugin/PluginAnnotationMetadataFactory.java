@@ -20,10 +20,10 @@ public class PluginAnnotationMetadataFactory extends AnnotationMetadataFactory {
 
 	@Override
 	protected boolean matches(Class<?> clazz) {
-		return hasEntity(clazz.getInterfaces()) && !clazz.isInterface();
+		return hasRow(clazz.getInterfaces()) && !clazz.isInterface();
 	}
 
-	private static boolean hasEntity(Class<?>[] interfaces) {
+	private static boolean hasRow(Class<?>[] interfaces) {
 		for (Class<?> clazz : interfaces) {
 			if (clazz.getName().equals(rowClassName)) return true;
 		}

@@ -16,7 +16,7 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatEntityManager(String template, String... arguments);
+	String formatRowManager(String template, String... arguments);
 
 	/**
 	 * {@link RowBase} をテンプレートとしたコードを組み立てます。
@@ -25,7 +25,7 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatEntity(String template, String... arguments);
+	String formatRow(String template, String... arguments);
 
 	/**
 	 * {@link RowBase} の setter getter 生成部分のコードを組み立てます。
@@ -34,7 +34,7 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatEntityPropertyAccessorPart(String template, String... arguments);
+	String formatRowPropertyAccessorPart(String template, String... arguments);
 
 	/**
 	 * {@link RowBase} のリレーション生成部分のコードを組み立てます。
@@ -43,7 +43,7 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatEntityRelationshipPart(String template, String... arguments);
+	String formatRowRelationshipPart(String template, String... arguments);
 
 	/**
 	 * {@link QueryBase} をテンプレートとしたコードを組み立てます。

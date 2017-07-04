@@ -130,8 +130,8 @@ public interface BlendeeConstants {
 	/**
 	 * (String[]) ANNOTATED_ENTITY_PACKAGES
 	 */
-	public static final ParsableOptionKey<String[]> ANNOTATED_ENTITY_PACKAGES = new ParsableOptionKey<>(
-		"annotated-entity-packages",
+	public static final ParsableOptionKey<String[]> ANNOTATED_ROW_PACKAGES = new ParsableOptionKey<>(
+		"annotated-row-packages",
 		TO_STRING_ARRAY);
 
 	/**

@@ -14,14 +14,14 @@ import org.blendee.sql.Updater;
 public interface Row extends Updatable {
 
 	/**
-	 * この Entity が内部で使用している {@link DataObject} を返します。
+	 * この Row が内部で使用している {@link DataObject} を返します。
 	 *
 	 * @return 内部で使用している {@link DataObject}
 	 */
 	DataObject getDataObject();
 
 	/**
-	 * この Entity の更新用メソッドです。
+	 * この Row の更新用メソッドです。
 	 *
 	 * @return 更新が成功したかどうか
 	 */
@@ -30,7 +30,7 @@ public interface Row extends Updatable {
 	}
 
 	/**
-	 * この Entity のバッチ更新用メソッドです。
+	 * この Row のバッチ更新用メソッドです。
 	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 */

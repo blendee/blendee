@@ -8,13 +8,13 @@ import java.lang.annotation.Target;
 import java.util.Optional;
 
 /**
- * Entity の getter 情報を表すアノテーションです。
+ * Row の getter 情報を表すアノテーションです。
  *
  * @author 千葉 哲嗣
  */
 @Target({ METHOD })
 @Retention(RUNTIME)
-public @interface EntityGetter {
+public @interface RowGetter {
 
 	/**
 	 * カラム名

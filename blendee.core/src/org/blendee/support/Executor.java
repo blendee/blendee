@@ -12,9 +12,9 @@ import org.blendee.sql.Condition;
  * <br>
  * 一処理内で、同じ条件で複数回検索を実行したい場合を考慮し、検索実行時状態を保存しておくのが、このクラスのインスタンスの役割です。
  * @param <I> Iterator
- * @param <E> Element
+ * @param <R> Element
  */
-public interface Executor<I, E> {
+public interface Executor<I, R> {
 
 	/**
 	 * このインスタンスが持つ検索条件と並び替え条件を使用して、検索を実行します。
@@ -40,10 +40,10 @@ public interface Executor<I, E> {
 	 * <br>
 	 * 検索条件として、ユニークキーが指定されていることを想定しているメソッドです。
 	 *
-	 * @return Entity
+	 * @return Row
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
-	E willUnique();
+	R willUnique();
 
 	/**
 	 * このインスタンスが持つ検索条件を使用して、検索を実行します。
@@ -51,73 +51,73 @@ public interface Executor<I, E> {
 	 * 検索条件として、ユニークキーが指定されていることを想定しているメソッドです。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
-	 * @return Entity
+	 * @return Row
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
-	E willUnique(QueryOption... options);
+	R willUnique(QueryOption... options);
 
 	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
+	 * 主キーから Row 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
+	 * @return Row
 	 */
-	E fetch(String... primaryKeyMembers);
+	R fetch(String... primaryKeyMembers);
 
 	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
+	 * 主キーから Row 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
+	 * @return Row
 	 */
-	E fetch(Number... primaryKeyMembers);
+	R fetch(Number... primaryKeyMembers);
 
 	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
+	 * 主キーから Row 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
+	 * @return Row
 	 */
-	E fetch(Bindable... primaryKeyMembers);
+	R fetch(Bindable... primaryKeyMembers);
 
 	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
-	 * <br>
-	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
-	 *
-	 * @param options 行ロックオプション {@link RowLockOption} 等
-	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
-	 */
-	E fetch(QueryOptions options, String... primaryKeyMembers);
-
-	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
+	 * 主キーから Row 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
+	 * @return Row
 	 */
-	E fetch(QueryOptions options, Number... primaryKeyMembers);
+	R fetch(QueryOptions options, String... primaryKeyMembers);
 
 	/**
-	 * 主キーから Entity 一件を選択するメソッドです。
+	 * 主キーから Row 一件を選択するメソッドです。
 	 * <br>
 	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーの検索値
-	 * @return Entity
+	 * @return Row
 	 */
-	E fetch(QueryOptions options, Bindable... primaryKeyMembers);
+	R fetch(QueryOptions options, Number... primaryKeyMembers);
+
+	/**
+	 * 主キーから Row 一件を選択するメソッドです。
+	 * <br>
+	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
+	 *
+	 * @param options 行ロックオプション {@link RowLockOption} 等
+	 * @param primaryKeyMembers 主キーの検索値
+	 * @return Row
+	 */
+	R fetch(QueryOptions options, Bindable... primaryKeyMembers);
 
 	/**
 	 * このインスタンスが持つ検索条件に合致するレコード件数を取得します。

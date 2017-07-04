@@ -16,7 +16,7 @@ import org.blendee.support.RowManager;
 import org.blendee.support.RowIterator;
 
 /**
- * 自動生成された '{'@link BEntityManager'}' の実装クラスです。
+ * 自動生成された '{'@link RowManager'}' の実装クラスです。
  *
 {3}
  */
@@ -35,7 +35,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
-	 * @return '{'@link EntityIterator'}'
+	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Condition condition,
@@ -57,7 +57,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 *
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @return '{'@link EntityIterator'}'
+	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Condition condition,
@@ -76,7 +76,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
-	 * @return '{'@link EntityIterator'}'
+	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
@@ -98,7 +98,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @return '{'@link EntityIterator'}'
+	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
@@ -113,7 +113,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}++*//*--*/RowBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
+	public /*++{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
 		return new /*++{1}++*//*--*/RowBase/*--*/(data);
 	/*++'++*/}/*++'++*/
 
@@ -131,7 +131,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
 	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
-		extends /*++EntityIterator<{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
+		extends /*++RowIterator<{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。
@@ -145,7 +145,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 
 		@Override
 		public /*++{1}++*//*--*/RowBase/*--*/ next() /*++'++*/{/*++'++*/
-			return createEntity(nextDataObject());
+			return createRow(nextDataObject());
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 /*++'++*/}/*++'++*/

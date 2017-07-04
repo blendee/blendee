@@ -76,7 +76,7 @@ public class Blendee {
 		Optional.ofNullable(
 			BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
 				() -> Optional.of(getDefaultMetadataFactoryClass())
-					.filter(c -> BlendeeConstants.ANNOTATED_ENTITY_PACKAGES.extract(initValues).isPresent())
+					.filter(c -> BlendeeConstants.ANNOTATED_ROW_PACKAGES.extract(initValues).isPresent())
 					.orElse(null)))
 			.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
 

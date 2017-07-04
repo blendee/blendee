@@ -40,7 +40,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 */
 	public AnnotationMetadataFactory() {
 		virtualSpace = getInstance(
-			BlendeeContext.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ENTITY_PACKAGES).orElseThrow(
+			BlendeeContext.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
 				() -> new NullPointerException()));
 	}
 

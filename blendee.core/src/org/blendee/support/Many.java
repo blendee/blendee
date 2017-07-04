@@ -60,7 +60,7 @@ public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>
 		}
 
 		@SuppressWarnings("unchecked")
-		One<O, M> result = (One<O, M>) new One<>(selfAsMany.createEntity(current), next);
+		One<O, M> result = (One<O, M>) new One<>(selfAsMany.createRow(current), next);
 
 		return result;
 	}
