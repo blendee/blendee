@@ -24,8 +24,8 @@ import org.blendee.sql.ValueExtractor;
  */
 @Resource(schema = "{1}", table = "{2}")
 @Generated(value = /*++'++*/{/*++'++*/"{9}"/*++'++*/}/*++'++*/)
-/*++{7}++*/public class RowBase
-	extends /*++{3}++*//*--*/Object/*--*/
+/*++{7}++*/public class /*++{2}++*//*--*/RowBase/*--*/
+extends /*++{3}++*//*--*/Object/*--*/
 	implements Row /*++'++*/{/*++'++*/
 
 	/**
@@ -50,7 +50,7 @@ import org.blendee.sql.ValueExtractor;
 	/**
 	 * 登録用コンストラクタです。
 	 */
-	public RowBase() /*++'++*/{/*++'++*/
+	public /*++{2}++*//*--*/RowBase/*--*/() /*++'++*/{/*++'++*/
 		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
 		$data = new DataObject($relationship);
 	/*++'++*/}/*++'++*/
@@ -60,7 +60,7 @@ import org.blendee.sql.ValueExtractor;
 	 *
 	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
-	public RowBase(DataObject data) /*++'++*/{/*++'++*/
+	public /*++{2}++*//*--*/RowBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
 		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
 		this.$data = data;
 	/*++'++*/}/*++'++*/
