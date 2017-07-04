@@ -11,13 +11,13 @@ import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 
 /**
- * 自動生成される EntityManager の実装が使用する Iterator クラスです。
+ * 自動生成される RowManager の実装が使用する Iterator クラスです。
  *
  * @author 千葉 哲嗣
- * @param <E> 要素
+ * @param <R> 要素
  */
-public abstract class EntityIterator<E extends BEntity>
-	implements AutoCloseable, Iterable<E>, Iterator<E> {
+public abstract class RowIterator<R extends Row>
+	implements AutoCloseable, Iterable<R>, Iterator<R> {
 
 	private final DataObjectIterator iterator;
 
@@ -26,12 +26,12 @@ public abstract class EntityIterator<E extends BEntity>
 	 * 
 	 * @param iterator 検索結果オブジェクト
 	 */
-	public EntityIterator(DataObjectIterator iterator) {
+	public RowIterator(DataObjectIterator iterator) {
 		this.iterator = iterator;
 	}
 
 	@Override
-	public Iterator<E> iterator() {
+	public Iterator<R> iterator() {
 		return this;
 	}
 
@@ -40,7 +40,7 @@ public abstract class EntityIterator<E extends BEntity>
 	 *
 	 * @return {@link Stream}
 	 */
-	public Stream<E> stream() {
+	public Stream<R> stream() {
 		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED), false);
 	}
 

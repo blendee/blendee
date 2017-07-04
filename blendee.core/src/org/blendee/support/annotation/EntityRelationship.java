@@ -6,7 +6,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.blendee.support.BEntity;
+import org.blendee.support.Row;
 
 /**
  * Entity の 他 Entity への参照を表すアノテーションです。
@@ -29,5 +29,5 @@ public @interface EntityRelationship {
 	 *
 	 * @return 参照テーブル
 	 */
-	Class<? extends BEntity> referenced();
+	Class<? extends Row> referenced();
 }

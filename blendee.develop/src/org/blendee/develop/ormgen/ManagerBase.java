@@ -12,8 +12,8 @@ import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Condition;
 import org.blendee.sql.OrderByClause;
-import org.blendee.support.BEntityManager;
-import org.blendee.support.EntityIterator;
+import org.blendee.support.RowManager;
+import org.blendee.support.RowIterator;
 
 /**
  * 自動生成された '{'@link BEntityManager'}' の実装クラスです。
@@ -23,7 +23,7 @@ import org.blendee.support.EntityIterator;
 @Generated(value = /*++'++*/{/*++'++*/"{4}"/*++'++*/}/*++'++*/)
 public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements BEntityManager</*++{1}++*//*--*/EntityBase/*--*/> /*++'++*/{/*++'++*/
+	implements RowManager</*++{1}++*//*--*/EntityBase/*--*/> /*++'++*/{/*++'++*/
 
 	private final DataAccessHelper helper = new DataAccessHelper(false);
 
@@ -131,7 +131,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
 	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
-		extends /*++EntityIterator<{1}>++*//*--*/EntityIterator<EntityBase>/*--*/ /*++'++*/{/*++'++*/
+		extends /*++EntityIterator<{1}>++*//*--*/RowIterator<EntityBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。

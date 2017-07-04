@@ -1,11 +1,11 @@
 package org.blendee.plugin;
 
-import org.blendee.support.BEntity;
+import org.blendee.support.Row;
 import org.blendee.util.AnnotationMetadataFactory;
 
 public class PluginAnnotationMetadataFactory extends AnnotationMetadataFactory {
 
-	private static final String entityClassName = BEntity.class.getName();
+	private static final String rowClassName = Row.class.getName();
 
 	private static ClassLoader loader;
 
@@ -25,7 +25,7 @@ public class PluginAnnotationMetadataFactory extends AnnotationMetadataFactory {
 
 	private static boolean hasEntity(Class<?>[] interfaces) {
 		for (Class<?> clazz : interfaces) {
-			if (clazz.getName().equals(entityClassName)) return true;
+			if (clazz.getName().equals(rowClassName)) return true;
 		}
 
 		return false;

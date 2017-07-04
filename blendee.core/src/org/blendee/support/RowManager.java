@@ -23,16 +23,16 @@ import org.blendee.sql.Updatable;
  * @author 千葉 哲嗣
  * @param <T> Entity
  */
-public interface BEntityManager<T extends BEntity> {
+public interface RowManager<T extends Row> {
 
 	/**
 	 * 空の検索結果
 	 */
-	public static final EntityIterator<BEntity> EMPTY_ETERATOR = new EntityIterator<BEntity>(
+	public static final RowIterator<Row> EMPTY_ETERATOR = new RowIterator<Row>(
 		DataAccessHelper.EMPTY_UPDATABLE_DATA_OBJECT_ITERATOR) {
 
 		@Override
-		public BEntity next() {
+		public Row next() {
 			throw new UnsupportedOperationException();
 		}
 	};
@@ -40,8 +40,8 @@ public interface BEntityManager<T extends BEntity> {
 	/**
 	 * Entity を生成するメソッドです。
 	 *
-	 * @param data {@link BEntity} の全要素の値を持つ検索結果オブジェクト
-	 * @return 生成された {@link BEntity}
+	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
+	 * @return 生成された {@link Row}
 	 */
 	T createEntity(DataObject data);
 
@@ -62,96 +62,96 @@ public interface BEntityManager<T extends BEntity> {
 	/**
 	 * 空の EntityIterator を返します。
 	 *
-	 * @param <T> {@link EntityIterator} の要素型
-	 * @return {@link EntityIterator}
+	 * @param <T> {@link RowIterator} の要素型
+	 * @return {@link RowIterator}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends BEntity> EntityIterator<T> getEmptyEntityIterator() {
-		return (EntityIterator<T>) EMPTY_ETERATOR;
+	public static <T extends Row> RowIterator<T> getEmptyEntityIterator() {
+		return (RowIterator<T>) EMPTY_ETERATOR;
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, String... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, Number... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param primaryKeyMembers 主キーを構成する文字列
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(String... primaryKeyMembers) {
 		return select(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param primaryKeyMembers 主キーを構成する数値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Number... primaryKeyMembers) {
 		return select(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(QueryOptions options, Bindable... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 * <br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
 	 *
 	 * @param primaryKeyMembers 主キーを構成する値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Bindable... primaryKeyMembers) {
 		return select(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, String... primaryKeyMembers) {
 		DataObject object;
@@ -168,12 +168,12 @@ public interface BEntityManager<T extends BEntity> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, Number... primaryKeyMembers) {
 		DataObject object;
@@ -190,34 +190,34 @@ public interface BEntityManager<T extends BEntity> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する文字列
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, String... primaryKeyMembers) {
 		return select(optimizer, QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する数値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Number... primaryKeyMembers) {
 		return select(optimizer, QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, Bindable... primaryKeyMembers) {
 		DataObject object;
@@ -233,11 +233,11 @@ public interface BEntityManager<T extends BEntity> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link BEntity} を検索し返します。
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
 	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する値
-	 * @return {@link BEntity} 存在しなければ null
+	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Bindable... primaryKeyMembers) {
 		return select(optimizer, QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);

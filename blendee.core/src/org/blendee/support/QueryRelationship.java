@@ -110,8 +110,8 @@ public interface QueryRelationship {
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 *
-	 * @param data {@link BEntity} の全要素の値を持つ検索結果オブジェクト
-	 * @return 生成された {@link BEntity}
+	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
+	 * @return 生成された {@link Row}
 	 */
-	BEntity createEntity(DataObject data);
+	Row createEntity(DataObject data);
 }

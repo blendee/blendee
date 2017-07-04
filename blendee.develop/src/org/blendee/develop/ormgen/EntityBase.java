@@ -2,7 +2,7 @@
 
 import javax.annotation.Generated;
 
-import org.blendee.support.BEntity;
+import org.blendee.support.Row;
 import org.blendee.support.annotation.EntityGetter;
 /*--*/import org.blendee.support.annotation.EntityRelationship;/*--*/
 import org.blendee.support.annotation.EntitySetter;
@@ -26,7 +26,7 @@ import org.blendee.sql.ValueExtractor;
 @Generated(value = /*++'++*/{/*++'++*/"{9}"/*++'++*/}/*++'++*/)
 /*++{7}++*/public class /*++{2}++*//*--*/EntityBase/*--*/
 	extends /*++{3}++*//*--*/Object/*--*/
-	implements BEntity /*++'++*/{/*++'++*/
+	implements Row /*++'++*/{/*++'++*/
 
 	/**
 	 * この定数クラスのスキーマ名

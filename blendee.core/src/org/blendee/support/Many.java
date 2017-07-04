@@ -12,14 +12,14 @@ import org.blendee.orm.DataObject;
 import org.blendee.sql.Relationship;
 
 /**
- * {@link Iterator} としての性質を持った {@link BEntity} の集合を表します。
+ * {@link Iterator} としての性質を持った {@link Row} の集合を表します。
  *
  * @author 千葉 哲嗣
  *
  * @param <O> One {@link Many} の要素
  * @param <M> Many {@link Many} の要素を一とした場合の、一対多の多側の型連鎖
  */
-public class Many<O extends BEntity, M> implements AutoCloseable, Iterable<One<O, M>>, Iterator<One<O, M>> {
+public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>>, Iterator<One<O, M>> {
 
 	private final DataObjectManager manager;
 
@@ -51,7 +51,7 @@ public class Many<O extends BEntity, M> implements AutoCloseable, Iterable<One<O
 
 		DataObject current = manager.current(selfAsMany.getRelationship());
 
-		Many<BEntity, Object> next;
+		Many<Row, Object> next;
 		if (nextMany == null) {
 			manager.next();
 			next = null;

@@ -7,11 +7,11 @@ import org.blendee.sql.Updatable;
 import org.blendee.sql.Updater;
 
 /**
- * 自動生成される Entity の共通の振る舞いを定義したインターフェイスです。
+ * 自動生成される Row の共通の振る舞いを定義したインターフェイスです。
  *
  * @author 千葉 哲嗣
  */
-public interface BEntity extends Updatable {
+public interface Row extends Updatable {
 
 	/**
 	 * この Entity が内部で使用している {@link DataObject} を返します。

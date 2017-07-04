@@ -19,13 +19,13 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TablePath;
-import org.blendee.support.BEntity;
+import org.blendee.support.Row;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
 import org.blendee.support.annotation.PseudoPK;
 
 /**
- * {@link VirtualSpace} を {@link BEntity} に付与されたアノテーションからロードするファクトリクラスです。
+ * {@link VirtualSpace} を {@link Row} に付与されたアノテーションからロードするファクトリクラスです。
  *
  * @author 千葉 哲嗣
  */
@@ -76,7 +76,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 * @return アノテーションの調査をするクラスの対象かどうか
 	 */
 	protected boolean matches(Class<?> clazz) {
-		return BEntity.class.isAssignableFrom(clazz) && !clazz.isInterface();
+		return Row.class.isAssignableFrom(clazz) && !clazz.isInterface();
 	}
 
 	private VirtualSpace getInstance(String[] packages) {

@@ -13,7 +13,7 @@ import org.blendee.sql.Relationship;
  *
  * @author 千葉 哲嗣
  */
-public interface Query extends Executor<EntityIterator<? extends BEntity>, Optional<? extends BEntity>> {
+public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>> {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
