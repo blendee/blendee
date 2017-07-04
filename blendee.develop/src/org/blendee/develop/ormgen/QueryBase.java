@@ -157,7 +157,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
 		optimizer = BlendeeContext.get(AnchorOptimizerFactory.class).getInstance(
 			id,
-			/*++{1}++*//*--*/EntityBase/*--*/.$TABLE,
+			/*++{1}++*//*--*/RowBase/*--*/.$TABLE,
 			using);
 	/*++'++*/}/*++'++*/
 
@@ -169,7 +169,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
 		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, None>> function) /*++'++*/{/*++'++*/
-		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
+		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
 		return this;
@@ -252,42 +252,42 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> willUnique() /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
 		return getUnique(execute());
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
 		return getUnique(execute(options));
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/EntityBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
@@ -337,7 +337,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M>
-		extends OneToManyExecutor</*++{1}++*//*--*/EntityBase/*--*/, M> /*++'++*/{/*++'++*/
+		extends OneToManyExecutor</*++{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
 		private /*++{1}Executor++*//*--*/O2MExecutor/*--*/(QueryRelationship parent) /*++'++*/{/*++'++*/
 			super(parent);
@@ -346,7 +346,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
 		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/EntityBase/*--*/.$TABLE);
+		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
 		return optimizer;
 	/*++'++*/}/*++'++*/
 
@@ -358,10 +358,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
-	private static Optional</*++{1}++*//*--*/EntityBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
+	private static Optional</*++{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
 		if (!iterator.hasNext()) return Optional.empty();
 
-		/*++{1}++*//*--*/EntityBase/*--*/ entity = iterator.next();
+		/*++{1}++*//*--*/RowBase/*--*/ entity = iterator.next();
 
 		if (iterator.hasNext()) throw new NotUniqueException();
 
@@ -431,12 +431,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			$path = path;
 
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
-				this, /*++{1}++*//*--*/EntityBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
+				this, /*++{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
 /*++{5}++*/
 
 /*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = path.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, root);
+				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root);
 /*==RelationshipPart2==*/
 /*++{6}++*/
 		/*++'++*/}/*++'++*/
@@ -449,13 +449,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			$context = context;
 			$parent = null;
 			$fkName = null;
-			$path = /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
+			$path = /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
 
 			/*--*/columnName = null;/*--*/
 /*++{5}++*/
 
 /*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/EntityBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/EntityBase/*--*/.$TABLE, $path);
+				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, $path);
 /*==RelationshipPart3==*/
 /*++{7}++*/
 		/*++'++*/}/*++'++*/
@@ -539,7 +539,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/EntityBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
+		public /*++{1}++*//*--*/RowBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
 			return $manager.createEntity(data);
 		/*++'++*/}/*++'++*/
 

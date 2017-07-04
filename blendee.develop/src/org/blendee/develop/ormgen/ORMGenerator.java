@@ -108,7 +108,7 @@ public class ORMGenerator {
 		}
 
 		{
-			String source = readTemplate(EntityBase.class, charset);
+			String source = readTemplate(RowBase.class, charset);
 			{
 				String[] result = pickupFromSource(source, "EntityPropertyAccessorPart");
 				entityPropertyAccessorPartTemplate = convertToTemplate(result[0]);

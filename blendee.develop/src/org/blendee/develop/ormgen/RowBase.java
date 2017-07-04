@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
+/*--*//*@formatter:off*//*--*/package org.blendee.develop.ormgen;
 
 import javax.annotation.Generated;
 
@@ -24,7 +24,7 @@ import org.blendee.sql.ValueExtractor;
  */
 @Resource(schema = "{1}", table = "{2}")
 @Generated(value = /*++'++*/{/*++'++*/"{9}"/*++'++*/}/*++'++*/)
-/*++{7}++*/public class /*++{2}++*//*--*/EntityBase/*--*/
+/*++{7}++*/public class RowBase
 	extends /*++{3}++*//*--*/Object/*--*/
 	implements Row /*++'++*/{/*++'++*/
 
@@ -50,7 +50,7 @@ import org.blendee.sql.ValueExtractor;
 	/**
 	 * 登録用コンストラクタです。
 	 */
-	public /*++{2}++*//*--*/EntityBase/*--*/() /*++'++*/{/*++'++*/
+	public RowBase() /*++'++*/{/*++'++*/
 		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
 		$data = new DataObject($relationship);
 	/*++'++*/}/*++'++*/
@@ -60,7 +60,7 @@ import org.blendee.sql.ValueExtractor;
 	 *
 	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
-	public /*++{2}++*//*--*/EntityBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
+	public RowBase(DataObject data) /*++'++*/{/*++'++*/
 		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
 		this.$data = data;
 	/*++'++*/}/*++'++*/
@@ -123,9 +123,9 @@ import org.blendee.sql.ValueExtractor;
 	 *
 	 * @return 参照しているレコードの Entity
 	 */
-	@EntityRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/EntityBase/*--*/.class)
-	public /*++{0}++*//*--*/EntityBase/*--*/ /*++get{3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
-		return new /*++{0}++*//*--*/EntityBase/*--*/(
+	@EntityRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)
+	public /*++{0}++*//*--*/RowBase/*--*/ /*++get{3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
+		return new /*++{0}++*//*--*/RowBase/*--*/(
 			$data.getDataObject(/*++{0}++*/_BY_/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 

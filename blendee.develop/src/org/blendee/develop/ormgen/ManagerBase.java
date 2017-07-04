@@ -23,7 +23,7 @@ import org.blendee.support.RowIterator;
 @Generated(value = /*++'++*/{/*++'++*/"{4}"/*++'++*/}/*++'++*/)
 public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements RowManager</*++{1}++*//*--*/EntityBase/*--*/> /*++'++*/{/*++'++*/
+	implements RowManager</*++{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
 	private final DataAccessHelper helper = new DataAccessHelper(false);
 
@@ -113,13 +113,13 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}++*//*--*/EntityBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
-		return new /*++{1}++*//*--*/EntityBase/*--*/(data);
+	public /*++{1}++*//*--*/RowBase/*--*/ createEntity(DataObject data) /*++'++*/{/*++'++*/
+		return new /*++{1}++*//*--*/RowBase/*--*/(data);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public TablePath getTablePath() /*++'++*/{/*++'++*/
-		return /*++{1}++*//*--*/EntityBase/*--*/.$TABLE;
+		return /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -131,7 +131,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
 	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
-		extends /*++EntityIterator<{1}>++*//*--*/RowIterator<EntityBase>/*--*/ /*++'++*/{/*++'++*/
+		extends /*++EntityIterator<{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。
@@ -144,7 +144,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/EntityBase/*--*/ next() /*++'++*/{/*++'++*/
+		public /*++{1}++*//*--*/RowBase/*--*/ next() /*++'++*/{/*++'++*/
 			return createEntity(nextDataObject());
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/

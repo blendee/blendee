@@ -19,7 +19,7 @@ public interface CodeFormatter {
 	String formatEntityManager(String template, String... arguments);
 
 	/**
-	 * {@link EntityBase} をテンプレートとしたコードを組み立てます。
+	 * {@link RowBase} をテンプレートとしたコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
@@ -28,7 +28,7 @@ public interface CodeFormatter {
 	String formatEntity(String template, String... arguments);
 
 	/**
-	 * {@link EntityBase} の setter getter 生成部分のコードを組み立てます。
+	 * {@link RowBase} の setter getter 生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
@@ -37,7 +37,7 @@ public interface CodeFormatter {
 	String formatEntityPropertyAccessorPart(String template, String... arguments);
 
 	/**
-	 * {@link EntityBase} のリレーション生成部分のコードを組み立てます。
+	 * {@link RowBase} のリレーション生成部分のコードを組み立てます。
 	 *
 	 * @param template {@link MessageFormat} 形式テンプレート
 	 * @param arguments 引数
