@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package org.blendee.develop.ormgen;
+/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
 
 import javax.annotation.Generated;
 
