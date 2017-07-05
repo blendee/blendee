@@ -51,7 +51,7 @@ public class OneToManyExecutor<O extends Row, M>
 
 	private final OrderByClause order;
 
-	private final DataAccessHelper helper = new DataAccessHelper(false);
+	private final DataAccessHelper helper = new DataAccessHelper();
 
 	private final LinkedList<QueryRelationship> route;
 

@@ -129,6 +129,6 @@ public class RelationshipFactory implements ManagementSubject {
 			path,
 			pathID,
 			BlendeeContext.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
-			new CollectionMap<TablePath, Relationship>());
+			new CollectionMap<>());
 	}
 }

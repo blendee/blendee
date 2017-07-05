@@ -52,8 +52,6 @@ public class DataAccessHelper {
 
 	private static final ThreadLocal<StatementFacade> threadStatement = new ThreadLocal<StatementFacade>();
 
-	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
-
 	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
 
 	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
@@ -64,7 +62,7 @@ public class DataAccessHelper {
 	 * インスタンスを生成します。
 	 */
 	public DataAccessHelper() {
-		this(true);
+		this(false);
 	}
 
 	/**
@@ -202,7 +200,7 @@ public class DataAccessHelper {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(SelectClause.COUNT_CLAUSE);
 		if (condition != null) builder.setWhereClause(condition);
-		BConnection connection = manager.getConnection();
+		BConnection connection = BlendeeContext.get(BlendeeManager.class).getConnection();
 		try (BStatement statement = connection.getStatement(builder.toString(), builder)) {
 			try (BResultSet result = statement.executeQuery()) {
 				result.next();

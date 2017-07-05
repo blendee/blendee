@@ -25,8 +25,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements RowManager</*++{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
-	private final DataAccessHelper helper = new DataAccessHelper(false);
-
 	/**
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
 	 * <br>
@@ -83,7 +81,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 		Condition condition,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
-		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(helper.getDataObjects(
+		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(new DataAccessHelper().getDataObjects(
 			optimizer,
 			condition,
 			order,
@@ -120,11 +118,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	@Override
 	public TablePath getTablePath() /*++'++*/{/*++'++*/
 		return /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public DataAccessHelper getDataAccessHelper() /*++'++*/{/*++'++*/
-		return helper;
 	/*++'++*/}/*++'++*/
 
 	/**

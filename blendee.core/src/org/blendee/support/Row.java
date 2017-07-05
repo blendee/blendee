@@ -1,6 +1,8 @@
 package org.blendee.support;
 
 import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.TablePath;
+import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.PrimaryKey;
 import org.blendee.sql.Updatable;
@@ -21,6 +23,13 @@ public interface Row extends Updatable {
 	DataObject getDataObject();
 
 	/**
+	 * サブクラスで固有の {@link TablePath} を返します。
+	 *
+	 * @return 固有の {@link TablePath}
+	 */
+	TablePath getTablePath();
+
+	/**
 	 * この Row の更新用メソッドです。
 	 *
 	 * @return 更新が成功したかどうか
@@ -36,6 +45,54 @@ public interface Row extends Updatable {
 	 */
 	default void update(BatchStatement statement) {
 		getDataObject().update(statement);
+	}
+
+	/**
+	 * この Row の INSERT を行います。
+	 */
+	default void insert() {
+		new DataAccessHelper().insert(
+			getTablePath(),
+			this,
+			null);
+	}
+
+	/**
+	 * この Row の INSERT をバッチ実行します。
+	 *
+	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 */
+	default void insert(BatchStatement statement) {
+		new DataAccessHelper().insert(
+			statement,
+			getTablePath(),
+			this,
+			null);
+	}
+
+	/**
+	 * この Row の DELETE を行います。
+	 *
+	 * @return 削除が成功した場合、 true
+	 */
+	default boolean delete() {
+		int result = new DataAccessHelper().delete(
+			getTablePath(),
+			getPrimaryKey().getCondition());
+		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
+		return result == 1;
+	}
+
+	/**
+	 * この Row の DELETE をバッチ実行します。
+	 *
+	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 */
+	default void delete(BatchStatement statement) {
+		new DataAccessHelper().delete(
+			statement,
+			getTablePath(),
+			getPrimaryKey().getCondition());
 	}
 
 	/**

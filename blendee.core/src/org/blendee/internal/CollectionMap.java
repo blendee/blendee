@@ -21,12 +21,12 @@ public class CollectionMap<K, V> implements Cloneable {
 	private final Map<K, Collection<V>> map;
 
 	public static <V, K> CollectionMap<K, V> newInstance() {
-		return new CollectionMap<K, V>();
+		return new CollectionMap<>();
 	}
 
 	public static <V, K> CollectionMap<K, V> newInstance(
 		@SuppressWarnings("rawtypes") Class<? extends Map> mapClass) {
-		return new CollectionMap<K, V>(mapClass);
+		return new CollectionMap<>(mapClass);
 	}
 
 	public CollectionMap() {
@@ -92,6 +92,7 @@ public class CollectionMap<K, V> implements Cloneable {
 				clone.put(key, value);
 			}
 		}
+
 		return clone;
 	}
 

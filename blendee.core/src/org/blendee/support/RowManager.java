@@ -28,7 +28,7 @@ public interface RowManager<T extends Row> {
 	/**
 	 * 空の検索結果
 	 */
-	public static final RowIterator<Row> EMPTY_ETERATOR = new RowIterator<Row>(
+	public static final RowIterator<Row> EMPTY_ITERATOR = new RowIterator<Row>(
 		DataAccessHelper.EMPTY_UPDATABLE_DATA_OBJECT_ITERATOR) {
 
 		@Override
@@ -53,13 +53,6 @@ public interface RowManager<T extends Row> {
 	TablePath getTablePath();
 
 	/**
-	 * この RowManager で使用する {@link DataAccessHelper}
-	 *
-	 * @return {@link DataAccessHelper}
-	 */
-	DataAccessHelper getDataAccessHelper();
-
-	/**
 	 * 空の RowIterator を返します。
 	 *
 	 * @param <T> {@link RowIterator} の要素型
@@ -67,7 +60,7 @@ public interface RowManager<T extends Row> {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Row> RowIterator<T> getEmptyRowIterator() {
-		return (RowIterator<T>) EMPTY_ETERATOR;
+		return (RowIterator<T>) EMPTY_ITERATOR;
 	}
 
 	/**
@@ -156,7 +149,7 @@ public interface RowManager<T extends Row> {
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, String... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = getDataAccessHelper().getDataObject(
+			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
@@ -178,7 +171,7 @@ public interface RowManager<T extends Row> {
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, Number... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = getDataAccessHelper().getDataObject(
+			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
@@ -222,7 +215,7 @@ public interface RowManager<T extends Row> {
 	default Optional<T> select(Optimizer optimizer, QueryOptions options, Bindable... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = getDataAccessHelper().getDataObject(
+			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				new PrimaryKey(getTablePath(), primaryKeyMembers),
 				QueryOptions.care(options).get());
@@ -250,26 +243,7 @@ public interface RowManager<T extends Row> {
 	 * @return パラメータの条件にマッチする件数
 	 */
 	default int count(Condition condition) {
-		return getDataAccessHelper().count(getTablePath(), condition);
-	}
-
-	/**
-	 * パラメータの Row の INSERT を行います。
-	 *
-	 * @param row INSERT 対象
-	 */
-	default void insert(T row) {
-		getDataAccessHelper().insert(getTablePath(), row, null);
-	}
-
-	/**
-	 * パラメータの Row の INSERT をバッチ実行します。
-	 *
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param row INSERT 対象
-	 */
-	default void insert(BatchStatement statement, T row) {
-		getDataAccessHelper().insert(statement, getTablePath(), row, null);
+		return new DataAccessHelper().count(getTablePath(), condition);
 	}
 
 	/**
@@ -279,7 +253,7 @@ public interface RowManager<T extends Row> {
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	default void insert(T row, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(getTablePath(), row, adjuster);
+		new DataAccessHelper().insert(getTablePath(), row, adjuster);
 	}
 
 	/**
@@ -290,7 +264,7 @@ public interface RowManager<T extends Row> {
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
 	default void insert(BatchStatement statement, T row, SQLAdjuster adjuster) {
-		getDataAccessHelper().insert(statement, getTablePath(), row, adjuster);
+		new DataAccessHelper().insert(statement, getTablePath(), row, adjuster);
 	}
 
 	/**
@@ -302,7 +276,7 @@ public interface RowManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(SequenceGenerator generator, T row, int retry) {
-		return getDataAccessHelper().insert(getTablePath(), generator, row, retry, null);
+		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, null);
 	}
 
 	/**
@@ -315,7 +289,7 @@ public interface RowManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(BatchStatement statement, SequenceGenerator generator, T row, int retry) {
-		return getDataAccessHelper().insert(statement, getTablePath(), generator, row, retry, null);
+		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, null);
 	}
 
 	/**
@@ -328,7 +302,7 @@ public interface RowManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(SequenceGenerator generator, T row, int retry, SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(getTablePath(), generator, row, retry, adjuster);
+		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, adjuster);
 	}
 
 	/**
@@ -347,29 +321,7 @@ public interface RowManager<T extends Row> {
 		T row,
 		int retry,
 		SQLAdjuster adjuster) {
-		return getDataAccessHelper().insert(statement, getTablePath(), generator, row, retry, adjuster);
-	}
-
-	/**
-	 * パラメータの Row の DELETE を行います。
-	 *
-	 * @param row DELETE 対象
-	 * @return 削除が成功した場合、 true
-	 */
-	default boolean delete(T row) {
-		int result = getDataAccessHelper().delete(getTablePath(), row.getPrimaryKey().getCondition());
-		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
-		return result == 1;
-	}
-
-	/**
-	 * パラメータの Row の DELETE をバッチ実行します。
-	 *
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param row DELETE 対象
-	 */
-	default void delete(BatchStatement statement, T row) {
-		getDataAccessHelper().delete(statement, getTablePath(), row.getPrimaryKey().getCondition());
+		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, adjuster);
 	}
 
 	/**
@@ -380,7 +332,7 @@ public interface RowManager<T extends Row> {
 	 * @return 更新件数
 	 */
 	default int update(Condition condition, Updatable updatable) {
-		return getDataAccessHelper().update(getTablePath(), updatable, condition, null);
+		return new DataAccessHelper().update(getTablePath(), updatable, condition, null);
 	}
 
 	/**
@@ -391,7 +343,7 @@ public interface RowManager<T extends Row> {
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
 	default void update(BatchStatement statement, Condition condition, Updatable updatable) {
-		getDataAccessHelper().update(statement, getTablePath(), updatable, condition, null);
+		new DataAccessHelper().update(statement, getTablePath(), updatable, condition, null);
 	}
 
 	/**
@@ -403,7 +355,7 @@ public interface RowManager<T extends Row> {
 	 * @return 更新件数
 	 */
 	default int update(Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		return getDataAccessHelper().update(getTablePath(), updatable, condition, adjuster);
+		return new DataAccessHelper().update(getTablePath(), updatable, condition, adjuster);
 	}
 
 	/**
@@ -415,7 +367,7 @@ public interface RowManager<T extends Row> {
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
 	default void update(BatchStatement statement, Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		getDataAccessHelper().update(statement, getTablePath(), updatable, condition, adjuster);
+		new DataAccessHelper().update(statement, getTablePath(), updatable, condition, adjuster);
 	}
 
 	/**
@@ -425,7 +377,7 @@ public interface RowManager<T extends Row> {
 	 * @return 削除件数
 	 */
 	default int delete(Condition condition) {
-		return getDataAccessHelper().delete(getTablePath(), condition);
+		return new DataAccessHelper().delete(getTablePath(), condition);
 	}
 
 	/**
@@ -435,6 +387,6 @@ public interface RowManager<T extends Row> {
 	 * @param condition WHERE 句となる条件
 	 */
 	default void delete(BatchStatement statement, Condition condition) {
-		getDataAccessHelper().delete(statement, getTablePath(), condition);
+		new DataAccessHelper().delete(statement, getTablePath(), condition);
 	}
 }

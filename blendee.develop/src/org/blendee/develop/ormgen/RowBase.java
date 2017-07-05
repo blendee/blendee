@@ -70,6 +70,11 @@ extends /*++{3}++*//*--*/Object/*--*/
 		return $data;
 	/*++'++*/}/*++'++*/
 
+	@Override
+	public TablePath getTablePath() /*++'++*/{/*++'++*/
+		return $TABLE;
+	/*++'++*/}/*++'++*/
+
 /*++{4}++*/
 /*==RowPropertyAccessorPart==*/
 	/**
