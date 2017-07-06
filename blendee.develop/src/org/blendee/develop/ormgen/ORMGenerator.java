@@ -166,7 +166,7 @@ public class ORMGenerator {
 	 * @param rowManagerSuperclass RowManager クラスの親クラス
 	 * @param rowSuperclass Row クラスの親クラス
 	 * @param querySuperclass Query クラスの親クラス
-	 * @param codeAdjuster {@link CodeFormatter}
+	 * @param codeFormatter {@link CodeFormatter}
 	 * @param useNumberClass Row クラスの数値型項目を {@link Number} で統一する
 	 * @param useNullGuard Row クラスの項目に null ガードを適用する
 	 * @param generatorName ジェネレータ名
@@ -178,7 +178,7 @@ public class ORMGenerator {
 		Class<?> rowManagerSuperclass,
 		Class<?> rowSuperclass,
 		Class<?> querySuperclass,
-		CodeFormatter codeAdjuster,
+		CodeFormatter codeFormatter,
 		boolean useNumberClass,
 		boolean useNullGuard,
 		String generatorName) {
@@ -190,7 +190,7 @@ public class ORMGenerator {
 		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;
 		this.querySuperclass = querySuperclass != null ? querySuperclass : Object.class;
 
-		this.codeFormatter = codeAdjuster == null ? defaultCodeFormatter : codeAdjuster;
+		this.codeFormatter = codeFormatter == null ? defaultCodeFormatter : codeFormatter;
 
 		this.useNumberClass = useNumberClass;
 		this.useNullGuard = useNullGuard;
