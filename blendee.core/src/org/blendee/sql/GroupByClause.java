@@ -2,14 +2,12 @@ package org.blendee.sql;
 
 /**
  * SELECT 文の GROUP BY 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class GroupByClause extends SimpleQueryClause<GroupByClause> {
 
 	/**
 	 * GROUP BY 句に新しいカラムを追加します。
-	 *
 	 * @param columns 新しいカラム
 	 */
 	public void add(Column... columns) {
@@ -22,7 +20,6 @@ public class GroupByClause extends SimpleQueryClause<GroupByClause> {
 
 	/**
 	 * GROUP BY 句に新しいカラムを追加します。
-	 *
 	 * @param columnNames 新しいカラム
 	 */
 	public void add(String... columnNames) {

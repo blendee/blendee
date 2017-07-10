@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * SELECT 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see QueryBuilder#setSelectClause(SelectClause)
  */
@@ -75,7 +74,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に新しいカラムを追加します。
-	 *
 	 * @param columns 追加するカラム
 	 */
 	public void add(Column... columns) {
@@ -90,7 +88,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 	 * この SELECT 句に新しいカラムを追加します。
 	 * <br>
 	 * ただし項目名のエイリアスは、生成される SQL 文には追加されません。
-	 *
 	 * @param columnNames 追加するカラム
 	 */
 	public void add(String... columnNames) {
@@ -104,7 +101,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に {@link Relationship} に属する全てのカラムを追加します。
-	 *
 	 * @param relationship 追加するカラムを持つ {@link Relationship}
 	 */
 	public void add(Relationship relationship) {
@@ -113,7 +109,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に記述可能な SQL 文のテンプレートを追加します。
-	 *
 	 * @param template SQL 文のテンプレート
 	 * @param columns SQL 文に含まれるカラム
 	 * @see SQLFragmentFormat
@@ -134,7 +129,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に記述可能な SQL 文のテンプレートを追加します。
-	 *
 	 * @param template SQL 文のテンプレート
 	 * @param columnNames SQL 文に含まれるカラム
 	 * @see SQLFragmentFormat
@@ -145,7 +139,6 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句にウィンドウ関数を追加します。
-	 *
 	 * @param function {@link WindowFunction}
 	 * @param alias 別名
 	 */

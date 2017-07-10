@@ -29,7 +29,6 @@ import org.blendee.sql.binder.UUIDBinder;
 
 /**
  * Blendee のデフォルト {@link ValueExtractors} です。
- *
  * @author 千葉 哲嗣
  */
 public class DefaultValueExtractors implements ValueExtractors {

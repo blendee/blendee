@@ -7,7 +7,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に {@link Reader} から読み込んだ値を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class CharacterStreamBinder extends Binder {
@@ -18,7 +17,6 @@ public final class CharacterStreamBinder extends Binder {
 
 	/**
 	 * 値を読み込む {@link Reader} を持つインスタンスを生成します。
-	 *
 	 * @param value 値を読み込む {@link Reader}
 	 * @param length 値のサイズ
 	 */

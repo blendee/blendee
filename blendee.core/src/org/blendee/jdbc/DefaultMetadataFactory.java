@@ -4,7 +4,6 @@ import org.blendee.internal.U;
 
 /**
  * 独自の {@link MetadataFactory} を設定しなかった場合に使用されるデフォルトの {@link MetadataFactory} です。
- *
  * @author 千葉 哲嗣
  */
 class DefaultMetadataFactory implements MetadataFactory {

@@ -14,7 +14,6 @@ import org.blendee.sql.Updater;
 
 /**
  * テーブルとその中の複数のカラムと、それらの値を持つ物を定義した基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public class PartialData implements Searchable, Updatable {
@@ -36,7 +35,6 @@ public class PartialData implements Searchable, Updatable {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path このインスタンスの属するテーブル
 	 * @param columnNames このインスタンスが持つカラム
 	 * @param bindables このインスタンスが持つカラムの値
@@ -55,7 +53,6 @@ public class PartialData implements Searchable, Updatable {
 
 	/**
 	 * このインスタンスの属するテーブルを返します。
-	 *
 	 * @return このインスタンスの属するテーブル
 	 */
 	public TablePath getTablePath() {
@@ -64,7 +61,6 @@ public class PartialData implements Searchable, Updatable {
 
 	/**
 	 * このインスタンスが持つカラムを返します。
-	 *
 	 * @return このインスタンスが持つカラム
 	 */
 	public String[] getColumnNames() {
@@ -73,7 +69,6 @@ public class PartialData implements Searchable, Updatable {
 
 	/**
 	 * このインスタンスが持つカラムの値を返します。
-	 *
 	 * @return このインスタンスが持つカラムの値
 	 */
 	public Bindable[] getBindables() {
@@ -84,7 +79,6 @@ public class PartialData implements Searchable, Updatable {
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。
 	 * <br>
 	 * 検索条件のテーブルは、このインスタンスが持つテーブルになります。
-	 *
 	 * @return 検索条件
 	 */
 	public Condition getCondition() {
@@ -95,7 +89,6 @@ public class PartialData implements Searchable, Updatable {
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。
 	 * <br>
 	 * 検索条件のテーブルはパラメータとして受け取ります。
-	 *
 	 * @param relationship 検索条件のテーブル
 	 * @return 検索条件
 	 */

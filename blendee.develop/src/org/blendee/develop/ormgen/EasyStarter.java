@@ -12,7 +12,6 @@ import org.blendee.jdbc.impl.JDBCTransaction;
 
 /**
  * Blendee を、 JDBC ドライバのクラス名、データベースの URL 、ユーザー名、パスワードのみで、開発時など、一時的に使用するためのクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class EasyStarter {
@@ -27,7 +26,6 @@ public class EasyStarter {
 
 	/**
 	 * Blendee を使用可能な状態にします。
-	 *
 	 * @param jdbcDriverClassName JDBC ドライバの完全クラス名
 	 * @param url データベースの URL
 	 * @param schemaNames 使用するスキーマ名

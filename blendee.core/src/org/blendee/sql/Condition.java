@@ -11,7 +11,6 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
- *
  * @author 千葉 哲嗣
  * @see ConditionFactory
  * @see QueryBuilder#setWhereClause(Condition)
@@ -23,7 +22,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * 論理演算子の列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -81,7 +79,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * このインスタンスが表す条件に、新たな条件を AND 追加します。
-	 *
 	 * @param target 追加する条件
 	 * @return このインスタンス
 	 */
@@ -94,7 +91,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * このインスタンスが表す条件に、新たな条件を OR 追加します。
-	 *
 	 * @param target 追加する条件
 	 * @return このインスタンス
 	 */
@@ -109,7 +105,6 @@ public class Condition extends QueryClause {
 	 * この条件を反転させます。
 	 * <br>
 	 * 具体的には、条件の先頭に NOT を付加します。
-	 *
 	 * @return このインスタンス
 	 */
 	public Condition reverse() {
@@ -121,7 +116,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * このインスタンスに条件が含まれるかどうかを検査します。
-	 *
 	 * @return 条件が含まれる場合 true
 	 */
 	public boolean isAvailable() {
@@ -130,7 +124,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * プレースホルダにセットする予定の値を返します。
-	 *
 	 * @return 値
 	 */
 	public Binder[] getBinders() {
@@ -139,7 +132,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。
-	 *
 	 * @return {@link PreparedStatementComplementer}
 	 */
 	public PreparedStatementComplementer getComplementer() {
@@ -150,7 +142,6 @@ public class Condition extends QueryClause {
 	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。
 	 * <br>
 	 * 返される PreparedStatementComplementer は、パラメータの skipCount 分だけプレースホルダ位置をスキップして値をセットします。
-	 *
 	 * @param skipCount 飛ばすプレースホルダ数
 	 * @return {@link PreparedStatementComplementer}
 	 */
@@ -209,7 +200,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * このインスタンスの持つ {@link Column} が属する {@link Relationship} をパラメータのものに変更します。
-	 *
 	 * @param another 新しい {@link Relationship}
 	 * @throws NotFoundException このインスタンスが持つカラムの属する {@link Relationship} の参照先に another が含まれない場合
 	 */
@@ -222,7 +212,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * このインスタンスが表す条件に、新たな条件を追加します。
-	 *
 	 * @param operator 論理演算子 AND OR
 	 * @param target 追加する条件
 	 */

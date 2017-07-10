@@ -8,7 +8,6 @@ import java.util.Set;
 
 /**
  * 内部使用ユーティリティクラス
- *
  * @author 千葉 哲嗣
  * @param <K1> Key1
  * @param <K2> Key2

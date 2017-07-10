@@ -8,7 +8,6 @@ import org.blendee.sql.SelectClause;
 
 /**
  * {@link Optimizer} を使用して SELECT 句を定義し、データベースの検索を行うクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class SynchronizedSelector extends Selector {
@@ -17,7 +16,6 @@ public class SynchronizedSelector extends Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。
 	 * <br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param path ルートテーブル
 	 */
 	public SynchronizedSelector(TablePath path) {
@@ -26,7 +24,6 @@ public class SynchronizedSelector extends Selector {
 
 	/**
 	 * {@link Optimizer} を使用するインスタンスを生成します。
-	 *
 	 * @param optimizer 使用する {@link Optimizer}
 	 */
 	public SynchronizedSelector(Optimizer optimizer) {

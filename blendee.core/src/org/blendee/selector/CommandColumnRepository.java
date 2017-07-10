@@ -19,7 +19,6 @@ import org.blendee.sql.Column;
 
 /**
  * UNDO REDO が可能になった {@link ColumnRepository} です。
- *
  * @author 千葉 哲嗣
  */
 public class CommandColumnRepository implements ColumnRepository {
@@ -51,7 +50,6 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	/**
 	 * ベースとなる {@link ColumnRepository} を元に、このクラスのインスタンスを生成します。
-	 *
 	 * @param repository ベースとなる {@link ColumnRepository}
 	 */
 	public CommandColumnRepository(ColumnRepository repository) {
@@ -234,7 +232,6 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	/**
 	 * {@link #undo()} 可能かどうか調査します。
-	 *
 	 * @return {@link #undo()} 可能な場合、 true
 	 */
 	public synchronized boolean canUndo() {
@@ -243,7 +240,6 @@ public class CommandColumnRepository implements ColumnRepository {
 
 	/**
 	 * {@link #redo()} 可能かどうか調査します。
-	 *
 	 * @return {@link #redo()} 可能な場合、 true
 	 */
 	public synchronized boolean canRedo() {

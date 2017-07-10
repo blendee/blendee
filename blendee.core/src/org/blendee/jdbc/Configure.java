@@ -11,7 +11,6 @@ import org.blendee.internal.U;
 
 /**
  * Blendee の現在の設定を使用するためのクラスです。
- *
  * @author 千葉 哲嗣
  * @see BlendeeManager#getConfigure()
  */
@@ -78,7 +77,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用している {@link TransactionFactory} を返します。
-	 *
 	 * @return この設定で使用している {@link TransactionFactory}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -89,7 +87,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用している {@link ErrorConverter} を返します。
-	 *
 	 * @return この設定で使用している {@link ErrorConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -100,7 +97,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用している {@link DataTypeConverter} を返します。
-	 *
 	 * @return この設定で使用している {@link DataTypeConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -111,7 +107,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用している {@link Metadata} を返します。
-	 *
 	 * @return この設定で使用している {@link Metadata}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -122,7 +117,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用しているスキーマ名を返します。
-	 *
 	 * @return この設定で使用しているスキーマ名
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -133,7 +127,6 @@ public final class Configure {
 
 	/**
 	 * この設定で使用しているスキーマ名にパラメータのスキーマ名が含まれるかを検査します。
-	 *
 	 * @param schemaName 検査するスキーマ名
 	 * @return 含まれている場合、 true
 	 * @throws IllegalStateException 古い設定を使用している場合
@@ -149,7 +142,6 @@ public final class Configure {
 
 	/**
 	 * データベースの定義情報をキャッシュするかどうかを検査します。
-	 *
 	 * @return データベースの定義情報をキャッシュするかどうか
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -160,7 +152,6 @@ public final class Configure {
 
 	/**
 	 * Blendee が実行する SQL 文を出力するかどうかを検査します。
-	 *
 	 * @return SQL 文を出力するかどうか
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -171,7 +162,6 @@ public final class Configure {
 
 	/**
 	 * Blendee が生成する SQL 文を出力する先を返します。
-	 *
 	 * @return SQL 文を出力する先
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -182,7 +172,6 @@ public final class Configure {
 
 	/**
 	 * SQL 文生成箇所のスタックトレースをフィルタするパターンを返します。
-	 *
 	 * @return スタックトレースをフィルタするパターン
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
@@ -193,7 +182,6 @@ public final class Configure {
 
 	/**
 	 * 一つの接続で最大いくつのステートメントを同時に使用できるかを返します。
-	 *
 	 * @return 一接続あたりの最大ステートメント数
 	 */
 	public int getMaxStatementsPerConnection() {
@@ -203,7 +191,6 @@ public final class Configure {
 
 	/**
 	 * この設定が現在の Blendee の設定かどうか検査します。
-	 *
 	 * @return 現在の Blendee の設定かどうか
 	 */
 	public boolean isCurrent() {
@@ -212,7 +199,6 @@ public final class Configure {
 
 	/**
 	 * Initializer から渡されたオプションの値を取得します。
-	 *
 	 * @param <T> オプション値の型
 	 * @param key オプションのキー
 	 * @return 値

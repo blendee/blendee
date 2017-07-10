@@ -15,7 +15,6 @@ import org.blendee.sql.Relationship;
 
 /**
  * 検索結果から {@link DataObject} を生成するクラスです。
- *
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObjects(Optimizer, Condition, OrderByClause, QueryOption...)
  * @see DataAccessHelper#regetDataObjects(Optimizer)
@@ -45,7 +44,6 @@ public class DataObjectIterator
 
 	/**
 	 * Stream に変換します。
-	 *
 	 * @return {@link Stream}
 	 */
 	public Stream<DataObject> stream() {
@@ -67,7 +65,6 @@ public class DataObjectIterator
 
 	/**
 	 * 検索結果の一行を {@link DataObject} として返します。
-	 *
 	 * @return 検索結果の一行
 	 */
 	public DataObject nextDataObject() {
@@ -84,7 +81,6 @@ public class DataObjectIterator
 
 	/**
 	 * {@link #next()} を行った回数を返します。
-	 *
 	 * @return {@link #next()} を行った回数
 	 */
 	public int getCounter() {

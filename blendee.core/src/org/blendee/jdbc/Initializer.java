@@ -11,7 +11,6 @@ import org.blendee.internal.U;
 
 /**
  * Blendee を初期化するための情報をまとめるクラスです。
- *
  * @author 千葉 哲嗣
  * @see BlendeeManager#initialize(Initializer)
  */
@@ -45,7 +44,6 @@ public final class Initializer {
 	 * Blendee が使用する {@link TransactionFactory} を設定します。
 	 * <br>
 	 * {@link TransactionFactory} は、必ず設定する必要があります。
-	 *
 	 * @param transactionFactoryClass {@link TransactionFactory} を実装したクラス
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -58,7 +56,6 @@ public final class Initializer {
 
 	/**
 	 * Blendee が使用する {@link ErrorConverter} を設定します。
-	 *
 	 * @param errorConverterClass {@link ErrorConverter} を実装したクラス
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -71,7 +68,6 @@ public final class Initializer {
 
 	/**
 	 * Blendee が使用する {@link DataTypeConverter} を設定します。
-	 *
 	 * @param dataTypeConverterClass {@link DataTypeConverter} を実装したクラス
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -84,7 +80,6 @@ public final class Initializer {
 
 	/**
 	 * Blendee が使用する {@link MetadataFactory} を設定します。
-	 *
 	 * @param metadataFactoryClass {@link MetadataFactory} を実装したクラス
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -99,7 +94,6 @@ public final class Initializer {
 	 * Blendee が使用するスキーマ名を登録します。
 	 * <br>
 	 * Blendee を動作させるには、最低でも一つスキーマ名が必要です。
-	 *
 	 * @param schemaName 使用するスキーマ名
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -114,7 +108,6 @@ public final class Initializer {
 
 	/**
 	 * データベースの定義情報をキャッシュするかどうかを設定します。
-	 *
 	 * @param useMetadataCache データベースの定義情報をキャッシュするかどうか
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -125,7 +118,6 @@ public final class Initializer {
 
 	/**
 	 * Blendee が実行する SQL 文を、 {@link Initializer#setLogOutput(PrintStream)} で定義した出力先に出力するかどうかを設定します。
-	 *
 	 * @param enableLog SQL 文を出力するかどうか
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -138,7 +130,6 @@ public final class Initializer {
 	 * Blendee が生成する SQL 文の出力する先を設定します。
 	 * <br>
 	 * なにも設定されない場合は {@link System#out} が使用されます。
-	 *
 	 * @param logOutput SQL文の出力する先
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -150,7 +141,6 @@ public final class Initializer {
 
 	/**
 	 * {@link Initializer#enableLog(boolean)} に true を設定した場合に出力されるSQL文生成箇所のスタックトレースをフィルタしたい場合に、そのパターンを設定します。
-	 *
 	 * @param logStackTracePattern スタックトレースをフィルタするパターン
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -162,7 +152,6 @@ public final class Initializer {
 
 	/**
 	 * 一つの接続で最大いくつのステートメントを同時に使用できるかを設定します。
-	 *
 	 * @param max 一接続あたりの最大ステートメント数
 	 */
 	public synchronized void setMaxStatementsPerConnection(int max) {
@@ -172,7 +161,6 @@ public final class Initializer {
 
 	/**
 	 * Blendee 内のクラスが使用するオプションをセットします。
-	 *
 	 * @param options オプション
 	 */
 	public synchronized void setOptions(Map<OptionKey<?>, ?> options) {

@@ -6,7 +6,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * {@link AnchorOptimizer} を生成するためのファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class AnchorOptimizerFactory implements ManagementSubject {
@@ -19,7 +18,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * {@link ColumnRepository} に対する新しく使用された要素の追加を行うかどうかを設定します。
 	 * <br>
 	 * flag が true の場合、未使用の要素が使用されても {@link ColumnRepository} に新しい要素の追加は行われず、 {@link IllegalValueException} がスローされるようになります。
-	 *
 	 * @param adds 新しく使用された要素の追加を行うかどうか
 	 */
 	public synchronized void setCanAddNewEntries(boolean adds) {
@@ -28,7 +26,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * {@link ColumnRepository} を生成するファクトリクラスを設定します。
-	 *
 	 * @param columnRepositoryFactoryClass ファクトリクラス
 	 */
 	public synchronized void setColumnRepositoryFactoryClass(
@@ -38,7 +35,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * {@link ColumnRepository} に対する新しく使用されたカラムの追加を行うかどうかを返します。
-	 *
 	 * @return 新しく使用された要素の追加を行うかどうか
 	 */
 	public synchronized boolean canAddNewEntries() {
@@ -60,7 +56,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
-	 *
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
 	 * @return このクラスのインスタンス
 	 */
@@ -75,7 +70,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
-	 *
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
@@ -91,7 +85,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
-	 *
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
@@ -102,7 +95,6 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
-	 *
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @param using 使用されるクラス

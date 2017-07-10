@@ -6,7 +6,6 @@ import org.blendee.jdbc.BlendeeManager;
 
 /**
  * 終了時に {@link BTransaction} を自動的にクローズする抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class TransactionShell implements Shell {
@@ -43,7 +42,6 @@ public abstract class TransactionShell implements Shell {
 
 	/**
 	 * サブクラスで、 {@link BTransaction} が必要な場合取得するためのメソッドです。
-	 *
 	 * @return 現在オープンしている {@link BTransaction}
 	 */
 	protected BTransaction getTransaction() {

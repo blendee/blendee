@@ -9,7 +9,6 @@ import java.io.OutputStream;
  * サービスを受けるクライアントとの入出力ストリームを保持します。
  * <br>
  * 内部使用ユーティリティクラス
- *
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")

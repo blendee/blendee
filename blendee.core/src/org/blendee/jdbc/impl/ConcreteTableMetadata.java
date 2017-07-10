@@ -8,7 +8,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link CrossReference} の簡易実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 class ConcreteTableMetadata implements TableMetadata {

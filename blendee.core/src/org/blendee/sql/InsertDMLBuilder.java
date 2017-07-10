@@ -7,14 +7,12 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の INSERT 文を生成するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class InsertDMLBuilder extends Updater {
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
-	 *
 	 * @param path INSERT 対象テーブル
 	 */
 	public InsertDMLBuilder(TablePath path) {

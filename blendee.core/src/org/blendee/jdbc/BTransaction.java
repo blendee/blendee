@@ -7,7 +7,6 @@ import org.blendee.internal.U;
 
 /**
  * {@link Connection} から、トランザクション操作部分のみを抽出した抽象クラスです。
- *
  * @author 千葉 哲嗣
  * @see BlendeeManager#startTransaction()
  */
@@ -19,7 +18,6 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 
 	/**
 	 * 接続及び {@link BlendeeManager#synchroniseWithCurrentTransaction(Transaction)} で登録された {@link Transaction} をコミットします。
-	 *
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
 	@Override
@@ -37,7 +35,6 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 
 	/**
 	 * 接続及び {@link BlendeeManager#synchroniseWithCurrentTransaction(Transaction)} で登録された {@link Transaction} をロールバックします。
-	 *
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
 	@Override
@@ -55,7 +52,6 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 
 	/**
 	 * 接続を閉じます。
-	 *
 	 * @throws IllegalStateException {@link BlendeeManager#synchroniseWithCurrentTransaction(Transaction)} で登録された {@link Transaction} があり、 {@link BTransaction#commit()} または {@link BTransaction#rollback} が実行されていない場合
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
@@ -75,7 +71,6 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 
 	/**
 	 * このトランザクションで使用する接続を取得します。
-	 *
 	 * @return 接続
 	 */
 	public BConnection getConnection() {
@@ -90,7 +85,6 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 
 	/**
 	 * このトランザクションで使用する接続を取得します。
-	 *
 	 * @return 接続
 	 */
 	protected abstract BConnection getConnectionInternal();

@@ -5,7 +5,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に {@link Object} の値を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class ObjectBinder extends Binder {
@@ -14,7 +13,6 @@ public final class ObjectBinder extends Binder {
 
 	/**
 	 * パラメータの値を持つインスタンスを生成します。
-	 *
 	 * @param value このインスタンスの値
 	 */
 	public ObjectBinder(Object value) {

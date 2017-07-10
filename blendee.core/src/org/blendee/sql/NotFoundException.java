@@ -4,7 +4,6 @@ import org.blendee.jdbc.BlendeeException;
 
 /**
  * {@link Relationship} に要求された参照先やカラムがない場合にスローされる例外です。
- *
  * @author 千葉 哲嗣
  * @see Relationship#find(String)
  * @see Relationship#find(String[])

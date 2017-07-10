@@ -7,7 +7,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link TableSource} を構成するために必要な外部キー情報を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see TableSource#TableSource(TablePath, TableMetadata, ColumnMetadata[], PrimaryKeySource, ForeignKeySource[])
  */
@@ -26,7 +25,6 @@ public class ForeignKeySource {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param name 外部キー名
 	 * @param columns 構成カラム
 	 * @param imported 参照先
@@ -39,7 +37,6 @@ public class ForeignKeySource {
 
 	/**
 	 * コンストラクタで渡された外部キー名を返します。
-	 *
 	 * @return 外部キー名
 	 */
 	public String getName() {
@@ -48,7 +45,6 @@ public class ForeignKeySource {
 
 	/**
 	 * コンストラクタで渡された構成カラムを返します
-	 *
 	 * @return 構成カラム
 	 */
 	public String[] getColumns() {
@@ -57,7 +53,6 @@ public class ForeignKeySource {
 
 	/**
 	 * コンストラクタで渡された参照先を返します。
-	 *
 	 * @return 参照先
 	 */
 	public TablePath getImportedTable() {

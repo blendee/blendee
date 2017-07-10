@@ -13,7 +13,6 @@ import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
- *
  * @author 千葉 哲嗣
  */
 public class RuntimeOptimizer implements Optimizer {
@@ -26,7 +25,6 @@ public class RuntimeOptimizer implements Optimizer {
 
 	/**
 	 * インスタンスを生成します。
-	 *
 	 * @param path 対象テーブル
 	 */
 	public RuntimeOptimizer(TablePath path) {
@@ -35,7 +33,6 @@ public class RuntimeOptimizer implements Optimizer {
 
 	/**
 	 * SELECT 句に含めるカラムを追加します。
-	 *
 	 * @param column SELECT 対象
 	 */
 	public void add(Column column) {
@@ -48,7 +45,6 @@ public class RuntimeOptimizer implements Optimizer {
 	 * SELECT 句に含めるカラムを追加します。
 	 * <br>
 	 * {@link Relationship} の全カラムが対象となります。
-	 *
 	 * @param relation SELECT 対象
 	 */
 	public void addAll(Relationship relation) {

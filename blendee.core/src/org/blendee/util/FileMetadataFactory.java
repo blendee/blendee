@@ -14,7 +14,6 @@ import org.blendee.jdbc.MetadataFactory;
 
 /**
  * {@link VirtualSpace} を XML ファイルからロードするファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class FileMetadataFactory implements MetadataFactory {
@@ -30,7 +29,6 @@ public class FileMetadataFactory implements MetadataFactory {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @throws IOException XML の読み込みに失敗した場合
 	 * @throws ClassNotFoundException XML 内で定義されている項目の型のクラスが存在しない場合
 	 */

@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 
 /**
  * {@link Connection} に似せ、機能を制限したインターフェイスです。
- *
  * @author 千葉 哲嗣
  * @see BlendeeManager#getConnection()
  */
@@ -15,7 +14,6 @@ public interface BConnection extends Metadata {
 	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。
 	 * <br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を使用することはできません。
-	 *
 	 * @param sql プレースホルダを持たない SQL
 	 * @return {@link BStatement} のインスタンス
 	 */
@@ -23,7 +21,6 @@ public interface BConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String)} の簡易実行メソッドです。
-	 *
 	 * @param sql プレースホルダを持たない SQL
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
@@ -37,7 +34,6 @@ public interface BConnection extends Metadata {
 	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。
 	 * <br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
-	 *
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @return {@link BStatement} のインスタンス
@@ -46,7 +42,6 @@ public interface BConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
-	 *
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
@@ -64,7 +59,6 @@ public interface BConnection extends Metadata {
 	 * SQL 文から {@link BPreparedStatement} のインスタンスを生成し、返します。
 	 * <br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
-	 *
 	 * @param sql プレースホルダを持つ SQL
 	 * @return {@link BPreparedStatement} のインスタンス
 	 */
@@ -72,7 +66,6 @@ public interface BConnection extends Metadata {
 
 	/**
 	 * {@link #prepareStatement(String)} の簡易実行メソッドです。
-	 *
 	 * @param sql プレースホルダを持つ SQL
 	 * @param consumer {@link BPreparedStatement} を受け取る {@link Consumer}
 	 */
@@ -84,14 +77,12 @@ public interface BConnection extends Metadata {
 
 	/**
 	 * {@link BatchStatement} のインスタンスを生成し、返します。
-	 *
 	 * @return {@link BatchStatement} のインスタンス
 	 */
 	BatchStatement getBatchStatement();
 
 	/**
 	 * パラメータで指定された名称を、データベースで使用される標準的な名前に変換します。
-	 *
 	 * @param name 標準化前の名称
 	 * @return 標準化された名称
 	 */
@@ -99,14 +90,12 @@ public interface BConnection extends Metadata {
 
 	/**
 	 * {@link PreparedStatementWrapper} を設定し、この接続が生成する {@link BPreparedStatement} をラップさせます。
-	 *
 	 * @param wrapper この接続が生成する {@link BPreparedStatement} のラッパー
 	 */
 	void setPreparedStatementWrapper(PreparedStatementWrapper wrapper);
 
 	/**
 	 * {@link BatchStatementWrapper} を設定し、この接続が生成する {@link BatchStatement} をラップさせます。
-	 *
 	 * @param wrapper この接続が生成する {@link BatchStatement} のラッパー
 	 */
 	void setBatchStatementWrapper(BatchStatementWrapper wrapper);

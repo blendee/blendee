@@ -11,7 +11,6 @@ import org.blendee.jdbc.TablePath;
  * {@link CrossReference} の簡易実装クラスです。
  * <br>
  * このクラスは immutable であり、インスタンスの持つ値を変更することはできません。
- *
  * @author 千葉 哲嗣
  */
 public class SimpleCrossReference implements CrossReference {
@@ -32,7 +31,6 @@ public class SimpleCrossReference implements CrossReference {
 
 	/**
 	 * パラメータの値を持つインスタンスを生成します。
-	 *
 	 * @param primaryKeyName 主キー名
 	 * @param foreignKeyName 外部キー名
 	 * @param primaryKeyResource 主キー側テーブル

@@ -14,7 +14,6 @@ import org.blendee.sql.Column;
 
 /**
  * 検索結果から {@link SelectedValues} を生成するクラスです。
- *
  * @author 千葉 哲嗣
  * @see Selector#select()
  */
@@ -53,7 +52,6 @@ public class SelectedValuesIterator
 
 	/**
 	 * Stream に変換します。
-	 *
 	 * @return {@link Stream}
 	 */
 	public Stream<SelectedValues> stream() {
@@ -88,7 +86,6 @@ public class SelectedValuesIterator
 
 	/**
 	 * {@link #next()} を行った回数を返します。
-	 *
 	 * @return {@link #next()} を行った回数
 	 */
 	public int getCounter() {

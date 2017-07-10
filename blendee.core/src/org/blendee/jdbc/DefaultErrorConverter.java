@@ -7,14 +7,12 @@ import org.blendee.internal.U;
 
 /**
  * 独自の {@link ErrorConverter} を設定しなかった場合に使用されるデフォルトの {@link ErrorConverter} です。
- *
  * @author 千葉 哲嗣
  */
 public class DefaultErrorConverter implements ErrorConverter {
 
 	/**
 	 * {@link Throwable#printStackTrace()} を実行し、パラメータで渡された {@link SQLException} を {@link BlendeeException} でラップして返します。
-	 *
 	 * @throws BlendeeException {@link SQLException} をラップした例外
 	 */
 	@Override

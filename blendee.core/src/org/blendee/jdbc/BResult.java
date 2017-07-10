@@ -10,14 +10,12 @@ import java.sql.Timestamp;
 
 /**
  * {@link ResultSet} に似せ、一行に対する操作のみに機能を制限したインターフェイスです。
- *
  * @author 千葉 哲嗣
  */
 public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を boolean として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -25,7 +23,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を double として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -33,7 +30,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を float として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -41,7 +37,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を int として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -49,7 +44,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を long として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -57,7 +51,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link String} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -65,7 +58,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Timestamp} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -73,7 +65,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link BigDecimal} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -81,7 +72,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Object} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -89,7 +79,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link InputStream} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -97,7 +86,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Reader} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -105,7 +93,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を byte の配列として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -113,7 +100,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Blob} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -121,7 +107,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Clob} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 */
@@ -129,7 +114,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を boolean として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -137,7 +121,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を double として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -145,7 +128,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を float として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -153,7 +135,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を int として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -161,7 +142,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を long として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -169,7 +149,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link String} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -177,7 +156,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Timestamp} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -185,7 +163,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link BigDecimal} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -193,7 +170,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Object} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -201,7 +177,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link InputStream} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -209,7 +184,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Reader} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -217,7 +191,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を byte の配列として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -225,7 +198,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Blob} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -233,7 +205,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値を {@link Clob} として返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値
 	 */
@@ -241,21 +212,18 @@ public interface BResult {
 
 	/**
 	 * 直前に取得したカラムの値が NULL かどうか検査します。
-	 *
 	 * @return 直前に取得したカラムが NULL か
 	 */
 	boolean wasNull();
 
 	/**
 	 * この検索結果の列数を返します。
-	 *
 	 * @return 列数
 	 */
 	int getColumnCount();
 
 	/**
 	 * 指定されたカラムの名称を返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの名称
 	 */
@@ -263,7 +231,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムの値が SQL のどの型に該当するか返します。
-	 *
 	 * @param columnIndex カラム位置
 	 * @return カラムの値の型
 	 * @see java.sql.Types
@@ -272,7 +239,6 @@ public interface BResult {
 
 	/**
 	 * 指定されたカラムのデータベース固有の型名を取得します。 
-	 *
 	 * @param columnIndex カラム位置
 	 * @return データベースが使用する型名
 	 */

@@ -6,7 +6,6 @@ import org.blendee.internal.U;
 
 /**
  * http://java.sun.com/j2se/1.3/ja/docs/ja/guide/jdbc/spec/jdbc-spec.frame8.html
- *
  * @author 千葉 哲嗣
  */
 public class DefaultDataTypeConverter implements DataTypeConverter {

@@ -2,7 +2,6 @@ package org.blendee.sql;
 
 /**
  * SQL 文を各データベース向けに微調整したり拡張する機能を定義したインターフェイスです。
- *
  * @author 千葉 哲嗣
  * @see QueryBuilder#setAdjuster(SQLAdjuster)
  */
@@ -22,7 +21,6 @@ public interface SQLAdjuster {
 
 	/**
 	 * Blendee が生成した SELECT 文を、カスタマイズした SELECT 文に変換します。
-	 *
 	 * @param sql 元になる SELECT 文
 	 * @return カスタマイズした SELECT 文
 	 */
@@ -32,7 +30,6 @@ public interface SQLAdjuster {
 	 * この SQLAdjuster が、句ごとに分割された SELECT 文を組立可能かを返却します。
 	 * <br>
 	 * このメソッドが使用されるのは、 {@link QueryBuilder} が SELECT 文を生成するときです。
-	 *
 	 * @return 組立可能かどうか
 	 */
 	default boolean canBuildQueryParts() {
@@ -43,7 +40,6 @@ public interface SQLAdjuster {
 	 * Blendee が生成した SELECT 文の各句を、カスタマイズした SELECT 文に組み立てます。
 	 * <br>
 	 * {@link #canBuildQueryParts()} が true を返した時のみ、このメソッドが使用されます。
-	 *
 	 * @param selectClause SELECT 句
 	 * @param fromClause FROM 句
 	 * @param whereClause WHERE 句

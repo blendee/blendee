@@ -16,7 +16,6 @@ import org.blendee.sql.binder.StringBinder;
  * 数値による連続した値を払い出すクラスです。
  * <br>
  * 払い出される値は数値ですが、定義された桁数にあわせて先頭がゼロ埋めされています。
- *
  * @author 千葉 哲嗣
  */
 public class NumberSequenceGenerator implements SequenceGenerator {
@@ -37,7 +36,6 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path 対象テーブル
 	 * @param dependsColumnNames 上位グループカラム
 	 * @param targetColumnName 対象カラム名
@@ -57,7 +55,6 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path 対象テーブル
 	 * @param dependsColumnNames 上位グループカラム
 	 * @param targetColumnName 対象カラム名
@@ -79,7 +76,6 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 	/**
 	 * 対象となるテーブルを返します。
-	 *
 	 * @return 対象テーブル
 	 */
 	public TablePath getTablePath() {

@@ -28,7 +28,6 @@ class MetadatasConnection extends ConnectionBase {
 
 	/**
 	 * 前方にある {@link Metadata} の持つ {@link TableMetadata} が優先して使用されます。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return テーブル定義情報
 	 */

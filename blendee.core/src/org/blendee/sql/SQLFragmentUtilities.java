@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 /**
  * 一部分の SQL 文の中から、文字定数部とその他の部分を分離するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class SQLFragmentUtilities {
@@ -18,7 +17,6 @@ public class SQLFragmentUtilities {
 
 	/**
 	 * SQL 文を解析し、結果を {@link SQLFragmentListener} に通知します。
-	 *
 	 * @param sqlFragment SQL 文
 	 * @param listener 通知されるリスナ
 	 */

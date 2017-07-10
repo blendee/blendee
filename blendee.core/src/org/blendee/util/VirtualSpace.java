@@ -20,7 +20,6 @@ import org.blendee.jdbc.impl.SimpleCrossReference;
 
 /**
  * 実際のデータベース以外から定義情報を取得し、 {@link Metadata} として使用できるクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class VirtualSpace implements Metadata {
@@ -47,7 +46,6 @@ public class VirtualSpace implements Metadata {
 
 	/**
 	 * テーブル情報を追加します。
-	 *
 	 * @param table 新しいテーブル情報
 	 */
 	public synchronized void addTable(TableSource table) {
@@ -58,7 +56,6 @@ public class VirtualSpace implements Metadata {
 
 	/**
 	 * 追加済みのテーブル情報を元に {@link Metadata} として使用できるようにします。
-	 *
 	 * @param depends このインスタンスが持つ定義情報が参照する {@link Metadata}
 	 * @throws IllegalStateException 既にこのメソッドが実行されている場合
 	 */
@@ -83,7 +80,6 @@ public class VirtualSpace implements Metadata {
 
 	/**
 	 * 既に {@link #start(Metadata)} が実行しているかどうかを検査します。
-	 *
 	 * @return 既に {@link #start(Metadata)} が実行している場合、 true
 	 */
 	public synchronized boolean isStarted() {

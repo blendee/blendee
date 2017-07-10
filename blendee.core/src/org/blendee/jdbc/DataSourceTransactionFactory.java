@@ -12,7 +12,6 @@ import org.blendee.jdbc.impl.JDBCTransaction;
  * {@link DataSource} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。
  * <br>
  * データソースは "jdbc/datasource" で定義してください。
- *
  * @author 千葉 哲嗣
  */
 public class DataSourceTransactionFactory implements TransactionFactory {
@@ -21,7 +20,6 @@ public class DataSourceTransactionFactory implements TransactionFactory {
 
 	/**
 	 * データソースは "jdbc/datasource" で設定してください。
-	 *
 	 * @throws NamingException データソース取得時の例外
 	 */
 	public DataSourceTransactionFactory() throws NamingException {
@@ -31,7 +29,6 @@ public class DataSourceTransactionFactory implements TransactionFactory {
 
 	/**
 	 * 任意のデータソース名でインスタンスを生成するコンストラクタです。
-	 *
 	 * @param datasourceName 任意のデータソース名
 	 * @throws NamingException データソース取得時の例外
 	 */

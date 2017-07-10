@@ -40,7 +40,6 @@ import org.blendee.support.annotation.PseudoPK;
 
 /**
  * データベースの構成を読み取り、各テーブルの RowManager クラスと Row クラスの Java ソースを生成するジェネレータクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class ORMGenerator {
@@ -159,7 +158,6 @@ public class ORMGenerator {
 
 	/**
 	 * インスタンスを生成します。
-	 *
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
 	 * @param packageName RowManager クラス、 Row クラスが属するパッケージ名
 	 * @param schemaName テーブルを読み込む対象となるスキーマ
@@ -199,7 +197,6 @@ public class ORMGenerator {
 
 	/**
 	 * すべてのクラスファイルを生成します。
-	 *
 	 * @param home 生成された Java ソースを保存するためのルートとなる場所
 	 * @param srcCharset 生成する Java ソースの文字コード
 	 * @throws IOException ファイル書き込みに失敗した場合
@@ -233,7 +230,6 @@ public class ORMGenerator {
 
 	/**
 	 * このクラスが生成する RowManager のコンパイル単位名を返します。
-	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
@@ -243,7 +239,6 @@ public class ORMGenerator {
 
 	/**
 	 * このクラスが生成する Row のコンパイル単位名を返します。
-	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
@@ -253,7 +248,6 @@ public class ORMGenerator {
 
 	/**
 	 * このクラスが生成する Query のコンパイル単位名を返します。
-	 *
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
@@ -263,7 +257,6 @@ public class ORMGenerator {
 
 	/**
 	 * RowManager クラスを作成します。
-	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
@@ -283,7 +276,6 @@ public class ORMGenerator {
 
 	/**
 	 * Row クラスを一件作成します。
-	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
@@ -384,7 +376,6 @@ public class ORMGenerator {
 
 	/**
 	 * Query クラスを一件作成します。
-	 *
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */

@@ -9,7 +9,6 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class QueryBuilder implements PreparedStatementComplementer {
@@ -32,7 +31,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
-	 *
 	 * @param fromClause FROM 句
 	 */
 	public QueryBuilder(FromClause fromClause) {
@@ -41,7 +39,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * SELECT 句を設定します。
-	 *
 	 * @param clause SELECT 句
 	 */
 	public synchronized void setSelectClause(SelectClause clause) {
@@ -52,7 +49,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている SELECT 句を返します。
-	 *
 	 * @return SELECT 句
 	 */
 	public synchronized SelectClause getSelectClause() {
@@ -61,7 +57,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * WHERE 句を設定します。
-	 *
 	 * @param clause WHERE 句
 	 */
 	public synchronized void setWhereClause(Condition clause) {
@@ -70,7 +65,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている WHERE 句を返します。
-	 *
 	 * @return WHERE 句
 	 */
 	public synchronized Condition getWhereClause() {
@@ -79,7 +73,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * GROUP BY 句を設定します。
-	 *
 	 * @param clause GROUP BY 句
 	 */
 	public synchronized void setGroupByClause(GroupByClause clause) {
@@ -90,7 +83,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている GROUP BY 句を返します。
-	 *
 	 * @return GROUP BY 句
 	 */
 	public synchronized GroupByClause getGroupByClause() {
@@ -99,7 +91,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * HAVING 句を設定します。
-	 *
 	 * @param clause HAVING 句
 	 */
 	public synchronized void setHavingClause(Condition clause) {
@@ -108,7 +99,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている HAVING 句を返します。
-	 *
 	 * @return HAVING 句
 	 */
 	public synchronized Condition getHavingClause() {
@@ -117,7 +107,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * ORDER BY 句を設定します。
-	 *
 	 * @param clause ORDER BY 句
 	 */
 	public synchronized void setOrderByClause(OrderByClause clause) {
@@ -128,7 +117,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている ORDER BY 句を返します。
-	 *
 	 * @return ORDER BY 句
 	 */
 	public synchronized OrderByClause getOrderByClause() {
@@ -137,7 +125,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * {@link SQLAdjuster} を設定します。
-	 *
 	 * @param adjuster {@link SQLAdjuster}
 	 */
 	public synchronized void setAdjuster(SQLAdjuster adjuster) {
@@ -147,7 +134,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている {@link SQLAdjuster} を返します。
-	 *
 	 * @return {@link SQLAdjuster}
 	 */
 	public synchronized SQLAdjuster getAdjuster() {
@@ -156,7 +142,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * 現在設定されている各句から SELECT 文を生成し返します。
-	 *
 	 * @return SELECT 文
 	 */
 	@Override

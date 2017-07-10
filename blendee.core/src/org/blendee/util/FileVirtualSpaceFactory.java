@@ -19,7 +19,6 @@ import org.xml.sax.InputSource;
 
 /**
  * Blendee Metadata Extension フォーマットの XML ファイルから定義情報を読み込み {@link VirtualSpace} を生成するファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 class FileVirtualSpaceFactory {
@@ -28,7 +27,6 @@ class FileVirtualSpaceFactory {
 
 	/**
 	 * パラメータの {@link URL} の指し示す XML ファイルを読み込み {@link VirtualSpace} を生成します。
-	 *
 	 * @param xml XML の URL
 	 * @return 新しい {@link VirtualSpace} のインスタンス
 	 * @throws IOException XML の読み込みに失敗した場合
@@ -42,7 +40,6 @@ class FileVirtualSpaceFactory {
 
 	/**
 	 * パラメータの {@link InputStream} から読み込める XML から {@link VirtualSpace} を生成します。
-	 *
 	 * @param xml XML を読み込むストリーム
 	 * @return 新しい {@link VirtualSpace} のインスタンス
 	 * @throws IOException XML の読み込みに失敗した場合

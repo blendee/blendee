@@ -5,7 +5,6 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * {@link BatchStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class BatchStatementBase implements BatchStatement {
@@ -14,7 +13,6 @@ public abstract class BatchStatementBase implements BatchStatement {
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
-	 *
 	 * @param base ベースとなるインスタンス
 	 */
 	protected BatchStatementBase(BatchStatement base) {

@@ -31,14 +31,12 @@ import org.blendee.sql.ValueExtractorsConfigure;
  * を使用することができます。
  * <br>
  * メソッドのパラメータには、 SQL 文に記述したプレースホルダにセットする値を渡せるように定義してください。
- *
  * @author 千葉 哲嗣
  */
 public class SQLProxyBuilder {
 
 	/**
 	 * SQL 文の文字セットとして、デフォルトの {@link Charset} を使用して ProxyObject を生成します。
-	 *
 	 * @param <T> 生成される ProxyObject の型
 	 * @param sourceInterface 生成される ProxyObject のインターフェイス
 	 * @return 生成された ProxyObject
@@ -49,7 +47,6 @@ public class SQLProxyBuilder {
 
 	/**
 	 * ProxyObject を生成します。
-	 *
 	 * @param <T> 生成される ProxyObject の型
 	 * @param sourceInterface 生成される ProxyObject のインターフェイス
 	 * @param sqlCharset SQL 文の文字セット
@@ -70,7 +67,6 @@ public class SQLProxyBuilder {
 
 	/**
 	 * ProxyObject を生成します。
-	 *
 	 * @param <T> 生成される ProxyObject の型
 	 * @param sourceInterface 生成される ProxyObject のインターフェイス
 	 * @param sqlCharset SQL 文の文字セット

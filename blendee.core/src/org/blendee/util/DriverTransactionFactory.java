@@ -15,7 +15,6 @@ import org.blendee.jdbc.impl.JDBCTransaction;
 
 /**
  * {@link DriverManager} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。
- *
  * @author 千葉 哲嗣
  */
 public class DriverTransactionFactory implements TransactionFactory {
@@ -28,7 +27,6 @@ public class DriverTransactionFactory implements TransactionFactory {
 
 	/**
 	 * このクラスのコンストラクタです。
-	 *
 	 * @throws Exception ドライバークラスのロード時に発生した例外
 	 */
 	public DriverTransactionFactory() throws Exception {
@@ -56,7 +54,6 @@ public class DriverTransactionFactory implements TransactionFactory {
 
 	/**
 	 * {@link Driver} をロードするためのクラスローダーを返します。
-	 *
 	 * @return {@link ClassLoader}
 	 */
 	protected ClassLoader getClassLoader() {
@@ -65,7 +62,6 @@ public class DriverTransactionFactory implements TransactionFactory {
 
 	/**
 	 * {@link Connection} を取得します。
-	 *
 	 * @param url 接続先
 	 * @param user ユーザー
 	 * @param password パスワード

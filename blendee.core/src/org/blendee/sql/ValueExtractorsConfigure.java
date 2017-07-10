@@ -6,7 +6,6 @@ import org.blendee.sql.ValueExtractors;
 
 /**
  * {@link ValueExtractors} に対する設定値を保持するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class ValueExtractorsConfigure implements ManagementSubject {
@@ -15,7 +14,6 @@ public class ValueExtractorsConfigure implements ManagementSubject {
 
 	/**
 	 * 独自の新しい {@link ValueExtractors} を設定します。
-	 *
 	 * @param extractorsClass 独自の新しい {@link ValueExtractors} クラス
 	 */
 	public synchronized void setValueExtractorsClass(Class<? extends ValueExtractors> extractorsClass) {
@@ -28,7 +26,6 @@ public class ValueExtractorsConfigure implements ManagementSubject {
 
 	/**
 	 * 独自の新しい {@link ValueExtractors} を設定します。
-	 *
 	 * @param extractors 独自の新しい {@link ValueExtractors}
 	 */
 	public synchronized void setValueExtractors(ValueExtractors extractors) {
@@ -37,7 +34,6 @@ public class ValueExtractorsConfigure implements ManagementSubject {
 
 	/**
 	 * 現在このクラスに設定されている {@link ValueExtractors} を返します。
-	 *
 	 * @return 現在の {@link ValueExtractors}
 	 */
 	public synchronized ValueExtractors getValueExtractors() {

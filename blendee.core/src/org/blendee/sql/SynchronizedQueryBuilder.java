@@ -4,14 +4,12 @@ import org.blendee.jdbc.BPreparedStatement;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class SynchronizedQueryBuilder extends QueryBuilder {
 
 	/**
 	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
-	 *
 	 * @param fromClause FROM 句
 	 */
 	public SynchronizedQueryBuilder(FromClause fromClause) {

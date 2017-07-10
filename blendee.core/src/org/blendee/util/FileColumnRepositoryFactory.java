@@ -14,7 +14,6 @@ import org.blendee.selector.StreamColumnRepository;
 
 /**
  * ファイルをリポジトリのソースとして使用するシンプルなリポジトリファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {

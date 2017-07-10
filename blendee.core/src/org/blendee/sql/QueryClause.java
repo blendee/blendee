@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * SELECT 文を構成する各句の抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class QueryClause {
@@ -25,7 +24,6 @@ public abstract class QueryClause {
 
 	/**
 	 * SQL 文の句を生成します。
-	 *
 	 * @param joining テーブル結合している場合、 true
 	 * @return SQL 文の句
 	 */
@@ -39,7 +37,6 @@ public abstract class QueryClause {
 
 	/**
 	 * この句が含むカラムを返します。
-	 *
 	 * @return この句が含むカラム
 	 */
 	public Column[] getColumns() {
@@ -49,7 +46,6 @@ public abstract class QueryClause {
 
 	/**
 	 * このインスタンスが持つ {@link Column} を、パラメータの {@link Relationship} のツリーに含まれるカラムに置き換えます。
-	 *
 	 * @param root このインスタンスが含まれるべきツリーのルート
 	 * @throws IllegalStateException 結合できないテーブルのカラムを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいなカラム指定がされている場合
@@ -65,14 +61,12 @@ public abstract class QueryClause {
 
 	/**
 	 * この句が含むカラムの個数を返します。
-	 *
 	 * @return この句が含むカラムの個数
 	 */
 	public abstract int getColumnsSize();
 
 	/**
 	 * このインスタンスの複製を生成し、返します。
-	 *
 	 * @return このインスタンスの複製
 	 */
 	public abstract QueryClause replicate();

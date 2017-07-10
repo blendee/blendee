@@ -19,7 +19,6 @@ import org.blendee.sql.ValueExtractor;
 
 /**
  * 自動生成された '{'@link Row'}' の実装クラスです。
- *
 {6}
  */
 @Resource(schema = "{1}", table = "{2}")
@@ -57,7 +56,6 @@ extends /*++{3}++*//*--*/Object/*--*/
 
 	/**
 	 * 参照、更新用コンストラクタです。
-	 *
 	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
 	public /*++{2}++*//*--*/RowBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
@@ -84,9 +82,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 
 	/**
 	 * setter
-	 *
 {3}
-	 *
 	 * @param value {2}
 	 */
 	@RowSetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class)
@@ -98,9 +94,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 
 	/**
 	 * getter
-	 *
 {3}
-	 *
 	 * @return {2}
 	 */
 	@RowGetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class, optional = /*++{8}++*//*--*/false/*--*/)
@@ -121,11 +115,9 @@ extends /*++{3}++*//*--*/Object/*--*/
 
 	/**
 	 * このレコードが参照しているレコードの Row を返します。<br>
-	 *
 	 * 参照先テーブル名 {0}<br>
 	 * 外部キー名 {1}<br>
 	 * 項目名 {2}<br>
-	 *
 	 * @return 参照しているレコードの Row
 	 */
 	@RowRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)

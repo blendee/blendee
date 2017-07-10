@@ -19,7 +19,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * {@link IOStream} から定義情報を読み込むことができる {@link ColumnRepository} です。
- *
  * @author 千葉 哲嗣
  */
 public class StreamColumnRepository extends AbstractColumnRepository {
@@ -33,7 +32,6 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param repository リポジトリのソース
 	 */
 	public StreamColumnRepository(IOStream repository) {

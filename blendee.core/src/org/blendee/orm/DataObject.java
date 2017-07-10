@@ -53,7 +53,6 @@ import java.util.UUID;
  * データベースの一行を表すクラスです。
  * <br>
  * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
- *
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, QueryOption...)
  * @see DataAccessHelper#regetDataObject(Optimizer)
@@ -83,7 +82,6 @@ public class DataObject
 
 	/**
 	 * {@link DataObject} からこのクラスのインスタンスを生成するコピーコンストラクタです。
-	 *
 	 * @param dataObject コピーする {@link DataObject}
 	 */
 	public DataObject(DataObject dataObject) {
@@ -92,7 +90,6 @@ public class DataObject
 
 	/**
 	 * このクラスのインスタンスを、単に INSERT 用等の Updatable として使用するためのコンストラクタです。
-	 *
 	 * @param relationship INSERT 対象のテーブル
 	 */
 	public DataObject(Relationship relationship) {
@@ -107,7 +104,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を boolean として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -120,7 +116,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を double として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -136,7 +131,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を float として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -152,7 +146,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を int として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -168,7 +161,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を long として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -184,7 +176,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を文字列として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -197,7 +188,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link Timestamp} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -210,7 +200,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link BigDecimal} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -228,7 +217,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link UUID} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -241,7 +229,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link Object} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -254,7 +241,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をバイトの配列として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -267,7 +253,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link Blob} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -280,7 +265,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link Clob} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -293,7 +277,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値を {@link Binder} として返します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -306,7 +289,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値が NULL かどうか検査します。
-	 *
 	 * @param columnName カラム名
 	 * @return カラムの値が NULL の場合、true
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -319,7 +301,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスのテーブルが参照しているテーブルの {@link DataObject} を生成し、返します。
-	 *
 	 * @param foreignKeyName 外部キー名
 	 * @return 参照しているテーブルの {@link DataObject}
 	 */
@@ -329,7 +310,6 @@ public class DataObject
 
 	/**
 	 * キーがFK名、値がこのクラスのインスタンスとなるMapを返します。
-	 *
 	 * @return このインスタンスのテーブルが参照している全テーブルの {@link DataObject} の {@link Map}
 	 */
 	public Map<String, DataObject> getDataObjects() {
@@ -338,7 +318,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスのテーブルが参照しているテーブルの {@link DataObject} を生成し、返します。
-	 *
 	 * @param foreignKeyColumnNames 外部キーを構成するカラム名
 	 * @return 参照しているテーブルの {@link DataObject}
 	 */
@@ -348,7 +327,6 @@ public class DataObject
 
 	/**
 	 * キーが項目名、値がその項目の値となるMapを返します。
-	 *
 	 * @return 全値を持つ {@link Map}
 	 */
 	public Map<String, Object> getValues() {
@@ -357,7 +335,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの boolean 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -367,7 +344,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの double 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -377,7 +353,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの float 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -387,7 +362,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの int 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -397,7 +371,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの long 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -407,7 +380,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link String} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -417,7 +389,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link Timestamp} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -427,7 +398,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link BigDecimal} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -437,7 +407,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link UUID} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -447,7 +416,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link Object} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -457,7 +425,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの byte 配列で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -467,7 +434,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link Blob} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -477,7 +443,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link Clob} 値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -487,7 +452,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -501,7 +465,6 @@ public class DataObject
 	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
 	 * <br>
 	 * {@link #setValue(String, Bindable)} との違いとして、検索時の値と比較せずに、必ずセットされた値で更新を行います。
-	 *
 	 * @param columnName 対象カラム
 	 * @param value 更新値
 	 */
@@ -532,7 +495,6 @@ public class DataObject
 	 * 指定されたカラムの更新された値を返します。
 	 * <br>
 	 * 指定されたカラムが更新されていない場合、 null を返します。
-	 *
 	 * @param columnName 対象カラム
 	 * @return 更新された値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
@@ -546,7 +508,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムの更新された値を除去します。
-	 *
 	 * @param columnName 対象カラム
 	 */
 	public void removeUpdateValue(String columnName) {
@@ -556,7 +517,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文を設定します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param sqlFragment SQL 文の一部
 	 */
@@ -567,7 +527,6 @@ public class DataObject
 
 	/**
 	 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文とそのプレースホルダの値を設定します。
-	 *
 	 * @param columnName 対象カラム
 	 * @param sqlFragment SQL 文の一部
 	 * @param value プレースホルダの値
@@ -584,7 +543,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスが持つ値が更新されているかどうかを判定します。
-	 *
 	 * @return 更新されている場合、 true
 	 */
 	public boolean isValueUpdated() {
@@ -593,7 +551,6 @@ public class DataObject
 
 	/**
 	 * {@link Traverser} にこのインスタンスが参照するテーブルのツリーを巡回させます。
-	 *
 	 * @param traverser {@link Traverser}
 	 */
 	public void traverse(Traverser traverser) {
@@ -612,7 +569,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスの持つPKの値が、NULLかどうかを検査します。
-	 *
 	 * @return このインスタンスが外部結合によるものであれば、true
 	 */
 	public boolean isNullPrimaryKey() {
@@ -627,7 +583,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスのテーブルが持つ主キーを返します。
-	 *
 	 * @return このテーブルの主キー
 	 * @throws IllegalStateException このテーブルが主キーを持たない場合
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
@@ -638,7 +593,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスのテーブルが持つ外部キーを返します。
-	 *
 	 * @param foreignKeyName 外部キー名
 	 * @return このテーブルが持つ外部キー
 	 * @throws NullPrimaryKeyException 参照する主キーが NULL の場合
@@ -650,7 +604,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスのテーブルが持つ外部キーを返します。
-	 *
 	 * @param foreignKeyColumnNames 外部キーを構成するカラム名
 	 * @return このテーブルが持つ外部キー
 	 * @throws NullPrimaryKeyException 参照する主キーが NULL の場合
@@ -662,7 +615,6 @@ public class DataObject
 
 	/**
 	 * 内部に保持している {@link Relationship} を返します。
-	 *
 	 * @return このインスタンスが内部にもつ {@link Relationship}
 	 */
 	public Relationship getRelationship() {
@@ -671,7 +623,6 @@ public class DataObject
 
 	/**
 	 * 内部に保持している {@link SelectedValues} を返します。
-	 *
 	 * @return このインスタンスが内部にもつ {@link SelectedValues}
 	 */
 	public SelectedValues getSelectedValues() {
@@ -682,7 +633,6 @@ public class DataObject
 	 * 更新された値をデータベースに反映させるため、 UPDATE を実行します。
 	 * <br>
 	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
-	 *
 	 * @return 更新された値が一件も無かった場合、 false
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
@@ -694,7 +644,6 @@ public class DataObject
 	 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。
 	 * <br>
 	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
@@ -752,7 +701,6 @@ public class DataObject
 
 	/**
 	 * このインスタンスの持つ主キーの値を {@link Binder} として返します。
-	 *
 	 * @return 主キーの値を持つ {@link Binder}
 	 * @throws IllegalStateException このテーブルが主キーを持たない場合
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合

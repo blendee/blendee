@@ -7,7 +7,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の DELETE 文を生成するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class DeleteDMLBuilder implements PreparedStatementComplementer {
@@ -20,7 +19,6 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
-	 *
 	 * @param path DELETE 対象テーブル
 	 */
 	public DeleteDMLBuilder(TablePath path) {
@@ -29,7 +27,6 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * {@link Searchable} から、コンストラクタで渡したテーブルをルートにした WHERE 句を設定します。
-	 *
 	 * @param searchable {@link Searchable}
 	 */
 	public void setSearchable(Searchable searchable) {
@@ -38,7 +35,6 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	/**
 	 * WHERE 句を設定します。
-	 *
 	 * @param condition WHERE 句
 	 */
 	public void setCondition(Condition condition) {

@@ -8,7 +8,6 @@ import org.blendee.sql.Bindable;
 
 /**
  * 主キーを参照する外部キーを表すクラスで、 {@link PrimaryKey} と対応しています。
- *
  * @author 千葉 哲嗣
  * @see PrimaryKey#getAllReferences()
  * @see PrimaryKey#getReferences(TablePath, String)
@@ -42,7 +41,6 @@ public class ForeignKey extends PartialData {
 
 	/**
 	 * この外部キーが参照している主キーのインスタンスを返します。
-	 *
 	 * @return 参照している主キー
 	 */
 	public PrimaryKey getReferenced() {
@@ -51,7 +49,6 @@ public class ForeignKey extends PartialData {
 
 	/**
 	 * この外部キーの名前を返します。
-	 *
 	 * @return 外部キー名
 	 */
 	public String getName() {

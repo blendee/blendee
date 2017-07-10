@@ -7,7 +7,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に NULL を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class NullBinder extends Binder {
@@ -16,7 +15,6 @@ public final class NullBinder extends Binder {
 
 	/**
 	 * パラメータのタイプを持つインスタンスを生成します。
-	 *
 	 * @param type このインスタンスのタイプ
 	 * @see Types
 	 */

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 /**
  * Blendee で使用する例外クラスの基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public class BlendeeException extends RuntimeException {
@@ -13,7 +12,6 @@ public class BlendeeException extends RuntimeException {
 
 	/**
 	 * {@link SQLException} をラップするコンストラクタです。
-	 *
 	 * @param e 元となる例外
 	 * @see Throwable#getCause()
 	 */
@@ -30,7 +28,6 @@ public class BlendeeException extends RuntimeException {
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public BlendeeException(String message) {

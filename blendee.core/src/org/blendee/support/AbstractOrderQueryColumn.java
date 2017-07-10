@@ -3,7 +3,6 @@ package org.blendee.support;
 /**
  * ORDER BY 句に新しい要素を追加するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
- *
  * @author 千葉 哲嗣
  * @param <T> 連続呼び出し用 {@link Query}
  */

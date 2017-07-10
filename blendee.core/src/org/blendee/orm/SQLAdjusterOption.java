@@ -7,7 +7,6 @@ import org.blendee.sql.SQLAdjuster;
 
 /**
  * {@link SQLAdjuster} を使用するためのラッパークラス です。
- *
  * @author 千葉 哲嗣
  */
 public class SQLAdjusterOption implements QueryOption {
@@ -16,7 +15,6 @@ public class SQLAdjusterOption implements QueryOption {
 
 	/**
 	 * インスタンスを生成します。
-	 *
 	 * @param adjuster {@link SQLAdjuster}
 	 */
 	public SQLAdjusterOption(SQLAdjuster adjuster) {

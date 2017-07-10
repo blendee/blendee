@@ -2,7 +2,6 @@ package org.blendee.jdbc.exception;
 
 /**
  * 一意制約に違反した場合の例外です。
- *
  * @author 千葉 哲嗣
  */
 public class UniqueConstraintViolationException extends ConstraintViolationException {
@@ -16,7 +15,6 @@ public class UniqueConstraintViolationException extends ConstraintViolationExcep
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public UniqueConstraintViolationException(String message) {

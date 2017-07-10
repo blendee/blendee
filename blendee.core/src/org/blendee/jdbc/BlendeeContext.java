@@ -6,7 +6,6 @@ import org.blendee.jdbc.impl.SimpleContextStrategy;
 
 /**
  * Blendee 内で使用する static にアクセスする必要のあるインスタンスを管理するクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class BlendeeContext {
@@ -22,7 +21,6 @@ public class BlendeeContext {
 	 * 管理されているインスタンスを取得します。
 	 * <br>
 	 * まだインスタンスが作成されていない場合、新しく作成されます。
-	 *
 	 * @param <T> 取得するインスタンスの型
 	 * @param clazz 取得するインスタンスのクラス
 	 * @return 管理されているインスタンス
@@ -55,7 +53,6 @@ public class BlendeeContext {
 
 	/**
 	 * インスタンスの管理方法を変更します。
-	 *
 	 * @param strategy {@link ContextStrategy}
 	 */
 	public static void newStrategy(ContextStrategy strategy) {

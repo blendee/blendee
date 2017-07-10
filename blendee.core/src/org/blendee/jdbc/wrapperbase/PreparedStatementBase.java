@@ -12,7 +12,6 @@ import org.blendee.jdbc.BResultSet;
 
 /**
  * {@link BPreparedStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class PreparedStatementBase implements BPreparedStatement {
@@ -21,7 +20,6 @@ public abstract class PreparedStatementBase implements BPreparedStatement {
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
-	 *
 	 * @param base ベースとなるインスタンス
 	 */
 	protected PreparedStatementBase(BPreparedStatement base) {

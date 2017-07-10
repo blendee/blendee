@@ -7,7 +7,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に {@link BigDecimal} の値を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class BigDecimalBinder extends Binder {
@@ -16,7 +15,6 @@ public final class BigDecimalBinder extends Binder {
 
 	/**
 	 * パラメータの値を持つインスタンスを生成します。
-	 *
 	 * @param value このインスタンスの値
 	 */
 	public BigDecimalBinder(BigDecimal value) {
@@ -50,7 +48,6 @@ public final class BigDecimalBinder extends Binder {
 
 	/**
 	 * このインスタンスの持つ値を返します。
-	 *
 	 * @return 値
 	 */
 	public BigDecimal getBigDecimalValue() {

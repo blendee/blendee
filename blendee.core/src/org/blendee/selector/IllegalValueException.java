@@ -5,7 +5,6 @@ import org.blendee.sql.Column;
 
 /**
  * 検索時に SELECT 句に使用されていなかったカラムの値を取得しようとしたときにスローされる例外です。
- *
  * @author 千葉 哲嗣
  * @see SelectedValues
  */

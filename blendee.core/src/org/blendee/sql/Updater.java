@@ -13,7 +13,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * 登録更新用 SQL 文を生成するための抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class Updater implements PreparedStatementComplementer {
@@ -30,7 +29,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	/**
 	 * パラメータの表すテーブルに対する更新を行うインスタンスを生成します。
-	 *
 	 * @param path 対象となるテーブル
 	 */
 	protected Updater(TablePath path) {
@@ -41,7 +39,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 	 * SQL 文に挿入する DB 格納可能な値を追加します。
 	 * <br>
 	 * 追加された順に SQL 文に反映されます。
-	 *
 	 * @param updatable DB格納可能な値
 	 */
 	public void add(Updatable updatable) {
@@ -52,7 +49,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。
 	 * <br>
 	 * 追加された順に SQL 文に反映されます。
-	 *
 	 * @param columnName テーブルの項目名
 	 * @param bindable バインド可能な値
 	 */
@@ -65,7 +61,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 	 * SQL 文に挿入する項目名と SQL の断片を追加します。
 	 * <br>
 	 * 追加された順に SQL 文に反映されます。
-	 *
 	 * @param columnName テーブルの項目名
 	 * @param fragment SQLの断片、たとえば SYSDATE など
 	 */
@@ -78,7 +73,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 	 * SQL 文に挿入する項目名と、プレースホルダをもつ SQL の断片を追加します。
 	 * <br>
 	 * 追加された順に SQL 文に反映されます。
-	 *
 	 * @param columnName テーブルの項目名
 	 * @param fragment SQLの断片、たとえば TO_CHAR(?,'FM099') など
 	 * @param bindable バインド可能な値
@@ -93,7 +87,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	/**
 	 * DML に対する微調整をするための {@link SQLAdjuster} をセットします。
-	 *
 	 * @param adjuster SQL 文を調整する {@link SQLAdjuster}
 	 */
 	public void setSQLAdjuster(SQLAdjuster adjuster) {
@@ -117,7 +110,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	/**
 	 * 更新対象となるテーブルを返します。
-	 *
 	 * @return 更新対象テーブル
 	 */
 	public TablePath getTablePath() {
@@ -126,7 +118,6 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	/**
 	 * 現在保持しているカラムを返します。
-	 *
 	 * @return 現在保持しているカラム
 	 */
 	public String[] getColumnNames() {
@@ -135,14 +126,12 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	/**
 	 * 更新用 SQL 文を生成します。
-	 *
 	 * @return 更新用 SQL 文
 	 */
 	protected abstract String buildSQL();
 
 	/**
 	 * このカラム名に対応する SQL 文の一部かもしくはプレースホルダ '?' を返します。
-	 *
 	 * @param columnName 対象となるカラム名
 	 * @return SQL 文の一部かもしくはプレースホルダ
 	 */

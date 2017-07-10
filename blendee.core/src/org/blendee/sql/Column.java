@@ -11,7 +11,6 @@ import org.blendee.jdbc.DataTypeConverter;
  * {@link Relationship} に含まれるカラムを表すクラスです。
  * <br>
  * データベース上では同じカラムでも、カラムが属する {@link Relationship} が違う場合、それらは別物として扱われます。
- *
  * @author 千葉 哲嗣
  * @see Relationship#getColumn(String)
  * @see Relationship#getColumns()
@@ -80,7 +79,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムを Blendee 内で一意に特定する ID を返します。 ID はカラム別名として使用されます。
-	 *
 	 * @return ID
 	 */
 	public String getID() {
@@ -94,7 +92,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このインスタンスがさし示すカラムの値とパラメータの値が等しいものという条件句を生成します。
-	 *
 	 * @param bindable 比較値
 	 * @return 生成された条件句
 	 */
@@ -104,7 +101,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このインスタンスが含まれる {@link Relationship} を返します。
-	 *
 	 * @return このインスタンスが含まれる {@link Relationship}
 	 */
 	public Relationship getRelationship() {
@@ -113,7 +109,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムの名称を返します。
-	 *
 	 * @return このカラムの名称
 	 */
 	public String getName() {
@@ -122,7 +117,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムのデータ型を返します。
-	 *
 	 * @return このカラムのデータ型
 	 */
 	public Class<?> getType() {
@@ -131,7 +125,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムの定義情報を返します。
-	 *
 	 * @return このカラムの定義情報
 	 */
 	public ColumnMetadata getColumnMetadata() {
@@ -140,7 +133,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * テーブル別名を含むカラム名を返します。
-	 *
 	 * @return テーブル別名を含むカラム名
 	 */
 	public String getComplementedName() {
@@ -149,7 +141,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムと同じカラムを、他の {@link Relationship} のツリーから探します。
-	 *
 	 * @param another 探す対象となる {@link Relationship}
 	 * @return パラメータの {@link Relationship} に含まれるカラム
 	 * @throws NotFoundException このカラムの属する {@link Relationship} の参照先に another が含まれない場合
@@ -180,7 +171,6 @@ public class Column implements Comparable<Column> {
 
 	/**
 	 * このカラムが、主キーがどうか検査します。
-	 *
 	 * @return このカラムが主キーの場合、 true
 	 */
 	public boolean isPrimaryKey() {

@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 /**
  * 内部使用ユーティリティクラス
- *
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
@@ -70,7 +69,6 @@ public class U {
 	 * このメソッドを使用するのはあくまでも用途をデバッグに限定してください。
 	 * <br>
 	 * また、{@link Object} 以外の親クラスを持つクラスでは、親クラスの toString() メソッドをオーバーライドする可能性があるので、このメソッドを呼ぶ toString() を定義しないほうが無難です。
-	 *
 	 * @param object 文字列化対象
 	 * @return object の文字列表現
 	 */
@@ -122,7 +120,6 @@ public class U {
 
 	/**
 	 * このストリームから読み込めるだけ読み込み、byte 配列として返します。
-	 *
 	 * @param in 読み込むストリーム
 	 * @return 読み込んだデータ
 	 * @throws IOException 読み込み時に発生した例外
@@ -139,7 +136,6 @@ public class U {
 
 	/**
 	 * in から読み込めるだけ読み込み、out へ出力します。
-	 *
 	 * @param in input
 	 * @param out output
 	 * @throws IOException I/O 中の例外
@@ -156,7 +152,6 @@ public class U {
 	/**
 	 * クラスをロードするために使用される検索パスから、指定された名前のリソースをファイルとして取得します。
 	 * このメソッドは実ファイルを対象とする場合のみ有効です。
-	 *
 	 * @param resource リソースの名前
 	 * @return リソースに対応する {@link File} オブジェクト。リソースが見つからなかった場合は null
 	 */
@@ -201,7 +196,6 @@ public class U {
 	/**
 	 * {@link URL} として指定されたリソースをファイルとして取得します。
 	 * このメソッドは実ファイルを対象とする場合のみ有効です。
-	 *
 	 * @param resource リソースの {@link URL}
 	 * @return リソースに対応する {@link File} オブジェクト。リソースが見つからなかった場合は null
 	 */

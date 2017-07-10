@@ -5,7 +5,6 @@ import org.blendee.internal.Transactions;
 
 /**
  * Blendee の設定を管理し、トランザクションの生成、接続の管理等をおこなうハブクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class BlendeeManager implements ManagementSubject {
@@ -19,7 +18,6 @@ public class BlendeeManager implements ManagementSubject {
 
 	/**
 	 * 新しい {@link Initializer} を使用して Blendee の設定を初期化します
-	 *
 	 * @param initializer 新しい設定を持つ {@link Initializer}
 	 */
 	public void initialize(Initializer initializer) {
@@ -34,7 +32,6 @@ public class BlendeeManager implements ManagementSubject {
 
 	/**
 	 * 現在の設定を返します。
-	 *
 	 * @return 現在の設定を持つ {@link Configure}
 	 * @throws IllegalStateException まだ {@link BlendeeManager#initialize(Initializer)} が行われていない場合
 	 */
@@ -47,7 +44,6 @@ public class BlendeeManager implements ManagementSubject {
 
 	/**
 	 * 現在実行中のスレッドが接続を持っているか検査します。
-	 *
 	 * @return スレッドが接続を持っているかどうか
 	 */
 	public boolean hasConnection() {
@@ -58,7 +54,6 @@ public class BlendeeManager implements ManagementSubject {
 	 * 新しいトランザクションを開始します。
 	 * <br>
 	 * トランザクションを開始することで現在のスレッドに接続がセットされ、 {@link BlendeeManager#getConnection()} で取得することができます。
-	 *
 	 * @return 新しいトランザクション
 	 * @throws IllegalStateException 既にこのスレッド用にトランザクションが開始されている場合
 	 */
@@ -92,7 +87,6 @@ public class BlendeeManager implements ManagementSubject {
 
 	/**
 	 * 現在のスレッドが持つ接続を返します。
-	 *
 	 * @return 接続
 	 */
 	public BConnection getConnection() {
@@ -107,7 +101,6 @@ public class BlendeeManager implements ManagementSubject {
 
 	/**
 	 * 現在のトランザクションに、パラメータで渡されたトランザクションを連動させます。
-	 *
 	 * @param transaction 連動させたいトランザクション
 	 */
 	public void synchroniseWithCurrentTransaction(Transaction transaction) {

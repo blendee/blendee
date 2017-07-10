@@ -5,14 +5,12 @@ import org.blendee.sql.binder.StringBinder;
 
 /**
  * 色々な型の値を {@link Bindable} に変換するユーティリティクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class BindableConverter {
 
 	/**
 	 * 変換を行います。
-	 *
 	 * @param members 変換対象の文字列
 	 * @return 変換された {@link Bindable} の配列
 	 */
@@ -29,7 +27,6 @@ public class BindableConverter {
 	 * 変換を行います。
 	 * <br>
 	 * 変換可能な型は、 {@link ValueExtractors} で取得可能なものに限られます。
-	 *
 	 * @param members 変換対象の数値
 	 * @return 変換された {@link Bindable} の配列
 	 */
@@ -41,7 +38,6 @@ public class BindableConverter {
 	 * 変換を行います。
 	 * <br>
 	 * 変換可能な型は、 {@link ValueExtractors} で取得可能なものに限られます。
-	 *
 	 * @param members 変換対象の数値
 	 * @return 変換された {@link Bindable} の配列
 	 */

@@ -2,7 +2,6 @@ package org.blendee.jdbc;
 
 /**
  * スキーマ名、テーブル名を持ち、テーブルを一意で特定する指標となるクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class TablePath implements Comparable<TablePath> {
@@ -22,7 +21,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * スキーマ名とテーブル名から、インスタンスを生成します。
-	 *
 	 * @param schemaName スキーマ名
 	 * @param tableName テーブル名
 	 * @throws IllegalArgumentException 使用不可能な文字を使用した場合
@@ -38,7 +36,6 @@ public class TablePath implements Comparable<TablePath> {
 	 * テーブル名のみで、インスタンスを生成します。
 	 * <br>
 	 * スキーマ名を省略しているので、一意に決定できるように Blendee に設定されるスキーマは一つでなければなりません。
-	 *
 	 * @param tableName テーブル名
 	 * @throws IllegalStateException スキーマ名が複数設定されている場合
 	 * @throws IllegalArgumentException 使用不可能な文字を使用した場合
@@ -52,7 +49,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * コピーコンストラクタです。
-	 *
 	 * @param path コピーされるインスタンス
 	 */
 	public TablePath(TablePath path) {
@@ -61,7 +57,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * テーブルを一意で特定する指標から、このクラスのインスタンスを生成します。
-	 *
 	 * @param tablePath テーブルを一意で特定する指標
 	 * @return tablePath に対応するインスタンス
 	 * @see TablePath#toString()
@@ -74,7 +69,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * このインスタンスが持つスキーマ名を返します。
-	 *
 	 * @return スキーマ名
 	 */
 	public final String getSchemaName() {
@@ -89,7 +83,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * このインスタンスが持つテーブル名を返します。
-	 *
 	 * @return テーブル名
 	 */
 	public final String getTableName() {
@@ -108,7 +101,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * スキーマ名、テーブル名を元に、テーブルを一意で特定する指標となる文字列を返します。
-	 *
 	 * @return テーブルを一意で特定する指標
 	 * @see Initializer#addSchemaName(String)
 	 */
@@ -124,7 +116,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * このインスタンスが指し示すテーブルが実際に存在するかどうかを検査します。
-	 *
 	 * @return 存在する場合、 true
 	 */
 	public boolean exists() {
@@ -133,7 +124,6 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * 使用できるデータベースオブジェクト名かどうかを判定します。
-	 *
 	 * @param name 判定対象
 	 * @return 使用できるかどうか
 	 */

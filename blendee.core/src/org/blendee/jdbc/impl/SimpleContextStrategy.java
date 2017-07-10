@@ -8,7 +8,6 @@ import org.blendee.jdbc.ContextStrategy;
 
 /**
  * {@link ContextStrategy} の簡易実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 public class SimpleContextStrategy implements ContextStrategy {

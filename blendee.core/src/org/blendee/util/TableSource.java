@@ -10,7 +10,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link Metadata} を構成するために必要なテーブル情報を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see VirtualSpace#addTable(TableSource)
  */
@@ -28,7 +27,6 @@ public class TableSource {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param tableMetadata 対象となるテーブルのメタデータ
 	 * @param columnMetadatas 追加するカラム
@@ -53,7 +51,6 @@ public class TableSource {
 
 	/**
 	 * コンストラクタで渡された対象テーブルを返します。
-	 *
 	 * @return 対象テーブル
 	 */
 	public TablePath getTablePath() {
@@ -62,7 +59,6 @@ public class TableSource {
 
 	/**
 	 * コンストラクタで渡されたメタデータを返します。
-	 *
 	 * @return 対象となるテーブルのメタデータ
 	 */
 	public TableMetadata getTabelMetadata() {
@@ -71,7 +67,6 @@ public class TableSource {
 
 	/**
 	 * コンストラクタで渡された追加カラム定義情報を返します。
-	 *
 	 * @return 追加カラム定義情報
 	 */
 	public ColumnMetadata[] getColumnMetadatas() {
@@ -80,7 +75,6 @@ public class TableSource {
 
 	/**
 	 * コンストラクタで渡された追加主キーを返します。
-	 *
 	 * @return 追加主キー
 	 */
 	public PrimaryKeySource getPrimaryKeySource() {
@@ -89,7 +83,6 @@ public class TableSource {
 
 	/**
 	 * コンストラクタで渡された追加外部キーを返します。
-	 *
 	 * @return 追加外部キー
 	 */
 	public ForeignKeySource[] getForeignKeySources() {

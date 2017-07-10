@@ -12,7 +12,6 @@ import org.blendee.sql.Column;
 
 /**
  * 検索結果をラップし、 {@link Column} で値を取得可能にする機能を定めたインターフェイスです。
- *
  * @author 千葉 哲嗣
  * @see SelectedValuesIterator#next()
  */
@@ -20,7 +19,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を boolean として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -29,7 +27,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を double として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -38,7 +35,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を float として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -47,7 +43,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を int として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -56,7 +51,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を long として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -65,7 +59,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link String} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -74,7 +67,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link Timestamp} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -83,7 +75,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link BigDecimal} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -92,7 +83,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link UUID} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -101,7 +91,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link Object} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -110,7 +99,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を byte の配列として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -119,7 +107,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link Blob} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -128,7 +115,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link Clob} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -137,7 +123,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値を {@link Binder} として返します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return カラムの値
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -146,7 +131,6 @@ public interface SelectedValues {
 
 	/**
 	 * 指定されたカラムの値が NULL かどうか検査します。
-	 *
 	 * @param column {@link Column} インスタンス
 	 * @return NULL の場合、 true
 	 * @throws IllegalValueException 検索結果にカラムが存在しない場合
@@ -155,21 +139,18 @@ public interface SelectedValues {
 
 	/**
 	 * 検索に使用したカラムを返します。
-	 *
 	 * @return 検索に使用したカラム
 	 */
 	Column[] getSelectedColumns();
 
 	/**
 	 * 検索結果オブジェクトを返します。
-	 *
 	 * @return 検索結果
 	 */
 	BResult getResult();
 
 	/**
 	 * 引数のカラムが今回の検索に使用されたかを検査します。
-	 *
 	 * @param column 検査対象
 	 * @return SELECT されたかどうか
 	 */

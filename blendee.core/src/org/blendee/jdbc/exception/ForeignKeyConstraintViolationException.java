@@ -2,7 +2,6 @@ package org.blendee.jdbc.exception;
 
 /**
  * 参照整合性制約に違反した場合の例外です。
- *
  * @author 千葉 哲嗣
  */
 public class ForeignKeyConstraintViolationException extends ConstraintViolationException {
@@ -16,7 +15,6 @@ public class ForeignKeyConstraintViolationException extends ConstraintViolationE
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public ForeignKeyConstraintViolationException(String message) {

@@ -10,14 +10,12 @@ import java.sql.Timestamp;
 
 /**
  * {@link PreparedStatement} に似せ、機能を制限したインターフェイスです。
- *
  * @author 千葉 哲嗣
  */
 public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに boolean 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -25,7 +23,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに double 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -33,7 +30,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに float 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -41,7 +37,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに int 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -49,7 +44,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに long 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -57,7 +51,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link String} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -65,7 +58,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link Timestamp} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -73,7 +65,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link BigDecimal} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -81,7 +72,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link Object} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -89,7 +79,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link InputStream} から読み込んだ値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param stream 読み込むストリーム
 	 * @param length 読み込むデータのサイズ
@@ -98,7 +87,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link Reader} から読み込んだ値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param reader 読み込むストリーム
 	 * @param length 読み込むデータのサイズ
@@ -107,7 +95,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに byte の配列をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -115,7 +102,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link Blob} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -123,7 +109,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに {@link Clob} 値をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param x 値
 	 */
@@ -131,7 +116,6 @@ public interface BPreparedStatement extends BStatement {
 
 	/**
 	 * この文のプレースホルダに NULL をセットします。
-	 *
 	 * @param parameterIndex プレースホルダの位置
 	 * @param type 対象カラムの型
 	 * @see java.sql.Types

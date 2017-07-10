@@ -8,7 +8,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link TableSource} を構成するために必要な主キー情報を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see TableSource#TableSource(TablePath, TableMetadata, ColumnMetadata[], PrimaryKeySource, ForeignKeySource[])
  */
@@ -22,7 +21,6 @@ public class PrimaryKeySource implements PrimaryKeyMetadata {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param name 主キー名
 	 * @param columns 構成カラム
 	 * @param isPseudo 疑似キーかどうか
@@ -35,7 +33,6 @@ public class PrimaryKeySource implements PrimaryKeyMetadata {
 
 	/**
 	 * {@link PrimaryKeyMetadata} からインスタンスを生成します。
-	 *
 	 * @param metadata インスタンス化に必要な情報を持つ {@link PrimaryKeyMetadata}
 	 */
 	public PrimaryKeySource(PrimaryKeyMetadata metadata) {
@@ -46,7 +43,6 @@ public class PrimaryKeySource implements PrimaryKeyMetadata {
 
 	/**
 	 * コンストラクタで渡された主キー名を返します。
-	 *
 	 * @return 主キー名
 	 */
 	@Override
@@ -56,7 +52,6 @@ public class PrimaryKeySource implements PrimaryKeyMetadata {
 
 	/**
 	 * コンストラクタで渡された構成カラムを返します。
-	 *
 	 * @return 構成カラム
 	 */
 	@Override

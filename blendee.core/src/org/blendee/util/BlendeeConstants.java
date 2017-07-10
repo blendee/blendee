@@ -136,7 +136,6 @@ public interface BlendeeConstants {
 
 	/**
 	 * 文字列のキーからこのクラスのメンバーに変換します。
-	 *
 	 * @param <T> オプション値の型
 	 * @param key 変換前のキー
 	 * @return 変換後のキー

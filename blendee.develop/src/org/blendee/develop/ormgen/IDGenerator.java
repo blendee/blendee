@@ -6,14 +6,12 @@ import java.util.UUID;
 
 /**
  * プロジェクト内で一意となる ID を生成します。
- *
  * @author 千葉 哲嗣
  */
 public class IDGenerator {
 
 	/**
 	 * UUID を BASE64 エンコードした文字列を生成します。
-	 *
 	 * @return ID
 	 */
 	public static String generate() {

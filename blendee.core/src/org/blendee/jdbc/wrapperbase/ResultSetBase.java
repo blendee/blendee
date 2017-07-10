@@ -4,7 +4,6 @@ import org.blendee.jdbc.BResultSet;
 
 /**
  * {@link BResultSet} のラッパーを実装するベースとなる、抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class ResultSetBase extends ResultBase implements BResultSet {
@@ -13,7 +12,6 @@ public abstract class ResultSetBase extends ResultBase implements BResultSet {
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
-	 *
 	 * @param base ベースとなるインスタンス
 	 */
 	protected ResultSetBase(BResultSet base) {

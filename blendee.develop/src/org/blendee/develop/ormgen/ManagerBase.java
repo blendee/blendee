@@ -17,7 +17,6 @@ import org.blendee.support.RowIterator;
 
 /**
  * 自動生成された '{'@link RowManager'}' の実装クラスです。
- *
 {3}
  */
 @Generated(value = /*++'++*/{/*++'++*/"{4}"/*++'++*/}/*++'++*/)
@@ -29,7 +28,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
 	 * <br>
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
@@ -52,7 +50,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。
 	 * <br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @return '{'@link RowIterator'}'
@@ -69,7 +66,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 
 	/**
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
-	 *
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
@@ -92,7 +88,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
 	 * <br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
-	 *
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param condition WHERE 句となる条件
 	 * @param order  ORDER 句
@@ -128,7 +123,6 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 
 		/**
 		 * 唯一のコンストラクタです。
-		 *
 		 * @param iterator 
 		 */
 		private /*++{1}Iterator++*//*--*/IteratorBase/*--*/(

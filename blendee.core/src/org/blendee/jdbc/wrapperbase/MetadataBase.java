@@ -9,7 +9,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link Metadata} のラッパーを実装するベースとなる、抽象基底クラスです。
- *
  * @author 千葉 哲嗣
  */
 public abstract class MetadataBase implements Metadata {
@@ -18,7 +17,6 @@ public abstract class MetadataBase implements Metadata {
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
-	 *
 	 * @param base ベースとなるインスタンス
 	 */
 	protected MetadataBase(Metadata base) {

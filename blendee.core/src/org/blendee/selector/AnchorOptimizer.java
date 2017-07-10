@@ -13,7 +13,6 @@ import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * static かつ final なフィールドを ID として {@link ColumnRepository} から SELECT 句構成カラムを取得する {@link Optimizer} です。
- *
  * @author 千葉 哲嗣
  */
 public class AnchorOptimizer implements Optimizer {

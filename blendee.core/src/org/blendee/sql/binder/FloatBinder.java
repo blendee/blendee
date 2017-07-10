@@ -7,7 +7,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に float の値を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class FloatBinder extends Binder {
@@ -16,7 +15,6 @@ public final class FloatBinder extends Binder {
 
 	/**
 	 * パラメータの値を持つインスタンスを生成します。
-	 *
 	 * @param value このインスタンスの値
 	 */
 	public FloatBinder(float value) {
@@ -50,7 +48,6 @@ public final class FloatBinder extends Binder {
 
 	/**
 	 * このインスタンスの持つ値を返します。
-	 *
 	 * @return 値
 	 */
 	public float getFloatValue() {

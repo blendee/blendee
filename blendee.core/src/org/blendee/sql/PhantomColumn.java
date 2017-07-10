@@ -9,7 +9,6 @@ import org.blendee.jdbc.TablePath;
  * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。
  * <br>
  * ただし、このクラスのインスタンスは一旦 {@link QueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #prepareForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
- *
  * @author 千葉 哲嗣
  */
 public class PhantomColumn extends Column {
@@ -26,7 +25,6 @@ public class PhantomColumn extends Column {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path このカラムが属するテーブル
 	 * @param name カラム名
 	 */
@@ -40,7 +38,6 @@ public class PhantomColumn extends Column {
 	 * このクラスのインスタンスを生成します。
 	 * <br>
 	 * 使用される {@link TablePath} は後に検索対象となる {@link Relationship} が持つものになります。
-	 *
 	 * @param name カラム名
 	 */
 	public PhantomColumn(String name) {
@@ -51,7 +48,6 @@ public class PhantomColumn extends Column {
 
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラス独自のハッシュコードを返します。
-	 *
 	 * @return {@link Column} が決定すると、その {@link Column} のハッシュコード、そうでなければ path と name から算出したハッシュコード
 	 */
 	@Override
@@ -63,7 +59,6 @@ public class PhantomColumn extends Column {
 
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラスのインスタンス同士の equals になります。
-	 *
 	 * @return {@link Column} が決定すると、その {@link Column} との equals 、そうでなければ path と name での equals
 	 */
 	@Override
@@ -80,7 +75,6 @@ public class PhantomColumn extends Column {
 
 	/**
 	 * 本当の {@link Column} が決定するまでは、このクラスのインスタンス同士の比較値を返します。
-	 *
 	 * @return {@link Column} が決定すると、その {@link Column} との比較値 、そうでなければ path と name での比較値
 	 */
 	@Override
@@ -153,7 +147,6 @@ public class PhantomColumn extends Column {
 
 	/**
 	 * このインスタンスの Relationship ルートを決定します。
-	 *
 	 * @param sqlRoot このインスタンスのルートとなる {@link Relationship}
 	 * @throws IllegalStateException sqlRoot がルートではないとき
 	 * @throws IllegalStateException このインスタンスに既に別のルートが決定しているとき

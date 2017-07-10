@@ -12,14 +12,12 @@ import org.blendee.sql.binder.StringBinder;
 
 /**
  * 条件句インスタンスを生成するファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class ConditionFactory {
 
 	/**
 	 * 比較演算子の列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -68,7 +66,6 @@ public class ConditionFactory {
 
 	/**
 	 * LIKE 検索の列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -126,7 +123,6 @@ public class ConditionFactory {
 
 	/**
 	 * NULL 検査の列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -159,7 +155,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
@@ -170,7 +165,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
@@ -181,7 +175,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
@@ -192,7 +185,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
@@ -203,7 +195,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
@@ -216,7 +207,6 @@ public class ConditionFactory {
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
@@ -229,7 +219,6 @@ public class ConditionFactory {
 
 	/**
 	 * 比較演算子を使用した簡単な条件句を生成します。
-	 *
 	 * @param operator 比較演算子
 	 * @param column 対象となるカラム
 	 * @param bindable 比較する値
@@ -244,7 +233,6 @@ public class ConditionFactory {
 
 	/**
 	 * 比較演算子を使用した簡単な条件句を生成します。
-	 *
 	 * @param operator 比較演算子
 	 * @param columnName 対象となるカラム
 	 * @param bindable 比較する値
@@ -259,7 +247,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -275,7 +262,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -291,7 +277,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param column 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -307,7 +292,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -323,7 +307,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -339,7 +322,6 @@ public class ConditionFactory {
 
 	/**
 	 * IN を使用した条件句を生成します。
-	 *
 	 * @param columnName 対象となるカラム
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
@@ -355,7 +337,6 @@ public class ConditionFactory {
 
 	/**
 	 * LIKE を使用した条件句を生成します。
-	 *
 	 * @param type LIKE の位置
 	 * @param column 対象となるカラム
 	 * @param value '%'を含まない値
@@ -370,7 +351,6 @@ public class ConditionFactory {
 
 	/**
 	 * NOT LIKE を使用した条件句を生成します。
-	 *
 	 * @param type LIKE の位置
 	 * @param column 対象となるカラム
 	 * @param value '%'を含まない値
@@ -385,7 +365,6 @@ public class ConditionFactory {
 
 	/**
 	 * LIKE を使用した条件句を生成します。
-	 *
 	 * @param type LIKE の位置
 	 * @param columnName 対象となるカラム
 	 * @param value '%'を含まない値
@@ -400,7 +379,6 @@ public class ConditionFactory {
 
 	/**
 	 * NOT LIKE を使用した条件句を生成します。
-	 *
 	 * @param type LIKE の位置
 	 * @param columnName 対象となるカラム
 	 * @param value '%'を含まない値
@@ -415,7 +393,6 @@ public class ConditionFactory {
 
 	/**
 	 * NULL かどうかを判定する条件句を生成します。
-	 *
 	 * @param type 'IS NULL' または 'IS NOT NULL'
 	 * @param column 対象となるカラム
 	 * @return 作成されたインスタンス
@@ -428,7 +405,6 @@ public class ConditionFactory {
 
 	/**
 	 * NULL かどうかを判定する条件句を生成します。
-	 *
 	 * @param type 'IS NULL' または 'IS NOT NULL'
 	 * @param columnName 対象となるカラム
 	 * @return 作成されたインスタンス
@@ -441,7 +417,6 @@ public class ConditionFactory {
 
 	/**
 	 * 空の条件句を生成します。
-	 *
 	 * @return 生成されたインスタンス
 	 */
 	public static Condition createCondition() {
@@ -452,7 +427,6 @@ public class ConditionFactory {
 	 * 条件句のテンプレートとそれに埋め込むカラムから条件句を生成します。
 	 * <br>
 	 * このテンプレートにはプレースホルダを含めることはできません。
-	 *
 	 * @param clause 条件句のテンプレート
 	 * @param columns 対象となるカラム
 	 * @return 生成されたインスタンス
@@ -465,7 +439,6 @@ public class ConditionFactory {
 	 * 条件句のテンプレートとそれに埋め込むカラムから条件句を生成します。
 	 * <br>
 	 * このテンプレートにはプレースホルダを含めることはできません。
-	 *
 	 * @param clause 条件句のテンプレート
 	 * @param columnNames 対象となるカラム
 	 * @return 生成されたインスタンス
@@ -480,7 +453,6 @@ public class ConditionFactory {
 	 * パラメータとして渡された条件句をそのまま使用したインスタンスを生成します。
 	 * <br>
 	 * 条件句にはプレースホルダを含めることはできません。
-	 *
 	 * @param clause 条件句
 	 * @return 生成されたインスタンス
 	 */
@@ -490,7 +462,6 @@ public class ConditionFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 *
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param column 対象となるカラム
 	 * @param bindable プレースホルダに設定する値
@@ -505,7 +476,6 @@ public class ConditionFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 *
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param columnName 対象となるカラム
 	 * @param bindable プレースホルダに設定する値
@@ -520,7 +490,6 @@ public class ConditionFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 *
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param columns 対象となるカラム
 	 * @param bindables プレースホルダに設定する値
@@ -539,7 +508,6 @@ public class ConditionFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 *
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param columnNames 対象となるカラム
 	 * @param bindables プレースホルダに設定する値
@@ -554,7 +522,6 @@ public class ConditionFactory {
 
 	/**
 	 * コピー用メソッドです。
-	 *
 	 * @param condition コピーしたいインスタンス
 	 * @return 生成されたインスタンス
 	 */
@@ -564,7 +531,6 @@ public class ConditionFactory {
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
-	 *
 	 * @param mainRelationship 主となるクエリ側のテーブル
 	 * @param subqueryRelationship サブクエリ側のテーブル
 	 * @param subqueryCondition サブクエリ用条件
@@ -586,7 +552,6 @@ public class ConditionFactory {
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
-	 *
 	 * @param columns 主となるクエリ側のカラム
 	 * @param subqueryColumns サブクエリ側のカラム
 	 * @param subqueryCondition サブクエリ用条件
@@ -615,7 +580,6 @@ public class ConditionFactory {
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
-	 *
 	 * @param columns 主となるクエリ側のカラム
 	 * @param subquery サブクエリ
 	 * @return 生成されたインスタンス

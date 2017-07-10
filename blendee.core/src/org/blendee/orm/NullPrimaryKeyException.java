@@ -5,7 +5,6 @@ import org.blendee.sql.Relationship;
 
 /**
  * 対象となるテーブルに主キーが定義されていない場合にスローされる例外です。
- *
  * @author 千葉 哲嗣
  */
 public class NullPrimaryKeyException extends BlendeeException {

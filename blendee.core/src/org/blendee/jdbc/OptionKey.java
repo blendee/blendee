@@ -6,16 +6,13 @@ import java.util.Optional;
 
 /**
  * {@link Configure} 経由で受け取ることのできるオプション情報のキーとして使用するクラスです。
- *
  * @author 千葉 哲嗣
- *
  * @param <T> オプション値の型
  */
 public class OptionKey<T> {
 
 	/**
 	 * オプションマップから、このキーに対応する値を取り出します。
-	 *
 	 * @param options オプションマップ
 	 * @return オプション値
 	 */

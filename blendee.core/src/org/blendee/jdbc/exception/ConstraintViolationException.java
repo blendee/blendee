@@ -4,7 +4,6 @@ import org.blendee.jdbc.BlendeeException;
 
 /**
  * 整合性制約に違反した場合の例外です。
- *
  * @author 千葉 哲嗣
  */
 public class ConstraintViolationException extends BlendeeException {
@@ -18,7 +17,6 @@ public class ConstraintViolationException extends BlendeeException {
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public ConstraintViolationException(String message) {

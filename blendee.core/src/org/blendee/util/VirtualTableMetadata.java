@@ -4,7 +4,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * {@link TableMetadata} の簡易実装です。
- *
  * @author 千葉 哲嗣
  */
 public class VirtualTableMetadata implements TableMetadata {
@@ -19,7 +18,6 @@ public class VirtualTableMetadata implements TableMetadata {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param schemaName スキーマ名
 	 * @param name テーブル名
 	 * @param type テーブルの型

@@ -30,7 +30,6 @@ import org.blendee.jdbc.TableMetadata;
 
 /**
  * Blendee が使用する {@link BConnection} の標準実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 class ConcreteConnection implements BConnection {
@@ -51,7 +50,6 @@ class ConcreteConnection implements BConnection {
 
 	/**
 	 * JDBC 接続を使用してインスタンスを生成します。
-	 *
 	 * @param connection JDBC 接続
 	 */
 	ConcreteConnection(Configure config, Connection connection) {

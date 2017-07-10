@@ -43,7 +43,6 @@ import org.blendee.support.WhereQueryColumn;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
- *
  * パッケージ名 {0}
  * テーブル名 {1}
  */
@@ -127,7 +126,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * インスタンスは ID として、引数で渡された id を使用します。
 	 * <br>
 	 * フィールド定義の必要がなく、簡易に使用できますが、 ID は呼び出し側クラス内で一意である必要があります。
-	 *
 	 * @param id '{'@link Query'}' を使用するクラス内で一意の ID
 	 * @return このクラスのインスタンス
 	 */
@@ -147,7 +145,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * このクラスのインスタンスを生成します。
 	 * <br>
 	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの '{'@link Optimizer'}' に依存します。
-	 *
 	 * @param optimizer SELECT 句を決定する
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/(Optimizer optimizer) /*++'++*/{/*++'++*/
@@ -163,7 +160,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * SELECT 句を記述します。
-	 *
 	 * @param function
 	 * @return この '{'@link Query'}'
 	 */
@@ -177,7 +173,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * WHERE 句を記述します。
-	 *
 	 * @param consumer
 	 * @return この '{'@link Query'}'
 	 */
@@ -189,7 +184,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * ORDER BY 句を記述します。
-	 *
 	 * @param function
 	 * @return この '{'@link Query'}'
 	 */
@@ -303,7 +297,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * 現在保持している条件をリセットします。
-	 *
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCondition() /*++'++*/{/*++'++*/
@@ -313,7 +306,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * 現在保持している並び順をリセットします。
-	 *
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrder() /*++'++*/{/*++'++*/
@@ -323,7 +315,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * 現在保持している条件、並び順をリセットします。
-	 *
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
@@ -372,7 +363,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 自動生成された '{'@link QueryRelationship'}' の実装クラスです。
 	 * <br>
 	 * 条件として使用できるカラムと、参照しているテーブルを内包しており、それらを使用して検索 SQL を生成可能にします。
-	 *
 	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
@@ -411,7 +401,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/**
 		 * 直接使用しないでください。
-		 *
 		 * @param builder
 		 * @param parent
 		 * @param fkName
@@ -462,7 +451,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/**
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
-		 *
 		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
 		public /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M> intercept() /*++'++*/{/*++'++*/

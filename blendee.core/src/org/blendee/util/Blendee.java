@@ -22,7 +22,6 @@ import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * Blendee 全体を対象とする、簡易操作クラスです。
- *
  * @author 千葉 哲嗣
  */
 public class Blendee {
@@ -35,7 +34,6 @@ public class Blendee {
 
 	/**
 	 * Blendee を使用可能な状態にします。
-	 *
 	 * @param initValues Blendee を初期化するための値
 	 */
 	public void start(Properties initValues) {
@@ -51,7 +49,6 @@ public class Blendee {
 
 	/**
 	 * Blendee を使用可能な状態にします。
-	 *
 	 * @param initValues Blendee を初期化するための値
 	 */
 	public void start(Map<OptionKey<?>, ?> initValues) {
@@ -107,7 +104,6 @@ public class Blendee {
 
 	/**
 	 * トランザクション内で任意の処理を実行します。
-	 *
 	 * @param function {@link Function} の実装
 	 * @throws Exception 処理内で起こった例外
 	 */
@@ -125,7 +121,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link MetadataFactory} を返します。
-	 *
 	 * @return デフォルト {@link MetadataFactory}
 	 */
 	public synchronized Class<? extends MetadataFactory> getDefaultMetadataFactoryClass() {
@@ -134,7 +129,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link MetadataFactory} をセットします。
-	 *
 	 * @param defaultMetadataFactoryClass デフォルト {@link MetadataFactory}
 	 */
 	public synchronized void setDefaultMetadataFactoryClass(
@@ -144,7 +138,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link TransactionFactory} を返します。
-	 *
 	 * @return デフォルト {@link TransactionFactory}
 	 */
 	public synchronized Class<? extends TransactionFactory> getDefaultTransactionFactoryClass() {
@@ -153,7 +146,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link TransactionFactory} をセットします。
-	 *
 	 * @param defaultTransactionFactoryClass デフォルト {@link TransactionFactory}
 	 */
 	public synchronized void setDefaultTransactionFactoryClass(
@@ -163,7 +155,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link ColumnRepositoryFactory} を返します。
-	 *
 	 * @return デフォルト {@link ColumnRepositoryFactory}
 	 */
 	public synchronized Class<? extends ColumnRepositoryFactory> getDefaultColumnRepositoryFactoryClass() {
@@ -172,7 +163,6 @@ public class Blendee {
 
 	/**
 	 * デフォルト {@link ColumnRepositoryFactory} をセットします。
-	 *
 	 * @param defaultColumnRepositoryFactoryClass デフォルト {@link ColumnRepositoryFactory}
 	 */
 	public synchronized void setDefaultColumnRepositoryFactoryClass(
@@ -198,7 +188,6 @@ public class Blendee {
 		 * トランザクション内で呼び出されます。 <br>
 		 * 処理が終了した時点で commit が行われます。 <br>
 		 * 例外を投げた場合は rollback が行われます。
-		 *
 		 * @param transaction この処理のトランザクション
 		 * @throws Exception 処理内で起こった例外
 		 */

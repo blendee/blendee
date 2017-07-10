@@ -13,7 +13,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Relationship} の生成、管理を行うファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class RelationshipFactory implements ManagementSubject {
@@ -28,14 +27,12 @@ public class RelationshipFactory implements ManagementSubject {
 	 * このクラスのコンストラクタです。
 	 * <br>
 	 * {@link BlendeeContext} 管理対象です。
-	 *
 	 * @see BlendeeContext#get(Class)
 	 */
 	public RelationshipFactory() {}
 
 	/**
 	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。
-	 *
 	 * @param path ルートとなるテーブル
 	 * @return ツリーのルート要素
 	 */
@@ -54,7 +51,6 @@ public class RelationshipFactory implements ManagementSubject {
 
 	/**
 	 * target を、 root のツリーに含まれる {@link Relationship} に変換します。
-	 *
 	 * @param root 含まれるべきツリーのルート
 	 * @param target 対象
 	 * @return 変換された {@link Relationship}

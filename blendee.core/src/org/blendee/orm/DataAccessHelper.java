@@ -35,7 +35,6 @@ import org.blendee.sql.UpdateDMLBuilder;
  * データベースに対する CRUD 処理を簡易に行うためのユーティリティクラスです。
  * <br>
  * このクラスのインスタンスで検索を行うと、使用した SQL 文をパラメータで渡す {@link Optimizer} をキーとしてキャッシュします。
- *
  * @author 千葉 哲嗣
  */
 public class DataAccessHelper {
@@ -67,7 +66,6 @@ public class DataAccessHelper {
 
 	/**
 	 * インスタンスを生成します。
-	 *
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
 	public DataAccessHelper(boolean useCache) {
@@ -76,7 +74,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link DataObject} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKey 主キー
 	 * @param options 検索オプション
@@ -100,7 +97,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの条件にマッチする {@link DataObject} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param condition WHERE 句となる条件
 	 * @param order ORDER 句
@@ -118,7 +114,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link DataObject} を検索する SQL 文をあらかじめこのインスタンスにキャッシュしておきます。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKey 主キー
 	 * @param options 検索オプション
@@ -135,7 +130,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの条件にマッチする {@link DataObject} を検索する SQL 文をあらかじめこのインスタンスにキャッシュしておきます。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param condition WHERE 句となる条件
 	 * @param order ORDER 句
@@ -154,7 +148,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 *
 	 * @param optimizer キーとなる {@link Optimizer}
 	 * @return 再実行結果の {@link DataObject}
 	 * @throws DataObjectNotFoundException データが存在しなかった場合
@@ -174,7 +167,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 *
 	 * @param optimizer キーとなる {@link Optimizer}
 	 * @return 再実行結果の {@link DataObject} を持つ {@link DataObjectIterator}
 	 */
@@ -191,7 +183,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの条件にマッチする件数を返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
 	 * @return パラメータの条件にマッチする件数
@@ -211,7 +202,6 @@ public class DataAccessHelper {
 
 	/**
 	 * このスレッドが {@link ThreadBatchCallback} 内で行う更新処理を全てバッチ実行します。
-	 *
 	 * @param batchStatement バッチ実行を依頼する {@link BatchStatement}
 	 * @param callback 更新処理を定義したコールバック
 	 * @throws Exception コールバック内で例外が発生した場合
@@ -229,7 +219,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータのテーブルに対して INSERT を行います。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
@@ -243,7 +232,6 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータのテーブルに対して INSERT をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
@@ -259,7 +247,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 連続値を持つテーブルに対して INSERT を行います。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
@@ -286,7 +273,6 @@ public class DataAccessHelper {
 	 * 連続値を持つテーブルに対して INSERT をバッチ実行します。
 	 * <p>
 	 * バッチ実行では、実際に値が登録されるのは後になるので、そのことを考慮した {@link SequenceGenerator} を用意する必要があります。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
@@ -313,7 +299,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE を実行します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param condition WHERE 句となる条件
@@ -335,7 +320,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
@@ -358,7 +342,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、全レコードに対して UPDATE を実行します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
@@ -379,7 +362,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、全レコードに対して UPDATE をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
@@ -400,7 +382,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE を実行します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
 	 * @return 削除件数
@@ -411,7 +392,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param condition WHERE 句となる条件
@@ -428,7 +408,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、全レコードに対する DELETE を実行します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return 削除件数
 	 */
@@ -438,7 +417,6 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、全レコードに対する DELETE をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 */
@@ -448,7 +426,6 @@ public class DataAccessHelper {
 
 	/**
 	 * このインスタンスの SELECT 文のキャッシュ容量を変更します。
-	 *
 	 * @param capacity 新しいキャッシュ容量
 	 */
 	public void ensureCacheCapacity(int capacity) {

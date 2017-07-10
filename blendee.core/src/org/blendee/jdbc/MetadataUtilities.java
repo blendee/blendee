@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * メタデータに関するユーティリティクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class MetadataUtilities {
@@ -15,7 +14,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのスキーマに存在する全てのテーブルを返します。
-	 *
 	 * @param schemaName 対象となるスキーマ
 	 * @return スキーマに存在する全てのテーブル
 	 */
@@ -25,7 +23,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルに存在する全てのカラムを返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return テーブルに存在する全てのカラム
 	 */
@@ -35,7 +32,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルに存在する全てのカラム名を返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return テーブルに存在する全てのカラム
 	 */
@@ -51,7 +47,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルの主キーを構成するカラムを返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return 主キーを構成するカラム
 	 */
@@ -61,7 +56,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルの主キーの名称を返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return 主キー名
 	 */
@@ -71,7 +65,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルが参照しているテーブルを返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return 参照しているテーブル
 	 */
@@ -81,7 +74,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルを参照しているテーブルを返します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @return 参照されているテーブル
 	 */
@@ -91,7 +83,6 @@ public class MetadataUtilities {
 
 	/**
 	 * 二つのテーブル間の参照関係を返します。
-	 *
 	 * @param exported 主キー側テーブル
 	 * @param imported 外部キー側テーブル
 	 * @return テーブル間の関係情報
@@ -102,7 +93,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータで指定された名称を、データベースで使用される標準的な名前に変換します。
-	 *
 	 * @param name 標準化前の名称
 	 * @return 標準化された名称
 	 */
@@ -112,7 +102,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータで指定された名称を、データベースで使用される標準的な名前に変換します。
-	 *
 	 * @param names 標準化前の名称の配列
 	 * @return 標準化された名称の配列
 	 */
@@ -129,7 +118,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルとそれが参照しているテーブル間の参照関係を返します。
-	 *
 	 * @param foreignKeyTable 対象となるテーブル
 	 * @return テーブル間の関係情報
 	 */
@@ -144,7 +132,6 @@ public class MetadataUtilities {
 
 	/**
 	 * パラメータのテーブルとそれを参照しているテーブル間の参照関係を返します。
-	 *
 	 * @param primaryKeyTable 対象となるテーブル
 	 * @return テーブル間の関係情報
 	 */

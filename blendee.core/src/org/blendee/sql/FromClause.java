@@ -14,7 +14,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * SELECT 文の FROM 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see QueryBuilder#QueryBuilder(FromClause)
  */
@@ -22,7 +21,6 @@ public class FromClause {
 
 	/**
 	 * テーブルの結合方式を表す列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -78,7 +76,6 @@ public class FromClause {
 
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
-	 *
 	 * @param path テーブルのルート
 	 */
 	public FromClause(TablePath path) {
@@ -88,7 +85,6 @@ public class FromClause {
 
 	/**
 	 * この FROM 句のテーブルをルートにした {@link Relationship} と結合します。
-	 *
 	 * @param type 結合方式
 	 * @param relationship 同一ルート {@link Relationship}
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
@@ -107,7 +103,6 @@ public class FromClause {
 
 	/**
 	 * この FROM 句のテーブルをルートにした {@link Relationship} と結合します。
-	 *
 	 * @param type 結合方式
 	 * @param path このインスタンスのルートのツリーに含まれる {@link TablePath}
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
@@ -127,7 +122,6 @@ public class FromClause {
 
 	/**
 	 * 他の FROM 句と結合するためのジョイントを生成します。
-	 *
 	 * @param base このインスタンスとルートが同じで、結合する {@link Relationship}
 	 * @param columnNames base に属する結合するカラム
 	 * @return ジョイント
@@ -146,7 +140,6 @@ public class FromClause {
 
 	/**
 	 * 他の FROM 句と結合するためのジョイントを生成します。
-	 *
 	 * @param path このインスタンスのルートのツリーに含まれていて、結合する {@link Relationship}
 	 * @param columnNames base に属する結合するカラム
 	 * @return ジョイント
@@ -166,7 +159,6 @@ public class FromClause {
 
 	/**
 	 * この FROM 句を使用する SQL 文のルートとなる {@link Relationship} を返します。
-	 *
 	 * @return ルート
 	 */
 	public Relationship getRoot() {
@@ -253,7 +245,6 @@ public class FromClause {
 
 	/**
 	 * FROM 句同士の結合を表すクラスです。
-	 *
 	 * @author 千葉 哲嗣
 	 * @version $Name: v0_4_20090119a $
 	 */
@@ -270,7 +261,6 @@ public class FromClause {
 
 		/**
 		 * 他の FROM 句で生成したジョイントと、このジョイントを結合します。
-		 *
 		 * @param type 結合方式
 		 * @param another 他の FROM 句で生成したジョイント
 		 * @throws IllegalArgumentException another を生成した FROM 句とこの FROM 句のルートとなるテーブルが同じ場合

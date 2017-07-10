@@ -7,7 +7,6 @@ import org.blendee.sql.Binder;
 
 /**
  * {@link BPreparedStatement} に byte 配列を設定するための {@link Binder} です。
- *
  * @author 千葉 哲嗣
  */
 public final class ByteArrayBinder extends Binder {
@@ -16,7 +15,6 @@ public final class ByteArrayBinder extends Binder {
 
 	/**
 	 * パラメータの値を持つインスタンスを生成します。
-	 *
 	 * @param value このインスタンスの値
 	 */
 	public ByteArrayBinder(byte[] value) {
@@ -50,7 +48,6 @@ public final class ByteArrayBinder extends Binder {
 
 	/**
 	 * このインスタンスの持つ値を返します。
-	 *
 	 * @return 値
 	 */
 	public byte[] getByteArrayValue() {

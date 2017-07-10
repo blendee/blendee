@@ -26,7 +26,6 @@ import org.blendee.support.annotation.PseudoPK;
 
 /**
  * {@link VirtualSpace} を {@link Row} に付与されたアノテーションからロードするファクトリクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class AnnotationMetadataFactory implements MetadataFactory {
@@ -60,7 +59,6 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 
 	/**
 	 * アノテーションの調査をするクラスをロードするためのクラスローダーを返します。
-	 *
 	 * @return {@link ClassLoader}
 	 */
 	protected ClassLoader getClassLoader() {
@@ -71,7 +69,6 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 * アノテーションの調査をするクラスの対象かどうかを返します。
 	 * <br>
 	 * オーバーライドすることで条件を変えることができます。
-	 *
 	 * @param clazz 調査対象のクラス
 	 * @return アノテーションの調査をするクラスの対象かどうか
 	 */

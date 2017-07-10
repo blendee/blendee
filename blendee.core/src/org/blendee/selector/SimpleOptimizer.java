@@ -13,7 +13,6 @@ import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * 指定されたカラムで検索を行う {@link Optimizer} です。
- *
  * @author 千葉 哲嗣
  */
 public class SimpleOptimizer implements Optimizer {
@@ -28,7 +27,6 @@ public class SimpleOptimizer implements Optimizer {
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。
 	 * <br>
 	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
-	 *
 	 * @param path SELECT 句に使用するカラムを持つテーブル
 	 */
 	public SimpleOptimizer(TablePath path) {
@@ -58,7 +56,6 @@ public class SimpleOptimizer implements Optimizer {
 
 	/**
 	 * SELECT 句を構成するカラムを追加します。
-	 *
 	 * @param column SELECT 句に含めるカラム
 	 */
 	public void add(Column column) {

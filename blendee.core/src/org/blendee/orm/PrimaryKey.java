@@ -22,7 +22,6 @@ import org.blendee.sql.UpdateDMLBuilder;
 
 /**
  * {@link DataObject} 内の主キー部分を表し、主キーに関連した操作を行うことができるクラスです。
- *
  * @author 千葉 哲嗣
  * @see DataObject#getPrimaryKey()
  */
@@ -32,7 +31,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * 文字列からこのクラスのインスタンスを作り出す簡易コンストラクタです。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param keyMembers 主キーを構成する値
 	 * @return このクラスのインスタンス
@@ -45,7 +43,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * 数値からこのクラスのインスタンスを作り出す簡易コンストラクタです。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param keyMembers 主キーを構成する値
 	 * @return このクラスのインスタンス
@@ -58,7 +55,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param path 対象となるテーブル
 	 * @param bindables 値
 	 * @throws IllegalArgumentException path の主キーのカラム数と bindables の要素数が違う場合
@@ -92,7 +88,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * この主キーの名前を返します。
-	 *
 	 * @return この主キーの名前
 	 */
 	public String getName() {
@@ -101,7 +96,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * この主キーを参照している全外部キーのインスタンスを返します。
-	 *
 	 * @return この主キーを参照している全外部キーのインスタンス
 	 */
 	public ForeignKey[] getAllReferences() {
@@ -116,7 +110,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * この主キーを参照している外部キーのインスタンスを返します。
-	 *
 	 * @param referencesPath 参照しているテーブル
 	 * @param columnNames 参照している外部キーのカラム
 	 * @return この主キーを参照している外部キーのインスタンス
@@ -143,7 +136,6 @@ public class PrimaryKey extends PartialData {
 
 	/**
 	 * この主キーを参照している外部キーのインスタンスを返します。
-	 *
 	 * @param referencesPath 参照しているテーブル
 	 * @param foreignKeyName 参照している外部キーの名前
 	 * @return この主キーを参照している外部キーのインスタンス
@@ -167,7 +159,6 @@ public class PrimaryKey extends PartialData {
 	 * この主キーを参照している外部キーの値を、このインスタンスの値からパラメータのインスタンスの値に変更します。
 	 * <br>
 	 * to はこのインスタンスと同じテーブルの主キーである必要があります。
-	 *
 	 * @param to 変更する値
 	 */
 	public void switchReferences(PrimaryKey to) {

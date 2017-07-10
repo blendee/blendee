@@ -4,7 +4,6 @@ import org.blendee.jdbc.BlendeeException;
 
 /**
  * デッドロックが発生した場合に使用する例外です。
- *
  * @author 千葉 哲嗣
  */
 public class DeadlockDetectedException extends BlendeeException {
@@ -18,7 +17,6 @@ public class DeadlockDetectedException extends BlendeeException {
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public DeadlockDetectedException(String message) {

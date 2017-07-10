@@ -16,7 +16,6 @@ import org.blendee.jdbc.Configure;
 
 /**
  * Blendee が使用する {@link BResultSet} の標準実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 class ConcreteResultSet implements BResultSet {
@@ -367,7 +366,6 @@ class ConcreteResultSet implements BResultSet {
 
 	/**
 	 * このインスタンスを生成した statement を返します。
-	 *
 	 * @return このインスタンスを生成した statement
 	 */
 	public ConcretePreparedStatement getStatement() {

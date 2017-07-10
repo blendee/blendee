@@ -2,7 +2,6 @@ package org.blendee.jdbc.exception;
 
 /**
  * NOT NULL 制約に違反した場合の例外です。
- *
  * @author 千葉 哲嗣
  */
 public class CheckConstraintViolationException extends ConstraintViolationException {
@@ -16,7 +15,6 @@ public class CheckConstraintViolationException extends ConstraintViolationExcept
 
 	/**
 	 * メッセージのあるコンストラクタです。
-	 *
 	 * @param message 独自のメッセージ
 	 */
 	public CheckConstraintViolationException(String message) {

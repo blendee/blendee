@@ -12,7 +12,6 @@ import org.blendee.jdbc.Configure;
 
 /**
  * Blendee が使用する {@link BTransaction} の標準実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 public class JDBCTransaction extends BTransaction {
@@ -25,7 +24,6 @@ public class JDBCTransaction extends BTransaction {
 
 	/**
 	 * JDBC 接続を使用してインスタンスを生成します。
-	 *
 	 * @param jdbcConnection JDBC 接続
 	 */
 	public JDBCTransaction(Connection jdbcConnection) {

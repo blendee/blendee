@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 
 /**
  * {@link MessageFormat} を使用してコードを組み立てるデフォルトのフォーマッタです。
- *
  * @author 千葉 哲嗣
  */
 public class DefaultCodeFormatter implements CodeFormatter {

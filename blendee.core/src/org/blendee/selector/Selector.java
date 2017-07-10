@@ -20,7 +20,6 @@ import org.blendee.sql.WindowFunction;
 
 /**
  * {@link Optimizer} を使用して SELECT 句を定義し、データベースの検索を行うクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class Selector {
@@ -54,7 +53,6 @@ public class Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。
 	 * <br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param path ルートテーブル
 	 */
 	public Selector(TablePath path) {
@@ -63,7 +61,6 @@ public class Selector {
 
 	/**
 	 * {@link Optimizer} を使用するインスタンスを生成します。
-	 *
 	 * @param optimizer 使用する {@link Optimizer}
 	 */
 	public Selector(Optimizer optimizer) {
@@ -80,7 +77,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが使用するルートテーブルを返します。
-	 *
 	 * @return ルートテーブル
 	 */
 	public TablePath getTablePath() {
@@ -89,7 +85,6 @@ public class Selector {
 
 	/**
 	 * SELECT 文に WHERE 句を設定します。
-	 *
 	 * @param clause WHERE 句
 	 */
 	public void setCondition(Condition clause) {
@@ -98,7 +93,6 @@ public class Selector {
 
 	/**
 	 * SELECT 文に ORDER BY 句を設定します。
-	 *
 	 * @param clause ORDER BY 句
 	 */
 	public void setOrder(OrderByClause clause) {
@@ -107,7 +101,6 @@ public class Selector {
 
 	/**
 	 * {@link SQLAdjuster} を設定します。
-	 *
 	 * @param adjuster {@link SQLAdjuster}
 	 */
 	public void setSQLAdjuster(SQLAdjuster adjuster) {
@@ -116,7 +109,6 @@ public class Selector {
 
 	/**
 	 * SELECT 句にウィンドウ関数を追加します。
-	 *
 	 * @param function {@link WindowFunction}
 	 * @param alias 別名
 	 */
@@ -128,7 +120,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが生成する SELECT 文に FOR UPDATE 句を付加します。
-	 *
 	 * @param forUpdate FOR UPDATE 句を使用する場合、 true
 	 */
 	public void forUpdate(boolean forUpdate) {
@@ -139,7 +130,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが FOR UPDATE 句を使用するかどうか検査します。
-	 *
 	 * @return FOR UPDATE 句を使用する場合、 true
 	 */
 	public boolean isForUpdate() {
@@ -150,7 +140,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが生成する SELECT 文に NOWAIT 句を付加します。
-	 *
 	 * @param nowait NOWAIT 句を使用する場合、 true
 	 */
 	public void nowait(boolean nowait) {
@@ -161,7 +150,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが NOWAIT 句を使用するかどうか検査します。
-	 *
 	 * @return NOWAIT 句を使用する場合、 true
 	 */
 	public boolean isNowait() {
@@ -172,7 +160,6 @@ public class Selector {
 
 	/**
 	 * 検索を実行します。
-	 *
 	 * @return 検索結果
 	 */
 	public SelectedValuesIterator select() {
@@ -208,7 +195,6 @@ public class Selector {
 
 	/**
 	 * このインスタンスが使用する SELECT 句を返します。
-	 *
 	 * @return このインスタンスが使用する SELECT 句
 	 */
 	protected SelectClause getSelectClause() {

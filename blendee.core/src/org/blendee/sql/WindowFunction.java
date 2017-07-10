@@ -8,7 +8,6 @@ import org.blendee.internal.U;
 
 /**
  * SELECT 句で使用するウィンドウ関数を表すクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class WindowFunction {
@@ -20,14 +19,12 @@ public class WindowFunction {
 
 		/**
 		 * ファンクション部のテンプレートを返します。
-		 *
 		 * @return SQL 文のテンプレート
 		 */
 		String getTemplate();
 
 		/**
 		 * ファンクション部に含まれるカラムを返します。
-		 *
 		 * @return カラム
 		 */
 		Column[] getColumns();
@@ -100,7 +97,6 @@ public class WindowFunction {
 
 	/**
 	 * ウィンドウ関数を作成します。
-	 *
 	 * @param function ファンクション部
 	 * @param overClause {@link OverClause}
 	 */

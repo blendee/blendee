@@ -2,14 +2,12 @@ package org.blendee.sql;
 
 /**
  * SELECT 文の PARTITION BY 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class PartitionByClause extends SimpleQueryClause<PartitionByClause> {
 
 	/**
 	 * PARTITION BY 句に新しいカラムを追加します。
-	 *
 	 * @param columns 新しいカラム
 	 */
 	public void add(Column... columns) {
@@ -22,7 +20,6 @@ public class PartitionByClause extends SimpleQueryClause<PartitionByClause> {
 
 	/**
 	 * PARTITION BY 句に新しいカラムを追加します。
-	 *
 	 * @param columnNames 新しいカラム
 	 */
 	public void add(String... columnNames) {

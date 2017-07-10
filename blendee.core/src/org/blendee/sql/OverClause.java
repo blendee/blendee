@@ -7,7 +7,6 @@ import org.blendee.internal.U;
 
 /**
  * ウィンドウ関数で使用する OVER 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class OverClause {
@@ -18,7 +17,6 @@ public class OverClause {
 
 	/**
 	 * OVER 句を作成します。
-	 *
 	 * @param partitionByClause {@link PartitionByClause}
 	 * @param orderByClause {@link OrderByClause}
 	 */
@@ -31,7 +29,6 @@ public class OverClause {
 
 	/**
 	 * OVER 句を作成します。
-	 *
 	 * @param partitionByClause {@link PartitionByClause}
 	 */
 	public OverClause(PartitionByClause partitionByClause) {
@@ -41,7 +38,6 @@ public class OverClause {
 
 	/**
 	 * OVER 句を作成します。
-	 *
 	 * @param orderByClause {@link OrderByClause}
 	 */
 	public OverClause(OrderByClause orderByClause) {

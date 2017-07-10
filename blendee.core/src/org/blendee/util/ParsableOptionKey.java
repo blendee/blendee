@@ -8,9 +8,7 @@ import org.blendee.jdbc.OptionKey;
 
 /**
  * キー、値ともに String のオプションマップから値を取り出し、変換することが可能なオプションキークラスです。
- *
  * @author 千葉 哲嗣
- *
  * @param <T> オプション値の型
  */
 public class ParsableOptionKey<T> extends OptionKey<T> {
@@ -86,7 +84,6 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 
 	/**
 	 * 値を変換します。
-	 *
 	 * @param value 変換前の値
 	 * @return 返還後の値
 	 */

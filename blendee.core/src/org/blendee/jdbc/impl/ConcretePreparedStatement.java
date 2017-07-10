@@ -16,7 +16,6 @@ import org.blendee.jdbc.Configure;
 
 /**
  * Blendee が使用する {@link BPreparedStatement} の標準実装クラスです。
- *
  * @author 千葉 哲嗣
  */
 class ConcretePreparedStatement implements BPreparedStatement {
@@ -27,7 +26,6 @@ class ConcretePreparedStatement implements BPreparedStatement {
 
 	/**
 	 * インスタンスを生成します。
-	 *
 	 * @param statement {@link PreparedStatement}
 	 */
 	ConcretePreparedStatement(Configure config, PreparedStatement statement) {

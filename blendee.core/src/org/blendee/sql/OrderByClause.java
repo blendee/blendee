@@ -10,7 +10,6 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * SELECT 文の ORDER BY 句を表すクラスです。
- *
  * @author 千葉 哲嗣
  * @see QueryBuilder#setOrderByClause(OrderByClause)
  */
@@ -18,7 +17,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * ソートする方向を表す列挙型です。
-	 *
 	 * @author 千葉 哲嗣
 	 */
 	public enum Direction {
@@ -49,7 +47,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * パラメータで示されたテーブルの主キーで ORDER 句を生成します。
-	 *
 	 * @param path 対象テーブル
 	 * @param direction 方向
 	 * @return 生成されたインスタンス
@@ -66,7 +63,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * 順方向でこの ORDER 句にカラムを追加します。
-	 *
 	 * @param columns 追加するカラム
 	 */
 	public void asc(Column... columns) {
@@ -77,7 +73,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * 順方向でこの ORDER 句にカラムを追加します。
-	 *
 	 * @param columnNames 追加するカラム
 	 */
 	public void asc(String... columnNames) {
@@ -88,7 +83,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * 逆方向でこの ORDER 句にカラムを追加します。
-	 *
 	 * @param columns 追加するカラム
 	 */
 	public void desc(Column... columns) {
@@ -99,7 +93,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * 逆方向でこの ORDER 句にカラムを追加します。
-	 *
 	 * @param columnNames 追加するカラム
 	 */
 	public void desc(String... columnNames) {
@@ -110,7 +103,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * この ORDER 句にカラムを追加します。
-	 *
 	 * @param column 追加するカラム
 	 * @param direction 方向
 	 */
@@ -120,7 +112,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * この ORDER 句にカラムを追加します。
-	 *
 	 * @param columnName 追加するカラム
 	 * @param direction 方向
 	 */
@@ -130,7 +121,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * この ORDER 句にカラムを追加します。
-	 *
 	 * @param column 追加するカラム
 	 */
 	public void add(DirectionalColumn column) {
@@ -142,7 +132,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	/**
 	 * 現時点で登録済みのカラムを {@link DirectionalColumn} として返します。
-	 *
 	 * @return {@link DirectionalColumn}
 	 */
 	public DirectionalColumn[] getDirectionalColumns() {
@@ -165,7 +154,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 		/**
 		 * 唯一のコンストラクタです。
-		 *
 		 * @param column {@link Column}
 		 * @param direction {@link Direction}
 		 */
@@ -176,7 +164,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 		/**
 		 * カラムを返します。
-		 *
 		 * @return {@link Column}
 		 */
 		public Column getColumn() {
@@ -185,7 +172,6 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 		/**
 		 * ソート方向を返します。
-		 *
 		 * @return {@link Direction}
 		 */
 		public Direction getDirection() {

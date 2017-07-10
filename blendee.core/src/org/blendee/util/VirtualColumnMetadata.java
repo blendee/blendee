@@ -7,7 +7,6 @@ import org.blendee.jdbc.ColumnMetadata;
 
 /**
  * {@link ColumnMetadata} の簡易実装です。
- *
  * @author 千葉 哲嗣
  */
 public class VirtualColumnMetadata implements ColumnMetadata {
@@ -38,7 +37,6 @@ public class VirtualColumnMetadata implements ColumnMetadata {
 
 	/**
 	 * このクラスのインスタンスを生成します。
-	 *
 	 * @param schemaName スキーマ名
 	 * @param tableName テーブル名
 	 * @param name 名称
