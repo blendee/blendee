@@ -11,7 +11,6 @@ import org.blendee.sql.SubqueryException;
 
 /**
  * 自動生成される {@link Query} で使用するサブクエリを表すクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class Subquery {
@@ -21,12 +20,9 @@ public class Subquery {
 	private final Relationship joinPoint;
 
 	/**
-	 * サブクエリとして使用する {@link Query} からたどれる {@link QueryRelationship} をもとにインスタンスを生成します。
-	 * <br>
-	 * joinPoint の大元となるサブクエリには、あらかじめ条件を設定しておく必要があります。
-	 * <br>
+	 * サブクエリとして使用する {@link Query} からたどれる {@link QueryRelationship} をもとにインスタンスを生成します。<br>
+	 * joinPoint の大元となるサブクエリには、あらかじめ条件を設定しておく必要があります。<br>
 	 * メインクエリのテーブルが、サブクエリの参照ツリーに複数存在した場合に、明示的に結合ポイントを指定するためのコンストラクタです。
-	 *
 	 * @param joinPoint 条件設定済みサブクエリ
 	 */
 	public Subquery(QueryRelationship joinPoint) {
@@ -35,12 +31,9 @@ public class Subquery {
 	}
 
 	/**
-	 * サブクエリとして使用する {@link Query} をもとにインスタンスを生成します。
-	 * <br>
-	 * サブクエリには、あらかじめ条件を設定しておく必要があります。
-	 * <br>
+	 * サブクエリとして使用する {@link Query} をもとにインスタンスを生成します。<br>
+	 * サブクエリには、あらかじめ条件を設定しておく必要があります。<br>
 	 * メインクエリのテーブルは、サブクエリの参照をたどって到達できる唯一のテーブルである必要があります。
-	 *
 	 * @param subquery 条件設定済みサブクエリ
 	 */
 	public Subquery(Query subquery) {
@@ -50,7 +43,6 @@ public class Subquery {
 
 	/**
 	 * このサブクエリから、メインクエリで使用できる {@link Condition} を生成します。
-	 *
 	 * @param mainquery メインクエリ
 	 * @return {@link Condition} となったサブクエリ
 	 */

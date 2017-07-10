@@ -5,7 +5,6 @@ import org.blendee.orm.QueryOption;
 
 /**
  * ユニークキーを使用した検索にもかかわらず、検索結果が複数件あった場合にスローされる例外です。
- *
  * @author 千葉 哲嗣
  * @see Executor#willUnique()
  * @see Executor#willUnique(QueryOption...)

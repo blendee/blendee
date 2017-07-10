@@ -13,9 +13,7 @@ import org.blendee.sql.Relationship;
 
 /**
  * {@link Iterator} としての性質を持った {@link Row} の集合を表します。
- *
  * @author 千葉 哲嗣
- *
  * @param <O> One {@link Many} の要素
  * @param <M> Many {@link Many} の要素を一とした場合の、一対多の多側の型連鎖
  */
@@ -98,7 +96,6 @@ public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>
 
 	/**
 	 * Stream に変換します。
-	 *
 	 * @return {@link Stream}
 	 */
 	public Stream<One<O, M>> stream() {

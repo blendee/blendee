@@ -2,7 +2,6 @@ package org.blendee.support;
 
 /**
  * ORDER BY 句の検索候補を表すインターフェイスです。
- *
  * @author 千葉 哲嗣
  */
 @FunctionalInterface

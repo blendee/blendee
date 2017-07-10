@@ -2,9 +2,7 @@ package org.blendee.support;
 
 /**
  * {@link Query} に ORDER BY 句を設定するための関数型インターフェイスです。
- *
  * @author 千葉 哲嗣
- *
  * @param <R> 使用する {@link Query} のルートテーブル
  */
 @FunctionalInterface

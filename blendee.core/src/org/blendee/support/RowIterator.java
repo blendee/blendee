@@ -12,7 +12,6 @@ import org.blendee.orm.DataObjectIterator;
 
 /**
  * 自動生成される RowManager の実装が使用する Iterator クラスです。
- *
  * @author 千葉 哲嗣
  * @param <R> 要素
  */
@@ -23,7 +22,6 @@ public abstract class RowIterator<R extends Row>
 
 	/**
 	 * 唯一のコンストラクタです。
-	 * 
 	 * @param iterator 検索結果オブジェクト
 	 */
 	public RowIterator(DataObjectIterator iterator) {
@@ -37,7 +35,6 @@ public abstract class RowIterator<R extends Row>
 
 	/**
 	 * Stream に変換します。
-	 *
 	 * @return {@link Stream}
 	 */
 	public Stream<R> stream() {
@@ -51,7 +48,6 @@ public abstract class RowIterator<R extends Row>
 
 	/**
 	 * 一件の検索結果を返します。
-	 *
 	 * @return 検索結果一件
 	 */
 	protected DataObject nextDataObject() {
@@ -60,7 +56,6 @@ public abstract class RowIterator<R extends Row>
 
 	/**
 	 * 検索結果オブジェクトを返します。
-	 *
 	 * @return 検索結果オブジェクト
 	 */
 	protected DataObjectIterator getDataObjectIterator() {
@@ -74,7 +69,6 @@ public abstract class RowIterator<R extends Row>
 
 	/**
 	 * {@link #next()} を行った回数を返します。
-	 *
 	 * @return {@link #next()} を行った回数
 	 */
 	public int getCounter() {

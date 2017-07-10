@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 
 /**
  * 実在しない主キーをテーブル（ビュー）に付与するためのアノテーションです。
- *
  * @author 千葉 哲嗣
  */
 @Target({ TYPE })
@@ -17,14 +16,12 @@ public @interface PseudoPK {
 
 	/**
 	 * 主キー名
-	 *
 	 * @return 主キー名
 	 */
 	String name();
 
 	/**
 	 * 主キーを構成するカラム
-	 *
 	 * @return 主キーを構成するカラム
 	 */
 	String[] columns();

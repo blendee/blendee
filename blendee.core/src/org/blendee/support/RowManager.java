@@ -19,9 +19,8 @@ import org.blendee.sql.Updatable;
 
 /**
  * 自動生成される RowManager の共通の振る舞いを定義したインターフェイスです。
- *
  * @author 千葉 哲嗣
- * @param <T> Row
+ * @param <T> {@link Row}
  */
 public interface RowManager<T extends Row> {
 
@@ -38,8 +37,7 @@ public interface RowManager<T extends Row> {
 	};
 
 	/**
-	 * Row を生成するメソッドです。
-	 *
+	 * {@link Row} を生成するメソッドです。
 	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
 	 * @return 生成された {@link Row}
 	 */
@@ -47,14 +45,12 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * サブクラスで固有の {@link TablePath} を返します。
-	 *
 	 * @return 固有の {@link TablePath}
 	 */
 	TablePath getTablePath();
 
 	/**
-	 * 空の RowIterator を返します。
-	 *
+	 * 空の {@link RowIterator} を返します。
 	 * @param <T> {@link RowIterator} の要素型
 	 * @return {@link RowIterator}
 	 */
@@ -64,10 +60,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
@@ -77,10 +71,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
@@ -90,10 +82,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -102,10 +92,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -114,10 +102,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
@@ -127,10 +113,8 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * <br>
+	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
 	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 *
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -140,7 +124,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
@@ -162,7 +145,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
@@ -184,7 +166,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
@@ -195,7 +176,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
@@ -206,7 +186,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
@@ -227,7 +206,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 *
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
@@ -238,7 +216,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件にマッチする件数を返します。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @return パラメータの条件にマッチする件数
 	 */
@@ -247,8 +224,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT を行います。
-	 *
+	 * パラメータの {@link Row} の INSERT を行います。
 	 * @param row INSERT 対象
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
 	 */
@@ -257,8 +233,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT をバッチ実行します。
-	 *
+	 * パラメータの {@link Row} の INSERT をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param row INSERT 対象
 	 * @param adjuster INSERT 文を調整する {@link SQLAdjuster}
@@ -268,8 +243,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT を行います。
-	 *
+	 * パラメータの {@link Row} の INSERT を行います。
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
@@ -280,8 +254,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT をバッチ実行します。
-	 *
+	 * パラメータの {@link Row} の INSERT をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
@@ -293,8 +266,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT を行います。
-	 *
+	 * パラメータの {@link Row} の INSERT を行います。
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
@@ -306,8 +278,7 @@ public interface RowManager<T extends Row> {
 	}
 
 	/**
-	 * パラメータの Row の INSERT をバッチ実行します。
-	 *
+	 * パラメータの {@link Row} の INSERT をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
@@ -326,7 +297,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行を更新します。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @return 更新件数
@@ -337,7 +307,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param condition WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
@@ -348,7 +317,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行を更新します。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
@@ -360,7 +328,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param condition WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
@@ -372,7 +339,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行を削除します。
-	 *
 	 * @param condition WHERE 句となる条件
 	 * @return 削除件数
 	 */
@@ -382,7 +348,6 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の削除をバッチ実行します。
-	 *
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param condition WHERE 句となる条件
 	 */

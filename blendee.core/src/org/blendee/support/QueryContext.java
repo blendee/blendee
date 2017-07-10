@@ -1,10 +1,8 @@
 package org.blendee.support;
 
 /**
- * 自動生成される QueryRelationship クラスのインスタンスのタイプを表すインターフェイスです。
- * <br>
+ * 自動生成される QueryRelationship クラスのインスタンスのタイプを表すインターフェイスです。<br>
  * 内部使用を目的としています。
- *
  * @param <T> このインターフェイスの実装クラスに対応したカラムクラス
  * @author 千葉 哲嗣
  */
@@ -20,7 +18,6 @@ public interface QueryContext<T> {
 
 	/**
 	 * WHERE 句用
-	 *
 	 * @param <O> {@link Query} 実装
 	 * @return WHERE 句用 QueryContext
 	 */
@@ -30,7 +27,6 @@ public interface QueryContext<T> {
 
 	/**
 	 * このインスタンスに対応したカラムインスタンスを生成します。
-	 *
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 * @return カラムインスタンス

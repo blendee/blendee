@@ -4,10 +4,8 @@ import org.blendee.sql.Condition;
 import org.blendee.sql.ConditionFactory;
 
 /**
- * 自動生成される QueryRelationship クラスのインスタンスが WHERE 句用の場合、そのタイプを表す列挙型です。
- * <br>
+ * 自動生成される QueryRelationship クラスのインスタンスが WHERE 句用の場合、そのタイプを表す列挙型です。<br>
  * 内部使用を目的としています。
- *
  * @author 千葉 哲嗣
  */
 public enum QueryConditionContext {
@@ -58,10 +56,8 @@ public enum QueryConditionContext {
 	};
 
 	/**
-	 * 検索条件作成時に、自身のタイプに合った振る舞いをします。
-	 * <br>
+	 * 検索条件作成時に、自身のタイプに合った振る舞いをします。<br>
 	 * このメソッドは、内部使用を目的としていますので、直接使用しないでください。
-	 *
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param condition 新条件
 	 */

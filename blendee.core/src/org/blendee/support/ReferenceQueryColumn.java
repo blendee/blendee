@@ -9,10 +9,8 @@ import org.blendee.sql.ConditionFactory.Match;
 import org.blendee.sql.ConditionFactory.NullComparisonOperator;
 
 /**
- * WHERE 句に追加する新しい条件を生成するクラスです。
- * <br>
+ * WHERE 句に追加する新しい条件を生成するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
- *
  * @author 千葉 哲嗣
  */
 public class ReferenceQueryColumn {
@@ -21,7 +19,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 *
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
@@ -31,7 +28,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createCondition(Column, String)
 	 * @param value 検索条件の値
 	 * @return 検索条件
@@ -42,7 +38,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createCondition(Column, Bindable)
 	 * @param value 検索条件の値
 	 * @return 検索条件
@@ -53,7 +48,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createComparisonCondition(ComparisonOperator, Column, Bindable)
 	 * @param operator 比較演算子
 	 * @param value 検索条件の値
@@ -65,7 +59,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの LIKE 検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createLikeCondition(Match, Column, String)
 	 * @param type LIKE 検索のタイプ
 	 * @param value 検索条件の値
@@ -77,7 +70,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの IS NULL 検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createNullCondition(NullComparisonOperator, Column)
 	 * @return 検索条件
 	 */
@@ -87,7 +79,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの IS NOT NULL 検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createNullCondition(NullComparisonOperator, Column)
 	 * @return 検索条件
 	 */
@@ -97,7 +88,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このカラムの検索条件を生成します。
-	 *
 	 * @see ConditionFactory#createCondition(String, Column, Bindable)
 	 * @param clause WHERE 句の元になるテンプレート
 	 * @param value 検索条件の値
@@ -109,7 +99,6 @@ public class ReferenceQueryColumn {
 
 	/**
 	 * このインスタンスが表すカラムを {@link Column} として返します。
-	 *
 	 * @return カラムインスタンス
 	 */
 	public Column getColumn() {

@@ -8,7 +8,6 @@ import org.blendee.sql.Column;
 
 /**
  * {@link Query} に SELECT 句を設定するための関数型インターフェイスです。
- *
  * @author 千葉 哲嗣
  * @param <R> 使用する {@link Query} のルートテーブル
  */
@@ -32,7 +31,6 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 
 		/**
 		 * 内部処理用なので直接使用しないこと。
-		 *
 		 * @param column 追加カラム
 		 */
 		public void add(Column... column) {
@@ -41,7 +39,6 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 
 		/**
 		 * 内部処理用なので直接使用しないこと。
-		 *
 		 * @return {@link SelectOfferFunction} で設定された対象カラム
 		 */
 		public List<Column> get() {

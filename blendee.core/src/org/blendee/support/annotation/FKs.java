@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 
 /**
  * 外部キーアノテーションをまとめるためのアノテーションです。
- *
  * @author 千葉 哲嗣
  */
 @Target({ TYPE })
@@ -17,7 +16,6 @@ public @interface FKs {
 
 	/**
 	 * 外部キーアノテーション
-	 *
 	 * @return 外部キーアノテーション
 	 */
 	PseudoFK[] value();

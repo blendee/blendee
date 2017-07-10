@@ -4,7 +4,6 @@ import org.blendee.orm.QueryOption;
 
 /**
  * {@link QueryOption} を複数持つことができるコンテナクラスです。
- *
  * @author 千葉 哲嗣
  */
 public class QueryOptions {
@@ -17,10 +16,8 @@ public class QueryOptions {
 	private final QueryOption[] options;
 
 	/**
-	 * 短縮記述用メソッドです。
-	 * <br>
+	 * 短縮記述用メソッドです。<br>
 	 * import static した場合、短縮して記述できます。
-	 *
 	 * @param options 複数の {@link QueryOption}
 	 * @return instance
 	 */
@@ -34,7 +31,6 @@ public class QueryOptions {
 
 	/**
 	 * {@link QueryOption} を持つインスタンスを生成します。
-	 *
 	 * @param options 複数の {@link QueryOption}
 	 */
 	public QueryOptions(QueryOption... options) {
@@ -43,7 +39,6 @@ public class QueryOptions {
 
 	/**
 	 * 保持する {@link QueryOption} を返します。
-	 *
 	 * @return {@link QueryOption} の配列
 	 */
 	public QueryOption[] get() {
