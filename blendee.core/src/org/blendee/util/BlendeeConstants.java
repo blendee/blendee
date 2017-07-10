@@ -15,7 +15,7 @@ import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
- * Blendee の起動に必要となる情報のキーを定めた定数インターフェイスです
+ * Blendee の起動に必要となる情報のキーを定めた定数インターフェイスです。
  */
 public interface BlendeeConstants {
 
