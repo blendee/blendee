@@ -15,8 +15,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	private Class<? extends ColumnRepositoryFactory> columnRepositoryFactoryClass;
 
 	/**
-	 * {@link ColumnRepository} に対する新しく使用された要素の追加を行うかどうかを設定します。
-	 * <br>
+	 * {@link ColumnRepository} に対する新しく使用された要素の追加を行うかどうかを設定します。<br>
 	 * flag が true の場合、未使用の要素が使用されても {@link ColumnRepository} に新しい要素の追加は行われず、 {@link IllegalValueException} がスローされるようになります。
 	 * @param adds 新しく使用された要素の追加を行うかどうか
 	 */

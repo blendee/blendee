@@ -50,8 +50,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * データベースの一行を表すクラスです。
- * <br>
+ * データベースの一行を表すクラスです。<br>
  * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, QueryOption...)
@@ -462,8 +461,7 @@ public class DataObject
 	}
 
 	/**
-	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
-	 * <br>
+	 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。<br>
 	 * {@link #setValue(String, Bindable)} との違いとして、検索時の値と比較せずに、必ずセットされた値で更新を行います。
 	 * @param columnName 対象カラム
 	 * @param value 更新値
@@ -475,10 +473,8 @@ public class DataObject
 	}
 
 	/**
-	 * 現在保持している値を、全て検索時の値で強制的に更新したことにします。
-	 * <br>
-	 * 用途としては、このインスタンスを用いてデータをコピーしたい場合、検索してきた値をそのまま INSERT する場合が考えられます。
-	 * <br>
+	 * 現在保持している値を、全て検索時の値で強制的に更新したことにします。<br>
+	 * 用途としては、このインスタンスを用いてデータをコピーしたい場合、検索してきた値をそのまま INSERT する場合が考えられます。<br>
 	 * 既に値が置き換えられている場合、置き換えられた値はそのまま保持されています。
 	 */
 	public void setAllValuesForcibly() {
@@ -492,8 +488,7 @@ public class DataObject
 	}
 
 	/**
-	 * 指定されたカラムの更新された値を返します。
-	 * <br>
+	 * 指定されたカラムの更新された値を返します。<br>
 	 * 指定されたカラムが更新されていない場合、 null を返します。
 	 * @param columnName 対象カラム
 	 * @return 更新された値
@@ -630,8 +625,7 @@ public class DataObject
 	}
 
 	/**
-	 * 更新された値をデータベースに反映させるため、 UPDATE を実行します。
-	 * <br>
+	 * 更新された値をデータベースに反映させるため、 UPDATE を実行します。<br>
 	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
 	 * @return 更新された値が一件も無かった場合、 false
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
@@ -641,8 +635,7 @@ public class DataObject
 	}
 
 	/**
-	 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。
-	 * <br>
+	 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。<br>
 	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合

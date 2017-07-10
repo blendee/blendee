@@ -11,8 +11,7 @@ import java.util.function.Consumer;
 public interface BConnection extends Metadata {
 
 	/**
-	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。
-	 * <br>
+	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。<br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を使用することはできません。
 	 * @param sql プレースホルダを持たない SQL
 	 * @return {@link BStatement} のインスタンス
@@ -31,8 +30,7 @@ public interface BConnection extends Metadata {
 	}
 
 	/**
-	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。
-	 * <br>
+	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。<br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
@@ -56,8 +54,7 @@ public interface BConnection extends Metadata {
 	}
 
 	/**
-	 * SQL 文から {@link BPreparedStatement} のインスタンスを生成し、返します。
-	 * <br>
+	 * SQL 文から {@link BPreparedStatement} のインスタンスを生成し、返します。<br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
 	 * @param sql プレースホルダを持つ SQL
 	 * @return {@link BPreparedStatement} のインスタンス

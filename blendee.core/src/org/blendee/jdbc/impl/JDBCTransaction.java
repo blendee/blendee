@@ -57,8 +57,7 @@ public class JDBCTransaction extends BTransaction {
 	}
 
 	/**
-	 * 内部で使用する {@link Connection} を閉じます。
-	 * <br>
+	 * 内部で使用する {@link Connection} を閉じます。<br>
 	 * 何らかの理由で接続を後で閉じたい場合、このメソッドをオーバーライドしてください。
 	 */
 	@Override

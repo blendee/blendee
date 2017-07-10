@@ -102,8 +102,7 @@ public class Condition extends QueryClause {
 	}
 
 	/**
-	 * この条件を反転させます。
-	 * <br>
+	 * この条件を反転させます。<br>
 	 * 具体的には、条件の先頭に NOT を付加します。
 	 * @return このインスタンス
 	 */
@@ -139,8 +138,7 @@ public class Condition extends QueryClause {
 	}
 
 	/**
-	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。
-	 * <br>
+	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。<br>
 	 * 返される PreparedStatementComplementer は、パラメータの skipCount 分だけプレースホルダ位置をスキップして値をセットします。
 	 * @param skipCount 飛ばすプレースホルダ数
 	 * @return {@link PreparedStatementComplementer}

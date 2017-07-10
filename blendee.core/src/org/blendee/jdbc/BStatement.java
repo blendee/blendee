@@ -58,8 +58,7 @@ public interface BStatement extends AutoCloseable {
 	boolean getMoreResults();
 
 	/**
-	 * このステートメントを閉じます。
-	 * <br>
+	 * このステートメントを閉じます。<br>
 	 * このステートメントが生成した {@link BResultSet} も同時に閉じます。
 	 */
 	@Override

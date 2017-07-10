@@ -6,8 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * サービスを受けるクライアントとの入出力ストリームを保持します。
- * <br>
+ * サービスを受けるクライアントとの入出力ストリームを保持します。<br>
  * 内部使用ユーティリティクラス
  * @author 千葉 哲嗣
  */

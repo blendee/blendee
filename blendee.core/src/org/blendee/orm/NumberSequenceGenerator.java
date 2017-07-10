@@ -13,8 +13,7 @@ import org.blendee.sql.Condition;
 import org.blendee.sql.binder.StringBinder;
 
 /**
- * 数値による連続した値を払い出すクラスです。
- * <br>
+ * 数値による連続した値を払い出すクラスです。<br>
  * 払い出される値は数値ですが、定義された桁数にあわせて先頭がゼロ埋めされています。
  * @author 千葉 哲嗣
  */

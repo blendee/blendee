@@ -8,8 +8,7 @@ import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.TablePath;
 
 /**
- * {@link CrossReference} の簡易実装クラスです。
- * <br>
+ * {@link CrossReference} の簡易実装クラスです。<br>
  * このクラスは immutable であり、インスタンスの持つ値を変更することはできません。
  * @author 千葉 哲嗣
  */

@@ -51,8 +51,7 @@ public class BlendeeManager implements ManagementSubject {
 	}
 
 	/**
-	 * 新しいトランザクションを開始します。
-	 * <br>
+	 * 新しいトランザクションを開始します。<br>
 	 * トランザクションを開始することで現在のスレッドに接続がセットされ、 {@link BlendeeManager#getConnection()} で取得することができます。
 	 * @return 新しいトランザクション
 	 * @throws IllegalStateException 既にこのスレッド用にトランザクションが開始されている場合

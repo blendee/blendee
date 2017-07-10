@@ -27,8 +27,7 @@ public interface SQLAdjuster {
 	String adjustSQL(String sql);
 
 	/**
-	 * この SQLAdjuster が、句ごとに分割された SELECT 文を組立可能かを返却します。
-	 * <br>
+	 * この SQLAdjuster が、句ごとに分割された SELECT 文を組立可能かを返却します。<br>
 	 * このメソッドが使用されるのは、 {@link QueryBuilder} が SELECT 文を生成するときです。
 	 * @return 組立可能かどうか
 	 */
@@ -37,8 +36,7 @@ public interface SQLAdjuster {
 	};
 
 	/**
-	 * Blendee が生成した SELECT 文の各句を、カスタマイズした SELECT 文に組み立てます。
-	 * <br>
+	 * Blendee が生成した SELECT 文の各句を、カスタマイズした SELECT 文に組み立てます。<br>
 	 * {@link #canBuildQueryParts()} が true を返した時のみ、このメソッドが使用されます。
 	 * @param selectClause SELECT 句
 	 * @param fromClause FROM 句

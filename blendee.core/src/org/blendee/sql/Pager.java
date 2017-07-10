@@ -1,8 +1,7 @@
 package org.blendee.sql;
 
 /**
- * 検索結果をページ単位で取得するように SQL を加工する {@link SQLAdjuster} です。
- * <br>
+ * 検索結果をページ単位で取得するように SQL を加工する {@link SQLAdjuster} です。<br>
  * LIMIT 句を使用しているので、データベースの種類によっては使用できません。
  * @author 千葉 哲嗣
  */

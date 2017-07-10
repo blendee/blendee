@@ -66,8 +66,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	/**
-	 * アノテーションの調査をするクラスの対象かどうかを返します。
-	 * <br>
+	 * アノテーションの調査をするクラスの対象かどうかを返します。<br>
 	 * オーバーライドすることで条件を変えることができます。
 	 * @param clazz 調査対象のクラス
 	 * @return アノテーションの調査をするクラスの対象かどうか

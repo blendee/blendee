@@ -33,8 +33,7 @@ public class TablePath implements Comparable<TablePath> {
 	}
 
 	/**
-	 * テーブル名のみで、インスタンスを生成します。
-	 * <br>
+	 * テーブル名のみで、インスタンスを生成します。<br>
 	 * スキーマ名を省略しているので、一意に決定できるように Blendee に設定されるスキーマは一つでなければなりません。
 	 * @param tableName テーブル名
 	 * @throws IllegalStateException スキーマ名が複数設定されている場合

@@ -16,8 +16,7 @@ import org.blendee.sql.Updatable;
 public interface SequenceGenerator {
 
 	/**
-	 * この連番が従う上位グループのカラム名を返します。
-	 * <br>
+	 * この連番が従う上位グループのカラム名を返します。<br>
 	 * 上位グループとは、連番の最大値を求める際に条件として使用されるカラムのことです。
 	 * @return 上位グループのカラム名
 	 */

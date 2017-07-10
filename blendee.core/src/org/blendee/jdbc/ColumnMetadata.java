@@ -28,8 +28,7 @@ public interface ColumnMetadata {
 	String getName();
 
 	/**
-	 * {@link DatabaseMetaData#getColumns(String, String, String, String)} DATA_TYPE を参照のこと。
-	 * <br>
+	 * {@link DatabaseMetaData#getColumns(String, String, String, String)} DATA_TYPE を参照のこと。<br>
 	 * {@link Types} を参照のこと。
 	 * @return このカラムの型
 	 */

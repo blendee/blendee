@@ -340,8 +340,7 @@ public class FromClause {
 	}
 
 	/**
-	 * Immutable
-	 * <br>
+	 * Immutable<br>
 	 * selfColumns が外部から変更される可能性がある場合、 Immutable が守れなくなるので注意すること。
 	 */
 	private static class JointContainer {

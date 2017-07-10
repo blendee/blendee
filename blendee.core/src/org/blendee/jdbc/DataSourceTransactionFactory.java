@@ -9,8 +9,7 @@ import javax.sql.DataSource;
 import org.blendee.jdbc.impl.JDBCTransaction;
 
 /**
- * {@link DataSource} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。
- * <br>
+ * {@link DataSource} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。<br>
  * データソースは "jdbc/datasource" で定義してください。
  * @author 千葉 哲嗣
  */

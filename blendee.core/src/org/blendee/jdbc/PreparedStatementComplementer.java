@@ -9,8 +9,7 @@ package org.blendee.jdbc;
 public interface PreparedStatementComplementer {
 
 	/**
-	 * プレースホルダに値を設定します。
-	 * <br>
+	 * プレースホルダに値を設定します。<br>
 	 * 全てのプレースホルダを埋めないことも可能なので、そのために自身が設定した値の数を返し、Blendee が次のインスタンスに委譲します。
 	 * @param statement 対象となるステートメント
 	 * @return 自身が設定した値の数

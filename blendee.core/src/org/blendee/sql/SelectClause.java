@@ -85,8 +85,7 @@ public class SelectClause extends SimpleQueryClause<SelectClause> {
 	}
 
 	/**
-	 * この SELECT 句に新しいカラムを追加します。
-	 * <br>
+	 * この SELECT 句に新しいカラムを追加します。<br>
 	 * ただし項目名のエイリアスは、生成される SQL 文には追加されません。
 	 * @param columnNames 追加するカラム
 	 */

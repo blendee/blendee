@@ -45,8 +45,7 @@ public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map
 	}
 
 	/**
-	 * {@link BResultSet} を一つ進め、一行の値を項目名がキーとなる {@link Map} として返します。
-	 * <br>
+	 * {@link BResultSet} を一つ進め、一行の値を項目名がキーとなる {@link Map} として返します。<br>
 	 * 返される {@link Map} に対する変更操作は行えません。
 	 * @return 一行の値をもつ {@link Map}
 	 */

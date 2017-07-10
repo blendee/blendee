@@ -32,8 +32,7 @@ import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
 
 /**
- * データベースに対する CRUD 処理を簡易に行うためのユーティリティクラスです。
- * <br>
+ * データベースに対する CRUD 処理を簡易に行うためのユーティリティクラスです。<br>
  * このクラスのインスタンスで検索を行うと、使用した SQL 文をパラメータで渡す {@link Optimizer} をキーとしてキャッシュします。
  * @author 千葉 哲嗣
  */

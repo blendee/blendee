@@ -24,8 +24,7 @@ public class RelationshipFactory implements ManagementSubject {
 	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
 	/**
-	 * このクラスのコンストラクタです。
-	 * <br>
+	 * このクラスのコンストラクタです。<br>
 	 * {@link BlendeeContext} 管理対象です。
 	 * @see BlendeeContext#get(Class)
 	 */

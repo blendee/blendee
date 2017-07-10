@@ -3,8 +3,7 @@ package org.blendee.jdbc;
 import java.sql.SQLException;
 
 /**
- * {@link SQLException} を {@link BlendeeException} 及びそのサブクラスに変換します。
- * <br>
+ * {@link SQLException} を {@link BlendeeException} 及びそのサブクラスに変換します。<br>
  * {@link SQLException} は、 {@link Exception} のサブクラスなので、 {@link RuntimeException} のサブクラスである {@link BlendeeException} に変換します。
  * @author 千葉 哲嗣
  * @see Initializer#setErrorConverterClass(Class)

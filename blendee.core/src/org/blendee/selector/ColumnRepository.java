@@ -12,8 +12,7 @@ import org.blendee.sql.Column;
 public interface ColumnRepository extends Transaction {
 
 	/**
-	 * ID に対応するテーブルを返します。
-	 * <br>
+	 * ID に対応するテーブルを返します。<br>
 	 * リポジトリに ID が存在しない場合は null を返します。
 	 * @param id ID
 	 * @return 対応するテーブル
@@ -21,8 +20,7 @@ public interface ColumnRepository extends Transaction {
 	TablePath getTablePath(String id);
 
 	/**
-	 * ID と、それに対応するテーブルをリポジトリに登録します。
-	 * <br>
+	 * ID と、それに対応するテーブルをリポジトリに登録します。<br>
 	 * ID を探すヒントとして、使用しているクラスを渡すことができます。
 	 * @param id ID
 	 * @param path 対応するテーブル
@@ -37,8 +35,7 @@ public interface ColumnRepository extends Transaction {
 	void remove(String id);
 
 	/**
-	 * ID の文字列を、新しいものに変更します。
-	 * <br>
+	 * ID の文字列を、新しいものに変更します。<br>
 	 * ID を探すヒントとして、使用しているクラスを渡すことができます。
 	 * @param oldId 旧 ID
 	 * @param newId 新 ID
@@ -54,10 +51,8 @@ public interface ColumnRepository extends Transaction {
 	Column[] getColumns(String id);
 
 	/**
-	 * パラメータの ID に新たなカラムを追加します。
-	 * <br>
-	 * ID がまだ登録されていない場合、新たに追加されます。
-	 * <br>
+	 * パラメータの ID に新たなカラムを追加します。<br>
+	 * ID がまだ登録されていない場合、新たに追加されます。<br>
 	 * ID を探すヒントとして、使用しているクラスを渡すことができます。
 	 * @param id ID
 	 * @param column 新しいカラム

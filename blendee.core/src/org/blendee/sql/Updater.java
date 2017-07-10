@@ -36,8 +36,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * SQL 文に挿入する DB 格納可能な値を追加します。
-	 * <br>
+	 * SQL 文に挿入する DB 格納可能な値を追加します。<br>
 	 * 追加された順に SQL 文に反映されます。
 	 * @param updatable DB格納可能な値
 	 */
@@ -46,8 +45,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。
-	 * <br>
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
 	 * 追加された順に SQL 文に反映されます。
 	 * @param columnName テーブルの項目名
 	 * @param bindable バインド可能な値
@@ -58,8 +56,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * SQL 文に挿入する項目名と SQL の断片を追加します。
-	 * <br>
+	 * SQL 文に挿入する項目名と SQL の断片を追加します。<br>
 	 * 追加された順に SQL 文に反映されます。
 	 * @param columnName テーブルの項目名
 	 * @param fragment SQLの断片、たとえば SYSDATE など
@@ -70,8 +67,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * SQL 文に挿入する項目名と、プレースホルダをもつ SQL の断片を追加します。
-	 * <br>
+	 * SQL 文に挿入する項目名と、プレースホルダをもつ SQL の断片を追加します。<br>
 	 * 追加された順に SQL 文に反映されます。
 	 * @param columnName テーブルの項目名
 	 * @param fragment SQLの断片、たとえば TO_CHAR(?,'FM099') など

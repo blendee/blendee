@@ -8,16 +8,14 @@ package org.blendee.jdbc;
 public interface BatchStatement {
 
 	/**
-	 * バッチ更新を行う SQL 文を追加します。
-	 * <br>
+	 * バッチ更新を行う SQL 文を追加します。<br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を使用することはできません。
 	 * @param sql SQL更新文
 	 */
 	void addBatch(String sql);
 
 	/**
-	 * バッチ更新を行う SQL 文を追加します。
-	 * <br>
+	 * バッチ更新を行う SQL 文を追加します。<br>
 	 * パラメータで指定される SQL 文にはプレースホルダ '?' を含めることが可能です。
 	 * @param sql SQL更新文
 	 * @param complementer プレースホルダに結びつける値を持つ
@@ -31,8 +29,7 @@ public interface BatchStatement {
 	int[] executeBatch();
 
 	/**
-	 * SQL 文を溜める閾値を設定します。
-	 * <br>
+	 * SQL 文を溜める閾値を設定します。<br>
 	 * ここで設定された閾値を超える SQL 文が追加されると、内部で {@link #executeBatch()} が実行されます。
 	 * @param threshold SQL 文の閾値
 	 */

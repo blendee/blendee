@@ -3,8 +3,7 @@ package org.blendee.sql;
 import org.blendee.jdbc.BPreparedStatement;
 
 /**
- * {@link BPreparedStatement} に単一の値を設定するクラスです。
- * <br>
+ * {@link BPreparedStatement} に単一の値を設定するクラスです。<br>
  * サブクラスは、 {@link BPreparedStatement} に、具体的にどの型で値を設定するかを知っている必要があります。
  * @author 千葉 哲嗣
  */
@@ -16,8 +15,7 @@ public abstract class Binder implements Bindable {
 	public static final Binder[] EMPTY_ARRAY = {};
 
 	/**
-	 * {@link BPreparedStatement} にこのインスタンスの持つ値を設定します。
-	 * <br>
+	 * {@link BPreparedStatement} にこのインスタンスの持つ値を設定します。<br>
 	 * 渡されたパラメータの index でステートメントに値を設定する必要があります
 	 * @param index ステートメントに値を設定する位置
 	 * @param statement 対象となるステートメント
@@ -61,16 +59,14 @@ public abstract class Binder implements Bindable {
 	public abstract boolean canEvalValue();
 
 	/**
-	 * このインスタンスの持つ値を返します。
-	 * <br>
+	 * このインスタンスの持つ値を返します。<br>
 	 * 返される値の状態が変更可能な場合、状態を変更したとしてもこのインスタンスの状態が変わってしまってはいけません。
 	 * @return このインスタンスの持つ値（の複製）
 	 */
 	public abstract Object getValue();
 
 	/**
-	 * このインスタンスの持つ値を返します。
-	 * <br>
+	 * このインスタンスの持つ値を返します。<br>
 	 * このメソッドが返す値は {@link Object#equals(Object)} でしか使用されないので、インスタンスが持つ値そのものを返すようにしてください。
 	 * @return このインスタンスの持つ値
 	 */

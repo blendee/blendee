@@ -8,8 +8,7 @@ import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.DataTypeConverter;
 
 /**
- * {@link Relationship} に含まれるカラムを表すクラスです。
- * <br>
+ * {@link Relationship} に含まれるカラムを表すクラスです。<br>
  * データベース上では同じカラムでも、カラムが属する {@link Relationship} が違う場合、それらは別物として扱われます。
  * @author 千葉 哲嗣
  * @see Relationship#getColumn(String)

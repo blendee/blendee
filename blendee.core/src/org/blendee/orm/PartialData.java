@@ -76,8 +76,7 @@ public class PartialData implements Searchable, Updatable {
 	}
 
 	/**
-	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。
-	 * <br>
+	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルは、このインスタンスが持つテーブルになります。
 	 * @return 検索条件
 	 */
@@ -86,8 +85,7 @@ public class PartialData implements Searchable, Updatable {
 	}
 
 	/**
-	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。
-	 * <br>
+	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルはパラメータとして受け取ります。
 	 * @param relationship 検索条件のテーブル
 	 * @return 検索条件

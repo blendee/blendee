@@ -50,8 +50,7 @@ public class Selector {
 	private boolean nowait = false;
 
 	/**
-	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。
-	 * <br>
+	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
 	 */

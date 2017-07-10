@@ -12,8 +12,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
- * ユーザーのホームディレクトリに 情報を格納するためのツールです。
- * <br>
+ * ユーザーのホームディレクトリに 情報を格納するためのツールです。<br>
  * 内部使用ユーティリティクラス
  * @author 千葉 哲嗣
  */

@@ -24,8 +24,7 @@ public class SimpleOptimizer implements Optimizer {
 	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	/**
-	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。
-	 * <br>
+	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。<br>
 	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
 	 * @param path SELECT 句に使用するカラムを持つテーブル
 	 */

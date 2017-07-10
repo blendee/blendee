@@ -6,8 +6,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.TablePath;
 
 /**
- * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。
- * <br>
+ * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。<br>
  * ただし、このクラスのインスタンスは一旦 {@link QueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #prepareForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
  * @author 千葉 哲嗣
  */
@@ -35,8 +34,7 @@ public class PhantomColumn extends Column {
 	}
 
 	/**
-	 * このクラスのインスタンスを生成します。
-	 * <br>
+	 * このクラスのインスタンスを生成します。<br>
 	 * 使用される {@link TablePath} は後に検索対象となる {@link Relationship} が持つものになります。
 	 * @param name カラム名
 	 */

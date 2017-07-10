@@ -13,8 +13,7 @@ import org.blendee.sql.SelectClause;
 public class SynchronizedSelector extends Selector {
 
 	/**
-	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。
-	 * <br>
+	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
 	 */

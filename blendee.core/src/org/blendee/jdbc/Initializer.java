@@ -41,8 +41,7 @@ public final class Initializer {
 	private boolean freeze = false;
 
 	/**
-	 * Blendee が使用する {@link TransactionFactory} を設定します。
-	 * <br>
+	 * Blendee が使用する {@link TransactionFactory} を設定します。<br>
 	 * {@link TransactionFactory} は、必ず設定する必要があります。
 	 * @param transactionFactoryClass {@link TransactionFactory} を実装したクラス
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
@@ -91,8 +90,7 @@ public final class Initializer {
 	}
 
 	/**
-	 * Blendee が使用するスキーマ名を登録します。
-	 * <br>
+	 * Blendee が使用するスキーマ名を登録します。<br>
 	 * Blendee を動作させるには、最低でも一つスキーマ名が必要です。
 	 * @param schemaName 使用するスキーマ名
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
@@ -127,8 +125,7 @@ public final class Initializer {
 	}
 
 	/**
-	 * Blendee が生成する SQL 文の出力する先を設定します。
-	 * <br>
+	 * Blendee が生成する SQL 文の出力する先を設定します。<br>
 	 * なにも設定されない場合は {@link System#out} が使用されます。
 	 * @param logOutput SQL文の出力する先
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合

@@ -18,8 +18,7 @@ public class BlendeeContext {
 		.withInitial(() -> new WeakReference<>(strategy));
 
 	/**
-	 * 管理されているインスタンスを取得します。
-	 * <br>
+	 * 管理されているインスタンスを取得します。<br>
 	 * まだインスタンスが作成されていない場合、新しく作成されます。
 	 * @param <T> 取得するインスタンスの型
 	 * @param clazz 取得するインスタンスのクラス
@@ -41,8 +40,7 @@ public class BlendeeContext {
 	}
 
 	/**
-	 * インスタンスの管理方法を変更します。
-	 * <br>
+	 * インスタンスの管理方法を変更します。<br>
 	 * {@link SimpleContextStrategy} が使用されます。
 	 */
 	public static void newStrategy() {
@@ -62,8 +60,7 @@ public class BlendeeContext {
 	}
 
 	/**
-	 * インスタンスの管理方法を変更した場合、ガベージコレクションの状態によってはすぐに反映されていない可能性があります。
-	 * <br>
+	 * インスタンスの管理方法を変更した場合、ガベージコレクションの状態によってはすぐに反映されていない可能性があります。<br>
 	 * {@link ContextStrategy} はスレッド毎に紐づけられているので、 このスレッドが持つ {@link ContextStrategy} を、最新のものに更新します。
 	 */
 	public static void updateStrategyOnThisThread() {
@@ -73,8 +70,7 @@ public class BlendeeContext {
 	}
 
 	/**
-	 * {@link ContextStrategy} を、最新のものに更新します。
-	 * <br>
+	 * {@link ContextStrategy} を、最新のものに更新します。<br>
 	 * この処理の実装は実験的なものなので、将来変更される可能性があります。
 	 */
 	public static void updateStrategy() {

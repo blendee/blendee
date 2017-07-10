@@ -18,8 +18,7 @@ import org.blendee.jdbc.MetadataUtilities;
 import org.blendee.jdbc.TablePath;
 
 /**
- * 検索対象となるテーブルと、そのテーブルが参照しているテーブルのツリーを構成する要素を表すクラスです。
- * <br>
+ * 検索対象となるテーブルと、そのテーブルが参照しているテーブルのツリーを構成する要素を表すクラスです。<br>
  * データベース上では同じテーブルとなる Relationship どうしでも、ルートとなる Relationship が異なる場合、それらは別物として扱われます。
  * @author 千葉 哲嗣
  */
@@ -290,8 +289,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	}
 
 	/**
-	 * この Relationship が含まれるツリーに、パラメータのテーブルがある場合、それに対応する Relationship を返します。
-	 * <br>
+	 * この Relationship が含まれるツリーに、パラメータのテーブルがある場合、それに対応する Relationship を返します。<br>
 	 * このツリーに path に対応する Relationship がない場合は、長さ 0 の配列、複数件ある場合は、全ての Relationship を持つ配列を返します。
 	 * @param path 変換したい {@link TablePath}
 	 * @return 変換された {@link Relationship} の配列
