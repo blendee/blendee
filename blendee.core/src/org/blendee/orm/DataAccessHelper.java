@@ -269,8 +269,7 @@ public class DataAccessHelper {
 	}
 
 	/**
-	 * 連続値を持つテーブルに対して INSERT をバッチ実行します。
-	 * <p>
+	 * 連続値を持つテーブルに対して INSERT をバッチ実行します。<br>
 	 * バッチ実行では、実際に値が登録されるのは後になるので、そのことを考慮した {@link SequenceGenerator} を用意する必要があります。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
