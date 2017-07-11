@@ -95,7 +95,8 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		boolean required,
 		IJavaProject project,
 		Class<?> superInterface,
-		String className) throws JavaProjectException {
+		String className)
+		throws JavaProjectException {
 		if (className == null || className.length() == 0) {
 			if (!required) return;
 			throw new JavaProjectException(superInterface.getName() + " の実装クラス名が空です");
@@ -228,7 +229,9 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	public void storePersistentProperties(
 		IJavaProject project,
-		Properties properties) throws JavaProjectException {
+		Properties properties)
+		throws JavaProjectException {
+		currentProject = project;
 		try (OutputStream output = new BufferedOutputStream(
 			new FileOutputStream(getPropertiesFile(project)))) {
 			properties.store(output, "");
@@ -356,8 +359,9 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 		init.put(
 			BlendeeConstants.ANNOTATED_ROW_PACKAGES,
-			splitByBlankAndRemoveEmptyString(properties.getProperty(
-				Constants.OUTPUT_PACKAGE_NAMES)));
+			splitByBlankAndRemoveEmptyString(
+				properties.getProperty(
+					Constants.OUTPUT_PACKAGE_NAMES)));
 
 		String[] schemaNameArray = splitByBlankAndRemoveEmptyString(
 			properties.getProperty(Constants.SCHEMA_NAMES));
@@ -565,7 +569,8 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	private static IType[] resolveType(
 		IJavaProject project,
 		IType base,
-		String className) throws JavaModelException {
+		String className)
+		throws JavaModelException {
 		if (base.isBinary()) {
 			return new IType[] { project.findType(className) };
 		}
