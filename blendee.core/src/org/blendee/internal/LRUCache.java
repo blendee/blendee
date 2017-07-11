@@ -105,6 +105,7 @@ public class LRUCache<K, V> implements Cache<K, V> {
 			this.value = value;
 		}
 
+		@SuppressWarnings("unlikely-arg-type")
 		@Override
 		public void remove() {
 			super.remove();

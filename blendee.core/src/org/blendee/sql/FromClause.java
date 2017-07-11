@@ -89,6 +89,7 @@ public class FromClause {
 	 * @param relationship 同一ルート {@link Relationship}
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	public void join(JoinType type, Relationship relationship) {
 		if (localRelationships.contains(relationship)) return;
 		if (!root.equals(relationship.getRoot())) throw new IllegalStateException("同一ルートではないので、結合できません");
@@ -108,6 +109,7 @@ public class FromClause {
 	 * @throws IllegalStateException 結合できないテーブルを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	public void join(JoinType type, TablePath path) {
 		Relationship relationship = RelationshipFactory.convert(root, path);
 		if (localRelationships.contains(relationship)) return;
