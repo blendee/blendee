@@ -207,7 +207,8 @@ public class DataAccessHelper {
 	 */
 	public static void startThreadBatch(
 		BatchStatement batchStatement,
-		ThreadBatchCallback callback) throws Exception {
+		ThreadBatchCallback callback)
+		throws Exception {
 		threadStatement.set(new BatchStatementFacade(batchStatement));
 		try {
 			callback.execute();

@@ -41,32 +41,33 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 		repositoryFile = config
 			.getOption(BlendeeConstants.COLUMN_REPOSITORY_FILE)
 			.map(file -> new File(file))
-			.orElseGet(() -> config
-				.getOption(BlendeeConstants.CAN_ADD_NEW_ENTRIES)
-				.filter(flag -> flag)
-				.map(flag -> {
-					HomeStorage storage = config.getOption(BlendeeConstants.HOME_STORAGE_IDENTIFIER)
-						.map(i -> new HomeStorage(i))
-						.orElse(new HomeStorage());
+			.orElseGet(
+				() -> config
+					.getOption(BlendeeConstants.CAN_ADD_NEW_ENTRIES)
+					.filter(flag -> flag)
+					.map(flag -> {
+						HomeStorage storage = config.getOption(BlendeeConstants.HOME_STORAGE_IDENTIFIER)
+							.map(i -> new HomeStorage(i))
+							.orElse(new HomeStorage());
 
-					String repositoryFileString = storage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE_KEY);
+						String repositoryFileString = storage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE_KEY);
 
-					if (!U.isAvailable(repositoryFileString)) throw new IllegalStateException(
-						storage.getPropertiesFile().toAbsolutePath()
-							+ " に、キー "
-							+ COLUMN_REPOSITORY_FILE_KEY
-							+ " の値が存在しません");
+						if (!U.isAvailable(repositoryFileString)) throw new IllegalStateException(
+							storage.getPropertiesFile().toAbsolutePath()
+								+ " に、キー "
+								+ COLUMN_REPOSITORY_FILE_KEY
+								+ " の値が存在しません");
 
-					File repositoryFile = new File(repositoryFileString);
-					if (!repositoryFile.exists()) throw new IllegalStateException(
-						storage.getPropertiesFile().toAbsolutePath()
-							+ " 内に記述されている "
-							+ repositoryFileString
-							+ " は存在しません");
+						File repositoryFile = new File(repositoryFileString);
+						if (!repositoryFile.exists()) throw new IllegalStateException(
+							storage.getPropertiesFile().toAbsolutePath()
+								+ " 内に記述されている "
+								+ repositoryFileString
+								+ " は存在しません");
 
-					return repositoryFile;
-				})
-				.orElseGet(() -> U.getResourceAsFile("/" + DEFAULT_COLUMN_REPOSITORY_FILE)));
+						return repositoryFile;
+					})
+					.orElseGet(() -> U.getResourceAsFile("/" + DEFAULT_COLUMN_REPOSITORY_FILE)));
 
 		if (repositoryFile == null) throw new IllegalStateException("リポジトリファイルが存在しません");
 	}

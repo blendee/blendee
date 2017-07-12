@@ -26,7 +26,8 @@ class JavaProjectClassLoader extends ClassLoader {
 
 	JavaProjectClassLoader(
 		ClassLoader parent,
-		IJavaProject project) throws JavaModelException {
+		IJavaProject project)
+		throws JavaModelException {
 		super(parent);
 		List<ClassLoader> allList = new LinkedList<>();
 		List<ClassLoader> exportedList = new LinkedList<>();
@@ -109,7 +110,8 @@ class JavaProjectClassLoader extends ClassLoader {
 	private ClassLoader switchClassLoader(
 		IClasspathEntry entry,
 		IJavaProject project,
-		ClassLoader defaultOutputClassLoader) throws JavaModelException {
+		ClassLoader defaultOutputClassLoader)
+		throws JavaModelException {
 		switch (entry.getEntryKind()) {
 		case IClasspathEntry.CPE_LIBRARY:
 			return createClassLoader(getAbsolutePath(project, entry.getPath()));

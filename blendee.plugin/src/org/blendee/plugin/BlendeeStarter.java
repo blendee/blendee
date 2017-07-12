@@ -18,7 +18,8 @@ public class BlendeeStarter {
 	 */
 	public static void start(
 		JavaProjectClassLoader loader,
-		Map<OptionKey<?>, ?> initValues) throws Exception {
+		Map<OptionKey<?>, ?> initValues)
+		throws Exception {
 		PluginDriverTransactionFactory.setClassLoader(loader);
 		PluginAnnotationMetadataFactory.setClassLoader(loader);
 

@@ -69,11 +69,12 @@ public class QueryAssist implements IJavaCompletionProposalComputer {
 			boolean result = stream(type.getSuperInterfaceNames())
 				.filter(e -> e.equals(Query.class.getSimpleName()))
 				.findFirst()
-				.map(e -> stream(resolve(type, e))
-					.findFirst()
-					.map(resolved -> String.join(".", resolved))
-					.map(joined -> joined.equals(Query.class.getName()))
-					.orElse(false))
+				.map(
+					e -> stream(resolve(type, e))
+						.findFirst()
+						.map(resolved -> String.join(".", resolved))
+						.map(joined -> joined.equals(Query.class.getName()))
+						.orElse(false))
 				.orElse(false);
 
 			if (!result) return proposalList;

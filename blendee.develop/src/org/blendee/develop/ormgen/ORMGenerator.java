@@ -318,17 +318,18 @@ public class ORMGenerator {
 					}
 				}
 
-				list.add(codeFormatter.formatRowPropertyAccessorPart(
-					rowPropertyAccessorPartTemplate,
-					toUpperCaseFirstLetter(column.getName()),
-					column.getName(),
-					classNameString,
-					buildColumnComment(column),
-					nullCheck,
-					returnType,
-					returnPrefix,
-					returnSuffix,
-					Boolean.toString(returnOptional)));
+				list.add(
+					codeFormatter.formatRowPropertyAccessorPart(
+						rowPropertyAccessorPartTemplate,
+						toUpperCaseFirstLetter(column.getName()),
+						column.getName(),
+						classNameString,
+						buildColumnComment(column),
+						nullCheck,
+						returnType,
+						returnPrefix,
+						returnSuffix,
+						Boolean.toString(returnOptional)));
 			}
 
 			propertyAccessorPart = String.join("", list);
@@ -346,13 +347,14 @@ public class ORMGenerator {
 				String childTableName = child.getTablePath().getTableName();
 				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
 
-				list.add(codeFormatter.formatRowRelationshipPart(
-					rowRelationshipPartTemplate,
-					child.getTablePath().getTableName(),
-					foreignKey,
-					String.join(", ", crossReference.getForeignKeyColumnNames()),
-					toUpperCaseFirstLetter(methodName),
-					tableName));
+				list.add(
+					codeFormatter.formatRowRelationshipPart(
+						rowRelationshipPartTemplate,
+						child.getTablePath().getTableName(),
+						foreignKey,
+						String.join(", ", crossReference.getForeignKeyColumnNames()),
+						toUpperCaseFirstLetter(methodName),
+						tableName));
 			}
 
 			if (list.size() > 0) importPart.add(buildImportPart(RowRelationship.class));
@@ -388,15 +390,17 @@ public class ORMGenerator {
 			List<String> list1 = new LinkedList<>();
 			List<String> list2 = new LinkedList<>();
 			for (Column column : relation.getColumns()) {
-				list1.add(codeFormatter.formatQueryColumnPart1(
-					queryColumnPart1Template,
-					column.getName()));
+				list1.add(
+					codeFormatter.formatQueryColumnPart1(
+						queryColumnPart1Template,
+						column.getName()));
 
-				list2.add(codeFormatter.formatQueryColumnPart2(
-					queryColumnPart2Template,
-					column.getName(),
-					rootTableName,
-					packageName));
+				list2.add(
+					codeFormatter.formatQueryColumnPart2(
+						queryColumnPart2Template,
+						column.getName(),
+						rootTableName,
+						packageName));
 			}
 
 			columnPart1 = String.join("", list1);
@@ -421,30 +425,33 @@ public class ORMGenerator {
 
 				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
 
-				list1.add(codeFormatter.formatQueryRelationshipPart1(
-					queryRelationshipPart1Template,
-					tableName,
-					foreignKey,
-					relationship,
-					typeParam));
+				list1.add(
+					codeFormatter.formatQueryRelationshipPart1(
+						queryRelationshipPart1Template,
+						tableName,
+						foreignKey,
+						relationship,
+						typeParam));
 
-				list2.add(codeFormatter.formatQueryRelationshipPart1(
-					queryRelationshipPart2Template,
-					tableName,
-					foreignKey,
-					relationship,
-					rootTableName,
-					typeParam,
-					packageName));
+				list2.add(
+					codeFormatter.formatQueryRelationshipPart1(
+						queryRelationshipPart2Template,
+						tableName,
+						foreignKey,
+						relationship,
+						rootTableName,
+						typeParam,
+						packageName));
 
-				list3.add(codeFormatter.formatQueryRelationshipPart1(
-					queryRelationshipPart3Template,
-					tableName,
-					foreignKey,
-					relationship,
-					rootTableName,
-					typeParam,
-					packageName));
+				list3.add(
+					codeFormatter.formatQueryRelationshipPart1(
+						queryRelationshipPart3Template,
+						tableName,
+						foreignKey,
+						relationship,
+						rootTableName,
+						typeParam,
+						packageName));
 			}
 
 			relationshipPart1 = String.join("", list1);
@@ -606,7 +613,8 @@ public class ORMGenerator {
 	private static void write(
 		File java,
 		String body,
-		Charset charset) throws IOException {
+		Charset charset)
+		throws IOException {
 		try (BufferedWriter writer = new BufferedWriter(
 			new OutputStreamWriter(
 				new FileOutputStream(java),

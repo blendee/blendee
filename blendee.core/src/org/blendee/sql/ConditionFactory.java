@@ -619,9 +619,11 @@ public class ConditionFactory {
 	}
 
 	private static String buildInClause(int length) {
-		return "{0} IN (" + String.join(
-			", ",
-			Stream.generate(() -> "?").limit(length).collect(Collectors.toList())) + ")";
+		return "{0} IN ("
+			+ String.join(
+				", ",
+				Stream.generate(() -> "?").limit(length).collect(Collectors.toList()))
+			+ ")";
 	}
 
 	private static Bindable[] toBindables(String[] values) {

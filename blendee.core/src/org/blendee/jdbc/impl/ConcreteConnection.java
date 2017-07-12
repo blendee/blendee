@@ -163,9 +163,10 @@ class ConcreteConnection implements BConnection {
 			List<Column> columnList = new ArrayList<>();
 			while (result.next()) {
 				name = name == null ? result.getString("PK_NAME") : name;
-				columnList.add(new Column(
-					result.getInt("KEY_SEQ"),
-					result.getString("COLUMN_NAME")));
+				columnList.add(
+					new Column(
+						result.getInt("KEY_SEQ"),
+						result.getString("COLUMN_NAME")));
 			}
 
 			Collections.sort(columnList);
@@ -309,7 +310,8 @@ class ConcreteConnection implements BConnection {
 	private static final TablePath[] getOtherResources(
 		ResultSet result,
 		String schemaColumnName,
-		String tableColumnName) throws SQLException {
+		String tableColumnName)
+		throws SQLException {
 		try {
 			Set<TablePath> targets = new TreeSet<>();
 			while (result.next()) {
