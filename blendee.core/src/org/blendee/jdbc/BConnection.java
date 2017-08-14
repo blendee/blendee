@@ -36,7 +36,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeStatement(String sql, Function<BStatement, T> function) {
+	default <T> T executeStatementAndGet(String sql, Function<BStatement, T> function) {
 		try (BStatement statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
@@ -73,7 +73,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T execute(
+	default <T> T executeAndGet(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Function<BStatement, T> function) {
@@ -107,7 +107,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BPreparedStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T execute(String sql, Function<BPreparedStatement, T> function) {
+	default <T> T executeAndGet(String sql, Function<BPreparedStatement, T> function) {
 		try (BPreparedStatement statement = prepareStatement(sql)) {
 			return function.apply(statement);
 		}
