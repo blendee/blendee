@@ -24,7 +24,7 @@ public interface BConnection extends Metadata {
 	 * @param sql プレースホルダを持たない SQL
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
-	default void statement(String sql, Consumer<BStatement> consumer) {
+	default void executeStatement(String sql, Consumer<BStatement> consumer) {
 		try (BStatement statement = getStatement(sql)) {
 			consumer.accept(statement);
 		}
@@ -36,7 +36,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T statement(String sql, Function<BStatement, T> function) {
+	default <T> T executeStatement(String sql, Function<BStatement, T> function) {
 		try (BStatement statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
@@ -57,7 +57,7 @@ public interface BConnection extends Metadata {
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
-	default void statement(
+	default void execute(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Consumer<BStatement> consumer) {
@@ -73,7 +73,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T statement(
+	default <T> T execute(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Function<BStatement, T> function) {
@@ -95,7 +95,7 @@ public interface BConnection extends Metadata {
 	 * @param sql プレースホルダを持つ SQL
 	 * @param consumer {@link BPreparedStatement} を受け取る {@link Consumer}
 	 */
-	default void preparedStatement(String sql, Consumer<BPreparedStatement> consumer) {
+	default void execute(String sql, Consumer<BPreparedStatement> consumer) {
 		try (BPreparedStatement statement = prepareStatement(sql)) {
 			consumer.accept(statement);
 		}
@@ -107,7 +107,7 @@ public interface BConnection extends Metadata {
 	 * @param function {@link BPreparedStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T preparedStatement(String sql, Function<BPreparedStatement, T> function) {
+	default <T> T execute(String sql, Function<BPreparedStatement, T> function) {
 		try (BPreparedStatement statement = prepareStatement(sql)) {
 			return function.apply(statement);
 		}
