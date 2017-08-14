@@ -34,7 +34,7 @@ public interface BStatement extends AutoCloseable {
 	 * @param function 検索結果を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeQuery(Function<BResultSet, T> function) {
+	default <T> T executeQueryAndGet(Function<BResultSet, T> function) {
 		try (BResultSet result = executeQuery()) {
 			return function.apply(result);
 		}
