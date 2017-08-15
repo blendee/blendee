@@ -93,17 +93,6 @@ public class U {
 		return value != null && !value.equals("");
 	}
 
-	/**
-	 * 指定されたクラスと同パッケージで指定された名前のファイルのパスを返します。
-	 * @param resourceBase リソースファイルと同パッケージ
-	 * @param fileName ロードするファイル名
-	 * @return fileName の URL
-	 */
-	public static URL getResourcePathByName(Class<?> resourceBase, String fileName) {
-		String path = "/" + resourceBase.getPackage().getName().replace('.', '/') + "/" + fileName;
-		return U.class.getResource(path);
-	}
-
 	public static void close(Closeable object) {
 		if (object == null) return;
 		try {

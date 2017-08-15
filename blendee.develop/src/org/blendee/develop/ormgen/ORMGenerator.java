@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,16 +27,16 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.Many;
-import org.blendee.support.annotation.RowRelationship;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
 import org.blendee.support.annotation.PseudoPK;
+import org.blendee.support.annotation.RowRelationship;
 
 /**
  * データベースの構成を読み取り、各テーブルの RowManager クラスと Row クラスの Java ソースを生成するジェネレータクラスです。
@@ -684,9 +684,8 @@ public class ORMGenerator {
 	}
 
 	private static String readTemplate(Class<?> target, String charset) {
-		URL templateURL = U.getResourcePathByName(target, target.getSimpleName() + ".java");
-		try {
-			return new String(U.readBytes(templateURL.openStream()), charset);
+		try (InputStream input = target.getResourceAsStream(target.getSimpleName() + ".java")) {
+			return new String(U.readBytes(input), charset);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}

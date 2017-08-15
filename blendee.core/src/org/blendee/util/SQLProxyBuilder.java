@@ -87,8 +87,7 @@ public class SQLProxyBuilder {
 				+ method.getName()
 				+ ".sql";
 
-			URL url = U.getResourcePathByName(proxyClass, sqlFileName);
-
+			URL url = proxyClass.getResource(sqlFileName);
 			if (url == null) throw new IllegalStateException(sqlFileName + " が見つかりません");
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
