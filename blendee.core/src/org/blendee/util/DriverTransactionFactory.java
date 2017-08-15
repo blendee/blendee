@@ -57,7 +57,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	 * @return {@link ClassLoader}
 	 */
 	protected ClassLoader getClassLoader() {
-		return DriverManager.class.getClassLoader();
+		return DriverTransactionFactory.class.getClassLoader();
 	}
 
 	/**
