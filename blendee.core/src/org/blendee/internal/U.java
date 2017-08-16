@@ -170,6 +170,19 @@ public class U {
 		}
 	}
 
+	public static <T> T getInstance(String className) {
+		try {
+			Class<?> clazz = Class.forName(className);
+
+			@SuppressWarnings("unchecked")
+			T instance = (T) clazz.newInstance();
+
+			return instance;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	private static byte[] concatByteArray(byte[] array1, int lengthof1, byte[] array2, int lengthof2) {
 		byte[] concat = new byte[lengthof1 + lengthof2];
 		System.arraycopy(array1, 0, concat, 0, lengthof1);

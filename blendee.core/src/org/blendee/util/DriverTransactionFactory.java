@@ -1,11 +1,11 @@
 package org.blendee.util;
 
-import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Properties;
 
+import org.blendee.internal.U;
 import org.blendee.jdbc.BTransaction;
 import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
@@ -14,16 +14,16 @@ import org.blendee.jdbc.TransactionFactory;
 import org.blendee.jdbc.impl.JDBCTransaction;
 
 /**
- * {@link DriverManager} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。
+ * {@link Driver} を利用してデータベースとの接続を確立する {@link TransactionFactory} です。
  * @author 千葉 哲嗣
  */
 public class DriverTransactionFactory implements TransactionFactory {
 
 	private final String url;
 
-	private final String user;
+	private final Driver driver;
 
-	private final String password;
+	private final Properties properties = new Properties();
 
 	/**
 	 * このクラスのコンストラクタです。
@@ -32,43 +32,19 @@ public class DriverTransactionFactory implements TransactionFactory {
 	public DriverTransactionFactory() throws Exception {
 		Configure config = BlendeeContext.get(BlendeeManager.class).getConfigure();
 
-		Class.forName(
-			Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()),
-			false,
-			getClassLoader());
-
+		driver = U.getInstance(Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()));
+		properties.setProperty("user", config.getOption(BlendeeConstants.JDBC_USER).get());
+		properties.setProperty("password", config.getOption(BlendeeConstants.JDBC_PASSWORD).get());
 		url = Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_URL).get());
-
-		user = config.getOption(BlendeeConstants.JDBC_USER).get();
-		password = config.getOption(BlendeeConstants.JDBC_PASSWORD).get();
 	}
 
 	@Override
 	public BTransaction createTransaction() {
 		try {
-			return new JDBCTransaction(getConnection(url, user, password));
+			driver.connect(url, properties);
+			return new JDBCTransaction(driver.connect(url, properties));
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	/**
-	 * {@link Driver} をロードするためのクラスローダーを返します。
-	 * @return {@link ClassLoader}
-	 */
-	protected ClassLoader getClassLoader() {
-		return DriverTransactionFactory.class.getClassLoader();
-	}
-
-	/**
-	 * {@link Connection} を取得します。
-	 * @param url 接続先
-	 * @param user ユーザー
-	 * @param password パスワード
-	 * @return {@link Connection}
-	 * @throws SQLException 接続時の例外
-	 */
-	protected Connection getConnection(String url, String user, String password) throws SQLException {
-		return DriverManager.getConnection(url, user, password);
 	}
 }

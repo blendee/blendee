@@ -4,9 +4,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.blendee.util.DriverTransactionFactory;
+import org.blendee.util.DriverManagerTransactionFactory;
 
-public class PluginDriverTransactionFactory extends DriverTransactionFactory {
+public class PluginDriverTransactionFactory extends DriverManagerTransactionFactory {
 
 	private static JavaProjectClassLoader loader;
 
@@ -16,7 +16,7 @@ public class PluginDriverTransactionFactory extends DriverTransactionFactory {
 		if (proxyClass != null) return;
 
 		URL url = PluginDriverTransactionFactory.class
-			.getResource("/org/blendee/plugin/ProxyDriverManager.class");
+			.getResource("ProxyDriverManager.class");
 		proxyClass = loader.defineClass(url);
 	}
 
