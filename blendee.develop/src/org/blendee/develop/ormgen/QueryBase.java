@@ -34,7 +34,7 @@ import org.blendee.support.QueryConditionContext;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
-import org.blendee.support.ReferenceQueryColumn;
+import org.blendee.support.QueryColumn;
 import org.blendee.support.SelectOffer;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -90,10 +90,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<ReferenceQueryColumn, None> rel =
+	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<QueryColumn, None> rel =
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
-			QueryContext.REFERENCE,
+			QueryContext.OTHER,
 			QueryConditionContext.NULL);
 
 	private Optimizer optimizer;

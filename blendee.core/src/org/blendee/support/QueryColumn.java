@@ -13,7 +13,7 @@ import org.blendee.sql.ConditionFactory.NullComparisonOperator;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class ReferenceQueryColumn {
+public class QueryColumn {
 
 	private final Column column;
 
@@ -22,7 +22,7 @@ public class ReferenceQueryColumn {
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
-	public ReferenceQueryColumn(QueryRelationship relationship, String name) {
+	public QueryColumn(QueryRelationship relationship, String name) {
 		column = relationship.getRelationship().getColumn(name);
 	}
 
@@ -33,6 +33,16 @@ public class ReferenceQueryColumn {
 	 * @return 検索条件
 	 */
 	public Condition createCondition(String value) {
+		return ConditionFactory.createCondition(column, value);
+	}
+
+	/**
+	 * このカラムの検索条件を生成します。
+	 * @see ConditionFactory#createCondition(Column, String)
+	 * @param value 検索条件の値
+	 * @return 検索条件
+	 */
+	public Condition createCondition(Number value) {
 		return ConditionFactory.createCondition(column, value);
 	}
 

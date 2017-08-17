@@ -12,7 +12,7 @@ public interface QueryContext<T> {
 	/**
 	 * 参照用
 	 */
-	public static final QueryContext<ReferenceQueryColumn> REFERENCE = (relationship, name) -> new ReferenceQueryColumn(
+	public static final QueryContext<QueryColumn> OTHER = (relationship, name) -> new QueryColumn(
 		relationship,
 		name);
 
