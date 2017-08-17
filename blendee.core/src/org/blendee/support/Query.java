@@ -30,29 +30,33 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * 現時点の WHERE 句に新たな条件を AND 結合します。<br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
 	 * @param condition AND 結合する新条件
+	 * @return {@link Query} 自身
 	 */
-	public void and(Condition condition);
+	public Query and(Condition condition);
 
 	/**
 	 * 現時点の WHERE 句に新たな条件を OR 結合します。<br>
 	 * OR 結合する対象がなければ、新条件としてセットされます。
 	 * @param condition OR 結合する新条件
+	 * @return {@link Query} 自身
 	 */
-	public void or(Condition condition);
+	public Query or(Condition condition);
 
 	/**
 	 * 現時点の WHERE 句に新たなサブクエリ条件を AND 結合します。<br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
 	 * @param subquery AND 結合するサブクエリ条件
+	 * @return {@link Query} 自身
 	 */
-	public void and(Subquery subquery);
+	public Query and(Subquery subquery);
 
 	/**
 	 * 現時点の WHERE 句に新たなサブクエリ条件を OR 結合します。<br>
 	 * OR 結合する対象がなければ、新条件としてセットされます。
 	 * @param subquery OR 結合するサブクエリ条件
+	 * @return {@link Query} 自身
 	 */
-	public void or(Subquery subquery);
+	public Query or(Subquery subquery);
 
 	/**
 	 * この Query のルート {@link Relationship} を返します。

@@ -203,23 +203,27 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void and(Condition condition) /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.AND.addCondition(operators.AND, condition);
+		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void or(Condition condition) /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.OR.addCondition(operators.OR, condition);
+		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void and(Subquery subquery) /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryConditionContext.AND.addCondition(operators.AND, subquery.createCondition(this));
+		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void or(Subquery subquery) /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryConditionContext.OR.addCondition(operators.OR, subquery.createCondition(this));
+		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
