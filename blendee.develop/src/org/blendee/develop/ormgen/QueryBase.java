@@ -195,32 +195,58 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return condition != null && condition.isAvailable();
 	/*++'++*/}/*++'++*/
 
-	@Override
-	public void orderBy(OrderByClause clause) /*++'++*/{/*++'++*/
+	/**
+	 * 新規に ORDER BY 句をセットします。
+	 * @param clause 新 ORDER BY 句
+	 * @return '{'@link Query'}' 自身
+	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ orderBy(OrderByClause clause) /*++'++*/{/*++'++*/
 		if (orderByClause != null)
 			throw new IllegalStateException("既に ORDER BY 句がセットされています");
 		orderByClause = clause;
+		return this;
 	/*++'++*/}/*++'++*/
 
-	@Override
+	/**
+	 * 現時点の WHERE 句に新たな条件を AND 結合します。<br>
+	 * AND 結合する対象がなければ、新条件としてセットされます。
+	 * @param condition AND 結合する新条件
+	 * @return '{'@link Query'}' 自身
+	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.AND.addCondition(operators.AND, condition);
 		return this;
 	/*++'++*/}/*++'++*/
 
-	@Override
+	/**
+	 * 現時点の WHERE 句に新たな条件を OR 結合します。<br>
+	 * OR 結合する対象がなければ、新条件としてセットされます。
+	 * @param condition OR 結合する新条件
+	 * @return '{'@link Query'}' 自身
+	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Condition condition) /*++'++*/{/*++'++*/
 		QueryConditionContext.OR.addCondition(operators.OR, condition);
 		return this;
 	/*++'++*/}/*++'++*/
 
-	@Override
+	/**
+	 * 現時点の WHERE 句に新たなサブクエリ条件を AND 結合します。<br>
+	 * AND 結合する対象がなければ、新条件としてセットされます。
+	 * @param subquery AND 結合するサブクエリ条件
+	 * @return '{'@link Query'}' 自身
+	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryConditionContext.AND.addCondition(operators.AND, subquery.createCondition(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
-	@Override
+	/**
+	 * 現時点の WHERE 句に新たなサブクエリ条件を OR 結合します。<br>
+	 * OR 結合する対象がなければ、新条件としてセットされます。
+	 * @param subquery OR 結合するサブクエリ条件
+	 * @return '{'@link Query'}' 自身
+	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryConditionContext.OR.addCondition(operators.OR, subquery.createCondition(this));
 		return this;
