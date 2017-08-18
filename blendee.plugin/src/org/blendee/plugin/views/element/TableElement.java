@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.develop.ormgen.ORMGenerator;
-import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
@@ -130,7 +130,7 @@ public class TableElement extends PropertySourceElement {
 		}
 
 		ORMGenerator generator = new ORMGenerator(
-			BlendeeContext.get(BlendeeManager.class).getConnection(),
+			ContextManager.get(BlendeeManager.class).getConnection(),
 			fragment.getElementName(),
 			parent.getName(),
 			plugin.getRowManagerParentClass(),
@@ -141,7 +141,7 @@ public class TableElement extends PropertySourceElement {
 			!plugin.notUseNullGuard(),
 			org.blendee.plugin.ORMGenerator.class.getName());
 
-		Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		String tableName = path.getTableName();
 		try {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));

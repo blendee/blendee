@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
@@ -96,7 +96,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 */
 	@Override
 	public Bindable next(Condition depends) {
-		BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
+		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 		BStatement statement;
 		if (depends.isAvailable()) {

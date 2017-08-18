@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.blendee.internal.TransactionManager;
 import org.blendee.internal.TransactionShell;
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.MetadataFactory;
@@ -87,12 +87,12 @@ public class Blendee {
 					.orElse(null)))
 			.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
-		BlendeeContext.get(BlendeeManager.class).initialize(init);
+		ContextManager.get(BlendeeManager.class).initialize(init);
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
-			.ifPresent(clazz -> BlendeeContext.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
+			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
 
-		AnchorOptimizerFactory anchorOptimizerFactory = BlendeeContext.get(AnchorOptimizerFactory.class);
+		AnchorOptimizerFactory anchorOptimizerFactory = ContextManager.get(AnchorOptimizerFactory.class);
 
 		BlendeeConstants.CAN_ADD_NEW_ENTRIES.extract(initValues)
 			.ifPresent(flag -> anchorOptimizerFactory.setCanAddNewEntries(flag));
@@ -108,7 +108,7 @@ public class Blendee {
 	 * @throws Exception 処理内で起こった例外
 	 */
 	public static void execute(Function function) throws Exception {
-		if (BlendeeContext.get(BlendeeManager.class).hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
+		if (ContextManager.get(BlendeeManager.class).hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
 
 		TransactionManager.start(new TransactionShell() {
 
@@ -174,8 +174,8 @@ public class Blendee {
 	 * Blendee が持つ定義情報の各キャッシュをクリアします。
 	 */
 	public static void clearCache() {
-		BlendeeContext.get(BlendeeManager.class).clearMetadataCache();
-		BlendeeContext.get(RelationshipFactory.class).clearCache();
+		ContextManager.get(BlendeeManager.class).clearMetadataCache();
+		ContextManager.get(RelationshipFactory.class).clearCache();
 	}
 
 	/**

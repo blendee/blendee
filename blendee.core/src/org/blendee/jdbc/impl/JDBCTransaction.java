@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 
@@ -16,7 +16,7 @@ import org.blendee.jdbc.Configure;
  */
 public class JDBCTransaction extends BTransaction {
 
-	private final Configure config = BlendeeContext.get(BlendeeManager.class).getConfigure();
+	private final Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 
 	private final java.sql.Connection jdbcConnection;
 

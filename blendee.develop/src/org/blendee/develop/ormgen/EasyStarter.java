@@ -4,7 +4,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.TransactionFactory;
@@ -57,7 +57,7 @@ public class EasyStarter {
 			init.addSchemaName(schemaName);
 		init.enableLog(develop);
 		init.setTransactionFactoryClass(EasyTransactionFactory.class);
-		BlendeeContext.get(BlendeeManager.class).initialize(init);
+		ContextManager.get(BlendeeManager.class).initialize(init);
 	}
 
 	/**

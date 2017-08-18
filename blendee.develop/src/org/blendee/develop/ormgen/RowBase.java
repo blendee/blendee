@@ -8,7 +8,7 @@ import org.blendee.support.annotation.RowGetter;
 import org.blendee.support.annotation.RowSetter;
 import org.blendee.support.annotation.Resource;
 /*++{8}++*/
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.ValueExtractorsConfigure;
@@ -50,7 +50,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 * 登録用コンストラクタです。
 	 */
 	public /*++{2}++*//*--*/RowBase/*--*/() /*++'++*/{/*++'++*/
-		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
+		$relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 		$data = new DataObject($relationship);
 	/*++'++*/}/*++'++*/
 
@@ -59,7 +59,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 * @param data 値を持つ '{'@link DataObject'}'
 	 */
 	public /*++{2}++*//*--*/RowBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
-		$relationship = BlendeeContext.get(RelationshipFactory.class).getInstance($TABLE);
+		$relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 		this.$data = data;
 	/*++'++*/}/*++'++*/
 
@@ -87,7 +87,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 */
 	@RowSetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class)
 	public void set/*++{0}++*/(/*++{2}++*//*--*/Object/*--*/ value) /*++'++*/{/*++'++*/
-		/*++{4}++*/ValueExtractor valueExtractor = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
+		/*++{4}++*/ValueExtractor valueExtractor = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
 			$relationship.getColumn("{1}").getType());
 		$data.setValue("{1}", valueExtractor.extractAsBinder(value));
 	/*++'++*/}/*++'++*/

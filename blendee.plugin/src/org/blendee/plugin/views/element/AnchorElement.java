@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
@@ -344,7 +344,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		relationship = new RelationshipElement(
 			repository,
 			id,
-			BlendeeContext.get(RelationshipFactory.class).getInstance(
+			ContextManager.get(RelationshipFactory.class).getInstance(
 				repository.getTablePath(id)),
 			allColumns);
 		relationship.setParent(this);

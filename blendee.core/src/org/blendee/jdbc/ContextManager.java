@@ -8,17 +8,37 @@ import org.blendee.jdbc.impl.SimpleContextStrategy;
  * Blendee 内で使用する static にアクセスする必要のあるインスタンスを管理するクラスです。
  * @author 千葉 哲嗣
  */
-public class BlendeeContext {
+public class ContextManager {
+
+	private static final String defaultContextName = ContextManager.class.getName() + ".defaultContext";
 
 	private static final Object lock = new Object();
 
 	private static ContextStrategy strategy;
 
+	private static final ThreadLocal<String> contextName = ThreadLocal.withInitial(() -> defaultContextName);
+
 	private static ThreadLocal<WeakReference<ContextStrategy>> threadLocal = ThreadLocal
 		.withInitial(() -> new WeakReference<>(strategy));
 
 	/**
-	 * 管理されているインスタンスを取得します。<br>
+	 * 指定した名前のコンテキストに切り替えます。
+	 * @param name 新しいコンテキスト名
+	 */
+	public static void switchContext(String name) {
+		contextName.set(name);
+	}
+
+	/**
+	 * 現在のコンテキスト名を取得します。
+	 * @return 現在のコンテキスト名
+	 */
+	public static String getCurrentContextName() {
+		return contextName.get();
+	}
+
+	/**
+	 * 現在のコンテキストで管理されているインスタンスを取得します。<br>
 	 * まだインスタンスが作成されていない場合、新しく作成されます。
 	 * @param <T> 取得するインスタンスの型
 	 * @param clazz 取得するインスタンスのクラス
@@ -36,7 +56,7 @@ public class BlendeeContext {
 			threadLocal.set(new WeakReference<>(mine));
 		}
 
-		return mine.getManagedInstance(clazz);
+		return mine.getManagedInstance(getCurrentContextName(), clazz);
 	}
 
 	/**
@@ -55,7 +75,7 @@ public class BlendeeContext {
 	 */
 	public static void newStrategy(ContextStrategy strategy) {
 		synchronized (lock) {
-			BlendeeContext.strategy = strategy;
+			ContextManager.strategy = strategy;
 		}
 	}
 
@@ -64,9 +84,7 @@ public class BlendeeContext {
 	 * {@link ContextStrategy} はスレッド毎に紐づけられているので、 このスレッドが持つ {@link ContextStrategy} を、最新のものに更新します。
 	 */
 	public static void updateStrategyOnThisThread() {
-		synchronized (lock) {
-			threadLocal.set(new WeakReference<>(strategy));
-		}
+		threadLocal.set(new WeakReference<>(strategy));
 	}
 
 	/**

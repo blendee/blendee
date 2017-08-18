@@ -9,7 +9,7 @@ import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
@@ -50,7 +50,7 @@ public class DataAccessHelper {
 
 	private static final ThreadLocal<StatementFacade> threadStatement = new ThreadLocal<StatementFacade>();
 
-	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
 	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
 
@@ -190,7 +190,7 @@ public class DataAccessHelper {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(SelectClause.COUNT_CLAUSE);
 		if (condition != null) builder.setWhereClause(condition);
-		BConnection connection = BlendeeContext.get(BlendeeManager.class).getConnection();
+		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		try (BStatement statement = connection.getStatement(builder.toString(), builder)) {
 			try (BResultSet result = statement.executeQuery()) {
 				result.next();
@@ -665,7 +665,7 @@ public class DataAccessHelper {
 
 		@Override
 		void process(String sql, PreparedStatementComplementer complementer) {
-			statement = BlendeeContext.get(BlendeeManager.class).getConnection().getStatement(sql, complementer);
+			statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql, complementer);
 		}
 
 		@Override

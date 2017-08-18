@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
@@ -207,7 +207,7 @@ public class ORMGenerator {
 
 		TablePath[] tables = metadata.getTables(schemaName);
 		for (TablePath table : tables) {
-			Relationship relation = BlendeeContext.get(RelationshipFactory.class).getInstance(table);
+			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(table);
 
 			String tableName = relation.getTablePath().getTableName();
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Condition;
@@ -29,7 +29,7 @@ public class Selector {
 	 */
 	public static final SelectedValuesIterator EMPTY_SELECTED_VALUES_ITERATOR = new EmptySelectedValuesIterator();
 
-	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
+	private final BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 	private final Relationship root;
 
@@ -64,11 +64,11 @@ public class Selector {
 	 */
 	public Selector(Optimizer optimizer) {
 		TablePath path = optimizer.getTablePath();
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		builder = new QueryBuilder(new FromClause(path));
 		this.optimizer = optimizer;
 
-		SelectorConfigure config = BlendeeContext.get(SelectorConfigure.class);
+		SelectorConfigure config = ContextManager.get(SelectorConfigure.class);
 
 		myForUpdateClause = config.getForUpdateClause();
 		myNowaitClause = config.getNowaitClause();

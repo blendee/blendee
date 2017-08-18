@@ -23,8 +23,8 @@ import org.blendee.develop.ormgen.CodeFormatter;
 import org.blendee.internal.HomeStorage;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.BlendeeContext;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
@@ -445,7 +445,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 				currentProject,
 				columnRepositoryFactoryClass.newInstance());
 
-			transaction = BlendeeContext.get(BlendeeManager.class).startTransaction();
+			transaction = ContextManager.get(BlendeeManager.class).startTransaction();
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
 		}

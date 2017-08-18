@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.TablePath;
 
@@ -79,7 +79,7 @@ public class FromClause {
 	 * @param path テーブルのルート
 	 */
 	public FromClause(TablePath path) {
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		localRelationships.add(new RelationshipContainer(root));
 	}
 

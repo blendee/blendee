@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
@@ -21,7 +21,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	private final boolean canAddNewEntries;
 
-	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	private final String id;
 

@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.sql.binder.StringBinder;
 
 /**
@@ -41,7 +41,7 @@ public class BindableConverter {
 	 */
 	public static Bindable[] convertAllTypes(Object[] members) {
 		Bindable[] bindables = new Bindable[members.length];
-		ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
+		ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 		for (int i = 0; i < members.length; i++) {
 			Object keyMember = members[i];
 			ValueExtractor extractor = extractors.selectValueExtractor(keyMember.getClass());

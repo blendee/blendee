@@ -1,7 +1,7 @@
 package org.blendee.orm;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
@@ -81,7 +81,7 @@ public class PartialData implements Searchable, Updatable {
 	 * @return 検索条件
 	 */
 	public Condition getCondition() {
-		return getCondition(BlendeeContext.get(RelationshipFactory.class).getInstance(path));
+		return getCondition(ContextManager.get(RelationshipFactory.class).getInstance(path));
 	}
 
 	/**

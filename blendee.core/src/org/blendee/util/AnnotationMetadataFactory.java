@@ -13,7 +13,7 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Metadata;
@@ -39,7 +39,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 */
 	public AnnotationMetadataFactory() {
 		virtualSpace = getInstance(
-			BlendeeContext.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
+			ContextManager.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
 				() -> new NullPointerException()));
 	}
 

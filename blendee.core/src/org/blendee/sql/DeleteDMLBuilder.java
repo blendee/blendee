@@ -1,7 +1,7 @@
 package org.blendee.sql;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 
@@ -11,7 +11,7 @@ import org.blendee.jdbc.TablePath;
  */
 public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
-	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
 	private final TablePath path;
 

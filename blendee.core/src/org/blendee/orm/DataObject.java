@@ -16,7 +16,7 @@ import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
 import org.blendee.jdbc.BResult;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
 import org.blendee.selector.Optimizer;
@@ -676,7 +676,7 @@ public class DataObject
 		if (!relationship.isRoot()) {
 			//root でないと、 Condition を作る際に、チェックに引っかかるので
 			//root の Relationship のカラムに変換しておく
-			Relationship root = BlendeeContext.get(RelationshipFactory.class).getInstance(relationship.getTablePath());
+			Relationship root = ContextManager.get(RelationshipFactory.class).getInstance(relationship.getTablePath());
 			for (int i = 0; i < primaryKeyColumns.length; i++) {
 				primaryKeyColumns[i] = root.getColumn(primaryKeyColumns[i].getName());
 			}

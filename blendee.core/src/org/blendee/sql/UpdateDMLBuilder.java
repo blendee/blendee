@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -13,7 +13,7 @@ import org.blendee.jdbc.TablePath;
  */
 public class UpdateDMLBuilder extends Updater {
 
-	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
 	private Condition condition = ConditionFactory.createCondition();
 

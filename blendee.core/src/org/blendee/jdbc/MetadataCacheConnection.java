@@ -11,7 +11,7 @@ import org.blendee.jdbc.wrapperbase.ConnectionBase;
  */
 class MetadataCacheConnection extends ConnectionBase {
 
-	private final MetadataCache cache = BlendeeContext.get(MetadataCache.class);
+	private final MetadataCache cache = ContextManager.get(MetadataCache.class);
 
 	MetadataCacheConnection(BConnection conn) {
 		super(conn);

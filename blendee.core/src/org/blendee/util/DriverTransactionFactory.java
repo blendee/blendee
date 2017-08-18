@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.TransactionFactory;
@@ -30,7 +30,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	 * @throws Exception ドライバークラスのロード時に発生した例外
 	 */
 	public DriverTransactionFactory() throws Exception {
-		Configure config = BlendeeContext.get(BlendeeManager.class).getConfigure();
+		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 
 		driver = U.getInstance(Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()));
 		properties.setProperty("user", config.getOption(BlendeeConstants.JDBC_USER).get());

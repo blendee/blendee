@@ -12,7 +12,7 @@ import org.blendee.internal.U;
  */
 public abstract class BTransaction implements AutoCloseable, Transaction {
 
-	private final BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
+	private final BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 	private BConnection connection;
 

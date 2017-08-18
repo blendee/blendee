@@ -2,7 +2,7 @@ package org.blendee.selector;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResult;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
@@ -21,7 +21,7 @@ public class SimpleOptimizer implements Optimizer {
 
 	private final SelectClause select = new SelectClause();
 
-	private final ValueExtractors extractors = BlendeeContext.get(ValueExtractorsConfigure.class).getValueExtractors();
+	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	/**
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。<br>
@@ -29,7 +29,7 @@ public class SimpleOptimizer implements Optimizer {
 	 * @param path SELECT 句に使用するカラムを持つテーブル
 	 */
 	public SimpleOptimizer(TablePath path) {
-		root = BlendeeContext.get(RelationshipFactory.class).getInstance(path);
+		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
 	}
 
 	@Override

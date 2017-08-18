@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
@@ -25,7 +25,7 @@ import org.blendee.sql.RelationshipFactory;
  */
 abstract class AbstractColumnRepository implements ColumnRepository {
 
-	private final RelationshipFactory factory = BlendeeContext.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
 	private final Map<String, TablePathSource> tablePathMap = new TreeMap<>();
 

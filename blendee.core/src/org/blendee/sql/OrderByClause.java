@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -54,7 +54,7 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 	public static OrderByClause createPrimaryKeyOrder(
 		TablePath path,
 		Direction direction) {
-		Column[] columns = BlendeeContext.get(RelationshipFactory.class).getInstance(path).getPrimaryKeyColumns();
+		Column[] columns = ContextManager.get(RelationshipFactory.class).getInstance(path).getPrimaryKeyColumns();
 		OrderByClause clause = new OrderByClause();
 		for (Column column : columns)
 			clause.add(column, direction);

@@ -5,7 +5,7 @@ import java.io.File;
 import org.blendee.internal.FileIOStream;
 import org.blendee.internal.HomeStorage;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.selector.ColumnRepository;
@@ -34,7 +34,7 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 	 * このクラスのコンストラクタです。
 	 */
 	public FileColumnRepositoryFactory() {
-		BlendeeManager manager = BlendeeContext.get(BlendeeManager.class);
+		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 		Configure config = manager.getConfigure();
 

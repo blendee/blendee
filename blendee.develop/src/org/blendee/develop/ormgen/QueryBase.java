@@ -8,7 +8,7 @@ import javax.annotation.Generated;
 
 import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeContext;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.QueryOption;
@@ -149,7 +149,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
-		optimizer = BlendeeContext.get(AnchorOptimizerFactory.class).getInstance(
+		optimizer = ContextManager.get(AnchorOptimizerFactory.class).getInstance(
 			id,
 			/*++{1}++*//*--*/RowBase/*--*/.$TABLE,
 			using);
@@ -254,7 +254,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public Relationship getRootRealtionship() /*++'++*/{/*++'++*/
-		return BlendeeContext.get(RelationshipFactory.class).getInstance(manager.getTablePath());
+		return ContextManager.get(RelationshipFactory.class).getInstance(manager.getTablePath());
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -497,7 +497,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				return $parent.getRelationship().find($fkName);
 			/*++'++*/}/*++'++*/
 
-			return BlendeeContext.get(RelationshipFactory.class).getInstance($query.manager.getTablePath());
+			return ContextManager.get(RelationshipFactory.class).getInstance($query.manager.getTablePath());
 		/*++'++*/}/*++'++*/
 
 		@Override
