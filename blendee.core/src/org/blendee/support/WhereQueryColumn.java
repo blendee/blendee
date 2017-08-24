@@ -734,6 +734,19 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
+	public O IN(Number... values) {
+		relationship.getContext().addCondition(
+			relationship,
+			ConditionFactory.createInCondition(column, values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * WHERE 句に、このカラムの IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
 	public O IN(Bindable... values) {
 		relationship.getContext().addCondition(
 			relationship,
