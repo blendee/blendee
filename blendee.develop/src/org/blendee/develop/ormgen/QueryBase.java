@@ -25,16 +25,15 @@ import org.blendee.support.AbstractOrderQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
 /*++{8}++*/
 import org.blendee.support.LogicalOperators;
-import org.blendee.support.None;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
+import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryConditionContext;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
-import org.blendee.support.QueryColumn;
 import org.blendee.support.SelectOffer;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -69,7 +68,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> AND =
+		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void> AND =
 			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
@@ -78,7 +77,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None> OR =
+		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void> OR =
 			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
@@ -90,7 +89,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<QueryColumn, None> rel =
+	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<QueryColumn, Void> rel =
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			QueryContext.OTHER,
@@ -105,7 +104,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, None> select =
+	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, Void> select =
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			selectContext,
@@ -114,7 +113,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, None> orderBy =
+	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, Void> orderBy =
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			orderByContext,
@@ -161,7 +160,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
-		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, None>> function) /*++'++*/{/*++'++*/
+		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
@@ -174,7 +173,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
-		Consumer</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, None>> consumer) /*++'++*/{/*++'++*/
+		Consumer</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void>> consumer) /*++'++*/{/*++'++*/
 		consumer.accept(operators.AND);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -185,7 +184,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
-		OrderByOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, None>> function) /*++'++*/{/*++'++*/
+		OrderByOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		function.offer(orderBy);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -581,7 +580,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static class SelectQueryColumn
 		extends AbstractSelectQueryColumn</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<
 			SelectQueryColumn,
-			None>> /*++'++*/{/*++'++*/
+			Void>> /*++'++*/{/*++'++*/
 
 		private SelectQueryColumn(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
@@ -592,10 +591,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQueryColumn
-	extends AbstractOrderQueryColumn<
-		/*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<
-		OrderByQueryColumn,
-			None>> /*++'++*/{/*++'++*/
+		extends AbstractOrderQueryColumn<
+			/*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<
+				OrderByQueryColumn,
+				Void>> /*++'++*/{/*++'++*/
 
 		private OrderByQueryColumn(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
