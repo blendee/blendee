@@ -54,7 +54,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
+	private static final QueryContext<WhereQueryColumn</*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
 
 	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
