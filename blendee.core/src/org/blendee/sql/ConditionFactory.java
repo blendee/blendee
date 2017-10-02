@@ -102,6 +102,17 @@ public class ConditionFactory {
 			String getSearchExpression(String value) {
 				return "%" + escape(value) + "%";
 			}
+		},
+
+		/**
+		 * 任意
+		 */
+		OPTIONAL {
+
+			@Override
+			String getSearchExpression(String value) {
+				return escape(value);
+			}
 		};
 
 		private Condition create(Column column, String value) {
