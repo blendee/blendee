@@ -83,7 +83,7 @@ public class OverClause {
 	}
 
 	private static String concat(String src1, String src2) {
-		return src1 + (U.isAvailable(src2) ? (" " + src2) : src2);
+		return src1 + (U.presents(src2) ? (" " + src2) : src2);
 
 	}
 }

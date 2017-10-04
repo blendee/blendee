@@ -52,7 +52,7 @@ public class FileColumnRepositoryFactory implements ColumnRepositoryFactory {
 
 						String repositoryFileString = storage.loadProperties().getProperty(COLUMN_REPOSITORY_FILE_KEY);
 
-						if (!U.isAvailable(repositoryFileString)) throw new IllegalStateException(
+						if (!U.presents(repositoryFileString)) throw new IllegalStateException(
 							storage.getPropertiesFile().toAbsolutePath()
 								+ " に、キー "
 								+ COLUMN_REPOSITORY_FILE_KEY

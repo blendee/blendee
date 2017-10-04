@@ -119,7 +119,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return このクラスのインスタンス
 	 */
 	public static GenericQuery of(String id, TablePath tablePath) {
-		if (!U.isAvailable(id))
+		if (!U.presents(id))
 			throw new IllegalArgumentException("id が空です");
 
 		return new GenericQuery(tablePath, getUsing(new Throwable().getStackTrace()[1]), id);

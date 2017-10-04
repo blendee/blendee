@@ -127,7 +127,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このクラスのインスタンス
 	 */
 	public static /*++{1}Query++*//*--*/QueryBase/*--*/ of(String id) /*++'++*/{/*++'++*/
-		if (!U.isAvailable(id))
+		if (!U.presents(id))
 			throw new IllegalArgumentException("id が空です");
 
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);

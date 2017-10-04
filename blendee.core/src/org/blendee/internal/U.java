@@ -1,6 +1,5 @@
 package org.blendee.internal;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,17 +88,8 @@ public class U {
 		}
 	}
 
-	public static boolean isAvailable(String value) {
+	public static boolean presents(String value) {
 		return value != null && !value.equals("");
-	}
-
-	public static void close(Closeable object) {
-		if (object == null) return;
-		try {
-			object.close();
-		} catch (IOException e) {
-			throw new CloseFailedException(e);
-		}
 	}
 
 	/**
@@ -265,10 +255,6 @@ public class U {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public static String care(String target) {
-		return target == null ? "" : target;
 	}
 
 	public static String trim(String target) {

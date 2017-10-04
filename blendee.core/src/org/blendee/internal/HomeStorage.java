@@ -30,7 +30,7 @@ public class HomeStorage {
 	}
 
 	public HomeStorage(String identifier) {
-		if (!U.isAvailable(identifier)) throw new IllegalArgumentException(
+		if (!U.presents(identifier)) throw new IllegalArgumentException(
 			"identifier " + identifier + " が存在しません");
 		fileName = identifier + ".properties";
 	}

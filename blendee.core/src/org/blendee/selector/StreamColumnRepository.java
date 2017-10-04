@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.blendee.internal.IOStream;
-import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -46,8 +45,6 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 			lines = SimpleResourceReader.readLines(input);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
-		} finally {
-			U.close(repository);
 		}
 
 		for (int i = 0; i < lines.length; i++) {
@@ -95,8 +92,6 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 			writer.flush();
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
-		} finally {
-			U.close(repository);
 		}
 	}
 }
