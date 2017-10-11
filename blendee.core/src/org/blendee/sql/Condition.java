@@ -22,8 +22,6 @@ public class Condition extends QueryClause {
 
 	/**
 	 * 論理演算子の列挙型です。
-	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
 	 */
 	private enum LogicalOperator {
 

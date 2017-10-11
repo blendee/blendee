@@ -18,8 +18,6 @@ public class ConditionFactory {
 
 	/**
 	 * 比較演算子の列挙型です。
-	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
 	 */
 	public enum ComparisonOperator {
 
@@ -66,8 +64,6 @@ public class ConditionFactory {
 
 	/**
 	 * LIKE 検索の列挙型です。
-	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
 	 */
 	public enum Match {
 
@@ -134,8 +130,6 @@ public class ConditionFactory {
 
 	/**
 	 * NULL 検査の列挙型です。
-	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
 	 */
 	public enum NullComparisonOperator {
 
