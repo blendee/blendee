@@ -31,7 +31,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -178,7 +177,7 @@ public class BlendeePropertyPage
 			Constants.COLUMN_REPOSITORY_FILE,
 			"ColumnRepository ファイル",
 			false,
-			StringButtonFieldEditor.VALIDATE_ON_FOCUS_LOST,
+			StringFieldEditor.VALIDATE_ON_FOCUS_LOST,
 			getFieldEditorParent()) {
 
 			@Override

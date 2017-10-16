@@ -1,6 +1,7 @@
 package org.blendee.plugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class Constants {
 
@@ -83,46 +84,46 @@ public class Constants {
 	private static final String ID = "org.blendee.plugin";
 
 	static {
-		BLENDEE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/blendee.png");
+		BLENDEE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/blendee.png");
 
-		COLLAPSE_ALL_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/collapse_all.gif");
+		COLLAPSE_ALL_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/collapse_all.gif");
 
-		DERETE_ALL_EDIT_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/delete_all_edit.gif");
+		DERETE_ALL_EDIT_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/delete_all_edit.gif");
 
-		SAVE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/save.gif");
+		SAVE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/save.gif");
 
-		REFESH_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/refresh.gif");
+		REFESH_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/refresh.gif");
 
-		UNDO_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/undo.gif");
+		UNDO_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/undo.gif");
 
-		REDO_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/redo.gif");
+		REDO_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/redo.gif");
 
-		REMOVE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/remove.gif");
+		REMOVE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/remove.gif");
 
-		PACKAGE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/package.gif");
+		PACKAGE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/package.gif");
 
-		CLASS_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/class.gif");
+		CLASS_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/class.gif");
 
-		ANCHOR_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/anchor.gif");
+		ANCHOR_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/anchor.gif");
 
-		ERROR_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/error.gif");
+		ERROR_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/error.gif");
 
-		RELATIONSHIP_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/relationship.png");
+		RELATIONSHIP_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/relationship.png");
 
-		COLUMN_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/column.png");
+		COLUMN_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/column.png");
 
-		COLUMN_DISABLE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/column_disable.png");
+		COLUMN_DISABLE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/column_disable.png");
 
-		UNMARK_COLUMN_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/unmark_column.png");
+		UNMARK_COLUMN_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/unmark_column.png");
 
-		PRIMARY_KEY_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/primary_key.png");
+		PRIMARY_KEY_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/primary_key.png");
 
-		FOREIGN_KEY_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/foreign_key.png");
+		FOREIGN_KEY_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/foreign_key.png");
 
-		SCHEMA_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/schema.gif");
+		SCHEMA_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/schema.gif");
 
-		TABLE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/table.png");
+		TABLE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/table.png");
 
-		UNBUILT_TABLE_ICON = BlendeePlugin.imageDescriptorFromPlugin(ID, "icons/unbuilt_table.png");
+		UNBUILT_TABLE_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/unbuilt_table.png");
 	}
 }
