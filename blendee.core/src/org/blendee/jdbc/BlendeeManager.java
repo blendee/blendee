@@ -64,19 +64,15 @@ public class BlendeeManager implements ManagementSubject {
 
 		config.initialize();
 
-		BTransaction transaction = config.getTransactionFactoryWithoutCheck().createTransaction();
-		BConnection connection = transaction.getConnection();
-		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);
+		TransactionFactory factory = config.getTransactionFactoryWithoutCheck();
+		BTransaction transaction;
+		if (config.usesLazyTransaction()) {
+			transaction = new LazyTransaction(factory);
+		} else {
+			transaction = factory.createTransaction();
+		}
 
-		if (config.enablesLogWithoutCheck()) connection = new LoggingConnection(
-			connection,
-			new Logger(config.getLogOutputWithoutCheck(), config.getLogStackTracePatternWithoutCheck()));
-
-		config.initializeMetadatas(connection);
-		Metadata[] metadatas = config.getMetadatasWithoutCheck();
-		if (metadatas.length > 0) connection = new MetadatasConnection(connection, metadatas);
-
-		transaction.setConnection(connection);
+		transaction.prepareConnection(config);
 
 		ThreadLocalValues values = threadLocalValues.get();
 		values.transaction = transaction;

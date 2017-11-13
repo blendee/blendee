@@ -1,7 +1,5 @@
 package org.blendee.plugin;
 
-import static org.blendee.internal.U.isAvailable;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -336,7 +334,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		String[] values = (target == null ? "" : target).split(regex);
 		List<String> list = new LinkedList<>();
 		for (String value : values) {
-			if (isAvailable(value)) list.add(value);
+			if (U.presents(value)) list.add(value);
 		}
 
 		return list.toArray(new String[list.size()]);
@@ -394,12 +392,12 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		}
 
 		String jdbcDriverClass = properties.getProperty(Constants.JDBC_DRIVER_CLASS);
-		if (U.isAvailable(jdbcDriverClass)) {
+		if (U.presents(jdbcDriverClass)) {
 			init.put(BlendeeConstants.JDBC_DRIVER_CLASS_NAME, jdbcDriverClass);
 		}
 
 		String jdbcURL = BlendeePlugin.load(currentProject, Constants.JDBC_URL);
-		if (U.isAvailable(jdbcURL)) {
+		if (U.presents(jdbcURL)) {
 			init.put(BlendeeConstants.JDBC_URL, jdbcURL);
 			init.put(BlendeeConstants.JDBC_USER, BlendeePlugin.load(currentProject, Constants.JDBC_USER));
 			init.put(BlendeeConstants.JDBC_PASSWORD, BlendeePlugin.load(currentProject, Constants.JDBC_PASSWORD));
@@ -409,19 +407,19 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		try {
 			{
 				String classString = properties.getProperty(Constants.TRANSACTION_FACTORY_CLASS);
-				if (U.isAvailable(classString))
+				if (U.presents(classString))
 					init.put(BlendeeConstants.TRANSACTION_FACTORY_CLASS, Class.forName(classString, false, loader));
 			}
 
 			{
 				String classString = properties.getProperty(Constants.METADATA_FACTORY_CLASS);
-				if (isAvailable(classString))
+				if (U.presents(classString))
 					init.put(BlendeeConstants.METADATA_FACTORY_CLASS, Class.forName(classString, false, loader));
 			}
 
 			{
 				String classString = properties.getProperty(Constants.COLUMN_REPOSITORY_FACTORY_CLASS);
-				if (U.isAvailable(classString)) {
+				if (U.presents(classString)) {
 					@SuppressWarnings("unchecked")
 					Class<? extends ColumnRepositoryFactory> casted = (Class<? extends ColumnRepositoryFactory>) Class
 						.forName(classString, false, loader);
@@ -452,28 +450,28 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 		try {
 			String managerParentClassName = properties.getProperty(Constants.ROW_MANAGER_PARENT_CLASS);
-			if (isAvailable(managerParentClassName)) {
+			if (U.presents(managerParentClassName)) {
 				managerParentClass = Class.forName(managerParentClassName, false, loader);
 			} else {
 				managerParentClass = null;
 			}
 
 			String rowParentClassName = properties.getProperty(Constants.ROW_PARENT_CLASS);
-			if (isAvailable(rowParentClassName)) {
+			if (U.presents(rowParentClassName)) {
 				rowParentClass = Class.forName(rowParentClassName, false, loader);
 			} else {
 				rowParentClass = null;
 			}
 
 			String queryParentClassName = properties.getProperty(Constants.QUERY_PARENT_CLASS);
-			if (isAvailable(queryParentClassName)) {
+			if (U.presents(queryParentClassName)) {
 				queryParentClass = Class.forName(queryParentClassName, false, loader);
 			} else {
 				queryParentClass = null;
 			}
 
 			String codeFormatterClassName = properties.getProperty(Constants.CODE_FORMATTER_CLASS);
-			if (isAvailable(codeFormatterClassName)) {
+			if (U.presents(codeFormatterClassName)) {
 				ClassLoader pluginLoader = new JavaProjectClassLoader(
 					getClass().getClassLoader(),
 					currentProject);
@@ -483,14 +481,14 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			}
 
 			String useNumberClassString = properties.getProperty(Constants.USE_NUMBER_CLASS);
-			if (isAvailable(useNumberClassString)) {
+			if (U.presents(useNumberClassString)) {
 				useNumberClass = Boolean.parseBoolean(useNumberClassString);
 			} else {
 				useNumberClass = false;
 			}
 
 			String notUseNullGuardString = properties.getProperty(Constants.NOT_USE_NULL_GUARD);
-			if (isAvailable(notUseNullGuardString)) {
+			if (U.presents(notUseNullGuardString)) {
 				notUseNullGuard = Boolean.parseBoolean(notUseNullGuardString);
 			} else {
 				notUseNullGuard = false;

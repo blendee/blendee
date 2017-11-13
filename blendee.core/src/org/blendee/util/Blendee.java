@@ -64,6 +64,8 @@ public class Blendee {
 
 		BlendeeConstants.ENABLE_LOG.extract(initValues).ifPresent(flag -> init.enableLog(flag));
 
+		BlendeeConstants.USE_LAZY_TRANSACTION.extract(initValues).ifPresent(flag -> init.setUseLazyTransaction(flag));
+
 		BlendeeConstants.USE_METADATA_CACHE.extract(initValues).ifPresent(flag -> init.setUseMetadataCache(flag));
 
 		BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));

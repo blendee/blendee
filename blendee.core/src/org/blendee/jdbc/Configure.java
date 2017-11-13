@@ -26,6 +26,8 @@ public final class Configure {
 
 	private final String[] schemaNames;
 
+	private final boolean useLazyTransaction;
+
 	private final boolean useMetadataCache;
 
 	private final boolean enableLog;
@@ -56,6 +58,7 @@ public final class Configure {
 		Class<? extends DataTypeConverter> dataTypeConverterClass,
 		Class<? extends MetadataFactory> metadataFactoryClass,
 		String[] schemaNames,
+		boolean useLazyTransaction,
 		boolean useMetadataCache,
 		boolean enableLog,
 		PrintStream logOutput,
@@ -67,6 +70,7 @@ public final class Configure {
 		this.dataTypeConverterClass = dataTypeConverterClass;
 		this.metadataFactoryClass = metadataFactoryClass;
 		this.schemaNames = schemaNames.clone();
+		this.useLazyTransaction = useLazyTransaction;
 		this.useMetadataCache = useMetadataCache;
 		this.enableLog = enableLog;
 		this.logOutput = logOutput;
@@ -138,6 +142,16 @@ public final class Configure {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 遅延実行トランザクションを使用するかどうかを検査します。
+	 * @return 遅延実行トランザクションを使用するかどうか
+	 * @throws IllegalStateException 古い設定を使用している場合
+	 */
+	public boolean usesLazyTransaction() {
+		check();
+		return useLazyTransaction;
 	}
 
 	/**

@@ -21,7 +21,7 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
 	@Override
-	public final void commit() {
+	public void commit() {
 		Transactions transactions = manager.getTransactions();
 		try {
 			commitInternal();
@@ -38,7 +38,7 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
 	@Override
-	public final void rollback() {
+	public void rollback() {
 		Transactions transactions = manager.getTransactions();
 		try {
 			rollbackInternal();
@@ -56,7 +56,7 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Transaction)
 	 */
 	@Override
-	public final void close() {
+	public void close() {
 		//close中に例外が出るかもしれないので、Connectionの削除が先
 		manager.remove(this);
 
@@ -104,7 +104,15 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	 */
 	protected abstract void closeInternal();
 
-	void setConnection(BConnection connection) {
-		this.connection = connection;
+	void prepareConnection(Configure config) {
+		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);
+
+		if (config.enablesLogWithoutCheck()) connection = new LoggingConnection(
+			connection,
+			new Logger(config.getLogOutputWithoutCheck(), config.getLogStackTracePatternWithoutCheck()));
+
+		config.initializeMetadatas(connection);
+		Metadata[] metadatas = config.getMetadatasWithoutCheck();
+		if (metadatas.length > 0) connection = new MetadatasConnection(connection, metadatas);
 	}
 }

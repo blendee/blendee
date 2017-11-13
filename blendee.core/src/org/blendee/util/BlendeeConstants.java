@@ -34,6 +34,14 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<Boolean> ENABLE_LOG = new ParsableOptionKey<>("enable-log", TO_BOOLEAN);
 
 	/**
+	 * (Boolean) USE_LAZY_TRANSACTION
+	 * @see Initializer#setUseLazyTransaction(boolean)
+	 */
+	public static final ParsableOptionKey<Boolean> USE_LAZY_TRANSACTION = new ParsableOptionKey<>(
+		"use-lazy-transaction",
+		TO_BOOLEAN);
+
+	/**
 	 * (Boolean) USE_METADATA_CACHE
 	 * @see Initializer#setUseMetadataCache(boolean)
 	 */

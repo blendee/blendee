@@ -26,6 +26,8 @@ public final class Initializer {
 
 	private Class<? extends MetadataFactory> metadataFactoryClass = DefaultMetadataFactory.class;
 
+	private boolean useLazyTransaction = false;
+
 	private boolean useMetadataCache = true;
 
 	private boolean enableLog = false;
@@ -105,6 +107,16 @@ public final class Initializer {
 	}
 
 	/**
+	 * 遅延実行トランザクションを使用するかどうかを設定します。
+	 * @param useLazyTransaction 遅延実行トランザクションを使用するかどうか
+	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
+	 */
+	public synchronized void setUseLazyTransaction(boolean useLazyTransaction) {
+		if (freeze) throw new IllegalStateException();
+		this.useLazyTransaction = useLazyTransaction;
+	}
+
+	/**
 	 * データベースの定義情報をキャッシュするかどうかを設定します。
 	 * @param useMetadataCache データベースの定義情報をキャッシュするかどうか
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
@@ -178,6 +190,7 @@ public final class Initializer {
 			dataTypeConverterClass,
 			metadataFactoryClass,
 			schemaNames.toArray(new String[schemaNames.size()]),
+			useLazyTransaction,
 			useMetadataCache,
 			enableLog,
 			logOutput,
