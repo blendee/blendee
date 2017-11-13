@@ -74,7 +74,10 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	 * @return 接続
 	 */
 	public BConnection getConnection() {
-		if (connection == null) return getConnectionInternal();
+		if (connection == null) {
+			connection = getConnectionInternal();
+		}
+
 		return connection;
 	}
 
@@ -105,6 +108,8 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 	protected abstract void closeInternal();
 
 	void prepareConnection(Configure config) {
+		BConnection connection = getConnection();
+
 		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);
 
 		if (config.enablesLogWithoutCheck()) connection = new LoggingConnection(
@@ -114,5 +119,7 @@ public abstract class BTransaction implements AutoCloseable, Transaction {
 		config.initializeMetadatas(connection);
 		Metadata[] metadatas = config.getMetadatasWithoutCheck();
 		if (metadatas.length > 0) connection = new MetadatasConnection(connection, metadatas);
+
+		this.connection = connection;
 	}
 }
