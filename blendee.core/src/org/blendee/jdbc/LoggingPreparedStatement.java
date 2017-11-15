@@ -27,25 +27,25 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 
 	@Override
 	public void setDouble(int parameterIndex, double x) {
-		logger.addBindingValue("double", parameterIndex, new Double(x));
+		logger.addBindingValue("double", parameterIndex, Double.valueOf(x));
 		super.setDouble(parameterIndex, x);
 	}
 
 	@Override
 	public void setFloat(int parameterIndex, float x) {
-		logger.addBindingValue("float", parameterIndex, new Float(x));
+		logger.addBindingValue("float", parameterIndex, Float.valueOf(x));
 		super.setFloat(parameterIndex, x);
 	}
 
 	@Override
 	public void setInt(int parameterIndex, int x) {
-		logger.addBindingValue("int", parameterIndex, new Integer(x));
+		logger.addBindingValue("int", parameterIndex, Integer.valueOf(x));
 		super.setInt(parameterIndex, x);
 	}
 
 	@Override
 	public void setLong(int parameterIndex, long x) {
-		logger.addBindingValue("long", parameterIndex, new Long(x));
+		logger.addBindingValue("long", parameterIndex, Long.valueOf(x));
 		super.setLong(parameterIndex, x);
 	}
 

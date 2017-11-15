@@ -4,8 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.annotation.Generated;
-
 import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
@@ -45,7 +43,6 @@ import org.blendee.support.WhereQueryColumn;
  * パッケージ名 {0}
  * テーブル名 {1}
  */
-@Generated(value = /*++'++*/{/*++'++*/"{9}"/*++'++*/}/*++'++*/)
 public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements Query /*++'++*/{/*++'++*/

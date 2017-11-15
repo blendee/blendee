@@ -226,9 +226,4 @@ class ConcretePreparedStatement implements BPreparedStatement {
 	public void close() {
 		U.close(statement);
 	}
-
-	@Override
-	protected void finalize() {
-		close();
-	}
 }

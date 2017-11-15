@@ -83,7 +83,7 @@ class Logger {
 
 		@Override
 		public int compareTo(BindingValue value) {
-			return new Integer(index).compareTo(new Integer(value.index));
+			return Integer.valueOf(index).compareTo(Integer.valueOf(value.index));
 		}
 
 		private String createLog() {

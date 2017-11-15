@@ -47,7 +47,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 
 	synchronized ColumnRepository createColumnRepository() {
 		try {
-			return columnRepositoryFactoryClass.newInstance().createColumnRepository();
+			return columnRepositoryFactoryClass.getDeclaredConstructor().newInstance().createColumnRepository();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

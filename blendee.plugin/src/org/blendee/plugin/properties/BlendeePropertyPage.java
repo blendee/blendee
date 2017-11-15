@@ -1,7 +1,5 @@
 package org.blendee.plugin.properties;
 
-import static org.blendee.internal.U.isAvailable;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -81,7 +79,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				return checkSchemas(this, packagesEditorContainer[0], this);
 			}
@@ -100,7 +98,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				return checkSchemas(schemaNamesEditor, this, this);
 			}
@@ -120,7 +118,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				try {
 					BlendeePlugin.checkRequiredClass(
@@ -183,7 +181,7 @@ public class BlendeePropertyPage
 			@Override
 			protected String changePressed() {
 				String path = super.changePressed();
-				if (!U.isAvailable(path)) return path;
+				if (!U.presents(path)) return path;
 				return BlendeePlugin.regularizeColumnRepositoryFilePath(element, path);
 			}
 
@@ -232,7 +230,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				try {
 					BlendeePlugin.checkRequiredClass(
@@ -262,7 +260,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				try {
 					BlendeePlugin.checkRequiredClass(
@@ -292,7 +290,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				try {
 					BlendeePlugin.checkRequiredClass(
@@ -323,7 +321,7 @@ public class BlendeePropertyPage
 			@Override
 			protected boolean doCheckState() {
 				String typeName = getStringValue();
-				if (isAvailable(typeName) && findType(typeName) == null) {
+				if (U.presents(typeName) && findType(typeName) == null) {
 					setErrorMessage("プロジェクト内にクラス " + typeName + " が見つかりません");
 					return false;
 				}
@@ -346,7 +344,7 @@ public class BlendeePropertyPage
 			@Override
 			protected boolean doCheckState() {
 				String typeName = getStringValue();
-				if (isAvailable(typeName) && findType(typeName) == null) {
+				if (U.presents(typeName) && findType(typeName) == null) {
 					setErrorMessage("プロジェクト内にクラス " + typeName + " が見つかりません");
 					return false;
 				}
@@ -369,7 +367,7 @@ public class BlendeePropertyPage
 			@Override
 			protected boolean doCheckState() {
 				String typeName = getStringValue();
-				if (isAvailable(typeName) && findType(typeName) == null) {
+				if (U.presents(typeName) && findType(typeName) == null) {
 					setErrorMessage("プロジェクト内にクラス " + typeName + " が見つかりません");
 					return false;
 				}
@@ -391,7 +389,7 @@ public class BlendeePropertyPage
 
 			@Override
 			protected boolean doCheckState() {
-				if (!U.isAvailable(getStringValue())) return true;
+				if (!U.presents(getStringValue())) return true;
 
 				try {
 					BlendeePlugin.checkRequiredClass(

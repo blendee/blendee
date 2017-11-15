@@ -43,7 +43,7 @@ public final class DoubleBinder extends Binder {
 
 	@Override
 	public Object getValue() {
-		return new Double(value);
+		return Double.valueOf(value);
 	}
 
 	/**

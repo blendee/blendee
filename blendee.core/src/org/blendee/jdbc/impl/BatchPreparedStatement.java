@@ -56,9 +56,4 @@ class BatchPreparedStatement extends ConcretePreparedStatement {
 	public int executeUpdate() {
 		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	protected void finalize() {
-		close();
-	}
 }

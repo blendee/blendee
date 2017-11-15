@@ -18,7 +18,7 @@ public class ValueExtractorsConfigure implements ManagementSubject {
 	 */
 	public synchronized void setValueExtractorsClass(Class<? extends ValueExtractors> extractorsClass) {
 		try {
-			extractors = extractorsClass.newInstance();
+			extractors = extractorsClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

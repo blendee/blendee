@@ -1,7 +1,5 @@
 /*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
 
-import javax.annotation.Generated;
-
 import org.blendee.support.Row;
 import org.blendee.support.annotation.RowGetter;
 /*--*/import org.blendee.support.annotation.RowRelationship;/*--*/
@@ -22,7 +20,6 @@ import org.blendee.sql.ValueExtractor;
 {6}
  */
 @Resource(schema = "{1}", table = "{2}")
-@Generated(value = /*++'++*/{/*++'++*/"{9}"/*++'++*/}/*++'++*/)
 /*++{7}++*/public class /*++{2}++*//*--*/RowBase/*--*/
 extends /*++{3}++*//*--*/Object/*--*/
 	implements Row /*++'++*/{/*++'++*/

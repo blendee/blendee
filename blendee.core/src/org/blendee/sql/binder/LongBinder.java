@@ -43,7 +43,7 @@ public final class LongBinder extends Binder {
 
 	@Override
 	public Object getValue() {
-		return new Long(value);
+		return Long.valueOf(value);
 	}
 
 	/**

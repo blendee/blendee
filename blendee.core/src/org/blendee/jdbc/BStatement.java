@@ -72,7 +72,6 @@ public interface BStatement extends AutoCloseable {
 
 	/**
 	 * このステートメントを閉じます。<br>
-	 * このステートメントが生成した {@link BResultSet} も同時に閉じます。
 	 */
 	@Override
 	void close();

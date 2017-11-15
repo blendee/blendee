@@ -43,7 +43,7 @@ public final class FloatBinder extends Binder {
 
 	@Override
 	public Object getValue() {
-		return new Float(value);
+		return Float.valueOf(value);
 	}
 
 	/**

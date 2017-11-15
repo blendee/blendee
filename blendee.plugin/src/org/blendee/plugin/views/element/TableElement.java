@@ -138,8 +138,7 @@ public class TableElement extends PropertySourceElement {
 			plugin.getQueryParentClass(),
 			plugin.getCodeFormatter(),
 			plugin.useNumberClass(),
-			!plugin.notUseNullGuard(),
-			org.blendee.plugin.ORMGenerator.class.getName());
+			!plugin.notUseNullGuard());
 
 		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		String tableName = path.getTableName();

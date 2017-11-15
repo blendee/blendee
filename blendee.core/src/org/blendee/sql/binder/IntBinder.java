@@ -43,7 +43,7 @@ public final class IntBinder extends Binder {
 
 	@Override
 	public Object getValue() {
-		return new Integer(value);
+		return Integer.valueOf(value);
 	}
 
 	/**

@@ -373,9 +373,4 @@ class ConcreteResultSet implements BResultSet {
 		//使わないため未使用警告が出ていい気がしないので、無理やり使用する
 		return statement;
 	}
-
-	@Override
-	protected void finalize() {
-		close();
-	}
 }

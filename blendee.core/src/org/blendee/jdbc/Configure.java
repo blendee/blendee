@@ -256,7 +256,7 @@ public final class Configure {
 
 	private static <T> T createInstance(Class<? extends T> clazz) {
 		try {
-			return clazz.newInstance();
+			return clazz.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
