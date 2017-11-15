@@ -34,7 +34,7 @@ public class SimpleContextStrategy implements ContextStrategy {
 				instance = originalMap.get(clazz);
 				if (instance == null) {
 					try {
-						instance = clazz.newInstance();
+						instance = clazz.getDeclaredConstructor().newInstance();
 					} catch (Exception e) {
 						throw new IllegalStateException(e);
 					}

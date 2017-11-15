@@ -86,7 +86,6 @@ public class ORMGenerator {
 
 	private final boolean useNullGuard;
 
-	private final String generatorName;
 	static {
 		primitiveToWrapperMap.put(boolean.class, Boolean.class);
 		primitiveToWrapperMap.put(byte.class, Byte.class);
@@ -167,7 +166,6 @@ public class ORMGenerator {
 	 * @param codeFormatter {@link CodeFormatter}
 	 * @param useNumberClass Row クラスの数値型項目を {@link Number} で統一する
 	 * @param useNullGuard Row クラスの項目に null ガードを適用する
-	 * @param generatorName ジェネレータ名
 	 */
 	public ORMGenerator(
 		Metadata metadata,
@@ -178,8 +176,7 @@ public class ORMGenerator {
 		Class<?> querySuperclass,
 		CodeFormatter codeFormatter,
 		boolean useNumberClass,
-		boolean useNullGuard,
-		String generatorName) {
+		boolean useNullGuard) {
 		this.metadata = Objects.requireNonNull(metadata);
 		this.packageName = Objects.requireNonNull(packageName);
 
@@ -192,7 +189,6 @@ public class ORMGenerator {
 
 		this.useNumberClass = useNumberClass;
 		this.useNullGuard = useNullGuard;
-		this.generatorName = generatorName;
 	}
 
 	/**
@@ -270,8 +266,7 @@ public class ORMGenerator {
 			packageName,
 			target.getTableName(),
 			managerSuperclass.getName(),
-			buildTableComment(metadata, target),
-			getGenerator());
+			buildTableComment(metadata, target));
 	}
 
 	/**
@@ -372,8 +367,7 @@ public class ORMGenerator {
 			relationshipPart,
 			buildTableComment(metadata, target),
 			buildAnnotationPart(metadata, relation, importPart),
-			String.join(U.LINE_SEPARATOR, importPart),
-			getGenerator());
+			String.join(U.LINE_SEPARATOR, importPart));
 	}
 
 	/**
@@ -471,8 +465,7 @@ public class ORMGenerator {
 			columnPart2,
 			relationshipPart2,
 			relationshipPart3,
-			relation.getRelationships().length > 0 ? ("import " + Many.class.getName() + ";") : "",
-			getGenerator());
+			relation.getRelationships().length > 0 ? ("import " + Many.class.getName() + ";") : "");
 	}
 
 	@Override
@@ -600,10 +593,6 @@ public class ORMGenerator {
 		if (Number.class.isAssignableFrom(target)) return Number.class;
 
 		return target;
-	}
-
-	private String getGenerator() {
-		return generatorName != null ? generatorName : ORMGenerator.class.getName();
 	}
 
 	private static String toUpperCaseFirstLetter(String target) {

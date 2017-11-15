@@ -1,7 +1,5 @@
 /*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
 
-import javax.annotation.Generated;
-
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
@@ -19,7 +17,6 @@ import org.blendee.support.RowIterator;
  * 自動生成された '{'@link RowManager'}' の実装クラスです。
 {3}
  */
-@Generated(value = /*++'++*/{/*++'++*/"{4}"/*++'++*/}/*++'++*/)
 public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements RowManager</*++{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/

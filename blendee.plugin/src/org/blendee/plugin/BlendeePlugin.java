@@ -441,7 +441,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 			columnRepositoryFactoryMap.put(
 				currentProject,
-				columnRepositoryFactoryClass.newInstance());
+				columnRepositoryFactoryClass.getDeclaredConstructor().newInstance());
 
 			transaction = ContextManager.get(BlendeeManager.class).startTransaction();
 		} catch (Exception e) {
@@ -475,7 +475,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 				ClassLoader pluginLoader = new JavaProjectClassLoader(
 					getClass().getClassLoader(),
 					currentProject);
-				codeFormatter = (CodeFormatter) Class.forName(codeFormatterClassName, false, pluginLoader).newInstance();
+				codeFormatter = (CodeFormatter) Class.forName(codeFormatterClassName, false, pluginLoader).getDeclaredConstructor().newInstance();
 			} else {
 				codeFormatter = null;
 			}
