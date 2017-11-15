@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//TODO 設計通り動くかをテストすること
 class AutoCloseableFinalizer {
 
 	private static final AtomicInteger counter = new AtomicInteger();
@@ -69,25 +68,5 @@ class AutoCloseableFinalizer {
 		try {
 			closeable.close();
 		} catch (Exception e) {}
-	}
-
-	public static void main(String[] args) throws Exception {
-		AutoCloseable c = () -> System.out.println("closed.");
-
-		AutoCloseableFinalizer f = new AutoCloseableFinalizer(10);
-		f.start();
-
-		for (int i = 0; i < 10000; i++) {
-			Enc e = new Enc();
-			e.c = c;
-			f.regist(e, c);
-		}
-
-		f.stop();
-	}
-
-	private static class Enc {
-
-		AutoCloseable c;
 	}
 }
