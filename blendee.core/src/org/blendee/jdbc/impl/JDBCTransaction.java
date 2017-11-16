@@ -39,7 +39,8 @@ public class JDBCTransaction extends BTransaction {
 	@Override
 	protected void commitInternal() {
 		try {
-			jdbcConnection.commit();
+			if (!jdbcConnection.isClosed())
+				jdbcConnection.commit();
 		} catch (SQLException e) {
 			close();
 			throw config.getErrorConverter().convert(e);
@@ -49,7 +50,8 @@ public class JDBCTransaction extends BTransaction {
 	@Override
 	protected void rollbackInternal() {
 		try {
-			jdbcConnection.rollback();
+			if (!jdbcConnection.isClosed())
+				jdbcConnection.rollback();
 		} catch (SQLException e) {
 			close();
 			throw config.getErrorConverter().convert(e);

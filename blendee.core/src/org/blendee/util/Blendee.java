@@ -8,9 +8,10 @@ import java.util.regex.Pattern;
 
 import org.blendee.internal.TransactionManager;
 import org.blendee.internal.TransactionShell;
+import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BTransaction;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
@@ -68,6 +69,8 @@ public class Blendee {
 
 		BlendeeConstants.USE_METADATA_CACHE.extract(initValues).ifPresent(flag -> init.setUseMetadataCache(flag));
 
+		BlendeeConstants.AUTO_CLOSE_INTERVAL_MILLIS.extract(initValues).ifPresent(millis -> init.setAutoCloseIntervalMillis(millis));
+
 		BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));
 
 		BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
@@ -102,6 +105,15 @@ public class Blendee {
 		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
 			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
 				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+	}
+
+	/**
+	 * 現在接続中の JDBC インスタンスをすべてクローズし、このコンテキストの Blendee を終了します。
+	 */
+	public static void stop() {
+		AutoCloseableFinalizer finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
+		finalizer.stop();
+		finalizer.closeAll();
 	}
 
 	/**

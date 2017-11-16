@@ -42,6 +42,15 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 			}
 		},
 
+		TO_INTEGER {
+
+			@Override
+			@SuppressWarnings("unchecked")
+			<T> T parse(String value) {
+				return (T) Integer.valueOf(value);
+			}
+		},
+
 		TO_CLASS {
 
 			@Override

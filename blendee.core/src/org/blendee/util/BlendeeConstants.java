@@ -2,6 +2,7 @@ package org.blendee.util;
 
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_BOOLEAN;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_CLASS;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
@@ -48,6 +49,14 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<Boolean> USE_METADATA_CACHE = new ParsableOptionKey<>(
 		"use-metadata-cache",
 		TO_BOOLEAN);
+
+	/**
+	 * (Boolean) AUTO_CLOSE_INTERVAL_MILLIS
+	 * @see Initializer#setAutoCloseIntervalMillis(int)
+	 */
+	public static final ParsableOptionKey<Integer> AUTO_CLOSE_INTERVAL_MILLIS = new ParsableOptionKey<>(
+		"auto-close-interval-millis",
+		TO_INTEGER);
 
 	/**
 	 * (String) LOG_STACKTRACE_FILTER
