@@ -25,11 +25,11 @@ class ConcreteResultSet implements BResultSet {
 
 	private final ResultSet base;
 
+	private final ResultSetMetaData metadata;
+
 	//statementをここで参照しておかないと、statementが先に解放され自動クローズがかかった場合
 	//ResultSetをnext()中でもResultSetがクローズされてしまう
-	private final ConcretePreparedStatement statement;
-
-	private final ResultSetMetaData metadata;
+	private ConcretePreparedStatement statement;
 
 	ConcreteResultSet(
 		Configure config,
@@ -361,6 +361,8 @@ class ConcreteResultSet implements BResultSet {
 	@Override
 	public void close() {
 		U.close(base);
+		//ここで statement の参照をなくし、 statement が自動クローズの対象になるようにする
+		statement = null;
 	}
 
 	/**
