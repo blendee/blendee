@@ -41,7 +41,8 @@ class ConcreteResultSet implements BResultSet {
 			throw config.getErrorConverter().convert(e);
 		}
 
-		finalizer.regist(this, base);
+		if (finalizer != null)
+			finalizer.regist(this, base);
 	}
 
 	@Override

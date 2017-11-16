@@ -66,9 +66,13 @@ class ConcreteConnection implements BConnection {
 			storesUpperCaseIdentifiers = metadata.storesUpperCaseIdentifiers();
 			storesLowerCaseIdentifiers = metadata.storesLowerCaseIdentifiers();
 
-			finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
-
-			finalizer.regist(this, connection);
+			AutoCloseableFinalizer finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
+			if (finalizer.started()) {
+				finalizer.regist(this, connection);
+				this.finalizer = finalizer;
+			} else {
+				this.finalizer = null;
+			}
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}

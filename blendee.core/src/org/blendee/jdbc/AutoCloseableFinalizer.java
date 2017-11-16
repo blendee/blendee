@@ -56,12 +56,22 @@ public class AutoCloseableFinalizer {
 	}
 
 	/**
+	 * チェックスレッドが開始しているかを返します。
+	 * @return チェックスレッドが開始しているか
+	 */
+	public boolean started() {
+		synchronized (lock) {
+			return thread != null && thread.isAlive();
+		}
+	}
+
+	/**
 	 * チェックスレッドを開始します。<br>
 	 * スレッドが既に開始されている場合、何も起こりません。
 	 */
 	public void start() {
 		synchronized (lock) {
-			if (thread != null && thread.isAlive()) return;
+			if (started()) return;
 
 			thread = new Thread(runnable, AutoCloseableFinalizer.class.getName() + "-" + threadCounter.getAndIncrement());
 			thread.start();

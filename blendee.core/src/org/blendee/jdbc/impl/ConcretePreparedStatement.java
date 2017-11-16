@@ -35,7 +35,8 @@ class ConcretePreparedStatement implements BPreparedStatement {
 		this.config = config;
 		this.statement = statement;
 		this.finalizer = finalizer;
-		finalizer.regist(this, statement);
+		if (finalizer != null)
+			finalizer.regist(this, statement);
 	}
 
 	@Override
