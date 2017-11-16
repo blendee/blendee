@@ -32,6 +32,7 @@ public abstract class TransactionShell implements Shell {
 
 	@Override
 	public void doFinally() {
+		manager.getAutoCloseableFinalizer().closeAll();
 		if (transaction != null) transaction.close();
 	}
 

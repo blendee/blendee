@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
@@ -18,8 +19,8 @@ class BatchPreparedStatement extends ConcretePreparedStatement {
 
 	private PreparedStatement statement;
 
-	BatchPreparedStatement(Configure config, PreparedStatement statement) {
-		super(config, statement);
+	BatchPreparedStatement(Configure config, PreparedStatement statement, AutoCloseableFinalizer finalizer) {
+		super(config, statement, finalizer);
 		this.config = config;
 		this.statement = statement;
 	}

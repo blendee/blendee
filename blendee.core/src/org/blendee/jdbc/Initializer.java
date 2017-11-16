@@ -30,6 +30,8 @@ public final class Initializer {
 
 	private boolean useMetadataCache = true;
 
+	private int autoCloseIntervalMillis = 0;
+
 	private boolean enableLog = false;
 
 	private PrintStream logOutput = System.out;
@@ -127,6 +129,17 @@ public final class Initializer {
 	}
 
 	/**
+	 * {@link AutoCloseable} を実装した Blendee の各インスタンスを、もう使用されなくなったときに close() するためのチェック間隔（ミリ秒）を設定します。<br>
+	 * 0 以下の値を設定した場合、自動クローズは行われません。
+	 * @param autoCloseIntervalMillis close() するためのチェック間隔（ミリ秒）
+	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
+	 */
+	public synchronized void setAutoCloseIntervalMillis(int autoCloseIntervalMillis) {
+		if (freeze) throw new IllegalStateException();
+		this.autoCloseIntervalMillis = autoCloseIntervalMillis;
+	}
+
+	/**
 	 * Blendee が実行する SQL 文を、 {@link Initializer#setLogOutput(PrintStream)} で定義した出力先に出力するかどうかを設定します。
 	 * @param enableLog SQL 文を出力するかどうか
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
@@ -192,6 +205,7 @@ public final class Initializer {
 			schemaNames.toArray(new String[schemaNames.size()]),
 			useLazyTransaction,
 			useMetadataCache,
+			autoCloseIntervalMillis,
 			enableLog,
 			logOutput,
 			logStackTracePattern,

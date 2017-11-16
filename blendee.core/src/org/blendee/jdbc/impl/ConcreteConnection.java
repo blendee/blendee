@@ -14,19 +14,22 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BatchStatementWrapper;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 
 /**
  * Blendee が使用する {@link BConnection} の標準実装クラスです。
@@ -48,6 +51,8 @@ class ConcreteConnection implements BConnection {
 
 	private final boolean storesLowerCaseIdentifiers;
 
+	private final AutoCloseableFinalizer finalizer;
+
 	/**
 	 * JDBC 接続を使用してインスタンスを生成します。
 	 * @param connection JDBC 接続
@@ -60,6 +65,10 @@ class ConcreteConnection implements BConnection {
 
 			storesUpperCaseIdentifiers = metadata.storesUpperCaseIdentifiers();
 			storesLowerCaseIdentifiers = metadata.storesLowerCaseIdentifiers();
+
+			finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
+
+			finalizer.regist(this, connection);
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
@@ -280,7 +289,7 @@ class ConcreteConnection implements BConnection {
 	}
 
 	BatchPreparedStatement createForBatch(String sql) {
-		return new BatchPreparedStatement(config, createStatement(sql));
+		return new BatchPreparedStatement(config, createStatement(sql), finalizer);
 	}
 
 	BPreparedStatement wrapInternal(ConcretePreparedStatement statement) {
@@ -288,7 +297,7 @@ class ConcreteConnection implements BConnection {
 	}
 
 	private ConcretePreparedStatement create(String sql) {
-		return new ConcretePreparedStatement(config, createStatement(sql));
+		return new ConcretePreparedStatement(config, createStatement(sql), finalizer);
 	}
 
 	private static BPreparedStatement wrap(

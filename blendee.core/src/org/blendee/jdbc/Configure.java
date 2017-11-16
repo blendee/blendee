@@ -30,6 +30,8 @@ public final class Configure {
 
 	private final boolean useMetadataCache;
 
+	private final int autoCloseIntervalMillis;
+
 	private final boolean enableLog;
 
 	private final PrintStream logOutput;
@@ -60,6 +62,7 @@ public final class Configure {
 		String[] schemaNames,
 		boolean useLazyTransaction,
 		boolean useMetadataCache,
+		int autoCloseIntervalMillis,
 		boolean enableLog,
 		PrintStream logOutput,
 		Pattern logStackTracePattern,
@@ -72,6 +75,7 @@ public final class Configure {
 		this.schemaNames = schemaNames.clone();
 		this.useLazyTransaction = useLazyTransaction;
 		this.useMetadataCache = useMetadataCache;
+		this.autoCloseIntervalMillis = autoCloseIntervalMillis;
 		this.enableLog = enableLog;
 		this.logOutput = logOutput;
 		this.logStackTracePattern = logStackTracePattern;
@@ -162,6 +166,16 @@ public final class Configure {
 	public boolean usesMetadataCache() {
 		check();
 		return useMetadataCache;
+	}
+
+	/**
+	 * {@link AutoCloseable} を実装した Blendee の各インスタンスを、もう使用されなくなったときに close() するためのチェック間隔（ミリ秒）を検査します。
+	 * @return close() するためのチェック間隔（ミリ秒）
+	 * @throws IllegalStateException 古い設定を使用している場合
+	 */
+	public int getAutoCloseIntervalMillis() {
+		check();
+		return autoCloseIntervalMillis;
 	}
 
 	/**

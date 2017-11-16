@@ -12,9 +12,11 @@ public class BlendeeManager implements ManagementSubject {
 	private final ThreadLocal<ThreadLocalValues> threadLocalValues = ThreadLocal.withInitial(
 		() -> new ThreadLocalValues());
 
-	private Object lock = new Object();
+	private final Object lock = new Object();
 
 	private Configure config;
+
+	private AutoCloseableFinalizer autoCloseableFinalizer;
 
 	/**
 	 * 新しい {@link Initializer} を使用して Blendee の設定を初期化します
@@ -25,6 +27,14 @@ public class BlendeeManager implements ManagementSubject {
 			if (config != null) throw new IllegalStateException("既に initialize が実行されています。");
 
 			config = initializer.createConfigure();
+
+			int interval = config.getAutoCloseIntervalMillis();
+
+			//100以下は100に増やしておく
+			autoCloseableFinalizer = new AutoCloseableFinalizer(interval < 100 ? 100 : interval);
+
+			//intervalが0以下の場合、スレッドを起動しない
+			if (interval > 0) autoCloseableFinalizer.start();
 		}
 
 		LoggingManager.getLogger().info("Blendee initialized. " + initializer);
@@ -39,6 +49,17 @@ public class BlendeeManager implements ManagementSubject {
 		synchronized (lock) {
 			if (config == null) throw new IllegalStateException("設定が完了していません");
 			return config;
+		}
+	}
+
+	/**
+	 * 現在の {@link AutoCloseableFinalizer} を返します。
+	 * @return {@link AutoCloseableFinalizer}
+	 */
+	public AutoCloseableFinalizer getAutoCloseableFinalizer() {
+		synchronized (lock) {
+			if (autoCloseableFinalizer == null) throw new IllegalStateException("設定が完了していません");
+			return autoCloseableFinalizer;
 		}
 	}
 

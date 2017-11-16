@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
@@ -24,13 +25,17 @@ class ConcretePreparedStatement implements BPreparedStatement {
 
 	private final PreparedStatement statement;
 
+	private final AutoCloseableFinalizer finalizer;
+
 	/**
 	 * インスタンスを生成します。
 	 * @param statement {@link PreparedStatement}
 	 */
-	ConcretePreparedStatement(Configure config, PreparedStatement statement) {
+	ConcretePreparedStatement(Configure config, PreparedStatement statement, AutoCloseableFinalizer finalizer) {
 		this.config = config;
 		this.statement = statement;
+		this.finalizer = finalizer;
+		finalizer.regist(this, statement);
 	}
 
 	@Override
@@ -171,7 +176,7 @@ class ConcretePreparedStatement implements BPreparedStatement {
 	@Override
 	public BResultSet executeQuery() {
 		try {
-			return new ConcreteResultSet(config, statement.executeQuery(), this);
+			return new ConcreteResultSet(config, statement.executeQuery(), this, finalizer);
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
@@ -198,7 +203,7 @@ class ConcretePreparedStatement implements BPreparedStatement {
 	@Override
 	public BResultSet getResultSet() {
 		try {
-			return new ConcreteResultSet(config, statement.getResultSet(), this);
+			return new ConcreteResultSet(config, statement.getResultSet(), this, finalizer);
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}

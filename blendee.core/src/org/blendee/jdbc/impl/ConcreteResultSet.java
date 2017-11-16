@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
 
@@ -26,12 +27,11 @@ class ConcreteResultSet implements BResultSet {
 
 	private final ResultSetMetaData metadata;
 
-	private ConcretePreparedStatement statement;
-
 	ConcreteResultSet(
 		Configure config,
 		ResultSet base,
-		ConcretePreparedStatement statement) {
+		ConcretePreparedStatement statement,
+		AutoCloseableFinalizer finalizer) {
 		this.config = config;
 		this.base = base;
 
@@ -41,7 +41,7 @@ class ConcreteResultSet implements BResultSet {
 			throw config.getErrorConverter().convert(e);
 		}
 
-		this.statement = statement;
+		finalizer.regist(this, base);
 	}
 
 	@Override
@@ -355,22 +355,10 @@ class ConcreteResultSet implements BResultSet {
 	@Override
 	public void close() {
 		U.close(base);
-		//ここで statement の参照をなくし、 statement が GC の対象になるようにする
-		statement = null;
 	}
 
 	@Override
 	public String toString() {
 		return U.toString(this);
-	}
-
-	/**
-	 * このインスタンスを生成した statement を返します。
-	 * @return このインスタンスを生成した statement
-	 */
-	public ConcretePreparedStatement getStatement() {
-		//statement は GC をコントロールするために参照しているが、このクラス内では
-		//使わないため未使用警告が出ていい気がしないので、無理やり使用する
-		return statement;
 	}
 }
