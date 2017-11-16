@@ -74,6 +74,8 @@ public class AutoCloseableFinalizer {
 			if (started()) return;
 
 			thread = new Thread(runnable, AutoCloseableFinalizer.class.getName() + "-" + threadCounter.getAndIncrement());
+			//デーモンスレッドとし、他スレッドが終了するとこのスレッドも終了する
+			thread.setDaemon(true);
 			thread.start();
 		}
 	}
