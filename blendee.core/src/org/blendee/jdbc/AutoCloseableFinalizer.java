@@ -52,6 +52,7 @@ public class AutoCloseableFinalizer {
 	public void regist(Object closeableEnclosure, AutoCloseable closeable) {
 		synchronized (lock) {
 			map.put(new PhantomReference<>(closeableEnclosure, reaped), closeable);
+			lock.notify();
 		}
 	}
 
@@ -91,10 +92,10 @@ public class AutoCloseableFinalizer {
 
 			thread.interrupt();
 			thread = null;
-		}
 
-		System.gc();
-		execute();
+			System.gc();
+			lock.notify();
+		}
 	}
 
 	/**
@@ -107,12 +108,21 @@ public class AutoCloseableFinalizer {
 		}
 	}
 
+	//チェックスレッド用メソッド
 	private boolean execute() {
 		Reference<?> ref;
 		while ((ref = reaped.poll()) != null) {
 			ref.clear();
+
+			//一件ずつsyncするのは無駄だが、極力メインスレッド（regist側）を止めないためにこうする
 			synchronized (lock) {
 				close(map.remove(ref));
+				try {
+					//監視対象がなくなったら、追加されるまでwait
+					if (map.size() == 0) lock.wait();
+				} catch (InterruptedException e) {
+					return true;
+				}
 			}
 		}
 
