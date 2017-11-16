@@ -25,6 +25,10 @@ class ConcreteResultSet implements BResultSet {
 
 	private final ResultSet base;
 
+	//statementをここで参照しておかないと、statementが先に解放され自動クローズがかかった場合
+	//ResultSetをnext()中でもResultSetがクローズされてしまう
+	private final ConcretePreparedStatement statement;
+
 	private final ResultSetMetaData metadata;
 
 	ConcreteResultSet(
@@ -34,6 +38,7 @@ class ConcreteResultSet implements BResultSet {
 		AutoCloseableFinalizer finalizer) {
 		this.config = config;
 		this.base = base;
+		this.statement = statement;
 
 		try {
 			this.metadata = base.getMetaData();
@@ -356,6 +361,16 @@ class ConcreteResultSet implements BResultSet {
 	@Override
 	public void close() {
 		U.close(base);
+	}
+
+	/**
+	 * このインスタンスを生成した statement を返します。
+	 * @return このインスタンスを生成した statement
+	 */
+	public ConcretePreparedStatement getStatement() {
+		//statement は GC をコントロールするために参照している
+		//万が一コンパイラの最適化等で参照が消されないようにpublicメソッドで使用しているようにする
+		return statement;
 	}
 
 	@Override
