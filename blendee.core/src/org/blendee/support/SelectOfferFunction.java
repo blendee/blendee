@@ -23,7 +23,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 	/**
 	 * SELECT 句対象を束ねるクラスです。
 	 */
-	public static class SelectOffers {
+	static class SelectOffers {
 
 		private final List<Column> columns = new LinkedList<>();
 

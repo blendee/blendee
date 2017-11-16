@@ -27,7 +27,7 @@ public interface RowManager<T extends Row> {
 	/**
 	 * 空の検索結果
 	 */
-	public static final RowIterator<Row> EMPTY_ITERATOR = new RowIterator<Row>(
+	static final RowIterator<Row> EMPTY_ITERATOR = new RowIterator<Row>(
 		DataAccessHelper.EMPTY_UPDATABLE_DATA_OBJECT_ITERATOR) {
 
 		@Override
@@ -55,7 +55,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link RowIterator}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Row> RowIterator<T> getEmptyRowIterator() {
+	static <T extends Row> RowIterator<T> getEmptyRowIterator() {
 		return (RowIterator<T>) EMPTY_ITERATOR;
 	}
 

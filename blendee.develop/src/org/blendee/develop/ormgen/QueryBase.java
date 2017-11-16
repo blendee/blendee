@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
-import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -124,7 +123,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このクラスのインスタンス
 	 */
 	public static /*++{1}Query++*//*--*/QueryBase/*--*/ of(String id) /*++'++*/{/*++'++*/
-		if (!U.presents(id))
+		if (id == null || id.equals(""))
 			throw new IllegalArgumentException("id が空です");
 
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);

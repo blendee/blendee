@@ -15,17 +15,17 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
 	 * @return 検索条件を持つ場合、 true
 	 */
-	public boolean hasCondition();
+	boolean hasCondition();
 
 	/**
 	 * この Query のルート {@link Relationship} を返します。
 	 * @return ルート {@link Relationship}
 	 */
-	public Relationship getRootRealtionship();
+	Relationship getRootRealtionship();
 
 	/**
 	 * この Query の {@link LogicalOperators} を返します。
 	 * @return {@link LogicalOperators}
 	 */
-	public LogicalOperators getLogicalOperators();
+	LogicalOperators getLogicalOperators();
 }

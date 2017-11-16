@@ -12,7 +12,7 @@ public interface QueryContext<T> {
 	/**
 	 * 参照用
 	 */
-	public static final QueryContext<QueryColumn> OTHER = (relationship, name) -> new QueryColumn(
+	static final QueryContext<QueryColumn> OTHER = (relationship, name) -> new QueryColumn(
 		relationship,
 		name);
 
@@ -21,7 +21,7 @@ public interface QueryContext<T> {
 	 * @param <O> {@link Query} 実装
 	 * @return WHERE 句用 QueryContext
 	 */
-	public static <O extends LogicalOperators> QueryContext<WhereQueryColumn<O>> newBuilder() {
+	static <O extends LogicalOperators> QueryContext<WhereQueryColumn<O>> newBuilder() {
 		return (relationship, name) -> new WhereQueryColumn<>(relationship, name);
 	}
 
