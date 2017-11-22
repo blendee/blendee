@@ -1,9 +1,11 @@
 package org.blendee.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import org.blendee.internal.TransactionManager;
@@ -36,8 +38,11 @@ public class Blendee {
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
+	 * @param consumer {@link Initializer} 調整
 	 */
-	public void start(Properties initValues) {
+	public void start(
+		Properties initValues,
+		@SuppressWarnings("unchecked") Consumer<Initializer>... consumer) {
 		Map<OptionKey<?>, Object> param = new HashMap<>();
 
 		initValues.forEach((k, v) -> {
@@ -45,14 +50,17 @@ public class Blendee {
 			param.put(key, key.parse((String) v).get());
 		});
 
-		start(param);
+		start(param, consumer);
 	}
 
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
+	 * @param consumer {@link Initializer} 調整
 	 */
-	public void start(Map<OptionKey<?>, ?> initValues) {
+	public void start(
+		Map<OptionKey<?>, ?> initValues,
+		@SuppressWarnings("unchecked") Consumer<Initializer>... consumer) {
 		Initializer init = new Initializer();
 
 		init.setOptions(new HashMap<>(initValues));
@@ -93,6 +101,8 @@ public class Blendee {
 			.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
 		ContextManager.get(BlendeeManager.class).initialize(init);
+
+		Arrays.asList(consumer).forEach(c -> c.accept(init));
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
