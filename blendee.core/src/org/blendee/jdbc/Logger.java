@@ -36,7 +36,8 @@ class Logger {
 
 	void logElapsed(long start) {
 		synchronized (getClass()) {
-			printStream.println("[elapsed: " + (System.currentTimeMillis() - start) + " ms]");
+			long end = System.currentTimeMillis();
+			printStream.println("elapsed: " + (end - start) + " ms [" + start + " - " + end + "]");
 			printStream.flush();
 		}
 	}
