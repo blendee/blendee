@@ -2,6 +2,7 @@ package org.blendee.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -35,14 +36,21 @@ public class Blendee {
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
 
+	private List<Consumer<Initializer>> consumers;
+
+	/**
+	 * @param consumers
+	 */
+	@SuppressWarnings("unchecked")
+	public Blendee(Consumer<Initializer>... consumers) {
+		this.consumers = Arrays.asList(consumers);
+	}
+
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
-	 * @param consumer {@link Initializer} 調整
 	 */
-	public void start(
-		Properties initValues,
-		@SuppressWarnings("unchecked") Consumer<Initializer>... consumer) {
+	public void start(Properties initValues) {
 		Map<OptionKey<?>, Object> param = new HashMap<>();
 
 		initValues.forEach((k, v) -> {
@@ -50,17 +58,14 @@ public class Blendee {
 			param.put(key, key.parse((String) v).get());
 		});
 
-		start(param, consumer);
+		start(param);
 	}
 
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
-	 * @param consumer {@link Initializer} 調整
 	 */
-	public void start(
-		Map<OptionKey<?>, ?> initValues,
-		@SuppressWarnings("unchecked") Consumer<Initializer>... consumer) {
+	public void start(Map<OptionKey<?>, ?> initValues) {
 		Initializer init = new Initializer();
 
 		init.setOptions(new HashMap<>(initValues));
@@ -102,7 +107,7 @@ public class Blendee {
 
 		ContextManager.get(BlendeeManager.class).initialize(init);
 
-		Arrays.asList(consumer).forEach(c -> c.accept(init));
+		consumers.forEach(c -> c.accept(init));
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
