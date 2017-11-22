@@ -108,9 +108,9 @@ public class Blendee {
 					.orElse(null)))
 			.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
-		ContextManager.get(BlendeeManager.class).initialize(init);
-
 		if (consumer != null) consumer.accept(init);
+
+		ContextManager.get(BlendeeManager.class).initialize(init);
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
