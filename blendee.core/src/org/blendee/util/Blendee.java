@@ -1,8 +1,6 @@
 package org.blendee.util;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -36,14 +34,19 @@ public class Blendee {
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
 
-	private List<Consumer<Initializer>> consumers;
+	private Consumer<Initializer> consumer;
 
 	/**
-	 * @param consumers
 	 */
-	@SuppressWarnings("unchecked")
-	public Blendee(Consumer<Initializer>... consumers) {
-		this.consumers = Arrays.asList(consumers);
+	public Blendee() {
+		this.consumer = null;
+	}
+
+	/**
+	 * @param consumer
+	 */
+	public Blendee(Consumer<Initializer> consumer) {
+		this.consumer = consumer;
 	}
 
 	/**
@@ -107,7 +110,7 @@ public class Blendee {
 
 		ContextManager.get(BlendeeManager.class).initialize(init);
 
-		consumers.forEach(c -> c.accept(init));
+		if (consumer != null) consumer.accept(init);
 
 		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
