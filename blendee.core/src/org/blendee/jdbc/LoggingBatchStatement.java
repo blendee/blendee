@@ -26,6 +26,16 @@ class LoggingBatchStatement extends BatchStatementBase {
 		super.addBatch(sql, new LoggingComplementer(sql, logger, complementer));
 	}
 
+	@Override
+	public int[] executeBatch() {
+		long start = System.currentTimeMillis();
+		try {
+			return super.executeBatch();
+		} finally {
+			logger.logElapsed(start);
+		}
+	}
+
 	private static class LoggingComplementer implements PreparedStatementComplementer {
 
 		private final String sql;

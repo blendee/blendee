@@ -34,10 +34,16 @@ class Logger {
 		values.add(new BindingValue(type, index, value));
 	}
 
+	void logElapsed(long start) {
+		synchronized (getClass()) {
+			printStream.println("[elapsed: " + (System.currentTimeMillis() - start) + " ms]");
+			printStream.flush();
+		}
+	}
+
 	void flush() {
 		synchronized (getClass()) {
 			if (printStream == null) return;
-			long start = System.currentTimeMillis();
 			printStream.println("------ SQL START ------");
 
 			if (stackTracePattern != null) {
@@ -58,10 +64,7 @@ class Logger {
 				printStream.println(" " + value.createLog());
 			}
 
-			printStream.println(
-				"------  SQL END  ------ [elapsed: "
-					+ (System.currentTimeMillis() - start)
-					+ " ms]");
+			printStream.println("------  SQL END  ------");
 			values.clear();
 			printStream.flush();
 		}

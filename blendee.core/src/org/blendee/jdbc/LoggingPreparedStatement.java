@@ -100,18 +100,33 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 	@Override
 	public BResultSet executeQuery() {
 		logger.flush();
-		return super.executeQuery();
+		long start = System.currentTimeMillis();
+		try {
+			return super.executeQuery();
+		} finally {
+			logger.logElapsed(start);
+		}
 	}
 
 	@Override
 	public int executeUpdate() {
 		logger.flush();
-		return super.executeUpdate();
+		long start = System.currentTimeMillis();
+		try {
+			return super.executeUpdate();
+		} finally {
+			logger.logElapsed(start);
+		}
 	}
 
 	@Override
 	public boolean execute() {
 		logger.flush();
-		return super.execute();
+		long start = System.currentTimeMillis();
+		try {
+			return super.execute();
+		} finally {
+			logger.logElapsed(start);
+		}
 	}
 }
