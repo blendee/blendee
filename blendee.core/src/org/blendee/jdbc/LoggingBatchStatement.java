@@ -28,7 +28,7 @@ class LoggingBatchStatement extends BatchStatementBase {
 
 	@Override
 	public int[] executeBatch() {
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		try {
 			return super.executeBatch();
 		} finally {

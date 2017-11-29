@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,10 +35,10 @@ class Logger {
 		values.add(new BindingValue(type, index, value));
 	}
 
-	void logElapsed(long start) {
+	void logElapsed(long startNanos) {
 		synchronized (getClass()) {
-			long end = System.currentTimeMillis();
-			printStream.println("elapsed: " + (end - start) + " ms [" + start + " - " + end + "]");
+			float elapsed = (System.nanoTime() - startNanos) / 1000000f;
+			printStream.println("elapsed: " + new BigDecimal(elapsed).setScale(2, BigDecimal.ROUND_DOWN) + "ms");
 			printStream.flush();
 		}
 	}

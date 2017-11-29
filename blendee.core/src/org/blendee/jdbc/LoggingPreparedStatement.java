@@ -100,7 +100,7 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 	@Override
 	public BResultSet executeQuery() {
 		logger.flush();
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		try {
 			return super.executeQuery();
 		} finally {
@@ -111,7 +111,7 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 	@Override
 	public int executeUpdate() {
 		logger.flush();
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		try {
 			return super.executeUpdate();
 		} finally {
@@ -122,7 +122,7 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 	@Override
 	public boolean execute() {
 		logger.flush();
-		long start = System.currentTimeMillis();
+		long start = System.nanoTime();
 		try {
 			return super.execute();
 		} finally {
