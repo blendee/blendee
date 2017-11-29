@@ -3,10 +3,10 @@
   <groupId>org.blendee</groupId>
   <artifactId>blendee</artifactId>
   <versioning>
-    <release>0.2.26</release>
+    <release>0.2.27</release>
     <versions>
-      <version>0.2.26</version>
+      <version>0.2.27</version>
     </versions>
-    <lastUpdated>20171122065925</lastUpdated>
+    <lastUpdated>20171129041035</lastUpdated>
   </versioning>
 </metadata>
