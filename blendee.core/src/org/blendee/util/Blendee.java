@@ -50,6 +50,15 @@ public class Blendee {
 	}
 
 	/**
+	 * Blendee が既に使用可能な状態かを判定します。<br>
+	 * {@link #start} は 2 度実行できないため、このメソッドで先に確認することが可能です。
+	 * @return Blendee が既に使用可能な状態かどうか
+	 */
+	public boolean started() {
+		return ContextManager.get(BlendeeManager.class).getConfigure() != null;
+	}
+
+	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
 	 */
