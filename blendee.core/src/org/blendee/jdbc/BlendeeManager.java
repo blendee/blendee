@@ -41,6 +41,16 @@ public class BlendeeManager implements ManagementSubject {
 	}
 
 	/**
+	 * 既に初期化済かを返します。
+	 * @return 既に初期化済かどうか
+	 */
+	public boolean initialized() {
+		synchronized (lock) {
+			return config != null;
+		}
+	}
+
+	/**
 	 * 現在の設定を返します。
 	 * @return 現在の設定を持つ {@link Configure}
 	 * @throws IllegalStateException まだ {@link BlendeeManager#initialize(Initializer)} が行われていない場合

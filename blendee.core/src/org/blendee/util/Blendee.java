@@ -55,7 +55,7 @@ public class Blendee {
 	 * @return Blendee が既に使用可能な状態かどうか
 	 */
 	public boolean started() {
-		return ContextManager.get(BlendeeManager.class).getConfigure() != null;
+		return ContextManager.get(BlendeeManager.class).initialized();
 	}
 
 	/**
