@@ -25,12 +25,6 @@ class LazyTransaction extends BTransaction {
 	}
 
 	@Override
-	public void close() {
-		if (transaction == null) return;
-		prepareTransaction().close();
-	}
-
-	@Override
 	public BConnection getConnection() {
 		return prepareTransaction().getConnection();
 	}
@@ -52,7 +46,8 @@ class LazyTransaction extends BTransaction {
 
 	@Override
 	protected void closeInternal() {
-		throw new UnsupportedOperationException();
+		if (transaction == null) return;
+		transaction.closeInternal();
 	}
 
 	@Override
