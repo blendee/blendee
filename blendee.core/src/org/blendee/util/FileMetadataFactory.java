@@ -43,7 +43,7 @@ public class FileMetadataFactory implements MetadataFactory {
 			} catch (IOException e) {
 				throw new UncheckedIOException(e);
 			}
-		}).orElse(FileMetadataFactory.class.getResource(XML_LOCATION));
+		}).orElseGet(() -> FileMetadataFactory.class.getResource(XML_LOCATION));
 
 		virtualSpace = FileVirtualSpaceFactory.getInstance(xml);
 	}
