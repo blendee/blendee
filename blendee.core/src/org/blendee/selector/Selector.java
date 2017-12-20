@@ -8,7 +8,7 @@ import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -86,7 +86,7 @@ public class Selector {
 	 * SELECT 文に WHERE 句を設定します。
 	 * @param clause WHERE 句
 	 */
-	public void setCondition(Condition clause) {
+	public void setCriteria(Criteria clause) {
 		builder.setWhereClause(clause);
 	}
 

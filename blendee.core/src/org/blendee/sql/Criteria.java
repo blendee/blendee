@@ -12,13 +12,13 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 /**
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
  * @author 千葉 哲嗣
- * @see ConditionFactory
- * @see QueryBuilder#setWhereClause(Condition)
- * @see QueryBuilder#setHavingClause(Condition)
+ * @see CriteriaFactory
+ * @see QueryBuilder#setWhereClause(Criteria)
+ * @see QueryBuilder#setHavingClause(Criteria)
  */
-public class Condition extends QueryClause {
+public class Criteria extends QueryClause {
 
-	//!! このクラスに新たにメソッドを追加する場合は、 ProxyCondition にも追加すること !!
+	//!! このクラスに新たにメソッドを追加する場合は、 ProxyCriteria にも追加すること !!
 
 	/**
 	 * 論理演算子の列挙型です。
@@ -65,13 +65,13 @@ public class Condition extends QueryClause {
 
 	private String keyword = "";
 
-	Condition(String clause, Column[] columns, Binder[] binders) {
+	Criteria(String clause, Column[] columns, Binder[] binders) {
 		this.clause = clause;
 		this.columns.addAll(Arrays.asList(columns));
 		this.binders.addAll(Arrays.asList(binders));
 	}
 
-	private Condition() {
+	private Criteria() {
 		clause = null;
 	}
 
@@ -80,9 +80,9 @@ public class Condition extends QueryClause {
 	 * @param target 追加する条件
 	 * @return このインスタンス
 	 */
-	public Condition and(Condition target) {
-		//append が ProxyCondition でオーバーライドされているので、
-		//このメソッドは ProxyCondition でオーバーライドしなくても OK
+	public Criteria and(Criteria target) {
+		//append が ProxyCriteria でオーバーライドされているので、
+		//このメソッドは ProxyCriteria でオーバーライドしなくても OK
 		append(LogicalOperator.AND, target);
 		return this;
 	}
@@ -92,9 +92,9 @@ public class Condition extends QueryClause {
 	 * @param target 追加する条件
 	 * @return このインスタンス
 	 */
-	public Condition or(Condition target) {
-		//append が ProxyCondition でオーバーライドされているので、
-		//このメソッドは ProxyCondition でオーバーライドしなくても OK
+	public Criteria or(Criteria target) {
+		//append が ProxyCriteria でオーバーライドされているので、
+		//このメソッドは ProxyCriteria でオーバーライドしなくても OK
 		append(LogicalOperator.OR, target);
 		return this;
 	}
@@ -104,7 +104,7 @@ public class Condition extends QueryClause {
 	 * 具体的には、条件の先頭に NOT を付加します。
 	 * @return このインスタンス
 	 */
-	public Condition reverse() {
+	public Criteria reverse() {
 		clearCache();
 		clause = "NOT (" + clause + ")";
 		current = null;
@@ -148,8 +148,8 @@ public class Condition extends QueryClause {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Condition)) return false;
-		Condition target = strip((Condition) o);
+		if (!(o instanceof Criteria)) return false;
+		Criteria target = strip((Criteria) o);
 		if (target == null) return false;
 		if (!equalsWithoutBinders(target) || !binders.equals(target.binders)) return false;
 		return true;
@@ -171,7 +171,7 @@ public class Condition extends QueryClause {
 	}
 
 	@Override
-	public Condition replicate() {
+	public Criteria replicate() {
 		Binder[] replicateBinders = new Binder[binders.size()];
 		{
 			int counter = 0;
@@ -188,7 +188,7 @@ public class Condition extends QueryClause {
 			}
 		}
 
-		Condition clone = new Condition(clause, replicateColumns, replicateBinders);
+		Criteria clone = new Criteria(clause, replicateColumns, replicateBinders);
 		clone.current = current;
 		clone.keyword = keyword;
 		return clone;
@@ -211,7 +211,7 @@ public class Condition extends QueryClause {
 	 * @param operator 論理演算子 AND OR
 	 * @param target 追加する条件
 	 */
-	void append(LogicalOperator operator, Condition target) {
+	void append(LogicalOperator operator, Criteria target) {
 		target = strip(target);
 		if (target == null) return;
 		clearCache();
@@ -221,7 +221,7 @@ public class Condition extends QueryClause {
 		current = operator;
 	}
 
-	boolean equalsWithoutBinders(Condition target) {
+	boolean equalsWithoutBinders(Criteria target) {
 		if (this == target) return true;
 		target = strip(target);
 		if (target == null) return false;
@@ -271,9 +271,9 @@ public class Condition extends QueryClause {
 			+ newOperator.process(current, SQLFragmentFormat.execute(getTemplate(), replace));
 	}
 
-	private static Condition strip(Condition condition) {
-		if (condition instanceof ProxyCondition) return strip(((ProxyCondition) condition).inclusion);
-		return condition;
+	private static Criteria strip(Criteria criteria) {
+		if (criteria instanceof ProxyCriteria) return strip(((ProxyCriteria) criteria).inclusion);
+		return criteria;
 	}
 
 	private class InnerComplementer implements PreparedStatementComplementer {
@@ -294,11 +294,11 @@ public class Condition extends QueryClause {
 		}
 	}
 
-	static class ProxyCondition extends Condition {
+	static class ProxyCriteria extends Criteria {
 
-		private Condition inclusion;
+		private Criteria inclusion;
 
-		ProxyCondition() {}
+		ProxyCriteria() {}
 
 		@Override
 		public String toString() {
@@ -307,7 +307,7 @@ public class Condition extends QueryClause {
 		}
 
 		@Override
-		public Condition reverse() {
+		public Criteria reverse() {
 			if (inclusion == null) return this;
 			inclusion.reverse();
 			return this;
@@ -340,8 +340,8 @@ public class Condition extends QueryClause {
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof Condition)) return false;
-			if (inclusion == null) return !((Condition) o).isAvailable();
+			if (!(o instanceof Criteria)) return false;
+			if (inclusion == null) return !((Criteria) o).isAvailable();
 			return inclusion.equals(o);
 		}
 
@@ -358,8 +358,8 @@ public class Condition extends QueryClause {
 		}
 
 		@Override
-		public Condition replicate() {
-			if (inclusion == null) return new ProxyCondition();
+		public Criteria replicate() {
+			if (inclusion == null) return new ProxyCriteria();
 			return inclusion.replicate();
 		}
 
@@ -370,7 +370,7 @@ public class Condition extends QueryClause {
 		}
 
 		@Override
-		void append(LogicalOperator operator, Condition clause) {
+		void append(LogicalOperator operator, Criteria clause) {
 			if (inclusion == null) {
 				inclusion = clause.replicate();
 			} else {
@@ -379,7 +379,7 @@ public class Condition extends QueryClause {
 		}
 
 		@Override
-		boolean equalsWithoutBinders(Condition target) {
+		boolean equalsWithoutBinders(Criteria target) {
 			if (inclusion == null) return !target.isAvailable();
 			return inclusion.equalsWithoutBinders(target);
 		}

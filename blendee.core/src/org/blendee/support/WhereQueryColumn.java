@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
-import org.blendee.sql.ConditionFactory;
-import org.blendee.sql.ConditionFactory.ComparisonOperator;
-import org.blendee.sql.ConditionFactory.Match;
-import org.blendee.sql.ConditionFactory.NullComparisonOperator;
+import org.blendee.sql.CriteriaFactory;
+import org.blendee.sql.CriteriaFactory.ComparisonOperator;
+import org.blendee.sql.CriteriaFactory.Match;
+import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
 import org.blendee.sql.binder.DoubleBinder;
@@ -49,7 +49,7 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 */
 	public O eq(BigDecimal value) {
 		relationship.getContext()
-			.addCondition(relationship, ConditionFactory.createCondition(column, new BigDecimalBinder(value)));
+			.addCriteria(relationship, CriteriaFactory.create(column, new BigDecimalBinder(value)));
 
 		return logocalOperators();
 	}
@@ -60,9 +60,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(boolean value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new BooleanBinder(value)));
+			CriteriaFactory.create(column, new BooleanBinder(value)));
 
 		return logocalOperators();
 	}
@@ -73,9 +73,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(double value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new DoubleBinder(value)));
+			CriteriaFactory.create(column, new DoubleBinder(value)));
 
 		return logocalOperators();
 	}
@@ -86,9 +86,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(float value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new FloatBinder(value)));
+			CriteriaFactory.create(column, new FloatBinder(value)));
 
 		return logocalOperators();
 	}
@@ -99,9 +99,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(int value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new IntBinder(value)));
+			CriteriaFactory.create(column, new IntBinder(value)));
 
 		return logocalOperators();
 	}
@@ -112,9 +112,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(long value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new LongBinder(value)));
+			CriteriaFactory.create(column, new LongBinder(value)));
 
 		return logocalOperators();
 	}
@@ -125,9 +125,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(String value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, value));
+			CriteriaFactory.create(column, value));
 
 		return logocalOperators();
 	}
@@ -138,9 +138,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(Timestamp value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new TimestampBinder(value)));
+			CriteriaFactory.create(column, new TimestampBinder(value)));
 
 		return logocalOperators();
 	}
@@ -151,9 +151,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(UUID value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, new UUIDBinder(value)));
+			CriteriaFactory.create(column, new UUIDBinder(value)));
 
 		return logocalOperators();
 	}
@@ -164,9 +164,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(Bindable value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(column, value));
+			CriteriaFactory.create(column, value));
 
 		return logocalOperators();
 	}
@@ -679,9 +679,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O compare(ComparisonOperator operator, Bindable value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createComparisonCondition(operator, column, value));
+			CriteriaFactory.create(operator, column, value));
 
 		return logocalOperators();
 	}
@@ -694,9 +694,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O LIKE(Match type, String value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createLikeCondition(type, column, value));
+			CriteriaFactory.createLikeCriteria(type, column, value));
 
 		return logocalOperators();
 	}
@@ -709,9 +709,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_LIKE(Match type, String value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createNotLikeCondition(type, column, value));
+			CriteriaFactory.createNotLikeCriteria(type, column, value));
 
 		return logocalOperators();
 	}
@@ -722,9 +722,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(String... values) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createInCondition(column, values));
+			CriteriaFactory.createInCriteria(column, values));
 
 		return logocalOperators();
 	}
@@ -735,9 +735,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Number... values) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createInCondition(column, values));
+			CriteriaFactory.createInCriteria(column, values));
 
 		return logocalOperators();
 	}
@@ -748,9 +748,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Bindable... values) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createInCondition(column, values));
+			CriteriaFactory.createInCriteria(column, values));
 
 		return logocalOperators();
 	}
@@ -760,9 +760,9 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NULL() {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createNullCondition(NullComparisonOperator.IS_NULL, column));
+			CriteriaFactory.create(NullComparisonOperator.IS_NULL, column));
 
 		return logocalOperators();
 	}
@@ -772,24 +772,24 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NOT_NULL() {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createNullCondition(NullComparisonOperator.IS_NOT_NULL, column));
+			CriteriaFactory.create(NullComparisonOperator.IS_NOT_NULL, column));
 
 		return logocalOperators();
 	}
 
 	/**
 	 * WHERE 句に、このカラムの条件を追加します。
-	 * @see ConditionFactory#createCondition(String, Column, Bindable)
+	 * @see CriteriaFactory#createCriteria(String, Column, Bindable)
 	 * @param clause WHERE 句の元になるテンプレート
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O add(String clause, Bindable value) {
-		relationship.getContext().addCondition(
+		relationship.getContext().addCriteria(
 			relationship,
-			ConditionFactory.createCondition(clause, column, value));
+			CriteriaFactory.createCriteria(clause, column, value));
 
 		return logocalOperators();
 	}

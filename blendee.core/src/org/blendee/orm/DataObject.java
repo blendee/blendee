@@ -674,7 +674,7 @@ public class DataObject
 
 		Column[] primaryKeyColumns = relationship.getPrimaryKeyColumns();
 		if (!relationship.isRoot()) {
-			//root でないと、 Condition を作る際に、チェックに引っかかるので
+			//root でないと、 Criteria を作る際に、チェックに引っかかるので
 			//root の Relationship のカラムに変換しておく
 			Relationship root = ContextManager.get(RelationshipFactory.class).getInstance(relationship.getTablePath());
 			for (int i = 0; i < primaryKeyColumns.length; i++) {
@@ -682,7 +682,7 @@ public class DataObject
 			}
 		}
 
-		builder.setCondition(PartialData.createCondition(primaryKeyColumns, getPrimaryKeyBinders()));
+		builder.setCriteria(PartialData.createCriteria(primaryKeyColumns, getPrimaryKeyBinders()));
 
 		statement.process(builder.toString(), builder);
 		int result = statement.execute();

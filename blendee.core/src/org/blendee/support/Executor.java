@@ -3,7 +3,7 @@ package org.blendee.support;
 import org.blendee.orm.QueryOption;
 import org.blendee.orm.RowLockOption;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
@@ -107,5 +107,5 @@ public interface Executor<I, R> {
 	 * この検索での条件を返します。
 	 * @return WHERE 句
 	 */
-	Condition getCondition();
+	Criteria getCriteria();
 }

@@ -13,5 +13,5 @@ public interface Searchable {
 	 * @param relationship 検索条件を取得するための元となる {@link Relationship}
 	 * @return relationship からたどれる {@link Relationship} から作成された条件
 	 */
-	Condition getCondition(Relationship relationship);
+	Criteria getCriteria(Relationship relationship);
 }

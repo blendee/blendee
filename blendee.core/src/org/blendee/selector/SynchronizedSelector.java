@@ -1,7 +1,7 @@
 package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.SelectClause;
@@ -35,8 +35,8 @@ public class SynchronizedSelector extends Selector {
 	}
 
 	@Override
-	public synchronized void setCondition(Condition clause) {
-		super.setCondition(clause);
+	public synchronized void setCriteria(Criteria clause) {
+		super.setCriteria(clause);
 	}
 
 	@Override

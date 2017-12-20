@@ -15,7 +15,7 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	private final TablePath path;
 
-	private Condition condition = ConditionFactory.createCondition();
+	private Criteria criteria = CriteriaFactory.create();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
@@ -30,26 +30,26 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 	 * @param searchable {@link Searchable}
 	 */
 	public void setSearchable(Searchable searchable) {
-		setCondition(searchable.getCondition(factory.getInstance(path)));
+		setCriteria(searchable.getCriteria(factory.getInstance(path)));
 	}
 
 	/**
 	 * WHERE 句を設定します。
-	 * @param condition WHERE 句
+	 * @param criteria WHERE 句
 	 */
-	public void setCondition(Condition condition) {
-		this.condition = condition.replicate();
-		this.condition.adjustColumns(factory.getInstance(path));
+	public void setCriteria(Criteria criteria) {
+		this.criteria = criteria.replicate();
+		this.criteria.adjustColumns(factory.getInstance(path));
 	}
 
 	@Override
 	public String toString() {
-		condition.setKeyword("WHERE");
-		return "DELETE FROM " + path + condition.toString(false);
+		criteria.setKeyword("WHERE");
+		return "DELETE FROM " + path + criteria.toString(false);
 	}
 
 	@Override
 	public int complement(BPreparedStatement statement) {
-		return condition.getComplementer().complement(statement);
+		return criteria.getComplementer().complement(statement);
 	}
 }

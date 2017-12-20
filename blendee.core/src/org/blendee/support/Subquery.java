@@ -4,8 +4,8 @@ import org.blendee.internal.Traversable;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Condition;
-import org.blendee.sql.ConditionFactory;
+import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SubqueryException;
 
@@ -42,22 +42,22 @@ public class Subquery {
 	}
 
 	/**
-	 * このサブクエリから、メインクエリで使用できる {@link Condition} を生成します。
+	 * このサブクエリから、メインクエリで使用できる {@link Criteria} を生成します。
 	 * @param mainquery メインクエリ
-	 * @return {@link Condition} となったサブクエリ
+	 * @return {@link Criteria} となったサブクエリ
 	 */
-	public Condition createCondition(Query mainquery) {
+	public Criteria createCriteria(Query mainquery) {
 		Relationship myJoinPoint = joinPoint == null
 			? find(
 				subquery.getRootRealtionship(),
 				mainquery.getRootRealtionship().getTablePath())
 			: joinPoint;
 
-		return ConditionFactory
-			.createSubqueryCondition(
+		return CriteriaFactory
+			.createSubquery(
 				mainquery.getRootRealtionship(),
 				myJoinPoint,
-				subquery.getCondition());
+				subquery.getCriteria());
 	}
 
 	private static Relationship find(Relationship root, TablePath target) {

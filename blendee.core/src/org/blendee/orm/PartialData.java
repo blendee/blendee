@@ -5,7 +5,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.Searchable;
@@ -80,8 +80,8 @@ public class PartialData implements Searchable, Updatable {
 	 * 検索条件のテーブルは、このインスタンスが持つテーブルになります。
 	 * @return 検索条件
 	 */
-	public Condition getCondition() {
-		return getCondition(ContextManager.get(RelationshipFactory.class).getInstance(path));
+	public Criteria getCriteria() {
+		return getCriteria(ContextManager.get(RelationshipFactory.class).getInstance(path));
 	}
 
 	/**
@@ -91,12 +91,12 @@ public class PartialData implements Searchable, Updatable {
 	 * @return 検索条件
 	 */
 	@Override
-	public Condition getCondition(Relationship relationship) {
+	public Criteria getCriteria(Relationship relationship) {
 		Column[] columns = new Column[columnNames.length];
 		for (int i = 0; i < columnNames.length; i++) {
 			columns[i] = relationship.getColumn(columnNames[i]);
 		}
-		return createCondition(columns, bindables);
+		return createCriteria(columns, bindables);
 	}
 
 	@Override
@@ -106,15 +106,15 @@ public class PartialData implements Searchable, Updatable {
 		}
 	}
 
-	static Condition createCondition(Column[] columns, Bindable[] bindables) {
+	static Criteria createCriteria(Column[] columns, Bindable[] bindables) {
 		Column column = columns[0];
-		Condition condition = column.getCondition(bindables[0]);
+		Criteria criteria = column.getCriteria(bindables[0]);
 		for (int i = 1; i < columns.length; i++) {
 			column = columns[i];
-			condition.and(column.getCondition(bindables[i]));
+			criteria.and(column.getCriteria(bindables[i]));
 		}
 
-		return condition;
+		return criteria;
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import org.blendee.orm.RowLockOption;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.support.RowManager;
 import org.blendee.support.RowIterator;
@@ -24,18 +24,18 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/**
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
 		return select(
 			new SimpleOptimizer(getTablePath()),
-			condition,
+			criteria,
 			order,
 			options);
 	/*++'++*/}/*++'++*/
@@ -44,15 +44,15 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。<br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order) /*++'++*/{/*++'++*/
 		return select(
-			condition,
+			criteria,
 			order,
 			null,
 			RowLockOption.NONE);
@@ -61,19 +61,19 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/**
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
 		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(new DataAccessHelper().getDataObjects(
 			optimizer,
-			condition,
+			criteria,
 			order,
 			options));
 	/*++'++*/}/*++'++*/
@@ -82,17 +82,17 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order) /*++'++*/{/*++'++*/
 		return select(
 			optimizer,
-			condition,
+			criteria,
 			order,
 			null,
 			RowLockOption.NONE);

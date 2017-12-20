@@ -3,7 +3,7 @@ package org.blendee.orm;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.Updatable;
 
@@ -34,5 +34,5 @@ public interface SequenceGenerator {
 	 * @return 次の値
 	 * @throws SequenceOverflowException 連番が最大値を超えた場合
 	 */
-	Bindable next(Condition depends);
+	Bindable next(Criteria depends);
 }

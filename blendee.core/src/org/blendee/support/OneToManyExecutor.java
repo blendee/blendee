@@ -21,8 +21,8 @@ import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
-import org.blendee.sql.Condition;
-import org.blendee.sql.ConditionFactory;
+import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -44,7 +44,7 @@ public class OneToManyExecutor<O extends Row, M>
 
 	private final Optimizer optimizer;
 
-	private final Condition condition;
+	private final Criteria criteria;
 
 	private final OrderByClause order;
 
@@ -62,7 +62,7 @@ public class OneToManyExecutor<O extends Row, M>
 		QueryRelationship root = getRoot(relation, route);
 		order = convertOrderByClause(route, root.getOrderByClause());
 		optimizer = root.getOptimizer();
-		condition = root.getWhereClause();
+		criteria = root.getWhereClause();
 
 		//1->n順をn->1順に変える
 		Collections.reverse(route);
@@ -71,7 +71,7 @@ public class OneToManyExecutor<O extends Row, M>
 	@Override
 	public Many<O, M> execute() {
 		return new Many<>(
-			new DataObjectManager(helper.getDataObjects(optimizer, condition, order, null, null), route),
+			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order, null, null), route),
 			null,
 			self,
 			route);
@@ -80,7 +80,7 @@ public class OneToManyExecutor<O extends Row, M>
 	@Override
 	public Many<O, M> execute(QueryOption... options) {
 		return new Many<>(
-			new DataObjectManager(helper.getDataObjects(optimizer, condition, order, options), route),
+			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order, options), route),
 			null,
 			self,
 			route);
@@ -128,9 +128,9 @@ public class OneToManyExecutor<O extends Row, M>
 		if (columns.length != primaryKeyMembers.length)
 			throw new IllegalArgumentException("primaryKeyMembers の数が正しくありません");
 
-		Condition condition = ConditionFactory.createCondition();
+		Criteria criteria = CriteriaFactory.create();
 		for (int i = 0; i < columns.length; i++) {
-			condition.and(columns[i].getCondition(primaryKeyMembers[i]));
+			criteria.and(columns[i].getCriteria(primaryKeyMembers[i]));
 		}
 
 		return getUnique(
@@ -138,7 +138,7 @@ public class OneToManyExecutor<O extends Row, M>
 				new DataObjectManager(
 					helper.getDataObjects(
 						optimizer,
-						condition,
+						criteria,
 						order,
 						QueryOptions.care(options).get()),
 					route),
@@ -153,7 +153,7 @@ public class OneToManyExecutor<O extends Row, M>
 
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 
-		if (condition != null) builder.setWhereClause(condition);
+		if (criteria != null) builder.setWhereClause(criteria);
 		try (BStatement statement = ContextManager.get(BlendeeManager.class)
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
@@ -165,8 +165,8 @@ public class OneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public Condition getCondition() {
-		return condition;
+	public Criteria getCriteria() {
+		return criteria;
 	}
 
 	@Override

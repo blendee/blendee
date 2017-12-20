@@ -9,7 +9,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.binder.StringBinder;
 
 /**
@@ -95,7 +95,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 * @throws SequenceOverflowException 連続値の最大を超えた場合
 	 */
 	@Override
-	public Bindable next(Condition depends) {
+	public Bindable next(Criteria depends) {
 		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 		BStatement statement;

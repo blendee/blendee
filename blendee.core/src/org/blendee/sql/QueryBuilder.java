@@ -17,11 +17,11 @@ public class QueryBuilder implements PreparedStatementComplementer {
 
 	private SelectClause selectClause = new SelectAllColumnClause();
 
-	private Condition whereClause = ConditionFactory.createCondition();
+	private Criteria whereClause = CriteriaFactory.create();
 
 	private GroupByClause groupClause = new GroupByClause();
 
-	private Condition havingClause = ConditionFactory.createCondition();
+	private Criteria havingClause = CriteriaFactory.create();
 
 	private OrderByClause orderClause = new OrderByClause();
 
@@ -59,15 +59,15 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	 * WHERE 句を設定します。
 	 * @param clause WHERE 句
 	 */
-	public synchronized void setWhereClause(Condition clause) {
-		whereClause = prepareCondition(whereClause, clause);
+	public synchronized void setWhereClause(Criteria clause) {
+		whereClause = prepareCriteria(whereClause, clause);
 	}
 
 	/**
 	 * 現在設定されている WHERE 句を返します。
 	 * @return WHERE 句
 	 */
-	public synchronized Condition getWhereClause() {
+	public synchronized Criteria getWhereClause() {
 		return whereClause.replicate();
 	}
 
@@ -93,15 +93,15 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	 * HAVING 句を設定します。
 	 * @param clause HAVING 句
 	 */
-	public synchronized void setHavingClause(Condition clause) {
-		havingClause = prepareCondition(havingClause, clause);
+	public synchronized void setHavingClause(Criteria clause) {
+		havingClause = prepareCriteria(havingClause, clause);
 	}
 
 	/**
 	 * 現在設定されている HAVING 句を返します。
 	 * @return HAVING 句
 	 */
-	public synchronized Condition getHavingClause() {
+	public synchronized Criteria getHavingClause() {
 		return havingClause.replicate();
 	}
 
@@ -199,14 +199,14 @@ public class QueryBuilder implements PreparedStatementComplementer {
 		return complemented + havingClause.getComplementer(complemented).complement(statement);
 	}
 
-	private Condition prepareCondition(Condition oldCondition, Condition newCondition) {
-		if (oldCondition.equalsWithoutBinders(newCondition)) {
-			oldCondition.changeBinders(newCondition.getBinders());
-			return oldCondition;
+	private Criteria prepareCriteria(Criteria oldCriteria, Criteria newCriteria) {
+		if (oldCriteria.equalsWithoutBinders(newCriteria)) {
+			oldCriteria.changeBinders(newCriteria.getBinders());
+			return oldCriteria;
 		}
 
 		query = null;
-		return newCondition.replicate();
+		return newCriteria.replicate();
 	}
 
 	private static void addClause(List<String> list, String clause) {

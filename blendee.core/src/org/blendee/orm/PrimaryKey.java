@@ -16,7 +16,7 @@ import org.blendee.jdbc.MetadataUtilities;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.UpdateDMLBuilder;
 
@@ -70,8 +70,8 @@ public class PrimaryKey extends PartialData {
 	}
 
 	@Override
-	public Condition getCondition(Relationship relationship) {
-		return createCondition(relationship.getPrimaryKeyColumns(), bindables);
+	public Criteria getCriteria(Relationship relationship) {
+		return createCriteria(relationship.getPrimaryKeyColumns(), bindables);
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public class PrimaryKey extends PartialData {
 				builder.addSQLFragment(columnName, "NULL");
 			}
 
-			builder.setCondition(primaryKey.getReferencesInternal(reference).getCondition());
+			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria());
 
 			try (BStatement statement = ContextManager.get(BlendeeManager.class)
 				.getConnection()
@@ -246,7 +246,7 @@ public class PrimaryKey extends PartialData {
 			if (references.length == 0) break;
 			copy(reference.getForeignKeyTable(), from, to);
 			switchAllReferences(references, from, to);
-			DataAccessHelper.deleteInternal(from.path, from.getCondition());
+			DataAccessHelper.deleteInternal(from.path, from.getCriteria());
 			return;
 		}
 		update(reference, from, to);
@@ -268,8 +268,8 @@ public class PrimaryKey extends PartialData {
 		sql.append(String.join(", ", columnNames));
 		sql.append(" FROM ");
 		sql.append(foreignKeyTable);
-		final Condition condition = from.getCondition();
-		sql.append(condition.toString(false));
+		final Criteria criteria = from.getCriteria();
+		sql.append(criteria.toString(false));
 
 		try (BStatement statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql.toString(), s -> {
 			int i = 0;
@@ -277,7 +277,7 @@ public class PrimaryKey extends PartialData {
 				to.bindables[i].toBinder().bind(i + 1, s);
 			}
 
-			return condition.getComplementer(i).complement(s);
+			return criteria.getComplementer(i).complement(s);
 		})) {
 			statement.executeUpdate();
 		}
@@ -288,7 +288,7 @@ public class PrimaryKey extends PartialData {
 		PartialData from,
 		PartialData to) {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
-		builder.setCondition(from.getCondition());
+		builder.setCriteria(from.getCriteria());
 		builder.add(to);
 		try (BStatement statement = ContextManager.get(BlendeeManager.class)
 			.getConnection()

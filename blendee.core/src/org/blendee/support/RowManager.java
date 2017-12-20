@@ -13,7 +13,7 @@ import org.blendee.orm.SequenceGenerator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.Updatable;
 
@@ -216,11 +216,11 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件にマッチする件数を返します。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @return パラメータの条件にマッチする件数
 	 */
-	default int count(Condition condition) {
-		return new DataAccessHelper().count(getTablePath(), condition);
+	default int count(Criteria criteria) {
+		return new DataAccessHelper().count(getTablePath(), criteria);
 	}
 
 	/**
@@ -297,61 +297,61 @@ public interface RowManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行を更新します。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @return 更新件数
 	 */
-	default int update(Condition condition, Updatable updatable) {
-		return new DataAccessHelper().update(getTablePath(), updatable, condition, null);
+	default int update(Criteria criteria, Updatable updatable) {
+		return new DataAccessHelper().update(getTablePath(), updatable, criteria, null);
 	}
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
-	default void update(BatchStatement statement, Condition condition, Updatable updatable) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, condition, null);
+	default void update(BatchStatement statement, Criteria criteria, Updatable updatable) {
+		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, null);
 	}
 
 	/**
 	 * パラメータの条件に該当する行を更新します。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 * @return 更新件数
 	 */
-	default int update(Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		return new DataAccessHelper().update(getTablePath(), updatable, condition, adjuster);
+	default int update(Criteria criteria, Updatable updatable, SQLAdjuster adjuster) {
+		return new DataAccessHelper().update(getTablePath(), updatable, criteria, adjuster);
 	}
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
-	default void update(BatchStatement statement, Condition condition, Updatable updatable, SQLAdjuster adjuster) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, condition, adjuster);
+	default void update(BatchStatement statement, Criteria criteria, Updatable updatable, SQLAdjuster adjuster) {
+		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, adjuster);
 	}
 
 	/**
 	 * パラメータの条件に該当する行を削除します。
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @return 削除件数
 	 */
-	default int delete(Condition condition) {
-		return new DataAccessHelper().delete(getTablePath(), condition);
+	default int delete(Criteria criteria) {
+		return new DataAccessHelper().delete(getTablePath(), criteria);
 	}
 
 	/**
 	 * パラメータの条件に該当する行の削除をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 */
-	default void delete(BatchStatement statement, Condition condition) {
-		new DataAccessHelper().delete(statement, getTablePath(), condition);
+	default void delete(BatchStatement statement, Criteria criteria) {
+		new DataAccessHelper().delete(statement, getTablePath(), criteria);
 	}
 }
