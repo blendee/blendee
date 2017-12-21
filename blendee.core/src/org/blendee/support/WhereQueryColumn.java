@@ -689,6 +689,34 @@ public class WhereQueryColumn<O extends LogicalOperators> {
 	/**
 	 * WHERE 句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
+	 * @param value 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O LIKE(String value) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createLikeCriteria(Match.OPTIONAL, column, value));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * @see Match
+	 * @param value 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_LIKE(String value) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createNotLikeCriteria(Match.OPTIONAL, column, value));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * @see Match
 	 * @param type LIKE 検索の一致タイプ
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
