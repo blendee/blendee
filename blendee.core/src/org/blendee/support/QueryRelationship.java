@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -40,9 +40,9 @@ public interface QueryRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryConditionContext} 
+	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext} 
 	 */
-	QueryConditionContext getContext();
+	QueryCriteriaContext getContext();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
@@ -64,15 +64,15 @@ public interface QueryRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @param condition 現在の検索に使用する WHERE 句
+	 * @param criteria 現在の検索に使用する WHERE 句
 	 */
-	void setWhereClause(Condition condition);
+	void setWhereClause(Criteria criteria);
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return 現在の WHERE 句
 	 */
-	Condition getWhereClause();
+	Criteria getWhereClause();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

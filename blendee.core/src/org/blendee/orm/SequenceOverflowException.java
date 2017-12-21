@@ -2,14 +2,14 @@ package org.blendee.orm;
 
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.SQLAdjuster;
 import org.blendee.sql.Updatable;
 
 /**
  * 連続値の最大を超えた場合にスローされる例外です。
  * @author 千葉 哲嗣
- * @see SequenceGenerator#next(Condition)
+ * @see SequenceGenerator#next(Criteria)
  * @see DataAccessHelper#insert(TablePath, SequenceGenerator, Updatable, int, SQLAdjuster)
  */
 public class SequenceOverflowException extends BlendeeException {

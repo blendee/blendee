@@ -229,10 +229,10 @@ public class FromClause {
 		Relationship relationship,
 		Column[] left,
 		Column[] right) {
-		Condition condition = ConditionFactory.createCondition();
+		Criteria criteria = CriteriaFactory.create();
 		Bindable[] bindables = new Bindable[0];
 		for (int i = 0; i < left.length; i++) {
-			condition.and(ConditionFactory.createCondition("{0} = {1}", new Column[] { left[i], right[i] }, bindables));
+			criteria.and(CriteriaFactory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, bindables));
 		}
 
 		return type
@@ -241,7 +241,7 @@ public class FromClause {
 			+ " "
 			+ relationship.getID()
 			+ " ON ("
-			+ condition.toString(true).trim()
+			+ criteria.toString(true).trim()
 			+ ")";
 	}
 

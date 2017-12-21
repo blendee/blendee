@@ -94,8 +94,8 @@ public class Column implements Comparable<Column> {
 	 * @param bindable 比較値
 	 * @return 生成された条件句
 	 */
-	public Condition getCondition(Bindable bindable) {
-		return ConditionFactory.createCondition(this, bindable);
+	public Criteria getCriteria(Bindable bindable) {
+		return CriteriaFactory.create(this, bindable);
 	}
 
 	/**

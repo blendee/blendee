@@ -14,7 +14,7 @@ import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -27,7 +27,7 @@ import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
-import org.blendee.support.QueryConditionContext;
+import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
@@ -68,7 +68,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
-				QueryConditionContext.AND);
+				QueryCriteriaContext.AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -77,7 +77,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
-				QueryConditionContext.OR);
+				QueryCriteriaContext.OR);
 	/*++'++*/}/*++'++*/
 
 	private final /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ operators = new /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/();
@@ -89,11 +89,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			QueryContext.OTHER,
-			QueryConditionContext.NULL);
+			QueryCriteriaContext.NULL);
 
 	private Optimizer optimizer;
 
-	private Condition condition;
+	private Criteria criteria;
 
 	private OrderByClause orderByClause;
 
@@ -104,7 +104,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			selectContext,
-			QueryConditionContext.NULL);
+			QueryCriteriaContext.NULL);
 
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -113,7 +113,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
 			this,
 			orderByContext,
-			QueryConditionContext.NULL);
+			QueryCriteriaContext.NULL);
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
@@ -186,8 +186,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public boolean hasCondition() /*++'++*/{/*++'++*/
-		return condition != null && condition.isAvailable();
+	public boolean hasCriteria() /*++'++*/{/*++'++*/
+		return criteria != null && criteria.isAvailable();
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -206,22 +206,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * 現時点の WHERE 句に新たな条件を AND 結合します。<br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
-	 * @param condition AND 結合する新条件
+	 * @param criteria AND 結合する新条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Condition condition) /*++'++*/{/*++'++*/
-		QueryConditionContext.AND.addCondition(operators.AND, condition);
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Criteria criteria) /*++'++*/{/*++'++*/
+		QueryCriteriaContext.AND.addCriteria(operators.AND, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * 現時点の WHERE 句に新たな条件を OR 結合します。<br>
 	 * OR 結合する対象がなければ、新条件としてセットされます。
-	 * @param condition OR 結合する新条件
+	 * @param criteria OR 結合する新条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Condition condition) /*++'++*/{/*++'++*/
-		QueryConditionContext.OR.addCondition(operators.OR, condition);
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Criteria criteria) /*++'++*/{/*++'++*/
+		QueryCriteriaContext.OR.addCriteria(operators.OR, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -232,7 +232,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryConditionContext.AND.addCondition(operators.AND, subquery.createCondition(this));
+		QueryCriteriaContext.AND.addCriteria(operators.AND, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -243,7 +243,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryConditionContext.OR.addCondition(operators.OR, subquery.createCondition(this));
+		QueryCriteriaContext.OR.addCriteria(operators.OR, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -259,12 +259,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
-		return manager.select(getOptimizer(), condition, orderByClause);
+		return manager.select(getOptimizer(), criteria, orderByClause);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(QueryOption... options) /*++'++*/{/*++'++*/
-		return manager.select(getOptimizer(), condition, orderByClause, options);
+		return manager.select(getOptimizer(), criteria, orderByClause, options);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -309,20 +309,20 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public int count() /*++'++*/{/*++'++*/
-		return manager.count(condition);
+		return manager.count(criteria);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Condition getCondition() /*++'++*/{/*++'++*/
-		return condition.replicate();
+	public Criteria getCriteria() /*++'++*/{/*++'++*/
+		return criteria.replicate();
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * 現在保持している条件をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCondition() /*++'++*/{/*++'++*/
-		condition = null;
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCriteria() /*++'++*/{/*++'++*/
+		criteria = null;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -340,7 +340,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
-		condition = null;
+		criteria = null;
 		orderByClause = null;
 		return this;
 	/*++'++*/}/*++'++*/
@@ -392,7 +392,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final /*++{1}Query++*//*--*/QueryBase/*--*/ $query;
 
-		private final QueryConditionContext $context;
+		private final QueryCriteriaContext $context;
 
 		private final QueryRelationship $parent;
 
@@ -454,7 +454,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		private /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query,
 			QueryContext<T> builder,
-			QueryConditionContext context) /*++'++*/{/*++'++*/
+			QueryCriteriaContext context) /*++'++*/{/*++'++*/
 			$query = query;
 			$context = context;
 			$parent = null;
@@ -480,7 +480,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public QueryConditionContext getContext() /*++'++*/{/*++'++*/
+		public QueryCriteriaContext getContext() /*++'++*/{/*++'++*/
 			if ($context == null) return $parent.getContext();
 
 			return $context;
@@ -515,20 +515,20 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public void setWhereClause(Condition condition) /*++'++*/{/*++'++*/
+		public void setWhereClause(Criteria criteria) /*++'++*/{/*++'++*/
 			if ($query == null) /*++'++*/{/*++'++*/
-				$parent.setWhereClause(condition);
+				$parent.setWhereClause(criteria);
 				return;
 			/*++'++*/}/*++'++*/
 
-			$query.condition = condition;
+			$query.criteria = criteria;
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public Condition getWhereClause() /*++'++*/{/*++'++*/
+		public Criteria getWhereClause() /*++'++*/{/*++'++*/
 			if ($query == null) return $parent.getWhereClause();
 
-			return $query.condition;
+			return $query.criteria;
 		/*++'++*/}/*++'++*/
 
 		@Override

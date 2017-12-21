@@ -3,18 +3,19 @@ package org.blendee.sql;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.blendee.sql.Condition.ProxyCondition;
+import org.blendee.sql.Criteria.ProxyCriteria;
 import org.blendee.sql.binder.StringBinder;
 
 /**
  * 条件句インスタンスを生成するファクトリクラスです。
  * @author 千葉 哲嗣
  */
-public class ConditionFactory {
+public class CriteriaFactory {
 
 	/**
 	 * 比較演算子の列挙型です。
@@ -57,8 +58,8 @@ public class ConditionFactory {
 			expression = "{0} " + operator + " ?";
 		}
 
-		private Condition create(Column column, Bindable bindable) {
-			return createCondition(expression, new Column[] { column }, new Bindable[] { bindable });
+		private Criteria create(Column column, Bindable bindable) {
+			return createCriteria(expression, new Column[] { column }, new Bindable[] { bindable });
 		}
 	}
 
@@ -73,8 +74,8 @@ public class ConditionFactory {
 		ENDING_WITH {
 
 			@Override
-			String getSearchExpression(String value) {
-				return "%" + escape(value);
+			String decorate(String value) {
+				return "%" + value;
 			}
 		},
 
@@ -84,8 +85,8 @@ public class ConditionFactory {
 		STARTING_WITH {
 
 			@Override
-			String getSearchExpression(String value) {
-				return escape(value) + "%";
+			String decorate(String value) {
+				return value + "%";
 			}
 		},
 
@@ -95,8 +96,8 @@ public class ConditionFactory {
 		CONTAINING {
 
 			@Override
-			String getSearchExpression(String value) {
-				return "%" + escape(value) + "%";
+			String decorate(String value) {
+				return "%" + value + "%";
 			}
 		},
 
@@ -106,26 +107,43 @@ public class ConditionFactory {
 		OPTIONAL {
 
 			@Override
-			String getSearchExpression(String value) {
-				return escape(value);
+			String decorate(String value) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			Criteria create(String clause, Column column, String value) {
+				return createCriteria(
+					clause,
+					column,
+					new StringBinder(value));
 			}
 		};
 
-		private Condition create(Column column, String value) {
-			return createCondition(
-				"{0} LIKE ? ESCAPE '!'",
-				column,
-				new StringBinder(getSearchExpression(value)));
+		private static final Pattern pattern = Pattern.compile("([%_!])");
+
+		abstract String decorate(String value);
+
+		private Criteria create(Column column, String value) {
+			return create("{0} LIKE ?", column, value);
 		}
 
-		private Condition createNot(Column column, String value) {
-			return createCondition(
-				"{0} NOT LIKE ? ESCAPE '!'",
-				column,
-				new StringBinder(getSearchExpression(value)));
+		private Criteria createNot(Column column, String value) {
+			return create("{0} NOT LIKE ?", column, value);
 		}
 
-		abstract String getSearchExpression(String value);
+		Criteria create(String clause, Column column, String value) {
+			Matcher matcher = pattern.matcher(value);
+			if (!matcher.find()) return createCriteria(
+				clause,
+				column,
+				new StringBinder(decorate(value)));
+
+			return createCriteria(
+				clause + " ESCAPE '!'",
+				column,
+				new StringBinder(decorate(matcher.replaceAll("!$1"))));
+		}
 	}
 
 	/**
@@ -149,14 +167,12 @@ public class ConditionFactory {
 			this.expression = "{0} " + expression;
 		}
 
-		private Condition create(Column column) {
-			return createCondition(expression, new Column[] { column });
+		private Criteria create(Column column) {
+			return createCriteria(expression, new Column[] { column });
 		}
 	}
 
-	private static final Pattern pattern = Pattern.compile("([%_!])");
-
-	private ConditionFactory() {}
+	private CriteriaFactory() {}
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
@@ -164,7 +180,7 @@ public class ConditionFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(Column column, Bindable bindable) {
+	public static Criteria create(Column column, Bindable bindable) {
 		return ComparisonOperator.EQ.create(column, bindable);
 	}
 
@@ -174,7 +190,7 @@ public class ConditionFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(Column column, String value) {
+	public static Criteria create(Column column, String value) {
 		return ComparisonOperator.EQ.create(column, new StringBinder(value));
 	}
 
@@ -184,7 +200,7 @@ public class ConditionFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(Column column, Number value) {
+	public static Criteria create(Column column, Number value) {
 		return ComparisonOperator.EQ.create(column, BindableConverter.convert(value)[0]);
 	}
 
@@ -194,7 +210,7 @@ public class ConditionFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(String columnName, Bindable bindable) {
+	public static Criteria create(String columnName, Bindable bindable) {
 		return ComparisonOperator.EQ.create(new PhantomColumn(columnName), bindable);
 	}
 
@@ -204,7 +220,7 @@ public class ConditionFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(String columnName, String value) {
+	public static Criteria create(String columnName, String value) {
 		return ComparisonOperator.EQ.create(
 			new PhantomColumn(columnName),
 			new StringBinder(value));
@@ -216,7 +232,7 @@ public class ConditionFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createCondition(String columnName, Number value) {
+	public static Criteria create(String columnName, Number value) {
 		return ComparisonOperator.EQ.create(
 			new PhantomColumn(columnName),
 			BindableConverter.convert(value)[0]);
@@ -229,7 +245,7 @@ public class ConditionFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createComparisonCondition(
+	public static Criteria create(
 		ComparisonOperator operator,
 		Column column,
 		Bindable bindable) {
@@ -243,7 +259,7 @@ public class ConditionFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createComparisonCondition(
+	public static Criteria create(
 		ComparisonOperator operator,
 		String columnName,
 		Bindable bindable) {
@@ -256,10 +272,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		Column column,
 		String... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { column },
 			toBindables(values));
@@ -271,10 +287,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		Column column,
 		Number... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { column },
 			BindableConverter.convert(values));
@@ -286,10 +302,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		Column column,
 		Bindable... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { column },
 			values);
@@ -301,10 +317,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		String columnName,
 		String... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
 			toBindables(values));
@@ -316,10 +332,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		String columnName,
 		Number... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
 			BindableConverter.convert(values));
@@ -331,10 +347,10 @@ public class ConditionFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createInCondition(
+	public static Criteria createInCriteria(
 		String columnName,
 		Bindable... values) {
-		return createCondition(
+		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
 			values);
@@ -347,7 +363,7 @@ public class ConditionFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createLikeCondition(
+	public static Criteria createLikeCriteria(
 		Match type,
 		Column column,
 		String value) {
@@ -361,7 +377,7 @@ public class ConditionFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createNotLikeCondition(
+	public static Criteria createNotLikeCriteria(
 		Match type,
 		Column column,
 		String value) {
@@ -375,7 +391,7 @@ public class ConditionFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createLikeCondition(
+	public static Criteria createLikeCriteria(
 		Match type,
 		String columnName,
 		String value) {
@@ -389,11 +405,47 @@ public class ConditionFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createNotLikeCondition(
+	public static Criteria createNotLikeCriteria(
 		Match type,
 		String columnName,
 		String value) {
 		return type.createNot(new PhantomColumn(columnName), value);
+	}
+
+	/**
+	 * IS NULL となる条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createIsNullCriteria(Column column) {
+		return NullComparisonOperator.IS_NULL.create(column);
+	}
+
+	/**
+	 * IS NULL となる条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createIsNullCriteria(String columnName) {
+		return NullComparisonOperator.IS_NULL.create(new PhantomColumn(columnName));
+	}
+
+	/**
+	 * IS NOT NULL となる条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createIsNotNullCriteria(Column column) {
+		return NullComparisonOperator.IS_NOT_NULL.create(column);
+	}
+
+	/**
+	 * IS NOT NULL となる条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createIsNotNullCriteria(String columnName) {
+		return NullComparisonOperator.IS_NOT_NULL.create(new PhantomColumn(columnName));
 	}
 
 	/**
@@ -402,7 +454,7 @@ public class ConditionFactory {
 	 * @param column 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createNullCondition(
+	public static Criteria create(
 		NullComparisonOperator type,
 		Column column) {
 		return type.create(column);
@@ -414,7 +466,7 @@ public class ConditionFactory {
 	 * @param columnName 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Condition createNullCondition(
+	public static Criteria create(
 		NullComparisonOperator type,
 		String columnName) {
 		return type.create(new PhantomColumn(columnName));
@@ -424,8 +476,8 @@ public class ConditionFactory {
 	 * 空の条件句を生成します。
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition() {
-		return new ProxyCondition();
+	public static Criteria create() {
+		return new ProxyCriteria();
 	}
 
 	/**
@@ -435,8 +487,8 @@ public class ConditionFactory {
 	 * @param columns 対象となるカラム
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(String clause, Column[] columns) {
-		return new Condition(clause, columns, Binder.EMPTY_ARRAY);
+	public static Criteria createCriteria(String clause, Column[] columns) {
+		return new Criteria(clause, columns, Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -446,10 +498,10 @@ public class ConditionFactory {
 	 * @param columnNames 対象となるカラム
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(
+	public static Criteria createCriteria(
 		String clause,
 		String[] columnNames) {
-		return new Condition(clause, PhantomColumn.convert(columnNames), Binder.EMPTY_ARRAY);
+		return new Criteria(clause, PhantomColumn.convert(columnNames), Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -458,8 +510,8 @@ public class ConditionFactory {
 	 * @param clause 条件句
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(String clause) {
-		return new Condition(clause, Column.EMPTY_ARRAY, Binder.EMPTY_ARRAY);
+	public static Criteria createCriteria(String clause) {
+		return new Criteria(clause, Column.EMPTY_ARRAY, Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -469,11 +521,11 @@ public class ConditionFactory {
 	 * @param bindable プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(
+	public static Criteria createCriteria(
 		String clause,
 		Column column,
 		Bindable bindable) {
-		return createCondition(clause, new Column[] { column }, new Bindable[] { bindable });
+		return createCriteria(clause, new Column[] { column }, new Bindable[] { bindable });
 	}
 
 	/**
@@ -483,11 +535,11 @@ public class ConditionFactory {
 	 * @param bindable プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(
+	public static Criteria createCriteria(
 		String clause,
 		String columnName,
 		Bindable bindable) {
-		return createCondition(clause, new Column[] { new PhantomColumn(columnName) }, new Bindable[] { bindable });
+		return createCriteria(clause, new Column[] { new PhantomColumn(columnName) }, new Bindable[] { bindable });
 	}
 
 	/**
@@ -497,7 +549,7 @@ public class ConditionFactory {
 	 * @param bindables プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(
+	public static Criteria createCriteria(
 		String clause,
 		Column[] columns,
 		Bindable[] bindables) {
@@ -505,7 +557,7 @@ public class ConditionFactory {
 		for (int i = 0; i < bindables.length; i++) {
 			binders[i] = bindables[i].toBinder();
 		}
-		return new Condition(clause, columns, binders);
+		return new Criteria(clause, columns, binders);
 	}
 
 	/**
@@ -515,69 +567,69 @@ public class ConditionFactory {
 	 * @param bindables プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(
+	public static Criteria createCriteria(
 		String clause,
 		String[] columnNames,
 		Bindable[] bindables) {
-		return createCondition(clause, PhantomColumn.convert(columnNames), bindables);
+		return createCriteria(clause, PhantomColumn.convert(columnNames), bindables);
 	}
 
 	/**
 	 * コピー用メソッドです。
-	 * @param condition コピーしたいインスタンス
+	 * @param criteria コピーしたいインスタンス
 	 * @return 生成されたインスタンス
 	 */
-	public static Condition createCondition(Condition condition) {
-		return condition.replicate();
+	public static Criteria createCriteria(Criteria criteria) {
+		return criteria.replicate();
 	}
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
 	 * @param mainRelationship 主となるクエリ側のテーブル
 	 * @param subqueryRelationship サブクエリ側のテーブル
-	 * @param subqueryCondition サブクエリ用条件
+	 * @param subquery サブクエリ用条件
 	 * @return 生成されたインスタンス
 	 * @throws SubqueryException mainRelationship と subQueryRelationship が異なるテーブルを指す場合
 	 */
-	public static Condition createSubqueryCondition(
+	public static Criteria createSubquery(
 		Relationship mainRelationship,
 		Relationship subqueryRelationship,
-		Condition subqueryCondition) {
+		Criteria subquery) {
 		if (!mainRelationship.getTablePath().equals(subqueryRelationship.getTablePath()))
 			throw new SubqueryException("異なるテーブルを結合しようとしています");
 
-		return createSubqueryCondition(
+		return createSubquery(
 			mainRelationship.getPrimaryKeyColumns(),
 			subqueryRelationship.getPrimaryKeyColumns(),
-			subqueryCondition);
+			subquery);
 	}
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
 	 * @param columns 主となるクエリ側のカラム
 	 * @param subqueryColumns サブクエリ側のカラム
-	 * @param subqueryCondition サブクエリ用条件
+	 * @param subquery サブクエリ用条件
 	 * @return 生成されたインスタンス
 	 * @throws SubqueryException サブクエリ側のカラムが空の場合
 	 * @throws SubqueryException サブクエリ側のカラムが属する {@link Relationship} のルートが異なる場合
 	 * @throws SubqueryException サブクエリ用条件内のカラムが属する {@link Relationship} のルートが、サブクエリ側のカラムが属すると異なる場合
 	 */
-	public static Condition createSubqueryCondition(
+	public static Criteria createSubquery(
 		Column[] columns,
 		Column[] subqueryColumns,
-		Condition subqueryCondition) {
+		Criteria subquery) {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
 		QueryBuilder builder = new QueryBuilder(
 			new FromClause(subqueryColumns[0].getRelationship().getRoot().getTablePath()));
-		builder.setWhereClause(subqueryCondition);
+		builder.setWhereClause(subquery);
 		SelectClause selectClause = new SelectClause();
 		for (Column column : subqueryColumns) {
 			selectClause.add(column);
 		}
 
 		builder.setSelectClause(selectClause);
-		return createSubqueryCondition(columns, builder);
+		return createSubquery(columns, builder);
 	}
 
 	/**
@@ -589,7 +641,7 @@ public class ConditionFactory {
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
 	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
 	 */
-	public static Condition createSubqueryCondition(
+	public static Criteria createSubquery(
 		Column[] columns,
 		QueryBuilder subquery) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
@@ -616,11 +668,7 @@ public class ConditionFactory {
 
 		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.toString() + ")";
 
-		return new Condition(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
-	}
-
-	private static String escape(String value) {
-		return pattern.matcher(value).replaceAll("!$1");
+		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
 	}
 
 	private static String buildInClause(int length) {

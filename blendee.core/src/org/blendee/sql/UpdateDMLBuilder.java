@@ -15,7 +15,7 @@ public class UpdateDMLBuilder extends Updater {
 
 	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
-	private Condition condition = ConditionFactory.createCondition();
+	private Criteria criteria = CriteriaFactory.create();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
@@ -28,7 +28,7 @@ public class UpdateDMLBuilder extends Updater {
 	@Override
 	public int complement(BPreparedStatement statement) {
 		int complemented = super.complement(statement);
-		return complemented + condition.getComplementer(complemented).complement(statement);
+		return complemented + criteria.getComplementer(complemented).complement(statement);
 	}
 
 	/**
@@ -36,16 +36,16 @@ public class UpdateDMLBuilder extends Updater {
 	 * @param searchable {@link Searchable}
 	 */
 	public void setSearchable(Searchable searchable) {
-		setCondition(searchable.getCondition(factory.getInstance(getTablePath())));
+		setCriteria(searchable.getCriteria(factory.getInstance(getTablePath())));
 	}
 
 	/**
 	 * WHERE 句を設定します。
-	 * @param condition WHERE 句
+	 * @param criteria WHERE 句
 	 */
-	public void setCondition(Condition condition) {
-		this.condition = condition.replicate();
-		this.condition.adjustColumns(factory.getInstance(getTablePath()));
+	public void setCriteria(Criteria criteria) {
+		this.criteria = criteria.replicate();
+		this.criteria.adjustColumns(factory.getInstance(getTablePath()));
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class UpdateDMLBuilder extends Updater {
 			String columnName = columnNames[i];
 			list.add(columnName + " = " + getPlaceHolderOrFragment(columnName));
 		}
-		condition.setKeyword("WHERE");
-		return "UPDATE " + getTablePath() + " SET " + String.join(", ", list) + condition.toString(false);
+		criteria.setKeyword("WHERE");
+		return "UPDATE " + getTablePath() + " SET " + String.join(", ", list) + criteria.toString(false);
 	}
 }

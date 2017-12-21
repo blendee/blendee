@@ -17,8 +17,8 @@ import org.blendee.jdbc.exception.UniqueConstraintViolationException;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.Selector;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Condition;
-import org.blendee.sql.ConditionFactory;
+import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
@@ -87,7 +87,7 @@ public class DataAccessHelper {
 		checkArgument(optimizer, primaryKey);
 		DataObjectIterator iterator = select(
 			optimizer,
-			primaryKey.getCondition(),
+			primaryKey.getCriteria(),
 			null,
 			options,
 			false);
@@ -97,18 +97,18 @@ public class DataAccessHelper {
 	/**
 	 * パラメータの条件にマッチする {@link DataObject} を検索し返します。
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order ORDER 句
 	 * @param options 検索オプション
 	 * @return 条件にマッチする {@link DataObject} を持つ {@link DataObjectIterator}
 	 */
 	public DataObjectIterator getDataObjects(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) {
-		adjustArgument(optimizer, condition, order);
-		return select(optimizer, condition, order, options, false);
+		adjustArgument(optimizer, criteria, order);
+		return select(optimizer, criteria, order, options, false);
 	}
 
 	/**
@@ -124,25 +124,25 @@ public class DataAccessHelper {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
 		checkArgument(optimizer, primaryKey);
-		prepareSelector(optimizer, primaryKey.getCondition(), null, options);
+		prepareSelector(optimizer, primaryKey.getCriteria(), null, options);
 	}
 
 	/**
 	 * パラメータの条件にマッチする {@link DataObject} を検索する SQL 文をあらかじめこのインスタンスにキャッシュしておきます。
 	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param order ORDER 句
 	 * @param options 検索オプション
 	 */
 	public void study(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
-		adjustArgument(optimizer, condition, order);
-		prepareSelector(optimizer, condition, order, options);
+		adjustArgument(optimizer, criteria, order);
+		prepareSelector(optimizer, criteria, order, options);
 	}
 
 	/**
@@ -183,13 +183,13 @@ public class DataAccessHelper {
 	/**
 	 * パラメータの条件にマッチする件数を返します。
 	 * @param path 対象となるテーブル
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @return パラメータの条件にマッチする件数
 	 */
-	public int count(TablePath path, Condition condition) {
+	public int count(TablePath path, Criteria criteria) {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(SelectClause.COUNT_CLAUSE);
-		if (condition != null) builder.setWhereClause(condition);
+		if (criteria != null) builder.setWhereClause(criteria);
 		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		try (BStatement statement = connection.getStatement(builder.toString(), builder)) {
 			try (BResultSet result = statement.executeQuery()) {
@@ -300,20 +300,20 @@ public class DataAccessHelper {
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE を実行します。
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 * @return 更新件数
 	 */
 	public int update(
 		TablePath path,
 		Updatable updatable,
-		Condition condition,
+		Criteria criteria,
 		SQLAdjuster adjuster) {
 		return updateInternal(
 			getThreadStatement(),
 			path,
 			updatable,
-			condition,
+			criteria,
 			adjuster);
 	}
 
@@ -322,20 +322,20 @@ public class DataAccessHelper {
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @param adjuster UPDATE 文を調整する {@link SQLAdjuster}
 	 */
 	public void update(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
-		Condition condition,
+		Criteria criteria,
 		SQLAdjuster adjuster) {
 		updateInternal(
 			new BatchStatementFacade(statement),
 			path,
 			updatable,
-			condition,
+			criteria,
 			adjuster);
 	}
 
@@ -382,27 +382,27 @@ public class DataAccessHelper {
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE を実行します。
 	 * @param path 対象となるテーブル
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 * @return 削除件数
 	 */
-	public int delete(TablePath path, Condition condition) {
-		return deleteInternal(getThreadStatement(), path, condition);
+	public int delete(TablePath path, Criteria criteria) {
+		return deleteInternal(getThreadStatement(), path, criteria);
 	}
 
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
-	 * @param condition WHERE 句となる条件
+	 * @param criteria WHERE 句となる条件
 	 */
 	public void delete(
 		BatchStatement statement,
 		TablePath path,
-		Condition condition) {
+		Criteria criteria) {
 		deleteInternal(
 			new BatchStatementFacade(statement),
 			path,
-			condition);
+			criteria);
 	}
 
 	/**
@@ -453,22 +453,22 @@ public class DataAccessHelper {
 		return statement;
 	}
 
-	static int deleteInternal(TablePath path, Condition condition) {
-		return deleteInternal(getThreadStatement(), path, condition);
+	static int deleteInternal(TablePath path, Criteria criteria) {
+		return deleteInternal(getThreadStatement(), path, criteria);
 	}
 
 	private DataObjectIterator select(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption[] options,
 		boolean readonly) {
-		return select(prepareSelector(optimizer, condition, order, options), readonly);
+		return select(prepareSelector(optimizer, criteria, order, options), readonly);
 	}
 
 	private Selector prepareSelector(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order,
 		QueryOption[] options) {
 		if (optimizer == null) throw new NullPointerException("optimizer は必須です");
@@ -487,7 +487,7 @@ public class DataAccessHelper {
 			selector = new Selector(optimizer);
 		}
 
-		if (condition != null) selector.setCondition(condition);
+		if (criteria != null) selector.setCriteria(criteria);
 		if (order != null) selector.setOrder(order);
 
 		for (QueryOption option : options) {
@@ -513,9 +513,9 @@ public class DataAccessHelper {
 
 	private void adjustArgument(
 		Optimizer optimizer,
-		Condition condition,
+		Criteria criteria,
 		OrderByClause order) {
-		if (condition != null) condition.adjustColumns(factory.getInstance(optimizer.getTablePath()));
+		if (criteria != null) criteria.adjustColumns(factory.getInstance(optimizer.getTablePath()));
 		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getTablePath()));
 	}
 
@@ -567,10 +567,10 @@ public class DataAccessHelper {
 		builder.add(updatable);
 
 		String[] depends = sequencer.getDependsColumnNames();
-		Condition condition = ConditionFactory.createCondition();
+		Criteria criteria = CriteriaFactory.create();
 		Relationship relationship = factory.getInstance(path);
 		for (String columnName : depends) {
-			condition.and(ConditionFactory.createCondition(relationship.getColumn(columnName), map.get(columnName)));
+			criteria.and(CriteriaFactory.create(relationship.getColumn(columnName), map.get(columnName)));
 		}
 
 		String targetColumnName = sequencer.getTargetColumnName();
@@ -578,7 +578,7 @@ public class DataAccessHelper {
 		if (retry <= 0) retry = 3;
 		for (int i = 0; i < retry; i++) {
 			try {
-				Bindable bindable = sequencer.next(condition);
+				Bindable bindable = sequencer.next(criteria);
 				builder.add(targetColumnName, bindable);
 				statement.process(builder.toString(), builder);
 				statement.execute();
@@ -593,22 +593,22 @@ public class DataAccessHelper {
 		StatementFacade statement,
 		TablePath path,
 		Updatable updatable,
-		Condition condition,
+		Criteria criteria,
 		SQLAdjuster adjuster) {
-		if (!condition.isAvailable()) throw new IllegalArgumentException("条件がありません");
-		return updateInternalFinally(statement, path, updatable, condition, adjuster);
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
+		return updateInternalFinally(statement, path, updatable, criteria, adjuster);
 	}
 
 	private static int updateInternalFinally(
 		StatementFacade statement,
 		TablePath path,
 		Updatable updatable,
-		Condition condition,
+		Criteria criteria,
 		SQLAdjuster adjuster) {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 		if (adjuster != null) builder.setSQLAdjuster(adjuster);
 		builder.add(updatable);
-		if (condition != null) builder.setCondition(condition);
+		if (criteria != null) builder.setCriteria(criteria);
 		statement.process(builder.toString(), builder);
 		return statement.execute();
 	}
@@ -616,17 +616,17 @@ public class DataAccessHelper {
 	private static int deleteInternal(
 		StatementFacade statement,
 		TablePath path,
-		Condition condition) {
-		if (!condition.isAvailable()) throw new IllegalArgumentException("条件がありません");
-		return deleteInternalFinally(statement, path, condition);
+		Criteria criteria) {
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
+		return deleteInternalFinally(statement, path, criteria);
 	}
 
 	private static int deleteInternalFinally(
 		StatementFacade statement,
 		TablePath path,
-		Condition condition) {
+		Criteria criteria) {
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
-		if (condition != null) builder.setCondition(condition);
+		if (criteria != null) builder.setCriteria(criteria);
 		statement.process(builder.toString(), builder);
 		return statement.execute();
 	}

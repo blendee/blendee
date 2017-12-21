@@ -71,7 +71,7 @@ public interface Row extends Updatable {
 	default boolean delete() {
 		int result = new DataAccessHelper().delete(
 			getTablePath(),
-			getPrimaryKey().getCondition());
+			getPrimaryKey().getCriteria());
 		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
 		return result == 1;
 	}
@@ -84,7 +84,7 @@ public interface Row extends Updatable {
 		new DataAccessHelper().delete(
 			statement,
 			getTablePath(),
-			getPrimaryKey().getCondition());
+			getPrimaryKey().getCriteria());
 	}
 
 	/**

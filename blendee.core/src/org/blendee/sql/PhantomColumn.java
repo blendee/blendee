@@ -99,8 +99,8 @@ public class PhantomColumn extends Column {
 	}
 
 	@Override
-	public Condition getCondition(Bindable bindable) {
-		return getSubstanceWithCheck().getCondition(bindable);
+	public Criteria getCriteria(Bindable bindable) {
+		return getSubstanceWithCheck().getCriteria(bindable);
 	}
 
 	@Override

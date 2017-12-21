@@ -27,12 +27,12 @@ public class SynchronizedQueryBuilder extends QueryBuilder {
 	}
 
 	@Override
-	public synchronized void setWhereClause(Condition clause) {
+	public synchronized void setWhereClause(Criteria clause) {
 		super.setWhereClause(clause);
 	}
 
 	@Override
-	public synchronized Condition getWhereClause() {
+	public synchronized Criteria getWhereClause() {
 		return super.getWhereClause();
 	}
 
@@ -47,12 +47,12 @@ public class SynchronizedQueryBuilder extends QueryBuilder {
 	}
 
 	@Override
-	public synchronized void setHavingClause(Condition clause) {
+	public synchronized void setHavingClause(Criteria clause) {
 		super.setHavingClause(clause);
 	}
 
 	@Override
-	public synchronized Condition getHavingClause() {
+	public synchronized Criteria getHavingClause() {
 		return super.getHavingClause();
 	}
 

@@ -1,14 +1,14 @@
 package org.blendee.support;
 
-import org.blendee.sql.Condition;
-import org.blendee.sql.ConditionFactory;
+import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 
 /**
  * 自動生成される QueryRelationship クラスのインスタンスが WHERE 句用の場合、そのタイプを表す列挙型です。<br>
  * 内部使用を目的としています。
  * @author 千葉 哲嗣
  */
-public enum QueryConditionContext {
+public enum QueryCriteriaContext {
 
 	/**
 	 * 条件 AND 結合
@@ -16,14 +16,14 @@ public enum QueryConditionContext {
 	AND {
 
 		@Override
-		public void addCondition(QueryRelationship relationship, Condition condition) {
-			Condition clause = relationship.getWhereClause();
+		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
+			Criteria clause = relationship.getWhereClause();
 			if (clause == null) {
-				clause = ConditionFactory.createCondition();
+				clause = CriteriaFactory.create();
 				relationship.setWhereClause(clause);
 			}
 
-			clause.and(condition);
+			clause.and(criteria);
 		}
 	},
 
@@ -33,14 +33,14 @@ public enum QueryConditionContext {
 	OR {
 
 		@Override
-		public void addCondition(QueryRelationship relationship, Condition condition) {
-			Condition clause = relationship.getWhereClause();
+		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
+			Criteria clause = relationship.getWhereClause();
 			if (clause == null) {
-				clause = ConditionFactory.createCondition();
+				clause = CriteriaFactory.create();
 				relationship.setWhereClause(clause);
 			}
 
-			clause.or(condition);
+			clause.or(criteria);
 		}
 	},
 
@@ -50,7 +50,7 @@ public enum QueryConditionContext {
 	NULL {
 
 		@Override
-		public void addCondition(QueryRelationship relationship, Condition condition) {
+		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
 			throw new IllegalStateException();
 		}
 	};
@@ -59,7 +59,7 @@ public enum QueryConditionContext {
 	 * 検索条件作成時に、自身のタイプに合った振る舞いをします。<br>
 	 * このメソッドは、内部使用を目的としていますので、直接使用しないでください。
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
-	 * @param condition 新条件
+	 * @param criteria 新条件
 	 */
-	public abstract void addCondition(QueryRelationship relationship, Condition condition);
+	public abstract void addCriteria(QueryRelationship relationship, Criteria criteria);
 }
