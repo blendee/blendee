@@ -3,6 +3,7 @@ package org.blendee.sql;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,8 +74,8 @@ public class CriteriaFactory {
 		ENDING_WITH {
 
 			@Override
-			String getSearchExpression(String value) {
-				return "%" + escape(value);
+			String decorate(String value) {
+				return "%" + value;
 			}
 		},
 
@@ -84,8 +85,8 @@ public class CriteriaFactory {
 		STARTING_WITH {
 
 			@Override
-			String getSearchExpression(String value) {
-				return escape(value) + "%";
+			String decorate(String value) {
+				return value + "%";
 			}
 		},
 
@@ -95,8 +96,8 @@ public class CriteriaFactory {
 		CONTAINING {
 
 			@Override
-			String getSearchExpression(String value) {
-				return "%" + escape(value) + "%";
+			String decorate(String value) {
+				return "%" + value + "%";
 			}
 		},
 
@@ -106,26 +107,43 @@ public class CriteriaFactory {
 		OPTIONAL {
 
 			@Override
-			String getSearchExpression(String value) {
-				return escape(value);
+			String decorate(String value) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			Criteria create(String clause, Column column, String value) {
+				return createCriteria(
+					clause,
+					column,
+					new StringBinder(value));
 			}
 		};
 
+		private static final Pattern pattern = Pattern.compile("([%_!])");
+
+		abstract String decorate(String value);
+
 		private Criteria create(Column column, String value) {
-			return createCriteria(
-				"{0} LIKE ? ESCAPE '!'",
-				column,
-				new StringBinder(getSearchExpression(value)));
+			return create("{0} LIKE ?", column, value);
 		}
 
 		private Criteria createNot(Column column, String value) {
-			return createCriteria(
-				"{0} NOT LIKE ? ESCAPE '!'",
-				column,
-				new StringBinder(getSearchExpression(value)));
+			return create("{0} NOT LIKE ?", column, value);
 		}
 
-		abstract String getSearchExpression(String value);
+		Criteria create(String clause, Column column, String value) {
+			Matcher matcher = pattern.matcher(value);
+			if (!matcher.find()) return createCriteria(
+				clause,
+				column,
+				new StringBinder(decorate(value)));
+
+			return createCriteria(
+				clause + " ESCAPE '!'",
+				column,
+				new StringBinder(decorate(matcher.replaceAll("!$1"))));
+		}
 	}
 
 	/**
@@ -153,8 +171,6 @@ public class CriteriaFactory {
 			return createCriteria(expression, new Column[] { column });
 		}
 	}
-
-	private static final Pattern pattern = Pattern.compile("([%_!])");
 
 	private CriteriaFactory() {}
 
@@ -653,10 +669,6 @@ public class CriteriaFactory {
 		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.toString() + ")";
 
 		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
-	}
-
-	private static String escape(String value) {
-		return pattern.matcher(value).replaceAll("!$1");
 	}
 
 	private static String buildInClause(int length) {
