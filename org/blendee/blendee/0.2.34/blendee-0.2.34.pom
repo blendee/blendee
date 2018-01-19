@@ -24,7 +24,7 @@
 		<repository>
 			<id>internal.repos</id>
 			<name>Temporary Staging Repository</name>
-			<url>file://${staging.repository.directory}</url>
+			<url>file://${project.build.directory}/mvn-repo</url>
 		</repository>
 	</distributionManagement>
 
@@ -51,7 +51,7 @@
 				<configuration>
 					<message>Maven artifacts for ${project.version}</message>
 					<noJekyll>true</noJekyll>
-					<outputDirectory>${staging.repository.directory}</outputDirectory>
+					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
 					<includes>
 						<include>**/*</include>
 					</includes>
