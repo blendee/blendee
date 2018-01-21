@@ -1,16 +1,13 @@
 package org.blendee.util.dialect.mysql;
 
-import org.blendee.orm.SQLAdjusterOption;
 import org.blendee.sql.SQLAdjuster;
+import org.blendee.util.dialect.postgresql.LimitClause;
 
 /**
  * 検索結果をページ単位で取得するように SQL を加工する {@link SQLAdjuster} です。<br>
- * LIMIT 句を使用しているので、データベースの種類によっては使用できません。
  * @author 千葉 哲嗣
  */
-public class Pager implements SQLAdjusterOption {
-
-	private final String limit;
+public class Pager extends LimitClause {
 
 	/**
 	 * インスタンスを生成します。
@@ -18,12 +15,10 @@ public class Pager implements SQLAdjusterOption {
 	 * @param rowsParPage 1 ページ当たりの行数
 	 */
 	public Pager(int currentPage, int rowsParPage) {
-		int offset = ((currentPage < 1 ? 1 : currentPage) - 1) * rowsParPage;
-		limit = " LIMIT " + offset + ", " + rowsParPage;
+		super(offset(currentPage, rowsParPage), rowsParPage);
 	}
 
-	@Override
-	public String adjustSQL(String sql) {
-		return sql + limit;
+	private static final int offset(int currentPage, int rowsParPage) {
+		return ((currentPage < 1 ? 1 : currentPage) - 1) * rowsParPage;
 	}
 }
