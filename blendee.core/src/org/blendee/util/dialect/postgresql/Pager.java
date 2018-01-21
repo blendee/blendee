@@ -1,11 +1,14 @@
-package org.blendee.sql;
+package org.blendee.util.dialect.postgresql;
+
+import org.blendee.orm.SQLAdjusterOption;
+import org.blendee.sql.SQLAdjuster;
 
 /**
  * 検索結果をページ単位で取得するように SQL を加工する {@link SQLAdjuster} です。<br>
  * LIMIT 句を使用しているので、データベースの種類によっては使用できません。
  * @author 千葉 哲嗣
  */
-public class Pager implements SQLAdjuster {
+public class Pager implements SQLAdjusterOption {
 
 	private final String limit;
 
