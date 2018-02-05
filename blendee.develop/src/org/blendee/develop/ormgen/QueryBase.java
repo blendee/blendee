@@ -97,6 +97,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private OrderByClause orderByClause;
 
+	private SelectOfferFunction<?> selectClauseFunction;
+
+	private OrderByOfferFunction<?> orderByClauseFunction;
+
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
@@ -157,9 +161,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
 		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		if (selectClauseFunction == function) return this;
+
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
+		selectClauseFunction = function;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -181,7 +188,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
 		OrderByOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		if (orderByClauseFunction == function) return this;
+
 		function.offer(orderBy);
+		orderByClauseFunction = function;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -318,7 +328,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 現在保持している条件をリセットします。
+	 * 現在保持している WHERE 句をリセットします。
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCriteria() /*++'++*/{/*++'++*/
@@ -327,11 +337,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 現在保持している並び順をリセットします。
+	 * 現在保持している SELECT 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetSelect() /*++'++*/{/*++'++*/
+		optimizer = null;
+		selectClauseFunction = null;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 現在保持しているORDER BY 句をリセットします。
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrder() /*++'++*/{/*++'++*/
 		orderByClause = null;
+		orderByClauseFunction = null;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -341,7 +362,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
 		criteria = null;
+		optimizer = null;
 		orderByClause = null;
+		selectClauseFunction = null;
+		orderByClauseFunction = null;
 		return this;
 	/*++'++*/}/*++'++*/
 
