@@ -27,8 +27,8 @@ import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
-import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryContext;
+import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.Row;
@@ -93,6 +93,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	private Criteria criteria;
 
 	private OrderByClause orderByClause;
+
+	private SelectOfferFunction<?> selectClauseFunction;
+
+	private OrderByOfferFunction<?> orderByClauseFunction;
 
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
@@ -159,9 +163,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 */
 	public GenericQuery SELECT(
 		SelectOfferFunction<GenericRelationship<SelectQueryColumn, Void>> function) {
+		if (selectClauseFunction == function) return this;
+
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
+		selectClauseFunction = function;
 		return this;
 	}
 
@@ -183,7 +190,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 */
 	public GenericQuery ORDER_BY(
 		OrderByOfferFunction<GenericRelationship<OrderByQueryColumn, Void>> function) {
+		if (orderByClauseFunction == function) return this;
+
 		function.offer(orderBy);
+		orderByClauseFunction = function;
 		return this;
 	}
 
@@ -329,11 +339,22 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	/**
+	 * 現在保持している SELECT 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public GenericQuery resetSelect() {
+		optimizer = null;
+		selectClauseFunction = null;
+		return this;
+	}
+
+	/**
 	 * 現在保持している並び順をリセットします。
 	 * @return このインスタンス
 	 */
 	public GenericQuery resetOrder() {
 		orderByClause = null;
+		orderByClauseFunction = null;
 		return this;
 	}
 
@@ -343,7 +364,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 */
 	public GenericQuery reset() {
 		criteria = null;
+		optimizer = null;
 		orderByClause = null;
+		selectClauseFunction = null;
+		orderByClauseFunction = null;
 		return this;
 	}
 
