@@ -4,12 +4,10 @@ import java.util.List;
 
 import org.blendee.jdbc.TablePath;
 
-public class DepthRelationshipResolver implements RelationshipResolver {
-
-	private static final int depth = 5;
+public class RecursionCheckRelationshipResolver implements RelationshipResolver {
 
 	@Override
 	public boolean canTraverse(List<TablePath> relationshipPath, TablePath target) {
-		return relationshipPath.size() <= depth;
+		return !relationshipPath.contains(target);
 	}
 }

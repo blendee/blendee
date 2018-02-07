@@ -25,7 +25,7 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
-	private Class<? extends RelationshipResolver> relationshipResolverClass;
+	private RelationshipResolver relationshipResolver;
 
 	/**
 	 * このクラスのコンストラクタです。<br>
@@ -41,7 +41,11 @@ public class RelationshipFactory implements ManagementSubject {
 	public synchronized void setRelationshipResolverClass(
 		Class<? extends RelationshipResolver> relationshipResolverClass) {
 		synchronized (lock) {
-			this.relationshipResolverClass = relationshipResolverClass;
+			try {
+				this.relationshipResolver = relationshipResolverClass.getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -129,21 +133,16 @@ public class RelationshipFactory implements ManagementSubject {
 		}
 	}
 
-	private RelationshipResolver createRelationshipResolver() {
-		synchronized (lock) {
-			try {
-				return relationshipResolverClass.getDeclaredConstructor().newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
 	private Relationship createRelationship(final TablePath path) {
 		final String pathID = pathIDMap.get(path);
 		if (pathID == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
 
 		List<TablePath> relationshipPath = new LinkedList<>();
+
+		RelationshipResolver myRelationshipResolver;
+		synchronized (lock) {
+			myRelationshipResolver = relationshipResolver;
+		}
 
 		return new Relationship(
 			null,
@@ -152,7 +151,7 @@ public class RelationshipFactory implements ManagementSubject {
 			path,
 			pathID,
 			relationshipPath,
-			createRelationshipResolver(),
+			myRelationshipResolver,
 			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<>());
 	}
