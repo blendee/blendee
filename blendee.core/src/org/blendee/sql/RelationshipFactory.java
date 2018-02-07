@@ -2,11 +2,13 @@ package org.blendee.sql;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.blendee.internal.CollectionMap;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.ManagementSubject;
 import org.blendee.jdbc.MetadataUtilities;
 import org.blendee.jdbc.TablePath;
@@ -23,12 +25,25 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
+	private Class<? extends RelationshipResolver> relationshipResolverClass;
+
 	/**
 	 * このクラスのコンストラクタです。<br>
 	 * {@link ContextManager} 管理対象です。
 	 * @see ContextManager#get(Class)
 	 */
 	public RelationshipFactory() {}
+
+	/**
+	 * {@link RelationshipResolver} を生成するファクトリクラスを設定します。
+	 * @param relationshipResolverClass リゾルバクラス
+	 */
+	public synchronized void setRelationshipResolverClass(
+		Class<? extends RelationshipResolver> relationshipResolverClass) {
+		synchronized (lock) {
+			this.relationshipResolverClass = relationshipResolverClass;
+		}
+	}
 
 	/**
 	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。
@@ -114,15 +129,30 @@ public class RelationshipFactory implements ManagementSubject {
 		}
 	}
 
+	private RelationshipResolver createRelationshipResolver() {
+		synchronized (lock) {
+			try {
+				return relationshipResolverClass.getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	private Relationship createRelationship(final TablePath path) {
 		final String pathID = pathIDMap.get(path);
 		if (pathID == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+
+		List<TablePath> relationshipPath = new LinkedList<>();
+
 		return new Relationship(
 			null,
 			null,
 			null,
 			path,
 			pathID,
+			relationshipPath,
+			createRelationshipResolver(),
 			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<>());
 	}

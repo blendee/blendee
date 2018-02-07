@@ -1,10 +1,6 @@
 package org.blendee.util;
 
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_BOOLEAN;
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_CLASS;
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.*;
 
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
@@ -12,6 +8,8 @@ import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
+import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RelationshipResolver;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
@@ -136,6 +134,14 @@ public interface BlendeeConstants {
 	 */
 	public static final ParsableOptionKey<Class<? extends ColumnRepositoryFactory>> COLUMN_REPOSITORY_FACTORY_CLASS = new ParsableOptionKey<>(
 		"column-repository-factory-class",
+		TO_CLASS);
+
+	/**
+	 * (Class&lt;RelationshipResolver&gt;) RELATIONSHIP_RESOLVER_CLASS
+	 * @see RelationshipFactory#setRelationshipResolverClass(Class)
+	 */
+	public static final ParsableOptionKey<Class<? extends RelationshipResolver>> RELATIONSHIP_RESOLVER_CLASS = new ParsableOptionKey<>(
+		"relationship-resolver-class",
 		TO_CLASS);
 
 	/**

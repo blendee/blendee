@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.blendee.internal.CollectionMap;
@@ -54,6 +56,8 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		CrossReference reference,
 		TablePath path,
 		String id,
+		List<TablePath> relationshipPath,
+		RelationshipResolver resolver,
 		DataTypeConverter converter,
 		CollectionMap<TablePath, Relationship> convertMap) {
 		this.path = path;
@@ -80,14 +84,18 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 			columns[i] = column;
 			columnMap.put(metadata.getName(), column);
 		}
+
 		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
 		primaryKeyColumns = new Column[primaryKeyColumnNames.length];
 		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
 			primaryKeyColumns[i] = columnMap.get(MetadataUtilities.regularize(primaryKeyColumnNames[i]));
 		}
 
-		//テーブルの参照が循環している場合、これ以上探索しない
-		if (isRecursive(parent, path)) return;
+		//これ以上降るかを判定
+		if (!resolver.canTraverse(relationshipPath, path)) return;
+
+		List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
+		myRelationshipPath.add(path);
 
 		CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
 
@@ -101,6 +109,8 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 				element,
 				element.getPrimaryKeyTable(),
 				id + "_" + relationshipFormat.format(i),
+				relationshipPath,
+				resolver,
 				converter,
 				convertMap);
 			foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
@@ -306,12 +316,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	private String createErrorMessage(String base) {
 		return this + " では " + base + " は使用できません";
-	}
-
-	private static boolean isRecursive(Relationship parent, TablePath path) {
-		if (parent == null) return false;
-		if (parent.getTablePath().equals(path)) return true;
-		return isRecursive(parent.parent, path);
 	}
 
 	private static String createForeignKeyId(String[] foreignKeyColumnNames) {

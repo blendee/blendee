@@ -19,7 +19,9 @@ import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
+import org.blendee.sql.DepthRelationshipResolver;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RelationshipResolver;
 import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
@@ -33,6 +35,8 @@ public class Blendee {
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
+
+	private Class<? extends RelationshipResolver> defaultRelationshipResolverClass = DepthRelationshipResolver.class;
 
 	private Consumer<Initializer> consumer;
 
@@ -132,6 +136,14 @@ public class Blendee {
 		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
 			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
 				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+
+		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
+			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
+				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+
+		ContextManager.get(RelationshipFactory.class).setRelationshipResolverClass(
+			BlendeeConstants.RELATIONSHIP_RESOLVER_CLASS.extract(initValues)
+				.orElseGet(() -> getDefaultRelationshipResolverClass()));
 	}
 
 	/**
@@ -209,6 +221,14 @@ public class Blendee {
 	public synchronized void setDefaultColumnRepositoryFactoryClass(
 		Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass) {
 		this.defaultColumnRepositoryFactoryClass = defaultColumnRepositoryFactoryClass;
+	}
+
+	public Class<? extends RelationshipResolver> getDefaultRelationshipResolverClass() {
+		return defaultRelationshipResolverClass;
+	}
+
+	public void setDefaultRelationshipResolverClass(Class<? extends RelationshipResolver> defaultRelationshipResolverClass) {
+		this.defaultRelationshipResolverClass = defaultRelationshipResolverClass;
 	}
 
 	/**

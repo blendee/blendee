@@ -414,17 +414,17 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static class /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, M>
 		implements QueryRelationship, SelectOffer /*++'++*/{/*++'++*/
 
-		private final /*++{1}Query++*//*--*/QueryBase/*--*/ $query;
+		private final /*++{1}Query++*//*--*/QueryBase/*--*/ query$;
 
-		private final QueryCriteriaContext $context;
+		private final QueryCriteriaContext context$;
 
-		private final QueryRelationship $parent;
+		private final QueryRelationship parent$;
 
-		private final String $fkName;
+		private final String fkName$;
 
-		private final TablePath $path;
+		private final TablePath path$;
 
-		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ $manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 /*++{3}++*/
 /*==ColumnPart1==*/
@@ -458,11 +458,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			String fkName,
 			TablePath path,
 			TablePath root) /*++'++*/{/*++'++*/
-			$query = null;
-			$context = null;
-			$parent = parent;
-			$fkName = fkName;
-			$path = path;
+			query$ = null;
+			context$ = null;
+			parent$ = parent;
+			fkName$ = fkName;
+			path$ = path;
 
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
 				this, /*++{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
@@ -479,17 +479,17 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query,
 			QueryContext<T> builder,
 			QueryCriteriaContext context) /*++'++*/{/*++'++*/
-			$query = query;
-			$context = context;
-			$parent = null;
-			$fkName = null;
-			$path = /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
+			query$ = query;
+			context$ = context;
+			parent$ = null;
+			fkName$ = null;
+			path$ = /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
 
 			/*--*/columnName = null;/*--*/
 /*++{5}++*/
 
 /*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, $path);
+				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 /*==RelationshipPart3==*/
 /*++{7}++*/
 		/*++'++*/}/*++'++*/
@@ -499,40 +499,40 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
 		public /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M> intercept() /*++'++*/{/*++'++*/
-			if ($query != null) throw new IllegalStateException($path.getSchemaName() + " から直接使用することはできません");
+			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
 			return new /*++{1}Executor++*//*--*/O2MExecutor/*--*/<>(this);
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public QueryCriteriaContext getContext() /*++'++*/{/*++'++*/
-			if ($context == null) return $parent.getContext();
+			if (context$ == null) return parent$.getContext();
 
-			return $context;
+			return context$;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Relationship getRelationship() /*++'++*/{/*++'++*/
-			if ($parent != null) /*++'++*/{/*++'++*/
-				return $parent.getRelationship().find($fkName);
+			if (parent$ != null) /*++'++*/{/*++'++*/
+				return parent$.getRelationship().find(fkName$);
 			/*++'++*/}/*++'++*/
 
-			return ContextManager.get(RelationshipFactory.class).getInstance($query.manager.getTablePath());
+			return ContextManager.get(RelationshipFactory.class).getInstance(query$.manager.getTablePath());
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Optimizer getOptimizer() /*++'++*/{/*++'++*/
-			if ($query != null) return $query.getOptimizer();
+			if (query$ != null) return query$.getOptimizer();
 			return null;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public OrderByClause getOrderByClause() /*++'++*/{/*++'++*/
-			if ($query == null) return $parent.getOrderByClause();
+			if (query$ == null) return parent$.getOrderByClause();
 
-			OrderByClause clause = $query.orderByClause;
+			OrderByClause clause = query$.orderByClause;
 			if (clause == null) /*++'++*/{/*++'++*/
 				clause = new OrderByClause();
-				$query.orderByClause = clause;
+				query$.orderByClause = clause;
 			/*++'++*/}/*++'++*/
 
 			return clause;
@@ -540,40 +540,40 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		@Override
 		public void setWhereClause(Criteria criteria) /*++'++*/{/*++'++*/
-			if ($query == null) /*++'++*/{/*++'++*/
-				$parent.setWhereClause(criteria);
+			if (query$ == null) /*++'++*/{/*++'++*/
+				parent$.setWhereClause(criteria);
 				return;
 			/*++'++*/}/*++'++*/
 
-			$query.criteria = criteria;
+			query$.criteria = criteria;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Criteria getWhereClause() /*++'++*/{/*++'++*/
-			if ($query == null) return $parent.getWhereClause();
+			if (query$ == null) return parent$.getWhereClause();
 
-			return $query.criteria;
+			return query$.criteria;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public QueryRelationship getParent() /*++'++*/{/*++'++*/
-			return $parent;
+			return parent$;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public TablePath getTablePath() /*++'++*/{/*++'++*/
-			return $path;
+			return path$;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Query getRoot() /*++'++*/{/*++'++*/
-			if ($query != null) return $query;
-			return $parent.getRoot();
+			if (query$ != null) return query$;
+			return parent$.getRoot();
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public /*++{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
-			return $manager.createRow(data);
+			return manager$.createRow(data);
 		/*++'++*/}/*++'++*/
 
 		@Override
