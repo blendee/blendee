@@ -1,6 +1,6 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
@@ -30,5 +30,5 @@ public interface Optimizer {
 	 * @param columns 検索時に指定したカラム
 	 * @return {@link SelectedValues}
 	 */
-	SelectedValues convert(BResult result, Column[] columns);
+	SelectedValues convert(Result result, Column[] columns);
 }

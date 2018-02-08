@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
@@ -82,7 +82,7 @@ public class SynchronizedQueryBuilder extends QueryBuilder {
 	}
 
 	@Override
-	public synchronized int complement(BPreparedStatement statement) {
+	public synchronized int complement(BlenPreparedStatement statement) {
 		return super.complement(statement);
 	}
 }

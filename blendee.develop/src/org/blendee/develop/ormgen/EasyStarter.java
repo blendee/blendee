@@ -3,7 +3,7 @@ package org.blendee.develop.ormgen;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Initializer;
@@ -66,7 +66,7 @@ public class EasyStarter {
 	public static class EasyTransactionFactory implements TransactionFactory {
 
 		@Override
-		public BTransaction createTransaction() {
+		public Transaction createTransaction() {
 			try {
 				synchronized (lock) {
 					return new JDBCTransaction(DriverManager.getConnection(url, userName, password));

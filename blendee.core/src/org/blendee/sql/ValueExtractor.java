@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 
 /**
  * 検索結果からどの型の値でも取得可能とするためのインターフェイスです。
@@ -15,10 +15,10 @@ public interface ValueExtractor {
 	 * @param columnIndex 検索結果の位置
 	 * @return 値
 	 */
-	Object extract(BResult result, int columnIndex);
+	Object extract(Result result, int columnIndex);
 
 	/**
-	 * {@link #extract(BResult, int)} で返された値から、対応する {@link Binder} を返します。
+	 * {@link #extract(Result, int)} で返された値から、対応する {@link Binder} を返します。
 	 * @param value 検索結果の値
 	 * @return 対応する {@link Binder}
 	 */

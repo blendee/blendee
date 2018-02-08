@@ -17,7 +17,7 @@ class MetadatasConnection extends ConnectionBase {
 
 	private final Metadata[] metadatas;
 
-	MetadatasConnection(BConnection base, Metadata[] metadatas) {
+	MetadatasConnection(BlenConnection base, Metadata[] metadatas) {
 		super(base);
 		this.metadatas = new Metadata[metadatas.length + 1];
 

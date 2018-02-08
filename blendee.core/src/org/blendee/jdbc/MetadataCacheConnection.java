@@ -13,7 +13,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 	private final MetadataCache cache = ContextManager.get(MetadataCache.class);
 
-	MetadataCacheConnection(BConnection conn) {
+	MetadataCacheConnection(BlenConnection conn) {
 		super(conn);
 	}
 

@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 /**
  * {@link ResultSet} に似せ、機能を制限したインターフェイスです。
  * @author 千葉 哲嗣
- * @see BStatement#executeQuery()
+ * @see BlenStatement#executeQuery()
  */
-public interface BResultSet extends AutoCloseable, BResult {
+public interface BlenResultSet extends AutoCloseable, Result {
 
 	/**
 	 * 検索結果のカーソルを次の行へ移動します。

@@ -6,7 +6,7 @@ import java.sql.Clob;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 
@@ -147,7 +147,7 @@ public interface SelectedValues {
 	 * 検索結果オブジェクトを返します。
 	 * @return 検索結果
 	 */
-	BResult getResult();
+	Result getResult();
 
 	/**
 	 * 引数のカラムが今回の検索に使用されたかを検査します。

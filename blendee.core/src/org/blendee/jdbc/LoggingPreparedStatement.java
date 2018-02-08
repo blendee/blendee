@@ -14,7 +14,7 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 
 	private final Logger logger;
 
-	LoggingPreparedStatement(BPreparedStatement statement, Logger logger) {
+	LoggingPreparedStatement(BlenPreparedStatement statement, Logger logger) {
 		super(statement);
 		this.logger = logger;
 	}
@@ -98,7 +98,7 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 	}
 
 	@Override
-	public BResultSet executeQuery() {
+	public BlenResultSet executeQuery() {
 		logger.flush();
 		long start = System.nanoTime();
 		try {

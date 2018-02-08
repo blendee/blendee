@@ -1,18 +1,18 @@
 package org.blendee.internal;
 
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 
 /**
- * 終了時に {@link BTransaction} を自動的にクローズする抽象基底クラスです。
+ * 終了時に {@link Transaction} を自動的にクローズする抽象基底クラスです。
  * @author 千葉 哲嗣
  */
 public abstract class TransactionShell implements Shell {
 
 	private final BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
-	private final BTransaction transaction;
+	private final Transaction transaction;
 
 	/**
 	 * デフォルトコンストラクタです。
@@ -42,10 +42,10 @@ public abstract class TransactionShell implements Shell {
 	}
 
 	/**
-	 * サブクラスで、 {@link BTransaction} が必要な場合取得するためのメソッドです。
-	 * @return 現在オープンしている {@link BTransaction}
+	 * サブクラスで、 {@link Transaction} が必要な場合取得するためのメソッドです。
+	 * @return 現在オープンしている {@link Transaction}
 	 */
-	protected BTransaction getTransaction() {
+	protected Transaction getTransaction() {
 		if (transaction == null)
 			throw new IllegalStateException("トランザクションを開始した Shell ではないのでトランザクションがありません");
 

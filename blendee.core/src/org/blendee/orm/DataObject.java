@@ -14,7 +14,7 @@ import org.blendee.internal.Traversable;
 import org.blendee.internal.TraversableNode;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
@@ -1083,7 +1083,7 @@ public class DataObject
 		}
 
 		@Override
-		public BResult getResult() {
+		public Result getResult() {
 			return null;
 		}
 

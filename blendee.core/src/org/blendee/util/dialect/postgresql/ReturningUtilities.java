@@ -3,10 +3,10 @@ package org.blendee.util.dialect.postgresql;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BResult;
-import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.Result;
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
@@ -29,7 +29,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void insert(DataObject data, Consumer<BResult> consumer, String... columnNames) {
+	public static void insert(DataObject data, Consumer<Result> consumer, String... columnNames) {
 		insert(data.getRelationship().getTablePath(), data, consumer, columnNames);
 	}
 
@@ -39,7 +39,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void insert(Row row, Consumer<BResult> consumer, String... columnNames) {
+	public static void insert(Row row, Consumer<Result> consumer, String... columnNames) {
 		insert(row.getTablePath(), row, consumer, columnNames);
 	}
 
@@ -50,22 +50,22 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void insert(TablePath path, Updatable data, Consumer<BResult> consumer, String... columnNames) {
+	public static void insert(TablePath path, Updatable data, Consumer<Result> consumer, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		InsertDMLBuilder builder = new InsertDMLBuilder(path);
 		builder.add(data);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (BlenResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}
@@ -79,7 +79,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(DataObject data, Consumer<BResult> consumer, String... columnNames) {
+	public static void update(DataObject data, Consumer<Result> consumer, String... columnNames) {
 		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(), consumer, columnNames);
 	}
 
@@ -89,7 +89,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(Row row, Consumer<BResult> consumer, String... columnNames) {
+	public static void update(Row row, Consumer<Result> consumer, String... columnNames) {
 		update(row.getTablePath(), row, row.getPrimaryKey().getCriteria(), consumer, columnNames);
 	}
 
@@ -101,24 +101,24 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(TablePath path, Updatable data, Criteria criteria, Consumer<BResult> consumer, String... columnNames) {
+	public static void update(TablePath path, Updatable data, Criteria criteria, Consumer<Result> consumer, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(criteria);
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 		builder.add(data);
 		builder.setCriteria(criteria);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (BlenResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}
@@ -132,7 +132,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(DataObject data, Consumer<BResult> consumer, String... columnNames) {
+	public static void delete(DataObject data, Consumer<Result> consumer, String... columnNames) {
 		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(), consumer, columnNames);
 	}
 
@@ -142,7 +142,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(Row row, Consumer<BResult> consumer, String... columnNames) {
+	public static void delete(Row row, Consumer<Result> consumer, String... columnNames) {
 		delete(row.getTablePath(), row.getPrimaryKey().getCriteria(), consumer, columnNames);
 	}
 
@@ -153,22 +153,22 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(TablePath path, Criteria criteria, Consumer<BResult> consumer, String... columnNames) {
+	public static void delete(TablePath path, Criteria criteria, Consumer<Result> consumer, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(criteria);
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
 		builder.setCriteria(criteria);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (BlenResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}

@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.sql.Column;
 
 /**
@@ -20,9 +20,9 @@ import org.blendee.sql.Column;
 public class SelectedValuesIterator
 	implements AutoCloseable, Iterable<SelectedValues>, Iterator<SelectedValues> {
 
-	private final BStatement statement;
+	private final BlenStatement statement;
 
-	private final BResultSet result;
+	private final BlenResultSet result;
 
 	private final Column[] columns;
 
@@ -35,8 +35,8 @@ public class SelectedValuesIterator
 	private boolean hasNext = false;
 
 	SelectedValuesIterator(
-		BStatement statement,
-		BResultSet result,
+		BlenStatement statement,
+		BlenResultSet result,
 		Column[] columns,
 		Optimizer optimizer) {
 		this.statement = statement;

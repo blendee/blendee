@@ -3,7 +3,7 @@ package org.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
@@ -26,7 +26,7 @@ public class UpdateDMLBuilder extends Updater {
 	}
 
 	@Override
-	public int complement(BPreparedStatement statement) {
+	public int complement(BlenPreparedStatement statement) {
 		int complemented = super.complement(statement);
 		return complemented + criteria.getComplementer(complemented).complement(statement);
 	}

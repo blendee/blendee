@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.blendee.internal.LRUCache;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
@@ -190,9 +190,9 @@ public class DataAccessHelper {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(SelectClause.COUNT_CLAUSE);
 		if (criteria != null) builder.setWhereClause(criteria);
-		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BStatement statement = connection.getStatement(builder.toString(), builder)) {
-			try (BResultSet result = statement.executeQuery()) {
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) {
+			try (BlenResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}
@@ -661,7 +661,7 @@ public class DataAccessHelper {
 
 	private static class PreparedStatementFacade extends StatementFacade {
 
-		private BStatement statement;
+		private BlenStatement statement;
 
 		@Override
 		void process(String sql, PreparedStatementComplementer complementer) {

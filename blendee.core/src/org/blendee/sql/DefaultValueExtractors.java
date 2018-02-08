@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.DataTypeConverter;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BlobBinder;
@@ -94,7 +94,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private BigDecimalValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getBigDecimal(columnIndex);
 		}
 
@@ -111,7 +111,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private BinaryStreamValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getBinaryStream(columnIndex);
 		}
 
@@ -128,7 +128,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private BlobValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getBlob(columnIndex);
 		}
 
@@ -145,7 +145,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private BooleanValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			boolean value = result.getBoolean(columnIndex);
 			if (result.wasNull()) return null;
 			return Boolean.valueOf(value);
@@ -165,7 +165,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private ByteArrayValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getBytes(columnIndex);
 		}
 
@@ -182,7 +182,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private CharacterStreamValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getCharacterStream(columnIndex);
 		}
 
@@ -199,7 +199,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private ClobValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getClob(columnIndex);
 		}
 
@@ -216,7 +216,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private DoubleValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			double value = result.getDouble(columnIndex);
 			if (result.wasNull()) return null;
 			return Double.valueOf(value);
@@ -236,7 +236,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private FloatValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			float value = result.getFloat(columnIndex);
 			if (result.wasNull()) return null;
 			return Float.valueOf(value);
@@ -256,7 +256,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private IntValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			int value = result.getInt(columnIndex);
 			if (result.wasNull()) return null;
 			return Integer.valueOf(value);
@@ -276,7 +276,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private LongValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			long value = result.getLong(columnIndex);
 			if (result.wasNull()) return null;
 			return Long.valueOf(value);
@@ -296,7 +296,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private ObjectValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getObject(columnIndex);
 		}
 
@@ -313,7 +313,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private StringValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getString(columnIndex);
 		}
 
@@ -330,7 +330,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private TimestampValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getTimestamp(columnIndex);
 		}
 
@@ -347,7 +347,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 		private UUIDValueExtractor() {}
 
 		@Override
-		public Object extract(BResult result, int columnIndex) {
+		public Object extract(Result result, int columnIndex) {
 			return result.getObject(columnIndex);
 		}
 

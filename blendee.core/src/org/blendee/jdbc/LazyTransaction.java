@@ -1,10 +1,10 @@
 package org.blendee.jdbc;
 
-class LazyTransaction extends BTransaction {
+class LazyTransaction extends Transaction {
 
 	private final TransactionFactory factory;
 
-	private BTransaction transaction;
+	private Transaction transaction;
 
 	private Configure config;
 
@@ -25,12 +25,12 @@ class LazyTransaction extends BTransaction {
 	}
 
 	@Override
-	public BConnection getConnection() {
+	public BlenConnection getConnection() {
 		return prepareTransaction().getConnection();
 	}
 
 	@Override
-	protected BConnection getConnectionInternal() {
+	protected BlenConnection getConnectionInternal() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -55,7 +55,7 @@ class LazyTransaction extends BTransaction {
 		this.config = config;
 	}
 
-	private BTransaction prepareTransaction() {
+	private Transaction prepareTransaction() {
 		if (transaction == null) {
 			transaction = factory.createTransaction();
 			transaction.prepareConnection(config);

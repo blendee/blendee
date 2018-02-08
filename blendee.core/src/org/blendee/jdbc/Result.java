@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * {@link ResultSet} に似せ、一行に対する操作のみに機能を制限したインターフェイスです。
  * @author 千葉 哲嗣
  */
-public interface BResult {
+public interface Result {
 
 	/**
 	 * 指定されたカラムの値を boolean として返します。

@@ -3,7 +3,7 @@ package org.blendee.selector;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
@@ -63,7 +63,7 @@ public class RuntimeOptimizer implements Optimizer {
 	}
 
 	@Override
-	public SelectedValues convert(BResult result, Column[] columns) {
+	public SelectedValues convert(Result result, Column[] columns) {
 		return new ConcreteSelectedValues(result, columns, extractors);
 	}
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
@@ -39,7 +39,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	}
 
 	@Override
-	public BTransaction createTransaction() {
+	public Transaction createTransaction() {
 		try {
 			driver.connect(url, properties);
 			return new JDBCTransaction(driver.connect(url, properties));

@@ -1,7 +1,7 @@
 package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.Transaction;
+import org.blendee.jdbc.Committable;
 import org.blendee.sql.Column;
 
 /**
@@ -9,7 +9,7 @@ import org.blendee.sql.Column;
  * @author 千葉 哲嗣
  * @see ColumnRepositoryFactory#createColumnRepository()
  */
-public interface ColumnRepository extends Transaction {
+public interface ColumnRepository extends Committable {
 
 	/**
 	 * ID に対応するテーブルを返します。<br>

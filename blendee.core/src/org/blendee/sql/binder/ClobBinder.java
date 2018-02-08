@@ -2,11 +2,11 @@ package org.blendee.sql.binder;
 
 import java.sql.Clob;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BPreparedStatement} に {@link Clob} の値を設定するための {@link Binder} です。
+ * {@link BlenPreparedStatement} に {@link Clob} の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class ClobBinder extends Binder {
@@ -22,7 +22,7 @@ public final class ClobBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BPreparedStatement statement) {
+	public void bind(int index, BlenPreparedStatement statement) {
 		statement.setClob(index, value);
 	}
 

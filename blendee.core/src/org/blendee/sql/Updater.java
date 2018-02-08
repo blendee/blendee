@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 
@@ -96,7 +96,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	@Override
-	public int complement(BPreparedStatement statement) {
+	public int complement(BlenPreparedStatement statement) {
 		int counter = 0;
 		for (Iterator<Binder> i = values.values().iterator(); i.hasNext(); counter++) {
 			i.next().bind(counter + 1, statement);

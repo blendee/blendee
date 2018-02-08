@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * {@link PreparedStatement} に似せ、機能を制限したインターフェイスです。
  * @author 千葉 哲嗣
  */
-public interface BPreparedStatement extends BStatement {
+public interface BlenPreparedStatement extends BlenStatement {
 
 	/**
 	 * この文のプレースホルダに boolean 値をセットします。

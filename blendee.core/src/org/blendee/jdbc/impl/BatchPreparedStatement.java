@@ -5,12 +5,12 @@ import java.sql.SQLException;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.Configure;
 
 /**
- * {@link ConcreteBatchStatement} で使用する {@link BPreparedStatement} の実装クラスです。
+ * {@link ConcreteBatchStatement} で使用する {@link BlenPreparedStatement} の実装クラスです。
  * @author 千葉 哲嗣
  */
 class BatchPreparedStatement extends ConcretePreparedStatement {
@@ -49,7 +49,7 @@ class BatchPreparedStatement extends ConcretePreparedStatement {
 	}
 
 	@Override
-	public BResultSet executeQuery() {
+	public BlenResultSet executeQuery() {
 		throw new UnsupportedOperationException();
 	}
 

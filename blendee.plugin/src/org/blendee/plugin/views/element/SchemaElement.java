@@ -1,6 +1,6 @@
 package org.blendee.plugin.views.element;
 
-import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
@@ -21,7 +21,7 @@ public class SchemaElement extends PropertySourceElement {
 
 	private final TableElement[] children;
 
-	SchemaElement(BConnection connection, String name) {
+	SchemaElement(BlenConnection connection, String name) {
 		this.name = name;
 		TablePath[] tables = connection.getTables(name);
 		children = new TableElement[tables.length];

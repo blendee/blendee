@@ -7,21 +7,21 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
 
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 
 /**
- * {@link BResult} のラッパーを実装するベースとなる、抽象基底クラスです。
+ * {@link Result} のラッパーを実装するベースとなる、抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class ResultBase implements BResult {
+public abstract class ResultBase implements Result {
 
-	private final BResult base;
+	private final Result base;
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
 	 * @param base ベースとなるインスタンス
 	 */
-	protected ResultBase(BResult base) {
+	protected ResultBase(Result base) {
 		this.base = base;
 	}
 

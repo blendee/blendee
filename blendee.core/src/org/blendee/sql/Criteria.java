@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
@@ -285,7 +285,7 @@ public class Criteria extends QueryClause {
 		}
 
 		@Override
-		public int complement(BPreparedStatement statement) {
+		public int complement(BlenPreparedStatement statement) {
 			int counter = skipCount;
 			for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
 				i.next().bind(counter + 1, statement);
@@ -424,7 +424,7 @@ public class Criteria extends QueryClause {
 	private static class ProxyInnerComplementer implements PreparedStatementComplementer {
 
 		@Override
-		public int complement(BPreparedStatement statement) {
+		public int complement(BlenPreparedStatement statement) {
 			return 0;
 		}
 	}

@@ -3,21 +3,21 @@ package org.blendee.internal;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.Transaction;
+import org.blendee.jdbc.Committable;
 
 /**
  * 内部使用ユーティリティクラス
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public class Transactions implements Transaction {
+public class Transactions implements Committable {
 
-	private final List<Transaction> list = new LinkedList<>();
+	private final List<Committable> list = new LinkedList<>();
 
 	@Override
 	public void commit() {
 		try {
-			for (Transaction transaction : list)
+			for (Committable transaction : list)
 				transaction.commit();
 		} finally {
 			list.clear();
@@ -27,7 +27,7 @@ public class Transactions implements Transaction {
 	@Override
 	public void rollback() {
 		try {
-			for (Transaction transaction : list) {
+			for (Committable transaction : list) {
 				transaction.rollback();
 			}
 		} finally {
@@ -35,7 +35,7 @@ public class Transactions implements Transaction {
 		}
 	}
 
-	public void regist(Transaction transaction) {
+	public void regist(Committable transaction) {
 		list.add(transaction);
 	}
 
@@ -47,8 +47,8 @@ public class Transactions implements Transaction {
 		list.clear();
 	}
 
-	public Transaction[] getChildren() {
-		return list.toArray(new Transaction[list.size()]);
+	public Committable[] getChildren() {
+		return list.toArray(new Committable[list.size()]);
 	}
 
 	@Override

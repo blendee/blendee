@@ -10,7 +10,7 @@ class LoggingConnection extends ConnectionBase
 
 	private final Logger logger;
 
-	LoggingConnection(BConnection conn, Logger logger) {
+	LoggingConnection(BlenConnection conn, Logger logger) {
 		super(conn);
 		conn.setPreparedStatementWrapper(this);
 		conn.setBatchStatementWrapper(this);
@@ -18,13 +18,13 @@ class LoggingConnection extends ConnectionBase
 	}
 
 	@Override
-	public BStatement getStatement(String sql) {
+	public BlenStatement getStatement(String sql) {
 		logger.setSql(sql);
 		return super.getStatement(sql);
 	}
 
 	@Override
-	public BStatement getStatement(
+	public BlenStatement getStatement(
 		String sql,
 		PreparedStatementComplementer complementer) {
 		logger.setSql(sql);
@@ -32,13 +32,13 @@ class LoggingConnection extends ConnectionBase
 	}
 
 	@Override
-	public BPreparedStatement prepareStatement(String sql) {
+	public BlenPreparedStatement prepareStatement(String sql) {
 		logger.setSql(sql);
 		return super.prepareStatement(sql);
 	}
 
 	@Override
-	public BPreparedStatement wrap(BPreparedStatement statement) {
+	public BlenPreparedStatement wrap(BlenPreparedStatement statement) {
 		return new LoggingPreparedStatement(statement, logger);
 	}
 

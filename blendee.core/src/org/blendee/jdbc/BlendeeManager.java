@@ -87,7 +87,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return 新しいトランザクション
 	 * @throws IllegalStateException 既にこのスレッド用にトランザクションが開始されている場合
 	 */
-	public BTransaction startTransaction() {
+	public Transaction startTransaction() {
 		if (hasConnection()) throw new IllegalStateException("既にこのスレッド用にトランザクションが開始されています");
 
 		Configure config = getConfigure();
@@ -96,7 +96,7 @@ public class BlendeeManager implements ManagementSubject {
 		config.initialize();
 
 		TransactionFactory factory = config.getTransactionFactoryWithoutCheck();
-		BTransaction transaction;
+		Transaction transaction;
 		if (config.usesLazyTransaction()) {
 			transaction = new LazyTransaction(factory);
 		} else {
@@ -115,11 +115,11 @@ public class BlendeeManager implements ManagementSubject {
 	 * 現在のスレッドが持つ接続を返します。
 	 * @return 接続
 	 */
-	public BConnection getConnection() {
-		BTransaction transaction = threadLocalValues.get().transaction;
+	public BlenConnection getConnection() {
+		Transaction transaction = threadLocalValues.get().transaction;
 		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
-		BConnection connection = transaction.getConnection();
+		BlenConnection connection = transaction.getConnection();
 		if (connection == null) throw new IllegalStateException("このスレッドの接続が作成されていません");
 
 		return connection;
@@ -129,7 +129,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * 現在のトランザクションに、パラメータで渡されたトランザクションを連動させます。
 	 * @param transaction 連動させたいトランザクション
 	 */
-	public void synchroniseWithCurrentTransaction(Transaction transaction) {
+	public void synchroniseWithCurrentTransaction(Committable transaction) {
 		threadLocalValues.get().transactions.regist(transaction);
 	}
 
@@ -150,7 +150,7 @@ public class BlendeeManager implements ManagementSubject {
 		}
 	}
 
-	void remove(BTransaction transaction) {
+	void remove(Transaction transaction) {
 		threadLocalValues.get().remove(transaction);
 	}
 
@@ -158,12 +158,12 @@ public class BlendeeManager implements ManagementSubject {
 
 		private final Transactions transactions = new Transactions();
 
-		private BTransaction transaction;
+		private Transaction transaction;
 
 		/**
 		 * このクラスで管理するトランザクションの場合のみ削除する
 		 */
-		private void remove(BTransaction transaction) {
+		private void remove(Transaction transaction) {
 			if (this.transaction != transaction) return;
 			this.transaction = null;
 		}

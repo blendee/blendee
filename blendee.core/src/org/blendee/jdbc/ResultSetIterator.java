@@ -9,12 +9,12 @@ import java.util.Set;
 import org.blendee.internal.U;
 
 /**
- * {@link BResultSet} を、 {@link Iterator} として扱えるようにするラッパークラスです。
+ * {@link BlenResultSet} を、 {@link Iterator} として扱えるようにするラッパークラスです。
  * @author 千葉 哲嗣
  */
 public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map<String, ?>> {
 
-	private final BResultSet set;
+	private final BlenResultSet set;
 
 	private final Map<String, Object> map = new InnerMap();
 
@@ -28,7 +28,7 @@ public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map
 	 * ベースとなる結果セットを使用し、インスタンスを生成します。
 	 * @param set ベースとなる結果セット
 	 */
-	public ResultSetIterator(BResultSet set) {
+	public ResultSetIterator(BlenResultSet set) {
 		this.set = set;
 	}
 
@@ -45,7 +45,7 @@ public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map
 	}
 
 	/**
-	 * {@link BResultSet} を一つ進め、一行の値を項目名がキーとなる {@link Map} として返します。<br>
+	 * {@link BlenResultSet} を一つ進め、一行の値を項目名がキーとなる {@link Map} として返します。<br>
 	 * 返される {@link Map} に対する変更操作は行えません。
 	 * @return 一行の値をもつ {@link Map}
 	 */

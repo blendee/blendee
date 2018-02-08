@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.orm.DataAccessHelper;
@@ -154,10 +154,10 @@ public class OneToManyExecutor<O extends Row, M>
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 
 		if (criteria != null) builder.setWhereClause(criteria);
-		try (BStatement statement = ContextManager.get(BlendeeManager.class)
+		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
-			try (BResultSet result = statement.executeQuery()) {
+			try (BlenResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}

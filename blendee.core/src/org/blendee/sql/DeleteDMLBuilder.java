@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
@@ -49,7 +49,7 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 	}
 
 	@Override
-	public int complement(BPreparedStatement statement) {
+	public int complement(BlenPreparedStatement statement) {
 		return criteria.getComplementer().complement(statement);
 	}
 }

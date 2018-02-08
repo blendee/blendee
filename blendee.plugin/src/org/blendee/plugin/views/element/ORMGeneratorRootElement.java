@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.blendee.internal.TransactionManager;
 import org.blendee.internal.TransactionShell;
-import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.eclipse.jface.action.IMenuManager;
@@ -22,7 +22,7 @@ public class ORMGeneratorRootElement implements Element {
 
 				@Override
 				public void execute() throws Exception {
-					BConnection connection = ContextManager.get(BlendeeManager.class)
+					BlenConnection connection = ContextManager.get(BlendeeManager.class)
 						.getConnection();
 					for (String schema : schemas) {
 						list.add(new SchemaElement(connection, schema));

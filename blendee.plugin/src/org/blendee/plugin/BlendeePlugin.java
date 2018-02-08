@@ -20,11 +20,11 @@ import java.util.regex.Pattern;
 import org.blendee.develop.ormgen.CodeFormatter;
 import org.blendee.internal.HomeStorage;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BTransaction;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.plugin.views.ClassBuilderView;
 import org.blendee.plugin.views.QueryEditorView;
@@ -69,7 +69,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	private String[] schemaNames = {};
 
-	private BTransaction transaction;
+	private Transaction transaction;
 
 	private final Map<String, String> outputPackages = new HashMap<>();
 

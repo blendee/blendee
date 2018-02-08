@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
@@ -44,7 +44,7 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 	}
 
 	@Override
-	public BTransaction createTransaction() {
+	public Transaction createTransaction() {
 		try {
 			return new JDBCTransaction(getConnection(url, user, password));
 		} catch (SQLException e) {

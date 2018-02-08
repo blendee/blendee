@@ -7,23 +7,23 @@ import java.util.function.Function;
 /**
  * {@link Statement} に似せ、機能を制限したインターフェイスです。
  * @author 千葉 哲嗣
- * @see BConnection#getStatement(String)
- * @see BConnection#getStatement(String, PreparedStatementComplementer)
+ * @see BlenConnection#getStatement(String)
+ * @see BlenConnection#getStatement(String, PreparedStatementComplementer)
  */
-public interface BStatement extends AutoCloseable {
+public interface BlenStatement extends AutoCloseable {
 
 	/**
 	 * 検索を行います。
 	 * @return 検索結果
 	 */
-	BResultSet executeQuery();
+	BlenResultSet executeQuery();
 
 	/**
 	 * 検索を行います。
 	 * @param consumer 検索結果を受け取る {@link Consumer}
 	 */
-	default void executeQuery(Consumer<BResultSet> consumer) {
-		try (BResultSet result = executeQuery()) {
+	default void executeQuery(Consumer<BlenResultSet> consumer) {
+		try (BlenResultSet result = executeQuery()) {
 			consumer.accept(result);
 		}
 	}
@@ -34,8 +34,8 @@ public interface BStatement extends AutoCloseable {
 	 * @param function 検索結果を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeQueryAndGet(Function<BResultSet, T> function) {
-		try (BResultSet result = executeQuery()) {
+	default <T> T executeQueryAndGet(Function<BlenResultSet, T> function) {
+		try (BlenResultSet result = executeQuery()) {
 			return function.apply(result);
 		}
 	}
@@ -48,19 +48,19 @@ public interface BStatement extends AutoCloseable {
 
 	/**
 	 * SQL文を実行します。
-	 * @return 最初の結果が {@link BResultSet} オブジェクトの場合は true 
+	 * @return 最初の結果が {@link BlenResultSet} オブジェクトの場合は true 
 	 */
 	boolean execute();
 
 	/**
-	 * {@link #execute()} の結果の {@link BResultSet} を取得します。
+	 * {@link #execute()} の結果の {@link BlenResultSet} を取得します。
 	 * @return 更新カウントであるか、または結果がない場合は null
 	 */
-	BResultSet getResultSet();
+	BlenResultSet getResultSet();
 
 	/**
 	 * {@link #execute()} の結果の、更新カウントを取得します。
-	 * @return 現在の結果が {@link BResultSet} オブジェクトであるか、または結果がない場合は -1 
+	 * @return 現在の結果が {@link BlenResultSet} オブジェクトであるか、または結果がない場合は -1 
 	 */
 	int getUpdateCount();
 

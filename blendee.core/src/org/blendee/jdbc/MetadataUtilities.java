@@ -108,7 +108,7 @@ public class MetadataUtilities {
 	public static String[] regularize(String[] names) {
 		String[] regularized = new String[names.length];;
 
-		BConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		for (int i = 0; i < names.length; i++) {
 			regularized[i] = connection.regularize(names[i]);
 		}

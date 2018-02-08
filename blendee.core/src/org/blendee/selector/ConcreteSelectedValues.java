@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import org.blendee.internal.LoggingManager;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ValueExtractor;
@@ -28,10 +28,10 @@ class ConcreteSelectedValues implements SelectedValues {
 
 	private final ValueExtractors extractors;
 
-	private final BResult result;
+	private final Result result;
 
 	ConcreteSelectedValues(
-		BResult result,
+		Result result,
 		Column[] selected,
 		ValueExtractors extractors) {
 		this.result = result;
@@ -138,7 +138,7 @@ class ConcreteSelectedValues implements SelectedValues {
 	}
 
 	@Override
-	public BResult getResult() {
+	public Result getResult() {
 		return result;
 	}
 

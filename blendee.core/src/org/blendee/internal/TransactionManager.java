@@ -2,7 +2,7 @@ package org.blendee.internal;
 
 import java.io.PrintStream;
 
-import org.blendee.jdbc.Transaction;
+import org.blendee.jdbc.Committable;
 
 /**
  * 内部使用ユーティリティクラス
@@ -18,7 +18,7 @@ public class TransactionManager {
 			return new Transactions() {
 
 				@Override
-				public void regist(Transaction transaction) {
+				public void regist(Committable transaction) {
 					throw new IllegalStateException("Shell の start が実行されていません");
 				}
 			};
@@ -55,7 +55,7 @@ public class TransactionManager {
 		}
 	}
 
-	public static void regist(Transaction transaction) {
+	public static void regist(Committable transaction) {
 		current.get().regist(transaction);
 	}
 

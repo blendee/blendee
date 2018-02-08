@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.blendee.internal.TransactionManager;
 import org.blendee.internal.TransactionShell;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Initializer;
@@ -259,6 +259,6 @@ public class Blendee {
 		 * @param transaction この処理のトランザクション
 		 * @throws Exception 処理内で起こった例外
 		 */
-		void execute(BTransaction transaction) throws Exception;
+		void execute(Transaction transaction) throws Exception;
 	}
 }

@@ -4,17 +4,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BTransaction;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 
 /**
- * Blendee が使用する {@link BTransaction} の標準実装クラスです。
+ * Blendee が使用する {@link Transaction} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-public class JDBCTransaction extends BTransaction {
+public class JDBCTransaction extends Transaction {
 
 	private final Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 
@@ -32,7 +32,7 @@ public class JDBCTransaction extends BTransaction {
 	}
 
 	@Override
-	protected BConnection getConnectionInternal() {
+	protected BlenConnection getConnectionInternal() {
 		return connection;
 	}
 

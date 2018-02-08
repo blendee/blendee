@@ -37,7 +37,7 @@ public class DataSourceTransactionFactory implements TransactionFactory {
 	}
 
 	@Override
-	public BTransaction createTransaction() {
+	public Transaction createTransaction() {
 		try {
 			return new JDBCTransaction(dataSource.getConnection());
 		} catch (SQLException e) {

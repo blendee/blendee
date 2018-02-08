@@ -3,7 +3,7 @@ package org.blendee.selector;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResult;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
@@ -89,7 +89,7 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	@Override
-	public SelectedValues convert(BResult result, Column[] columns) {
+	public SelectedValues convert(Result result, Column[] columns) {
 		if (canAddNewEntries) return new AddingSelectedValues(
 			extractors,
 			repository,
@@ -128,7 +128,7 @@ public class AnchorOptimizer implements Optimizer {
 			ValueExtractors extractors,
 			ColumnRepository repository,
 			String id,
-			BResult result,
+			Result result,
 			Column[] columns) {
 			super(result, columns, extractors);
 			this.repository = repository;

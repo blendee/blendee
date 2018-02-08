@@ -15,9 +15,9 @@ import java.util.TreeSet;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlendeeManager;
@@ -32,10 +32,10 @@ import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
 
 /**
- * Blendee が使用する {@link BConnection} の標準実装クラスです。
+ * Blendee が使用する {@link BlenConnection} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-class ConcreteConnection implements BConnection {
+class ConcreteConnection implements BlenConnection {
 
 	private static final String[] tableTypes = { "TABLE", "VIEW" };
 
@@ -82,23 +82,23 @@ class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public BStatement getStatement(String sql) {
+	public BlenStatement getStatement(String sql) {
 		ConcretePreparedStatement statement = create(sql);
 		return wrap(statement, preparedStatementWrappers);
 	}
 
 	@Override
-	public BStatement getStatement(String sql, PreparedStatementComplementer complementer) {
+	public BlenStatement getStatement(String sql, PreparedStatementComplementer complementer) {
 		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
+		BlenPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
 		complementer.complement(wrapped);
 		return wrapped;
 	}
 
 	@Override
-	public BPreparedStatement prepareStatement(String sql) {
+	public BlenPreparedStatement prepareStatement(String sql) {
 		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
+		BlenPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
 		return wrapped;
 	}
 
@@ -296,7 +296,7 @@ class ConcreteConnection implements BConnection {
 		return new BatchPreparedStatement(config, createStatement(sql), finalizer);
 	}
 
-	BPreparedStatement wrapInternal(ConcretePreparedStatement statement) {
+	BlenPreparedStatement wrapInternal(ConcretePreparedStatement statement) {
 		return wrap(statement, preparedStatementWrappers);
 	}
 
@@ -304,8 +304,8 @@ class ConcreteConnection implements BConnection {
 		return new ConcretePreparedStatement(config, createStatement(sql), finalizer);
 	}
 
-	private static BPreparedStatement wrap(
-		BPreparedStatement statement,
+	private static BlenPreparedStatement wrap(
+		BlenPreparedStatement statement,
 		List<PreparedStatementWrapper> wrappers) {
 		for (PreparedStatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);

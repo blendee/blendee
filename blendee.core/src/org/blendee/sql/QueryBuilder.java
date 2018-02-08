@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
@@ -194,7 +194,7 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	}
 
 	@Override
-	public synchronized int complement(BPreparedStatement statement) {
+	public synchronized int complement(BlenPreparedStatement statement) {
 		int complemented = whereClause.getComplementer().complement(statement);
 		return complemented + havingClause.getComplementer(complemented).complement(statement);
 	}

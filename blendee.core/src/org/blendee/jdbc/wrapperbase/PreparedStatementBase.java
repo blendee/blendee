@@ -7,22 +7,22 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
 
-import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BlenResultSet;
 
 /**
- * {@link BPreparedStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
+ * {@link BlenPreparedStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class PreparedStatementBase implements BPreparedStatement {
+public abstract class PreparedStatementBase implements BlenPreparedStatement {
 
-	private final BPreparedStatement base;
+	private final BlenPreparedStatement base;
 
 	/**
 	 * ラップするインスタンスを受け取るコンストラクタです。
 	 * @param base ベースとなるインスタンス
 	 */
-	protected PreparedStatementBase(BPreparedStatement base) {
+	protected PreparedStatementBase(BlenPreparedStatement base) {
 		this.base = base;
 	}
 
@@ -102,7 +102,7 @@ public abstract class PreparedStatementBase implements BPreparedStatement {
 	}
 
 	@Override
-	public BResultSet executeQuery() {
+	public BlenResultSet executeQuery() {
 		return base.executeQuery();
 	}
 
@@ -117,7 +117,7 @@ public abstract class PreparedStatementBase implements BPreparedStatement {
 	}
 
 	@Override
-	public BResultSet getResultSet() {
+	public BlenResultSet getResultSet() {
 		return base.getResultSet();
 	}
 

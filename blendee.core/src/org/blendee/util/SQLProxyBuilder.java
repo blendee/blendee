@@ -7,8 +7,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.sql.Binder;
@@ -21,7 +21,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
  * interface-name#method-name.sql<br>
  * として、インターフェイスと同じ場所に配備したもののことです。<br>
  * インターフェイスに定義するメソッドは、戻り値に<br>
- * {@link BResultSet}, int, boolean, void<br>
+ * {@link BlenResultSet}, int, boolean, void<br>
  * を使用することができます。<br>
  * メソッドのパラメータには、 SQL 文に記述したプレースホルダにセットする値を渡せるように定義してください。
  * @author 千葉 哲嗣
@@ -102,7 +102,7 @@ public class SQLProxyBuilder {
 
 			Class<?> returnType = method.getReturnType();
 
-			BStatement statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql, s -> {
+			BlenStatement statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql, s -> {
 				for (int i = 0; i < binders.length; i++) {
 					binders[i].bind(i + 1, s);
 				}
@@ -110,7 +110,7 @@ public class SQLProxyBuilder {
 				return binders.length;
 			});
 
-			if (returnType.equals(BResultSet.class)) {
+			if (returnType.equals(BlenResultSet.class)) {
 				return statement.executeQuery();
 			} else if (returnType.equals(int.class)) {
 				return statement.executeUpdate();
