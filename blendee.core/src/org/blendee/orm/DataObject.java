@@ -9,14 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 import org.blendee.internal.Traversable;
 import org.blendee.internal.TraversableNode;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Result;
 import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
 import org.blendee.selector.Optimizer;
@@ -44,10 +47,6 @@ import org.blendee.sql.binder.ObjectBinder;
 import org.blendee.sql.binder.StringBinder;
 import org.blendee.sql.binder.TimestampBinder;
 import org.blendee.sql.binder.UUIDBinder;
-
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * データベースの一行を表すクラスです。<br>

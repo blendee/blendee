@@ -1,6 +1,10 @@
 package org.blendee.util;
 
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.*;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_BOOLEAN;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_CLASS;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
@@ -8,6 +12,7 @@ import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
+import org.blendee.sql.DepthRelationshipResolver;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.RelationshipResolver;
 import org.blendee.sql.ValueExtractors;
@@ -143,6 +148,14 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<Class<? extends RelationshipResolver>> RELATIONSHIP_RESOLVER_CLASS = new ParsableOptionKey<>(
 		"relationship-resolver-class",
 		TO_CLASS);
+
+	/**
+	 * (Class&lt;RelationshipResolver&gt;) RELATIONSHIP_RESOLVE_DEPTH
+	 * @see DepthRelationshipResolver
+	 */
+	public static final ParsableOptionKey<Integer> RELATIONSHIP_RESOLVE_DEPTH = new ParsableOptionKey<>(
+		"relationship-resolve-depth",
+		TO_INTEGER);
 
 	/**
 	 * (String) JDBC_DRIVER_CLASS

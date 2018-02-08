@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Transaction;
 
 /**
  * Blendee が使用する {@link Transaction} の標準実装クラスです。

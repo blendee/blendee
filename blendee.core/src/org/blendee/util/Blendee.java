@@ -10,18 +10,17 @@ import java.util.regex.Pattern;
 import org.blendee.internal.TransactionManager;
 import org.blendee.internal.TransactionShell;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.sql.DepthRelationshipResolver;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.RelationshipResolver;
 import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
@@ -35,8 +34,6 @@ public class Blendee {
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
-
-	private Class<? extends RelationshipResolver> defaultRelationshipResolverClass = DepthRelationshipResolver.class;
 
 	private Consumer<Initializer> consumer;
 
@@ -141,9 +138,11 @@ public class Blendee {
 			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
 				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
 
-		ContextManager.get(RelationshipFactory.class).setRelationshipResolverClass(
-			BlendeeConstants.RELATIONSHIP_RESOLVER_CLASS.extract(initValues)
-				.orElseGet(() -> getDefaultRelationshipResolverClass()));
+		BlendeeConstants.RELATIONSHIP_RESOLVER_CLASS.extract(initValues)
+			.ifPresent(clazz -> ContextManager.get(RelationshipFactory.class).setRelationshipResolverClass(clazz));
+
+		BlendeeConstants.RELATIONSHIP_RESOLVE_DEPTH.extract(initValues)
+			.ifPresent(depth -> ContextManager.get(DepthRelationshipResolver.class).setDepth(depth));
 	}
 
 	/**
@@ -221,21 +220,6 @@ public class Blendee {
 	public synchronized void setDefaultColumnRepositoryFactoryClass(
 		Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass) {
 		this.defaultColumnRepositoryFactoryClass = defaultColumnRepositoryFactoryClass;
-	}
-
-	/**
-	 * デフォルト {@link RelationshipResolver} を返します。
-	 * @return デフォルト {@link RelationshipResolver}
-	 */
-	public synchronized Class<? extends RelationshipResolver> getDefaultRelationshipResolverClass() {
-		return defaultRelationshipResolverClass;
-	}
-
-	/**
-	 * @param defaultRelationshipResolverClass
-	 */
-	public synchronized void setDefaultRelationshipResolverClass(Class<? extends RelationshipResolver> defaultRelationshipResolverClass) {
-		this.defaultRelationshipResolverClass = defaultRelationshipResolverClass;
 	}
 
 	/**

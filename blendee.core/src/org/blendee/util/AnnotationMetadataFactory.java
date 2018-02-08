@@ -13,9 +13,9 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TablePath;

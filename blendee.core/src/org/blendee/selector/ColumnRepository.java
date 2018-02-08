@@ -1,7 +1,7 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.Committable;
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 
 /**

@@ -4,8 +4,8 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Metadata} のラッパーを実装するベースとなる、抽象基底クラスです。

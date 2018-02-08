@@ -2,8 +2,8 @@ package org.blendee.util;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link TableSource} を構成するために必要な外部キー情報を表すクラスです。

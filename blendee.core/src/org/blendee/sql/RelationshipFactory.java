@@ -25,7 +25,7 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
-	private RelationshipResolver relationshipResolver;
+	private RelationshipResolver relationshipResolver = ContextManager.get(DepthRelationshipResolver.class);
 
 	/**
 	 * このクラスのコンストラクタです。<br>

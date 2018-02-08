@@ -1,8 +1,8 @@
 package org.blendee.selector;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;

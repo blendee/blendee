@@ -13,8 +13,8 @@ import java.util.Set;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.QueryOption;
 import org.blendee.selector.Optimizer;
@@ -25,10 +25,10 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.OrderByClause.DirectionalColumn;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SelectClause;
-import org.blendee.sql.OrderByClause.DirectionalColumn;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>

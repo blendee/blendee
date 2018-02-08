@@ -6,10 +6,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import org.blendee.jdbc.Transaction;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
+import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.jdbc.impl.JDBCTransaction;
 

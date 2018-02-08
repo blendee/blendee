@@ -5,10 +5,10 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.Criteria;

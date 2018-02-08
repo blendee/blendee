@@ -11,8 +11,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;

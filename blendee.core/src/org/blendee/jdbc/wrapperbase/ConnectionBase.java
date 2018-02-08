@@ -1,10 +1,10 @@
 package org.blendee.jdbc.wrapperbase;
 
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 

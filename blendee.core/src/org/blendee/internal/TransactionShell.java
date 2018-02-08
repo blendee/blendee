@@ -1,8 +1,8 @@
 package org.blendee.internal;
 
-import org.blendee.jdbc.Transaction;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Transaction;
 
 /**
  * 終了時に {@link Transaction} を自動的にクローズする抽象基底クラスです。

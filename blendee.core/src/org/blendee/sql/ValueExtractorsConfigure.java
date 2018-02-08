@@ -1,8 +1,6 @@
 package org.blendee.sql;
 
 import org.blendee.jdbc.ManagementSubject;
-import org.blendee.sql.DefaultValueExtractors;
-import org.blendee.sql.ValueExtractors;
 
 /**
  * {@link ValueExtractors} に対する設定値を保持するクラスです。

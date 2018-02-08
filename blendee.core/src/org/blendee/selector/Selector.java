@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;

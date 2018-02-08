@@ -15,11 +15,11 @@ import java.util.TreeSet;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;

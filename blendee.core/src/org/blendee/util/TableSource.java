@@ -5,8 +5,8 @@ import java.util.Objects;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Metadata;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.TableMetadata;
+import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Metadata} を構成するために必要なテーブル情報を表すクラスです。

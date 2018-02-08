@@ -5,12 +5,12 @@ import java.util.Map;
 
 import org.blendee.internal.LRUCache;
 import org.blendee.internal.U;
+import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;

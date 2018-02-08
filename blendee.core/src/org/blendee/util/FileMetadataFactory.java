@@ -7,8 +7,8 @@ import java.net.URL;
 import java.util.Optional;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 

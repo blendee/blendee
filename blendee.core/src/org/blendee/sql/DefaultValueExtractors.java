@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.DataTypeConverter;
+import org.blendee.jdbc.Result;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BlobBinder;
 import org.blendee.sql.binder.BooleanBinder;
