@@ -223,11 +223,18 @@ public class Blendee {
 		this.defaultColumnRepositoryFactoryClass = defaultColumnRepositoryFactoryClass;
 	}
 
-	public Class<? extends RelationshipResolver> getDefaultRelationshipResolverClass() {
+	/**
+	 * デフォルト {@link RelationshipResolver} を返します。
+	 * @return デフォルト {@link RelationshipResolver}
+	 */
+	public synchronized Class<? extends RelationshipResolver> getDefaultRelationshipResolverClass() {
 		return defaultRelationshipResolverClass;
 	}
 
-	public void setDefaultRelationshipResolverClass(Class<? extends RelationshipResolver> defaultRelationshipResolverClass) {
+	/**
+	 * @param defaultRelationshipResolverClass
+	 */
+	public synchronized void setDefaultRelationshipResolverClass(Class<? extends RelationshipResolver> defaultRelationshipResolverClass) {
 		this.defaultRelationshipResolverClass = defaultRelationshipResolverClass;
 	}
 

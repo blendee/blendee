@@ -348,7 +348,7 @@ public class ORMGenerator {
 						child.getTablePath().getTableName(),
 						foreignKey,
 						String.join(", ", crossReference.getForeignKeyColumnNames()),
-						toUpperCaseFirstLetter(methodName),
+						methodName,
 						tableName));
 			}
 
@@ -415,7 +415,7 @@ public class ORMGenerator {
 
 				String tableName = childTablePath.getTableName();
 
-				String relationship = checker.get(tableName) ? tableName + "_BY_" + foreignKey : tableName;
+				String relationship = "$" + (checker.get(tableName) ? tableName + "_BY_" + foreignKey : tableName);
 
 				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
 
@@ -428,7 +428,7 @@ public class ORMGenerator {
 						typeParam));
 
 				list2.add(
-					codeFormatter.formatQueryRelationshipPart1(
+					codeFormatter.formatQueryRelationshipPart2(
 						queryRelationshipPart2Template,
 						tableName,
 						foreignKey,
@@ -438,7 +438,7 @@ public class ORMGenerator {
 						packageName));
 
 				list3.add(
-					codeFormatter.formatQueryRelationshipPart1(
+					codeFormatter.formatQueryRelationshipPart3(
 						queryRelationshipPart3Template,
 						tableName,
 						foreignKey,
