@@ -9,7 +9,6 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
-import org.blendee.plugin.views.ClassBuilderView;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.eclipse.core.runtime.Path;
@@ -25,7 +24,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 
 public class TableElement extends PropertySourceElement {
@@ -140,10 +138,33 @@ public class TableElement extends PropertySourceElement {
 			plugin.useNumberClass(),
 			!plugin.notUseNullGuard());
 
+		build(generator, fragment, path);
+	}
+
+	boolean isAvailable() {
+		return isAvailable(path);
+	}
+
+	private boolean isAvailable(TablePath path) {
+		String typeName = String.join(
+			".",
+			new String[] {
+				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
+				path.getTableName() });
+		try {
+			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
+			return false;
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private void build(ORMGenerator generator, IPackageFragment fragment, TablePath path) {
 		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		String tableName = path.getTableName();
 		try {
-			CodeFormatter formatter = ToolFactory.createCodeFormatter(project.getOptions(true));
+			CodeFormatter formatter = ToolFactory.createCodeFormatter(
+				BlendeePlugin.getDefault().getProject().getOptions(true));
 
 			createSource(
 				ORMGenerator.createRowManagerCompilationUnitName(tableName),
@@ -161,23 +182,12 @@ public class TableElement extends PropertySourceElement {
 			throw new IllegalStateException(e);
 		}
 
-		ClassBuilderView view = BlendeePlugin.getDefault().getClassBuilderView();
-		TreeViewer viewer = view.getTreeViewer();
-		viewer.refresh(this);
-	}
-
-	boolean isAvailable() {
-		String typeName = String.join(
-			".",
-			new String[] {
-				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
-				path.getTableName() });
-		try {
-			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
-			return false;
-		} catch (JavaModelException e) {
-			throw new IllegalStateException(e);
+		for (Relationship child : relation.getRelationships()) {
+			TablePath childPath = child.getTablePath();
+			if (!isAvailable(childPath)) build(generator, fragment, childPath);
 		}
+
+		parent.refresh(path);
 	}
 
 	private static String format(CodeFormatter formatter, String source) {

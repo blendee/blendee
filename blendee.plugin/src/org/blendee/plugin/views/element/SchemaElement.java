@@ -1,9 +1,13 @@
 package org.blendee.plugin.views.element;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
+import org.blendee.plugin.views.ClassBuilderView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -19,14 +23,14 @@ public class SchemaElement extends PropertySourceElement {
 
 	private final String name;
 
-	private final TableElement[] children;
+	private final Map<TablePath, TableElement> children = new LinkedHashMap<>();;
 
 	SchemaElement(BlenConnection connection, String name) {
 		this.name = name;
 		TablePath[] tables = connection.getTables(name);
-		children = new TableElement[tables.length];
-		for (int i = 0; i < tables.length; i++) {
-			children[i] = new TableElement(this, tables[i]);
+
+		for (TablePath table : tables) {
+			children.put(table, new TableElement(this, table));
 		}
 	}
 
@@ -56,13 +60,13 @@ public class SchemaElement extends PropertySourceElement {
 	}
 
 	@Override
-	public Element[] getChildren() {
-		return children.clone();
+	public TableElement[] getChildren() {
+		return children.values().toArray(new TableElement[children.size()]);
 	}
 
 	@Override
 	public boolean hasChildren() {
-		return children.length > 0;
+		return children.size() > 0;
 	}
 
 	@Override
@@ -75,8 +79,8 @@ public class SchemaElement extends PropertySourceElement {
 
 	@Override
 	public void addActionToContextMenu(IMenuManager manager) {
-		allBuildAction.elements = children;
-		rebuildAction.elements = children;
+		allBuildAction.elements = getChildren();
+		rebuildAction.elements = getChildren();
 		manager.add(allBuildAction);
 		manager.add(rebuildAction);
 	}
@@ -84,6 +88,16 @@ public class SchemaElement extends PropertySourceElement {
 	@Override
 	String getType() {
 		return "スキーマ";
+	}
+
+	void refresh(TablePath table) {
+		TableElement element = children.get(table);
+
+		if (element == null) return;
+
+		ClassBuilderView view = BlendeePlugin.getDefault().getClassBuilderView();
+		TreeViewer viewer = view.getTreeViewer();
+		viewer.refresh(element);
 	}
 
 	private static class AllBuildAction extends Action {
