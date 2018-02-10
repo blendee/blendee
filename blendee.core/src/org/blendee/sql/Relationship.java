@@ -109,7 +109,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 				element,
 				element.getPrimaryKeyTable(),
 				id + "_" + relationshipFormat.format(i),
-				relationshipPath,
+				myRelationshipPath,
 				resolver,
 				converter,
 				convertMap);
