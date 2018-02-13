@@ -27,6 +27,8 @@ public class Constants {
 
 	public static final String METADATA_FACTORY_CLASS = "metadataFactoryClass";
 
+	public static final String RELATIONSHIP_RESOLVER_CLASS = "relationshipResolverClass";
+
 	public static final String ROW_MANAGER_PARENT_CLASS = "rowManagerParentClass";
 
 	public static final String ROW_PARENT_CLASS = "rowParentClass";

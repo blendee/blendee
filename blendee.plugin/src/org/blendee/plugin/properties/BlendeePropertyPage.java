@@ -16,6 +16,7 @@ import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.BlendeePlugin.JavaProjectException;
 import org.blendee.plugin.Constants;
 import org.blendee.selector.ColumnRepositoryFactory;
+import org.blendee.sql.RelationshipResolver;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -312,6 +313,36 @@ public class BlendeePropertyPage
 		addField(metadataFactoryClassEditor);
 
 		/*---------------------------------------------------*/
+		ClassFieldEditor relationshipResolverClassEditor = new ClassFieldEditor(
+			Constants.RELATIONSHIP_RESOLVER_CLASS,
+			"RelationshipResolver 実装クラス",
+			element.getProject(),
+			getFieldEditorParent()) {
+
+			@Override
+			protected boolean doCheckState() {
+				if (!U.presents(getStringValue())) return true;
+
+				try {
+					BlendeePlugin.checkRequiredClass(
+						false,
+						element,
+						RelationshipResolver.class,
+						getStringValue());
+				} catch (JavaProjectException e) {
+					setErrorMessage(e.getMessage());
+					return false;
+				}
+
+				return true;
+			}
+		};
+
+		relationshipResolverClassEditor.setChangeButtonText("参照...");
+		relationshipResolverClassEditor.setEmptyStringAllowed(true);
+		addField(relationshipResolverClassEditor);
+
+		/*---------------------------------------------------*/
 		ClassFieldEditor managerParentClassEditor = new ClassFieldEditor(
 			Constants.ROW_MANAGER_PARENT_CLASS,
 			"自動生成 RowManager の親クラス",
@@ -485,6 +516,8 @@ public class BlendeePropertyPage
 
 		changed |= checkAndSetValue(store, properties, Constants.METADATA_FACTORY_CLASS);
 
+		changed |= checkAndSetValue(store, properties, Constants.RELATIONSHIP_RESOLVER_CLASS);
+
 		changed |= checkAndSetValue(store, properties, Constants.ROW_MANAGER_PARENT_CLASS);
 
 		changed |= checkAndSetValue(store, properties, Constants.ROW_PARENT_CLASS);
@@ -575,6 +608,10 @@ public class BlendeePropertyPage
 		store.setDefault(
 			Constants.METADATA_FACTORY_CLASS,
 			store.getString(Constants.METADATA_FACTORY_CLASS));
+
+		store.setDefault(
+			Constants.RELATIONSHIP_RESOLVER_CLASS,
+			store.getString(Constants.RELATIONSHIP_RESOLVER_CLASS));
 
 		store.setDefault(
 			Constants.ROW_MANAGER_PARENT_CLASS,
