@@ -465,12 +465,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			path$ = path;
 
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
-				this, /*++{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
+				this, /*++{2}.{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
 /*++{5}++*/
 
 /*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = path.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root);
+				builder, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root);
 /*==RelationshipPart2==*/
 /*++{6}++*/
 		/*++'++*/}/*++'++*/
@@ -483,13 +483,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			context$ = context;
 			parent$ = null;
 			fkName$ = null;
-			path$ = /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
+			path$ = /*++{0}.{1}++*//*--*/RowBase/*--*/.$TABLE;
 
 			/*--*/columnName = null;/*--*/
 /*++{5}++*/
 
 /*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
+				builder, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 /*==RelationshipPart3==*/
 /*++{7}++*/
 		/*++'++*/}/*++'++*/

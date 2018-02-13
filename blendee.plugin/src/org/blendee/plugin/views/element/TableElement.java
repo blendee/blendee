@@ -1,7 +1,9 @@
 package org.blendee.plugin.views.element;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.blendee.develop.ormgen.ORMGenerator;
 import org.blendee.jdbc.BlendeeManager;
@@ -138,11 +140,27 @@ public class TableElement extends PropertySourceElement {
 			plugin.useNumberClass(),
 			!plugin.notUseNullGuard());
 
-		build(generator, fragment, path);
+		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
+		Set<TablePath> tables = new LinkedHashSet<>();
+		//自身をセット
+		tables.add(relation.getTablePath());
+		//最大限テーブルの重複を排除してメモリを節約
+		collect(tables, relation);
+
+		tables.forEach(path -> {
+			if (!isAvailable(path)) build(generator, fragment, path);
+		});
 	}
 
 	boolean isAvailable() {
 		return isAvailable(path);
+	}
+
+	private void collect(Set<TablePath> tables, Relationship relation) {
+		for (Relationship child : relation.getRelationships()) {
+			tables.add(child.getTablePath());
+			collect(tables, child);
+		}
 	}
 
 	private boolean isAvailable(TablePath path) {
@@ -180,11 +198,6 @@ public class TableElement extends PropertySourceElement {
 				format(formatter, generator.buildQuery(relation)));
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
-		}
-
-		for (Relationship child : relation.getRelationships()) {
-			TablePath childPath = child.getTablePath();
-			if (!isAvailable(childPath)) build(generator, fragment, childPath);
 		}
 
 		parent.refresh(path);
