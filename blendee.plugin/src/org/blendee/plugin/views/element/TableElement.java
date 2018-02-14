@@ -178,7 +178,13 @@ public class TableElement extends PropertySourceElement {
 	}
 
 	private void build(ORMGenerator generator, IPackageFragment fragment, TablePath path) {
-		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
+		RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+
+		//節約のためクリア
+		//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
+		factory.clearCache();
+
+		Relationship relation = factory.getInstance(path);
 		String tableName = path.getTableName();
 		try {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(

@@ -33,6 +33,9 @@ public class BlendeeStarter {
 		blendee.setDefaultMetadataFactoryClass(
 			PluginAnnotationMetadataFactory.class);
 
+		//過去のキャッシュがあるかもしれないのでクリアしておく
+		Blendee.clearCache();
+
 		blendee.start(initValues);
 	}
 }

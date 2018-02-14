@@ -73,23 +73,5 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatQueryRelationshipPart1(String template, String... arguments);
-
-	/**
-	 * {@link QueryBase} のリレーション生成部分のコードを組み立てます。<br>
-	 * 具体的な箇所は {@link QueryBase} を参照してください。
-	 * @param template {@link MessageFormat} 形式テンプレート
-	 * @param arguments 引数
-	 * @return 生成後のコード
-	 */
-	String formatQueryRelationshipPart2(String template, String... arguments);
-
-	/**
-	 * {@link QueryBase} のリレーション生成部分のコードを組み立てます。<br>
-	 * 具体的な箇所は {@link QueryBase} を参照してください。
-	 * @param template {@link MessageFormat} 形式テンプレート
-	 * @param arguments 引数
-	 * @return 生成後のコード
-	 */
-	String formatQueryRelationshipPart3(String template, String... arguments);
+	String formatQueryRelationshipPart(String template, String... arguments);
 }

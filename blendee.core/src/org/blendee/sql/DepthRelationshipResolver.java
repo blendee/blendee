@@ -11,7 +11,7 @@ import org.blendee.jdbc.TablePath;
  */
 public class DepthRelationshipResolver implements RelationshipResolver, ManagementSubject {
 
-	private static final int defaultDepth = 5;
+	private static final int defaultDepth = 3;
 
 	private int depth = defaultDepth;
 
@@ -25,7 +25,7 @@ public class DepthRelationshipResolver implements RelationshipResolver, Manageme
 
 	@Override
 	public boolean canTraverse(List<TablePath> relationshipPath, TablePath target) {
-		return relationshipPath.size() <= getDepth();
+		return relationshipPath.size() < getDepth();
 	}
 
 	private synchronized int getDepth() {

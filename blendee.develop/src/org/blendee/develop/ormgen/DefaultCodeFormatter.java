@@ -44,17 +44,7 @@ public class DefaultCodeFormatter implements CodeFormatter {
 	}
 
 	@Override
-	public String formatQueryRelationshipPart1(String template, String... arguments) {
-		return MessageFormat.format(template, (Object[]) arguments);
-	}
-
-	@Override
-	public String formatQueryRelationshipPart2(String template, String... arguments) {
-		return MessageFormat.format(template, (Object[]) arguments);
-	}
-
-	@Override
-	public String formatQueryRelationshipPart3(String template, String... arguments) {
+	public String formatQueryRelationshipPart(String template, String... arguments) {
 		return MessageFormat.format(template, (Object[]) arguments);
 	}
 }

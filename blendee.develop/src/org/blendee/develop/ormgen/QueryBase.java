@@ -20,15 +20,15 @@ import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.AbstractOrderQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
-/*++{8}++*/
+/*++{6}++*/
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
-import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryContext;
+import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOffer;
@@ -418,11 +418,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final QueryCriteriaContext context$;
 
+		private final QueryContext<T> builder$;
+
 		private final QueryRelationship parent$;
 
 		private final String fkName$;
 
 		private final TablePath path$;
+
+		private final TablePath root$;
 
 		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -434,65 +438,68 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public final T /*++{0}++*//*--*/columnName/*--*/;
 
 /*==ColumnPart1==*/
-/*++{4}++*/
-/*==RelationshipPart1==*/
-		/**
-		 * 参照先テーブル名 {0}
-		 * 外部キー名 {1}
-		 */
-		public final /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{3}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/;
-
-/*==RelationshipPart1==*/
 
 		/**
 		 * 直接使用しないでください。
-		 * @param builder
-		 * @param parent
-		 * @param fkName
-		 * @param path
-		 * @param root
+		 * @param builder$
+		 * @param parent$
+		 * @param fkName$
+		 * @param path$
+		 * @param root$
 		 */
 		public /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
-			QueryContext<T> builder,
-			QueryRelationship parent,
-			String fkName,
-			TablePath path,
-			TablePath root) /*++'++*/{/*++'++*/
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			this.builder$ = builder$;
 			query$ = null;
 			context$ = null;
-			parent$ = parent;
-			fkName$ = fkName;
-			path$ = path;
+			this.parent$ = parent$;
+			this.fkName$ = fkName$;
+			this.path$ = path$;
+			this.root$ = root$;
 
-/*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder.buildQueryColumn(
+/*++{4}++*/
+/*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder$.buildQueryColumn(
 				this, /*++{2}.{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
-/*++{5}++*/
-
-/*==RelationshipPart2==*/this./*--*/relationshipName/*--*//*++{2}++*/ = path.equals(root) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root);
-/*==RelationshipPart2==*/
-/*++{6}++*/
 		/*++'++*/}/*++'++*/
 
 		private /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
-			/*++{1}Query++*//*--*/QueryBase/*--*/ query,
-			QueryContext<T> builder,
-			QueryCriteriaContext context) /*++'++*/{/*++'++*/
-			query$ = query;
-			context$ = context;
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			this.query$ = query$;
+			this.builder$ = builder$;
+			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
 			path$ = /*++{0}.{1}++*//*--*/RowBase/*--*/.$TABLE;
+			root$ = null;
 
 			/*--*/columnName = null;/*--*/
-/*++{5}++*/
-
-/*==RelationshipPart3==*/this./*--*/relationshipName/*--*//*++{2}++*/ = new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/>(
-				builder, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
-/*==RelationshipPart3==*/
-/*++{7}++*/
+/*++{4}++*/
 		/*++'++*/}/*++'++*/
+
+/*++{5}++*/
+/*==RelationshipPart==*/
+		/**
+		 * 参照先テーブル名 {0}
+		 * 外部キー名 {1}
+		 * @return {0} relationship
+		 */
+		public /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+			if (root$ != null) /*++'++*/{/*++'++*/
+				return path$.equals(root$) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
+			/*++'++*/}/*++'++*/
+
+			return new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
+		/*++'++*/}/*++'++*/
+/*==RelationshipPart==*/
 
 		/**
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。

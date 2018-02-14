@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.ColumnMetadata;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
@@ -58,13 +58,9 @@ public class ORMGenerator {
 
 	private static final String queryColumnPart1Template;
 
-	private static final String queryRelationshipPart1Template;
-
 	private static final String queryColumnPart2Template;
 
-	private static final String queryRelationshipPart2Template;
-
-	private static final String queryRelationshipPart3Template;
+	private static final String queryRelationshipPartTemplate;
 
 	private static final Map<Class<?>, Class<?>> primitiveToWrapperMap = new HashMap<>();
 
@@ -129,24 +125,13 @@ public class ORMGenerator {
 				source = result[1];
 			}
 			{
-				String[] result = pickupFromSource(source, "RelationshipPart1");
-				queryRelationshipPart1Template = convertToTemplate(result[0]);
-				source = result[1];
-			}
-
-			{
 				String[] result = pickupFromSource(source, "ColumnPart2");
 				queryColumnPart2Template = convertToTemplate(result[0]);
 				source = result[1];
 			}
 			{
-				String[] result = pickupFromSource(source, "RelationshipPart2");
-				queryRelationshipPart2Template = convertToTemplate(result[0]);
-				source = result[1];
-			}
-			{
-				String[] result = pickupFromSource(source, "RelationshipPart3");
-				queryRelationshipPart3Template = convertToTemplate(result[0]);
+				String[] result = pickupFromSource(source, "RelationshipPart");
+				queryRelationshipPartTemplate = convertToTemplate(result[0]);
 				source = result[1];
 			}
 
@@ -401,13 +386,11 @@ public class ORMGenerator {
 			columnPart2 = String.join("", list2);
 		}
 
-		String relationshipPart1, relationshipPart2, relationshipPart3;
+		String relationshipPart;
 		{
 			Map<String, Boolean> checker = createDuprecateChecker(relation);
 
-			List<String> list1 = new LinkedList<>();
-			List<String> list2 = new LinkedList<>();
-			List<String> list3 = new LinkedList<>();
+			List<String> list = new LinkedList<>();
 			for (Relationship child : relation.getRelationships()) {
 				TablePath childTablePath = child.getTablePath();
 
@@ -419,27 +402,9 @@ public class ORMGenerator {
 
 				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
 
-				list1.add(
-					codeFormatter.formatQueryRelationshipPart1(
-						queryRelationshipPart1Template,
-						tableName,
-						foreignKey,
-						relationship,
-						typeParam));
-
-				list2.add(
-					codeFormatter.formatQueryRelationshipPart2(
-						queryRelationshipPart2Template,
-						tableName,
-						foreignKey,
-						relationship,
-						rootTableName,
-						typeParam,
-						packageName));
-
-				list3.add(
-					codeFormatter.formatQueryRelationshipPart3(
-						queryRelationshipPart3Template,
+				list.add(
+					codeFormatter.formatQueryRelationshipPart(
+						queryRelationshipPartTemplate,
 						tableName,
 						foreignKey,
 						relationship,
@@ -448,9 +413,7 @@ public class ORMGenerator {
 						packageName));
 			}
 
-			relationshipPart1 = String.join("", list1);
-			relationshipPart2 = String.join("", list2);
-			relationshipPart3 = String.join("", list3);
+			relationshipPart = String.join("", list);
 		}
 
 		String tableName = relation.getTablePath().getTableName();
@@ -461,10 +424,8 @@ public class ORMGenerator {
 			tableName,
 			querySuperclass.getName(),
 			columnPart1,
-			relationshipPart1,
 			columnPart2,
-			relationshipPart2,
-			relationshipPart3,
+			relationshipPart,
 			relation.getRelationships().length > 0 ? ("import " + Many.class.getName() + ";") : "");
 	}
 

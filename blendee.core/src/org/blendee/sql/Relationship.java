@@ -40,8 +40,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	private final Map<String, Relationship> foreignKeyIdMap = new HashMap<>();
 
-	private final TraversableNode node = new TraversableNode();
-
 	private final Column[] columns;
 
 	private final Map<String, Column> columnMap = new HashMap<>();
@@ -49,6 +47,16 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	private final Column[] primaryKeyColumns;
 
 	private final CollectionMap<TablePath, Relationship> convertMap;
+
+	private final RelationshipResolver resolver;
+
+	private final DataTypeConverter converter;
+
+	private final List<TablePath> relationshipPath;
+
+	private final Object lock = new Object();
+
+	private TraversableNode node;
 
 	Relationship(
 		Relationship root,
@@ -75,6 +83,12 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		this.reference = reference;
 		this.id = id;
 
+		this.relationshipPath = relationshipPath;
+
+		this.resolver = resolver;
+
+		this.converter = converter;
+
 		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
 		columns = new Column[metadatas.length];
 		DecimalFormat columnFormat = RelationshipFactory.createDigitFormat(metadatas.length);
@@ -89,34 +103,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		primaryKeyColumns = new Column[primaryKeyColumnNames.length];
 		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
 			primaryKeyColumns[i] = columnMap.get(MetadataUtilities.regularize(primaryKeyColumnNames[i]));
-		}
-
-		//これ以上降るかを判定
-		if (!resolver.canTraverse(relationshipPath, path)) return;
-
-		List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
-		myRelationshipPath.add(path);
-
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
-
-		DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
-
-		for (int i = 0; i < references.length; i++) {
-			CrossReference element = references[i];
-			Relationship child = new Relationship(
-				this.root,
-				this,
-				element,
-				element.getPrimaryKeyTable(),
-				id + "_" + relationshipFormat.format(i),
-				myRelationshipPath,
-				resolver,
-				converter,
-				convertMap);
-			foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
-			String[] foreignKeyColumns = element.getForeignKeyColumnNames();
-			foreignKeyIdMap.put(createForeignKeyId(foreignKeyColumns), child);
-			node.add(child);
 		}
 	}
 
@@ -151,7 +137,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @return この要素が参照している要素の配列
 	 */
 	public Relationship[] getRelationships() {
-		Traversable[] traversables = node.getTraversables();
+		Traversable[] traversables = getSubNode().getTraversables();
 		Relationship[] relations = new Relationship[traversables.length];
 		for (int i = 0; i < traversables.length; i++) {
 			relations[i] = (Relationship) traversables[i];
@@ -170,6 +156,40 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	@Override
 	public TraversableNode getSubNode() {
+		synchronized (lock) {
+			if (node != null) return node;
+
+			node = new TraversableNode();
+
+			//これ以上降るかを判定
+			if (!resolver.canTraverse(relationshipPath, path)) return node;
+
+			List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
+			myRelationshipPath.add(path);
+
+			CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
+
+			DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
+
+			for (int i = 0; i < references.length; i++) {
+				CrossReference element = references[i];
+				Relationship child = new Relationship(
+					this.root,
+					this,
+					element,
+					element.getPrimaryKeyTable(),
+					id + "_" + relationshipFormat.format(i),
+					myRelationshipPath,
+					resolver,
+					converter,
+					convertMap);
+				foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
+				String[] foreignKeyColumns = element.getForeignKeyColumnNames();
+				foreignKeyIdMap.put(createForeignKeyId(foreignKeyColumns), child);
+				node.add(child);
+			}
+		}
+
 		return node;
 	}
 
