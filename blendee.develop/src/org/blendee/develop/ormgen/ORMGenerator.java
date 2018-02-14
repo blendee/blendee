@@ -386,7 +386,7 @@ public class ORMGenerator {
 			columnPart2 = String.join("", list2);
 		}
 
-		String relationshipPart;
+		String myQueryTemplate, relationshipPart;
 		{
 			Map<String, Boolean> checker = createDuprecateChecker(relation);
 
@@ -413,13 +413,15 @@ public class ORMGenerator {
 						packageName));
 			}
 
+			myQueryTemplate = erase(queryTemplate, list.isEmpty());
+
 			relationshipPart = String.join("", list);
 		}
 
 		String tableName = relation.getTablePath().getTableName();
 
 		return codeFormatter.formatQuery(
-			queryTemplate,
+			myQueryTemplate,
 			packageName,
 			tableName,
 			querySuperclass.getName(),
@@ -631,6 +633,13 @@ public class ORMGenerator {
 	private static String convertToTemplate(String source) {
 		source = source.replaceAll("/\\*--\\*/.+?/\\*--\\*/", "");
 		return source.replaceAll("/\\*\\+\\+(.+?)\\+\\+\\*/", "$1");
+	}
+
+	private static String erase(String source, boolean erase) {
+		if (erase)
+			return source.replaceAll("/\\*--\\?--\\*/.+?/\\*--\\?--\\*/", "");
+
+		return source.replaceAll("/\\*--\\?--\\*/", "");
 	}
 
 	private static String readTemplate(Class<?> target, String charset) {

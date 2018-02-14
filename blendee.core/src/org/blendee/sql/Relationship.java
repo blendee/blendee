@@ -36,10 +36,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	private final CrossReference reference;
 
-	private final Map<String, Relationship> foreignKeyNameMap = new HashMap<>();
-
-	private final Map<String, Relationship> foreignKeyIdMap = new HashMap<>();
-
 	private final Column[] columns;
 
 	private final Map<String, Column> columnMap = new HashMap<>();
@@ -57,6 +53,10 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	private final Object lock = new Object();
 
 	private TraversableNode node;
+
+	private Map<String, Relationship> foreignKeyNameMap;
+
+	private Map<String, Relationship> foreignKeyIdMap;
 
 	Relationship(
 		Relationship root,
@@ -171,6 +171,9 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 			DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
 
+			foreignKeyNameMap = new HashMap<>();
+			foreignKeyIdMap = new HashMap<>();
+
 			for (int i = 0; i < references.length; i++) {
 				CrossReference element = references[i];
 				Relationship child = new Relationship(
@@ -249,8 +252,14 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @throws NotFoundException 外部キー名に対応する参照先がない場合
 	 */
 	public Relationship find(String foreignKeyName) {
-		Relationship relationship = foreignKeyNameMap.get(MetadataUtilities.regularize(foreignKeyName));
-		if (relationship == null) throw new NotFoundException(createErrorMessage(foreignKeyName));
+		Relationship relationship;
+		synchronized (lock) {
+			if (foreignKeyNameMap == null) getSubNode();
+			relationship = foreignKeyNameMap.get(MetadataUtilities.regularize(foreignKeyName));
+		}
+
+		if (relationship == null)
+			throw new NotFoundException(createErrorMessage(foreignKeyName));
 
 		return relationship;
 	}
@@ -264,10 +273,14 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	public Relationship find(String[] foreignKeyColumnNames) {
 		String keyId = createForeignKeyId(MetadataUtilities.regularize(foreignKeyColumnNames));
 
-		Relationship relationship = foreignKeyIdMap.get(keyId);
-		if (relationship == null) {
-			throw new NotFoundException(createErrorMessage(String.join(" ", foreignKeyColumnNames)));
+		Relationship relationship;
+		synchronized (lock) {
+			if (foreignKeyIdMap == null) getSubNode();
+			relationship = foreignKeyIdMap.get(keyId);
 		}
+
+		if (relationship == null)
+			throw new NotFoundException(createErrorMessage(String.join(" ", foreignKeyColumnNames)));
 
 		return relationship;
 	}

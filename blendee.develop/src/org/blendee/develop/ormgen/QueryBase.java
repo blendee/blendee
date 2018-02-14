@@ -418,7 +418,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final QueryCriteriaContext context$;
 
-		private final QueryContext<T> builder$;
+		/*--?--*/private final QueryContext<T> builder$;/*--?--*/
 
 		private final QueryRelationship parent$;
 
@@ -426,7 +426,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final TablePath path$;
 
-		private final TablePath root$;
+		/*--?--*/private final TablePath root$;/*--?--*/
 
 		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -453,13 +453,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			String fkName$,
 			TablePath path$,
 			TablePath root$) /*++'++*/{/*++'++*/
-			this.builder$ = builder$;
 			query$ = null;
+			/*--?--*/this.builder$ = builder$;/*--?--*/
 			context$ = null;
 			this.parent$ = parent$;
 			this.fkName$ = fkName$;
 			this.path$ = path$;
-			this.root$ = root$;
+			/*--?--*/this.root$ = root$;/*--?--*/
 
 /*++{4}++*/
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder$.buildQueryColumn(
@@ -472,12 +472,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			QueryContext<T> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			this.query$ = query$;
-			this.builder$ = builder$;
+			/*--?--*/this.builder$ = builder$;/*--?--*/
 			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
 			path$ = /*++{0}.{1}++*//*--*/RowBase/*--*/.$TABLE;
-			root$ = null;
+			/*--?--*/root$ = null;/*--?--*/
 
 			/*--*/columnName = null;/*--*/
 /*++{4}++*/
