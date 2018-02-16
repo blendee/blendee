@@ -19,7 +19,6 @@ import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.sql.DepthRelationshipResolver;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.ValueExtractorsConfigure;
 
@@ -137,12 +136,6 @@ public class Blendee {
 		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
 			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
 				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
-
-		BlendeeConstants.RELATIONSHIP_RESOLVER_CLASS.extract(initValues)
-			.ifPresent(clazz -> ContextManager.get(RelationshipFactory.class).setRelationshipResolverClass(clazz));
-
-		BlendeeConstants.RELATIONSHIP_RESOLVE_DEPTH.extract(initValues)
-			.ifPresent(depth -> ContextManager.get(DepthRelationshipResolver.class).setDepth(depth));
 	}
 
 	/**

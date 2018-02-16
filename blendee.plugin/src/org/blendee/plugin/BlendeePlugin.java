@@ -29,7 +29,6 @@ import org.blendee.jdbc.TransactionFactory;
 import org.blendee.plugin.views.ClassBuilderView;
 import org.blendee.plugin.views.QueryEditorView;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.sql.RelationshipResolver;
 import org.blendee.support.Query;
 import org.blendee.util.BlendeeConstants;
 import org.blendee.util.FileColumnRepositoryFactory;
@@ -419,12 +418,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			}
 
 			{
-				String classString = properties.getProperty(Constants.RELATIONSHIP_RESOLVER_CLASS);
-				if (U.presents(classString))
-					init.put(BlendeeConstants.RELATIONSHIP_RESOLVER_CLASS, Class.forName(classString, false, loader));
-			}
-
-			{
 				String classString = properties.getProperty(Constants.COLUMN_REPOSITORY_FACTORY_CLASS);
 				if (U.presents(classString)) {
 					@SuppressWarnings("unchecked")
@@ -529,11 +522,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			project,
 			MetadataFactory.class,
 			properties.getProperty(Constants.METADATA_FACTORY_CLASS));
-		checkRequiredClass(
-			false,
-			project,
-			RelationshipResolver.class,
-			properties.getProperty(Constants.RELATIONSHIP_RESOLVER_CLASS));
 	}
 
 	public static IType findFiledType(IField field) throws JavaModelException {

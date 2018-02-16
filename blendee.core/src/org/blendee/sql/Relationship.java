@@ -44,8 +44,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 	private final CollectionMap<TablePath, Relationship> convertMap;
 
-	private final RelationshipResolver resolver;
-
 	private final DataTypeConverter converter;
 
 	private final List<TablePath> relationshipPath;
@@ -65,7 +63,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		TablePath path,
 		String id,
 		List<TablePath> relationshipPath,
-		RelationshipResolver resolver,
 		DataTypeConverter converter,
 		CollectionMap<TablePath, Relationship> convertMap) {
 		this.path = path;
@@ -84,8 +81,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		this.id = id;
 
 		this.relationshipPath = relationshipPath;
-
-		this.resolver = resolver;
 
 		this.converter = converter;
 
@@ -161,9 +156,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 
 			node = new TraversableNode();
 
-			//これ以上降るかを判定
-			if (!resolver.canTraverse(relationshipPath, path)) return node;
-
 			List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
 			myRelationshipPath.add(path);
 
@@ -183,7 +175,6 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 					element.getPrimaryKeyTable(),
 					id + "_" + relationshipFormat.format(i),
 					myRelationshipPath,
-					resolver,
 					converter,
 					convertMap);
 				foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);

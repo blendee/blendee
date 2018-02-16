@@ -1,19 +1,19 @@
 /*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
 
-import org.blendee.support.Row;
-import org.blendee.support.annotation.RowGetter;
-/*--*/import org.blendee.support.annotation.RowRelationship;/*--*/
-import org.blendee.support.annotation.RowSetter;
-import org.blendee.support.annotation.Resource;
 /*++{8}++*/
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
-import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.ValueExtractor;
+import org.blendee.sql.ValueExtractorsConfigure;
+import org.blendee.support.Row;
+import org.blendee.support.annotation.Resource;
+import org.blendee.support.annotation.RowGetter;
+/*--*/import org.blendee.support.annotation.RowRelationship;/*--*/
+import org.blendee.support.annotation.RowSetter;
 
 /**
  * 自動生成された '{'@link Row'}' の実装クラスです。
@@ -108,7 +108,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 * 参照先テーブル名 {0}<br>
 	 * 外部キー名 {1}<br>
 	 */
-	public static final String /*++{0}++*/_BY_/*++{1}++*/ = "{1}";
+	public static final String /*++{0}++*/$/*++{1}++*/ = "{1}";
 
 	/**
 	 * このレコードが参照しているレコードの Row を返します。<br>
@@ -120,7 +120,7 @@ extends /*++{3}++*//*--*/Object/*--*/
 	@RowRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)
 	public /*++{0}++*//*--*/RowBase/*--*/ /*++${3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
 		return new /*++{0}++*//*--*/RowBase/*--*/(
-			$data.getDataObject(/*++{0}++*/_BY_/*++{1}++*/));
+			$data.getDataObject(/*++{0}++*/$/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 
 /*==RowRelationshipPart==*/

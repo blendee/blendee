@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
+import /*++{0}.{1}$Manager.{1}$Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -42,51 +42,51 @@ import org.blendee.support.WhereQueryColumn;
  * パッケージ名 {0}
  * テーブル名 {1}
  */
-public class /*++{1}Query++*//*--*/QueryBase/*--*/
+public class /*++{1}$Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements Query /*++'++*/{/*++'++*/
 
-	private static final QueryContext<SelectQueryColumn> selectContext = (relationship, name) -> new SelectQueryColumn(relationship, name);
+	private static final QueryContext<SelectQueryColumn$> selectContext = (relationship, name) -> new SelectQueryColumn$(relationship, name);
 
-	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
+	private static final QueryContext<OrderByQueryColumn$> orderByContext = (relationship, name) -> new OrderByQueryColumn$(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn</*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>> whereContext =  QueryContext.newBuilder();
+	private static final QueryContext<WhereQueryColumn<LogicalOperators$>> whereContext =  QueryContext.newBuilder();
 
-	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+	private final /*++{1}$Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}$Manager()++*//*--*/ManagerBase()/*--*/;
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ implements LogicalOperators /*++'++*/{/*++'++*/
+	public class LogicalOperators$ implements LogicalOperators /*++'++*/{/*++'++*/
 
-		private /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/() /*++'++*/{}/*++'++*/
+		private LogicalOperators$() /*++'++*/{}/*++'++*/
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void> AND =
-			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+		public final QueryRelationship$<WhereQueryColumn</*++{1}$Query++*//*--*/QueryBase/*--*/.LogicalOperators$>, Void> AND =
+			new QueryRelationship$<>(
+				/*++{1}$Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void> OR =
-			new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+		public final QueryRelationship$<WhereQueryColumn</*++{1}$Query++*//*--*/QueryBase/*--*/.LogicalOperators$>, Void> OR =
+			new QueryRelationship$<>(
+				/*++{1}$Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.OR);
 	/*++'++*/}/*++'++*/
 
-	private final /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/ operators = new /*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/();
+	private final LogicalOperators$ operators = new LogicalOperators$();
 
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<QueryColumn, Void> rel =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+	public final QueryRelationship$<QueryColumn, Void> rel =
+		new QueryRelationship$<>(
 			this,
 			QueryContext.OTHER,
 			QueryCriteriaContext.NULL);
@@ -104,8 +104,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, Void> select =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+	private final QueryRelationship$<SelectQueryColumn$, Void> select =
+		new QueryRelationship$<>(
 			this,
 			selectContext,
 			QueryCriteriaContext.NULL);
@@ -113,8 +113,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, Void> orderBy =
-		new /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
+	private final QueryRelationship$<OrderByQueryColumn$, Void> orderBy =
+		new QueryRelationship$<>(
 			this,
 			orderByContext,
 			QueryCriteriaContext.NULL);
@@ -126,28 +126,28 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param id '{'@link Query'}' を使用するクラス内で一意の ID
 	 * @return このクラスのインスタンス
 	 */
-	public static /*++{1}Query++*//*--*/QueryBase/*--*/ of(String id) /*++'++*/{/*++'++*/
+	public static /*++{1}$Query++*//*--*/QueryBase/*--*/ of(String id) /*++'++*/{/*++'++*/
 		if (id == null || id.equals(""))
 			throw new IllegalArgumentException("id が空です");
 
-		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
+		return new /*++{1}$Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * 空のインスタンスを生成します。
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/() /*++'++*/{}/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/() /*++'++*/{}/*++'++*/
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
 	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの '{'@link Optimizer'}' に依存します。
 	 * @param optimizer SELECT 句を決定する
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/(Optimizer optimizer) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/(Optimizer optimizer) /*++'++*/{/*++'++*/
 		this.optimizer = Objects.requireNonNull(optimizer);
 	/*++'++*/}/*++'++*/
 
-	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
+	private /*++{1}$Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
 		optimizer = ContextManager.get(AnchorOptimizerFactory.class).getInstance(
 			id,
 			/*++{1}++*//*--*/RowBase/*--*/.$TABLE,
@@ -159,8 +159,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param function
 	 * @return この '{'@link Query'}'
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
-		SelectOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ SELECT(
+		SelectOfferFunction<QueryRelationship$<SelectQueryColumn$, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
@@ -175,8 +175,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param consumer
 	 * @return この '{'@link Query'}'
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
-		Consumer</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/./*++{1}LogicalOperators++*//*--*/ConcreteLogicalOperators/*--*/>, Void>> consumer) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ WHERE(
+		Consumer<QueryRelationship$<WhereQueryColumn</*++{1}$Query++*//*--*/QueryBase/*--*/.LogicalOperators$>, Void>> consumer) /*++'++*/{/*++'++*/
 		consumer.accept(operators.AND);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -186,8 +186,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param function
 	 * @return この '{'@link Query'}'
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
-		OrderByOfferFunction</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<OrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ ORDER_BY(
+		OrderByOfferFunction<QueryRelationship$<OrderByQueryColumn$, Void>> function) /*++'++*/{/*++'++*/
 		if (orderByClauseFunction == function) return this;
 
 		function.offer(orderBy);
@@ -206,7 +206,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ orderBy(OrderByClause clause) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ orderBy(OrderByClause clause) /*++'++*/{/*++'++*/
 		if (orderByClause != null)
 			throw new IllegalStateException("既に ORDER BY 句がセットされています");
 		orderByClause = clause;
@@ -219,7 +219,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param criteria AND 結合する新条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Criteria criteria) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ and(Criteria criteria) /*++'++*/{/*++'++*/
 		QueryCriteriaContext.AND.addCriteria(operators.AND, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -230,7 +230,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param criteria OR 結合する新条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Criteria criteria) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ or(Criteria criteria) /*++'++*/{/*++'++*/
 		QueryCriteriaContext.OR.addCriteria(operators.OR, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -241,7 +241,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param subquery AND 結合するサブクエリ条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryCriteriaContext.AND.addCriteria(operators.AND, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
@@ -252,7 +252,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param subquery OR 結合するサブクエリ条件
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
 		QueryCriteriaContext.OR.addCriteria(operators.OR, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
@@ -268,12 +268,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
+	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), criteria, orderByClause);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(QueryOption... options) /*++'++*/{/*++'++*/
+	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ execute(QueryOption... options) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), criteria, orderByClause, options);
 	/*++'++*/}/*++'++*/
 
@@ -331,7 +331,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 現在保持している WHERE 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCriteria() /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ resetCriteria() /*++'++*/{/*++'++*/
 		criteria = null;
 		return this;
 	/*++'++*/}/*++'++*/
@@ -340,7 +340,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 現在保持している SELECT 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetSelect() /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ resetSelect() /*++'++*/{/*++'++*/
 		optimizer = null;
 		selectClauseFunction = null;
 		return this;
@@ -350,7 +350,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 現在保持しているORDER BY 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrder() /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ resetOrder() /*++'++*/{/*++'++*/
 		orderByClause = null;
 		orderByClauseFunction = null;
 		return this;
@@ -360,7 +360,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 現在保持している条件、並び順をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
+	public /*++{1}$Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
 		criteria = null;
 		optimizer = null;
 		orderByClause = null;
@@ -373,10 +373,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 自動生成された '{'@link OneToManyExecutor'}' の実装クラスです。
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
-	public static class /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M>
+	public static class OneToManyExecutor$<M>
 		extends OneToManyExecutor</*++{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
-		private /*++{1}Executor++*//*--*/O2MExecutor/*--*/(QueryRelationship parent) /*++'++*/{/*++'++*/
+		private OneToManyExecutor$(QueryRelationship parent) /*++'++*/{/*++'++*/
 			super(parent);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
@@ -395,7 +395,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
-	private static Optional</*++{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
+	private static Optional</*++{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}$Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
 		if (!iterator.hasNext()) return Optional.empty();
 
 		/*++{1}++*//*--*/RowBase/*--*/ row = iterator.next();
@@ -411,10 +411,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
-	public static class /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, M>
+	public static class QueryRelationship$<T, M>
 		implements QueryRelationship, SelectOffer /*++'++*/{/*++'++*/
 
-		private final /*++{1}Query++*//*--*/QueryBase/*--*/ query$;
+		private final /*++{1}$Query++*//*--*/QueryBase/*--*/ query$;
 
 		private final QueryCriteriaContext context$;
 
@@ -428,7 +428,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/*--?--*/private final TablePath root$;/*--?--*/
 
-		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+		private final /*++{1}$Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}$Manager()++*//*--*/ManagerBase()/*--*/;
 
 /*++{3}++*/
 /*==ColumnPart1==*/
@@ -447,7 +447,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @param path$
 		 * @param root$
 		 */
-		public /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
+		public QueryRelationship$(
 			QueryContext<T> builder$,
 			QueryRelationship parent$,
 			String fkName$,
@@ -467,8 +467,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 /*==ColumnPart2==*/
 		/*++'++*/}/*++'++*/
 
-		private /*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/(
-			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+		private QueryRelationship$(
+			/*++{1}$Query++*//*--*/QueryBase/*--*/ query$,
 			QueryContext<T> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			this.query$ = query$;
@@ -490,14 +490,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * 外部キー名 {1}
 		 * @return {0} relationship
 		 */
-		public /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+		public /*++{0}$Query.++*/QueryRelationship$<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
 			if (root$ != null) /*++'++*/{/*++'++*/
-				return path$.equals(root$) ? null : new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
+				return path$.equals(root$) ? null : new /*++{0}$Query.++*/QueryRelationship$<>(
+					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
 			/*++'++*/}/*++'++*/
 
-			return new /*++{0}Query.{0}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<>(
-				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/_BY_/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
+			return new /*++{0}$Query.++*/QueryRelationship$<>(
+				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 		/*++'++*/}/*++'++*/
 /*==RelationshipPart==*/
 
@@ -505,9 +505,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
 		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
 		 */
-		public /*++{1}Executor++*//*--*/O2MExecutor/*--*/<M> intercept() /*++'++*/{/*++'++*/
+		public OneToManyExecutor$<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
-			return new /*++{1}Executor++*//*--*/O2MExecutor/*--*/<>(this);
+			return new OneToManyExecutor$/*--*/<>(this);
 		/*++'++*/}/*++'++*/
 
 		@Override
@@ -604,12 +604,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQueryColumn
-		extends AbstractSelectQueryColumn</*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<
-			SelectQueryColumn,
+	public static class SelectQueryColumn$
+		extends AbstractSelectQueryColumn<QueryRelationship$<
+			SelectQueryColumn$,
 			Void>> /*++'++*/{/*++'++*/
 
-		private SelectQueryColumn(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
+		private SelectQueryColumn$(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
@@ -617,13 +617,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQueryColumn
-		extends AbstractOrderQueryColumn<
-			/*++{1}Relationship++*//*--*/ConcreteQueryRelationship/*--*/<
-				OrderByQueryColumn,
-				Void>> /*++'++*/{/*++'++*/
+	public static class OrderByQueryColumn$
+		extends AbstractOrderQueryColumn<QueryRelationship$<
+			OrderByQueryColumn$,
+			Void>> /*++'++*/{/*++'++*/
 
-		private OrderByQueryColumn(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
+		private OrderByQueryColumn$(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/

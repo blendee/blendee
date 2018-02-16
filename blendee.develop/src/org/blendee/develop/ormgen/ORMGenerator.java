@@ -215,7 +215,7 @@ public class ORMGenerator {
 	 * @return コンパイル単位名
 	 */
 	public static String createRowManagerCompilationUnitName(String tableName) {
-		return tableName + "Manager.java";
+		return tableName + "$Manager.java";
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class ORMGenerator {
 	 * @return コンパイル単位名
 	 */
 	public static String createQueryCompilationUnitName(String tableName) {
-		return tableName + "Query.java";
+		return tableName + "$Query.java";
 	}
 
 	/**
@@ -398,7 +398,7 @@ public class ORMGenerator {
 
 				String tableName = childTablePath.getTableName();
 
-				String relationship = "$" + (checker.get(tableName) ? tableName + "_BY_" + foreignKey : tableName);
+				String relationship = "$" + (checker.get(tableName) ? tableName + "$" + foreignKey : tableName);
 
 				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
 

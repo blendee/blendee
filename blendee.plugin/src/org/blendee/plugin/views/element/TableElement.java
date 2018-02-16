@@ -1,9 +1,7 @@
 package org.blendee.plugin.views.element;
 
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.blendee.develop.ormgen.ORMGenerator;
 import org.blendee.jdbc.BlendeeManager;
@@ -140,26 +138,32 @@ public class TableElement extends PropertySourceElement {
 			plugin.useNumberClass(),
 			!plugin.notUseNullGuard());
 
-		Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(path);
-		Set<TablePath> tables = new LinkedHashSet<>();
+		RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+		Relationship relation = factory.getInstance(path);
+		LinkedList<TablePath> tables = new LinkedList<>();
 		//自身をセット
 		tables.add(relation.getTablePath());
-		//最大限テーブルの重複を排除してメモリを節約
-		collect(tables, relation);
 
-		tables.forEach(path -> {
-			if (!isAvailable(path)) build(generator, fragment, path);
-		});
+		while (tables.size() > 0) {
+			TablePath targetPath = tables.pop();
+			Relationship target = factory.getInstance(targetPath);
+			if (!isAvailable(targetPath)) build(generator, fragment, target);
+			collect(tables, target);
+
+			//大量のテーブルを一度に実行したときのための節約クリア
+			//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
+			factory.clearCache();
+		}
 	}
 
 	boolean isAvailable() {
 		return isAvailable(path);
 	}
 
-	private void collect(Set<TablePath> tables, Relationship relation) {
+	private void collect(List<TablePath> tables, Relationship relation) {
 		for (Relationship child : relation.getRelationships()) {
-			tables.add(child.getTablePath());
-			collect(tables, child);
+			TablePath childPath = child.getTablePath();
+			if (!isAvailable(childPath)) tables.add(childPath);
 		}
 	}
 
@@ -177,14 +181,8 @@ public class TableElement extends PropertySourceElement {
 		}
 	}
 
-	private void build(ORMGenerator generator, IPackageFragment fragment, TablePath path) {
-		RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
-
-		//節約のためクリア
-		//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
-		factory.clearCache();
-
-		Relationship relation = factory.getInstance(path);
+	private void build(ORMGenerator generator, IPackageFragment fragment, Relationship relation) {
+		TablePath path = relation.getTablePath();
 		String tableName = path.getTableName();
 		try {
 			CodeFormatter formatter = ToolFactory.createCodeFormatter(
@@ -207,6 +205,7 @@ public class TableElement extends PropertySourceElement {
 		}
 
 		parent.refresh(path);
+		Thread.yield();
 	}
 
 	private static String format(CodeFormatter formatter, String source) {

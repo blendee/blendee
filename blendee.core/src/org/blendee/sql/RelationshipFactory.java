@@ -25,29 +25,12 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, String> pathIDMap = new HashMap<>();
 
-	private RelationshipResolver relationshipResolver = ContextManager.get(DepthRelationshipResolver.class);
-
 	/**
 	 * このクラスのコンストラクタです。<br>
 	 * {@link ContextManager} 管理対象です。
 	 * @see ContextManager#get(Class)
 	 */
 	public RelationshipFactory() {}
-
-	/**
-	 * {@link RelationshipResolver} を生成するファクトリクラスを設定します。
-	 * @param relationshipResolverClass リゾルバクラス
-	 */
-	public synchronized void setRelationshipResolverClass(
-		Class<? extends RelationshipResolver> relationshipResolverClass) {
-		synchronized (lock) {
-			try {
-				this.relationshipResolver = relationshipResolverClass.getDeclaredConstructor().newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
 
 	/**
 	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。
@@ -139,11 +122,6 @@ public class RelationshipFactory implements ManagementSubject {
 
 		List<TablePath> relationshipPath = new LinkedList<>();
 
-		RelationshipResolver myRelationshipResolver;
-		synchronized (lock) {
-			myRelationshipResolver = relationshipResolver;
-		}
-
 		return new Relationship(
 			null,
 			null,
@@ -151,7 +129,6 @@ public class RelationshipFactory implements ManagementSubject {
 			path,
 			pathID,
 			relationshipPath,
-			myRelationshipResolver,
 			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<>());
 	}
