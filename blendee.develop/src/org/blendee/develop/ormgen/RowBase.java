@@ -117,9 +117,9 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 * 項目名 {2}<br>
 	 * @return 参照しているレコードの Row
 	 */
-	@RowRelationship(fk = "{1}", referenced = /*++{0}++*//*--*/RowBase/*--*/.class)
-	public /*++{0}++*//*--*/RowBase/*--*/ /*++${3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
-		return new /*++{0}++*//*--*/RowBase/*--*/(
+	@RowRelationship(fk = "{1}", referenced = /*++{4}.{0}++*//*--*/RowBase/*--*/.class)
+	public /*++{4}.{0}++*//*--*/RowBase/*--*/ /*++${3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
+		return new /*++{4}.{0}++*//*--*/RowBase/*--*/(
 			$data.getDataObject(/*++{0}++*/$/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 

@@ -96,40 +96,38 @@ public class TableElement extends PropertySourceElement {
 		return "テーブル";
 	}
 
+	private IPackageFragmentRoot packageRoot() {
+		IJavaProject project = BlendeePlugin.getDefault().getProject();
+		try {
+			IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
+			List<IPackageFragmentRoot> srcRoots = new LinkedList<IPackageFragmentRoot>();
+			for (IPackageFragmentRoot root : roots) {
+				if (root.getKind() != IPackageFragmentRoot.K_SOURCE) continue;
+				srcRoots.add(root);
+			}
+
+			if (srcRoots.size() != 1)
+				throw new IllegalStateException(
+					"パッケージを作成するためのパッケージルートが複数あります");
+
+			return srcRoots.get(0);
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	void build() {
 		BlendeePlugin plugin = BlendeePlugin.getDefault();
 
 		String packageName = plugin.getOutputPackage(parent.getName());
-		String packagepath = packageName.replace('.', '/');
 
-		IJavaProject project = plugin.getProject();
+		IPackageFragmentRoot fragmentRoot = packageRoot();
 
-		IPackageFragment fragment;
-		try {
-			IJavaElement element = project.findElement(new Path(packagepath));
-			if (!(element instanceof IPackageFragment)) {
-				IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
-				List<IPackageFragmentRoot> srcRoots = new LinkedList<IPackageFragmentRoot>();
-				for (IPackageFragmentRoot root : roots) {
-					if (root.getKind() != IPackageFragmentRoot.K_SOURCE) continue;
-					srcRoots.add(root);
-				}
-
-				if (srcRoots.size() != 1)
-					throw new IllegalStateException(
-						"パッケージ " + packageName + " を作成するためのパッケージルートが複数あります");
-
-				fragment = srcRoots.get(0).createPackageFragment(packageName, false, null);
-			} else {
-				fragment = (IPackageFragment) element;
-			}
-		} catch (JavaModelException e) {
-			throw new IllegalStateException(e);
-		}
+		IPackageFragment baseFragment = getPackage(fragmentRoot, packageName);
 
 		ORMGenerator generator = new ORMGenerator(
 			ContextManager.get(BlendeeManager.class).getConnection(),
-			fragment.getElementName(),
+			baseFragment.getElementName(),
 			parent.getName(),
 			plugin.getRowManagerParentClass(),
 			plugin.getRowParentClass(),
@@ -147,7 +145,11 @@ public class TableElement extends PropertySourceElement {
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
 			Relationship target = factory.getInstance(targetPath);
-			if (!isAvailable(targetPath)) build(generator, fragment, target);
+			if (!isAvailable(targetPath)) {
+				IPackageFragment myPackage = getPackage(fragmentRoot, packageName + "." + targetPath.getTableName());
+				build(generator, myPackage, target);
+			}
+
 			collect(tables, target);
 
 			//大量のテーブルを一度に実行したときのための節約クリア
@@ -167,18 +169,31 @@ public class TableElement extends PropertySourceElement {
 		}
 	}
 
-	private boolean isAvailable(TablePath path) {
-		String typeName = String.join(
-			".",
-			new String[] {
-				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
-				path.getTableName() });
+	private IPackageFragment getPackage(IPackageFragmentRoot fragmentRoot, String packageName) {
+		IPackageFragment fragment = findPackage(packageName);
+		if (fragment != null) return fragment;
+
 		try {
-			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
-			return false;
+			return fragmentRoot.createPackageFragment(packageName, false, null);
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private IPackageFragment findPackage(String packageName) {
+		String packagePath = packageName.replace('.', '/');
+		try {
+			IJavaElement element = BlendeePlugin.getDefault().getProject().findElement(new Path(packagePath));
+			if (element instanceof IPackageFragment) return (IPackageFragment) element;
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
+
+		return null;
+	}
+
+	private boolean isAvailable(TablePath path) {
+		return findPackage(BlendeePlugin.getDefault().getOutputPackage(parent.getName()) + "." + path.getTableName()) != null;
 	}
 
 	private void build(ORMGenerator generator, IPackageFragment fragment, Relationship relation) {

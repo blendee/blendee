@@ -66,7 +66,7 @@ public class ORMGenerator {
 
 	private final Metadata metadata;
 
-	private final String packageName;
+	private final String rootPackageName;
 
 	private final String schemaName;
 
@@ -143,7 +143,7 @@ public class ORMGenerator {
 	/**
 	 * インスタンスを生成します。
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
-	 * @param packageName RowManager クラス、 Row クラスが属するパッケージ名
+	 * @param rootPackageName 各自動生成クラスが属するパッケージの親パッケージ
 	 * @param schemaName テーブルを読み込む対象となるスキーマ
 	 * @param rowManagerSuperclass RowManager クラスの親クラス
 	 * @param rowSuperclass Row クラスの親クラス
@@ -154,7 +154,7 @@ public class ORMGenerator {
 	 */
 	public ORMGenerator(
 		Metadata metadata,
-		String packageName,
+		String rootPackageName,
 		String schemaName,
 		Class<?> rowManagerSuperclass,
 		Class<?> rowSuperclass,
@@ -163,7 +163,7 @@ public class ORMGenerator {
 		boolean useNumberClass,
 		boolean useNullGuard) {
 		this.metadata = Objects.requireNonNull(metadata);
-		this.packageName = Objects.requireNonNull(packageName);
+		this.rootPackageName = Objects.requireNonNull(rootPackageName);
 
 		this.schemaName = schemaName;
 		this.managerSuperclass = rowManagerSuperclass != null ? rowManagerSuperclass : Object.class;
@@ -183,14 +183,18 @@ public class ORMGenerator {
 	 * @throws IOException ファイル書き込みに失敗した場合
 	 */
 	public void build(File home, Charset srcCharset) throws IOException {
-		File packageDir = new File(home, String.join("/", packageName.split("\\.")));
-		packageDir.mkdirs();
+		File rootPackageDir = new File(home, String.join("/", rootPackageName.split("\\.")));
+		rootPackageDir.mkdirs();
 
 		TablePath[] tables = metadata.getTables(schemaName);
 		for (TablePath table : tables) {
+
 			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(table);
 
 			String tableName = relation.getTablePath().getTableName();
+
+			File packageDir = new File(rootPackageDir, tableName);
+			packageDir.mkdir();
 
 			write(
 				new File(packageDir, createRowManagerCompilationUnitName(tableName)),
@@ -248,7 +252,7 @@ public class ORMGenerator {
 
 		return codeFormatter.formatRowManager(
 			managerTemplate,
-			packageName,
+			packageName(target),
 			target.getTableName(),
 			managerSuperclass.getName(),
 			buildTableComment(metadata, target));
@@ -324,7 +328,8 @@ public class ORMGenerator {
 				CrossReference crossReference = child.getCrossReference();
 				String foreignKey = crossReference.getForeignKeyName();
 
-				String childTableName = child.getTablePath().getTableName();
+				TablePath childPath = child.getTablePath();
+				String childTableName = childPath.getTableName();
 				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
 
 				list.add(
@@ -334,7 +339,7 @@ public class ORMGenerator {
 						foreignKey,
 						String.join(", ", crossReference.getForeignKeyColumnNames()),
 						methodName,
-						tableName));
+						packageName(childPath)));
 			}
 
 			if (list.size() > 0) importPart.add(buildImportPart(RowRelationship.class));
@@ -344,7 +349,7 @@ public class ORMGenerator {
 
 		return codeFormatter.formatRow(
 			rowTemplate,
-			packageName,
+			packageName(target),
 			schemaName,
 			tableName,
 			rowSuperclass.getName(),
@@ -363,7 +368,11 @@ public class ORMGenerator {
 	public String buildQuery(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
-		String rootTableName = relation.getTablePath().getTableName();
+		TablePath target = relation.getTablePath();
+		String rootTableName = target.getTableName();
+
+		String packageName = packageName(target);
+
 		String columnPart1, columnPart2;
 		{
 			List<String> list1 = new LinkedList<>();
@@ -402,6 +411,8 @@ public class ORMGenerator {
 
 				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
 
+				String childPackageName = packageName(childTablePath);
+				
 				list.add(
 					codeFormatter.formatQueryRelationshipPart(
 						queryRelationshipPartTemplate,
@@ -410,7 +421,8 @@ public class ORMGenerator {
 						relationship,
 						rootTableName,
 						typeParam,
-						packageName));
+						packageName,
+						childPackageName));
 			}
 
 			myQueryTemplate = erase(queryTemplate, list.isEmpty());
@@ -434,6 +446,10 @@ public class ORMGenerator {
 	@Override
 	public String toString() {
 		return U.toString(this);
+	}
+
+	private String packageName(TablePath table) {
+		return rootPackageName + "." + table.getTableName();
 	}
 
 	private static String buildAnnotationPart(

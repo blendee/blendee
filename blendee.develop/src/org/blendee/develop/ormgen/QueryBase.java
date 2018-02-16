@@ -490,14 +490,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * 外部キー名 {1}
 		 * @return {0} relationship
 		 */
-		public /*++{0}Query.++*/QueryRelationship$<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+		public /*++{6}.{0}Query.++*/QueryRelationship$<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
 			if (root$ != null) /*++'++*/{/*++'++*/
-				return path$.equals(root$) ? null : new /*++{0}Query.++*/QueryRelationship$<>(
-					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
+				return new /*++{6}.{0}Query.++*/QueryRelationship$<>(
+					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
 			/*++'++*/}/*++'++*/
 
-			return new /*++{0}Query.++*/QueryRelationship$<>(
-				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
+			return new /*++{6}.{0}Query.++*/QueryRelationship$<>(
+				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 		/*++'++*/}/*++'++*/
 /*==RelationshipPart==*/
 
