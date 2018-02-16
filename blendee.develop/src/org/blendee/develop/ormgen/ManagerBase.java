@@ -17,19 +17,19 @@ import org.blendee.support.RowManager;
  * 自動生成された '{'@link RowManager'}' の実装クラスです。
 {3}
  */
-public class /*++{1}$Manager++*//*--*/ManagerBase/*--*/
+public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
 	implements RowManager</*++{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
 	/**
-	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}$Iterator'}' として返します。<br>
+	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
 	 * @return '{'@link RowIterator'}'
 	 */
-	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ select(
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
@@ -41,14 +41,14 @@ public class /*++{1}$Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}$Iterator'}' として返します。<br>
+	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。<br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @return '{'@link RowIterator'}'
 	 */
-	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ select(
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Criteria criteria,
 		OrderByClause order) /*++'++*/{/*++'++*/
 		return select(
@@ -59,19 +59,19 @@ public class /*++{1}$Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}$Iterator'}' として返します。
+	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
 	 * @return '{'@link RowIterator'}'
 	 */
-	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ select(
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
 		QueryOption... options) /*++'++*/{/*++'++*/
-		return new /*++{1}$Iterator++*//*--*/IteratorBase/*--*/(new DataAccessHelper().getDataObjects(
+		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(new DataAccessHelper().getDataObjects(
 			optimizer,
 			criteria,
 			order,
@@ -79,14 +79,14 @@ public class /*++{1}$Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}$Iterator'}' として返します。<br>
+	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
 	 * '{'@link RowLockOption'}' には '{'@link RowLockOption#NONE'}' が使用されます。
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
 	 * @return '{'@link RowIterator'}'
 	 */
-	public /*++{1}$Iterator++*//*--*/IteratorBase/*--*/ select(
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order) /*++'++*/{/*++'++*/
@@ -111,14 +111,14 @@ public class /*++{1}$Manager++*//*--*/ManagerBase/*--*/
 	/**
 	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
-	public class /*++{1}$Iterator++*//*--*/IteratorBase/*--*/
+	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
 		extends /*++RowIterator<{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。
 		 * @param iterator
 		 */
-		private /*++{1}$Iterator++*//*--*/IteratorBase/*--*/(
+		private /*++{1}Iterator++*//*--*/IteratorBase/*--*/(
 			DataObjectIterator iterator) /*++'++*/{/*++'++*/
 			super(iterator);
 		/*++'++*/}/*++'++*/
