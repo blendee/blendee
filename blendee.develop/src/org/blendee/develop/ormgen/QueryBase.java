@@ -102,7 +102,7 @@ public class /*++{1}$Query++*//*--*/QueryBase/*--*/
 	private OrderByOfferFunction<?> orderByClauseFunction;
 
 	/**
-	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
+	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
 	private final QueryRelationship$<SelectQueryColumn$, Void> select =
 		new QueryRelationship$<>(
