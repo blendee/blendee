@@ -64,8 +64,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final QueryRelationship$<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND =
-			new QueryRelationship$<>(
+		public final QRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND =
+			new QRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.AND);
@@ -73,8 +73,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final QueryRelationship$<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR =
-			new QueryRelationship$<>(
+		public final QRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR =
+			new QRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.OR);
@@ -85,8 +85,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final QueryRelationship$<QueryColumn, Void> rel =
-		new QueryRelationship$<>(
+	public final QRelationship<QueryColumn, Void> rel =
+		new QRelationship<>(
 			this,
 			QueryContext.OTHER,
 			QueryCriteriaContext.NULL);
@@ -104,8 +104,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final QueryRelationship$<SelectQueryColumn, Void> select =
-		new QueryRelationship$<>(
+	private final QRelationship<SelectQueryColumn, Void> select =
+		new QRelationship<>(
 			this,
 			selectContext,
 			QueryCriteriaContext.NULL);
@@ -113,8 +113,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final QueryRelationship$<OrderByQueryColumn, Void> orderBy =
-		new QueryRelationship$<>(
+	private final QRelationship<OrderByQueryColumn, Void> orderBy =
+		new QRelationship<>(
 			this,
 			orderByContext,
 			QueryCriteriaContext.NULL);
@@ -160,7 +160,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
-		SelectOfferFunction<QueryRelationship$<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		SelectOfferFunction<QRelationship<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
@@ -176,7 +176,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
-		Consumer<QueryRelationship$<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		Consumer<QRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		consumer.accept(operators.AND);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -187,7 +187,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
-		OrderByOfferFunction<QueryRelationship$<OrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		OrderByOfferFunction<QRelationship<OrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (orderByClauseFunction == function) return this;
 
 		function.offer(orderBy);
@@ -411,7 +411,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
-	public static class QueryRelationship$<T, M>
+	public static class QRelationship<T, M>
 		implements QueryRelationship, SelectOffer /*++'++*/{/*++'++*/
 
 		private final /*++{1}Query++*//*--*/QueryBase/*--*/ query$;
@@ -447,7 +447,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @param path$
 		 * @param root$
 		 */
-		public QueryRelationship$(
+		public QRelationship(
 			QueryContext<T> builder$,
 			QueryRelationship parent$,
 			String fkName$,
@@ -467,7 +467,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 /*==ColumnPart2==*/
 		/*++'++*/}/*++'++*/
 
-		private QueryRelationship$(
+		private QRelationship(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
 			QueryContext<T> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
@@ -490,13 +490,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * 外部キー名 {1}
 		 * @return {0} relationship
 		 */
-		public /*++{6}.{0}Query.++*/QueryRelationship$<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+		public /*++{6}.{0}Query.++*/QRelationship<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
 			if (root$ != null) /*++'++*/{/*++'++*/
-				return new /*++{6}.{0}Query.++*/QueryRelationship$<>(
+				return new /*++{6}.{0}Query.++*/QRelationship<>(
 					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
 			/*++'++*/}/*++'++*/
 
-			return new /*++{6}.{0}Query.++*/QueryRelationship$<>(
+			return new /*++{6}.{0}Query.++*/QRelationship<>(
 				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 		/*++'++*/}/*++'++*/
 /*==RelationshipPart==*/
@@ -605,7 +605,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * SELECT 句用
 	 */
 	public static class SelectQueryColumn
-		extends AbstractSelectQueryColumn<QueryRelationship$<
+		extends AbstractSelectQueryColumn<QRelationship<
 			SelectQueryColumn,
 			Void>> /*++'++*/{/*++'++*/
 
@@ -618,7 +618,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQueryColumn
-		extends AbstractOrderQueryColumn<QueryRelationship$<
+		extends AbstractOrderQueryColumn<QRelationship<
 			OrderByQueryColumn,
 			Void>> /*++'++*/{/*++'++*/
 
