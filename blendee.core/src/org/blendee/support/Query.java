@@ -24,8 +24,14 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	Relationship getRootRealtionship();
 
 	/**
-	 * この Query の {@link LogicalOperators} を返します。
+	 * この Query の WHERE 句用 {@link LogicalOperators} を返します。
 	 * @return {@link LogicalOperators}
 	 */
-	LogicalOperators getLogicalOperators();
+	LogicalOperators getWhereLogicalOperators();
+
+	/**
+	 * この Query の HAVING 句用 {@link LogicalOperators} を返します。
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators getHavingLogicalOperators();
 }

@@ -23,18 +23,27 @@ public interface QueryRelationship {
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 * @return SELECT 句
 	 */
-	default SelectOffers as(SelectOffer... offers) {
+	default SelectOffers of(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		Arrays.asList(offers).forEach(offer -> offer.accept(visitor));
 		return visitor;
 	}
 
 	/**
-	 * {@link SelectOfferFunction} 内で使用する SELECT 句生成用メソッドです。<br>
-	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
-	 * @param offers SELECT 句に含めるテーブルおよびカラム
+	 * {@link GroupByOfferFunction} 内で使用する GROUP BY 句生成用メソッドです。<br>
+	 * パラメータの項目と順序を GROUP BY 句に割り当てます。
+	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
 	 */
-	default void as(OrderByOffer... offers) {
+	default void of(GroupByOffer... offers) {
+		Arrays.asList(offers).forEach(offer -> offer.offer());
+	}
+
+	/**
+	 * {@link OrderByOfferFunction} 内で使用する ORDER BY 句生成用メソッドです。<br>
+	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
+	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
+	 */
+	default void of(OrderByOffer... offers) {
 		Arrays.asList(offers).forEach(offer -> offer.offer());
 	}
 

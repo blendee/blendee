@@ -18,7 +18,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.support.AbstractOrderQueryColumn;
+import org.blendee.support.AbstractOrderByQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
@@ -48,7 +48,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn<GenericLogicalOperators>> whereContext = QueryContext.newBuilder();
+	private static final QueryContext<WhereQueryColumn<GenericLogicalOperators>> whereContext = QueryContext.newWhereBuilder();
 
 	private final TablePath tablePath;
 
@@ -265,8 +265,13 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public LogicalOperators getLogicalOperators() {
+	public LogicalOperators getWhereLogicalOperators() {
 		return operators;
+	}
+
+	@Override
+	public LogicalOperators getHavingLogicalOperators() {
+		return null;
 	}
 
 	@Override
@@ -611,7 +616,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQueryColumn
-		extends AbstractOrderQueryColumn<GenericRelationship<OrderByQueryColumn, Void>> {
+		extends AbstractOrderByQueryColumn<GenericRelationship<OrderByQueryColumn, Void>> {
 
 		private OrderByQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);

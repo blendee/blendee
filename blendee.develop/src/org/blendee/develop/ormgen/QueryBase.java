@@ -18,12 +18,14 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.support.AbstractOrderQueryColumn;
+import org.blendee.support.AbstractOrderByQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
 /*++{6}++*/
+import org.blendee.support.AliasOffer;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
+import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
@@ -36,6 +38,7 @@ import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
+import org.blendee.support.HavingQueryColumn;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -48,9 +51,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<SelectQueryColumn> selectContext = (relationship, name) -> new SelectQueryColumn(relationship, name);
 
+	private static final QueryContext<GroupByQueryColumn> groupByContext = (relationship, name) -> new GroupByQueryColumn(relationship, name);
+
 	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext =  QueryContext.newBuilder();
+	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext =  QueryContext.newWhereBuilder();
+
+	private static final QueryContext<HavingQueryColumn<HavingLogicalOperators>> havingContext =  QueryContext.newHavingBuilder();
 
 	private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -80,7 +87,35 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				QueryCriteriaContext.OR);
 	/*++'++*/}/*++'++*/
 
-	private final WhereLogicalOperators operators = new WhereLogicalOperators();
+	/**
+	 * HAVING 句 で使用する AND, OR です。
+	 */
+	public class HavingLogicalOperators implements LogicalOperators /*++'++*/{/*++'++*/
+
+		private HavingLogicalOperators() /*++'++*/{}/*++'++*/
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final QRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> AND =
+			new QRelationship<>(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				havingContext,
+				QueryCriteriaContext.AND);
+
+		/**
+		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final QRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> OR =
+			new QRelationship<>(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				havingContext,
+				QueryCriteriaContext.OR);
+	/*++'++*/}/*++'++*/
+
+	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
+
+	private final HavingLogicalOperators havingOperators = new HavingLogicalOperators();
 
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
@@ -99,6 +134,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private SelectOfferFunction<?> selectClauseFunction;
 
+	private GroupByOfferFunction<?> groupByClauseFunction;
+
 	private OrderByOfferFunction<?> orderByClauseFunction;
 
 	/**
@@ -108,6 +145,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		new QRelationship<>(
 			this,
 			selectContext,
+			QueryCriteriaContext.NULL);
+
+	/**
+	 * GROUP BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
+	 */
+	private final QRelationship<GroupByQueryColumn, Void> groupBy =
+		new QRelationship<>(
+			this,
+			groupByContext,
 			QueryCriteriaContext.NULL);
 
 	/**
@@ -171,13 +217,38 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * GROUP BY 句を記述します。
+	 * @param function
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ GROUP_BY(
+		GroupByOfferFunction<QRelationship<GroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		if (orderByClauseFunction == function) return this;
+
+		function.offer(groupBy);
+		groupByClauseFunction = function;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * WHERE 句を記述します。
 	 * @param consumer
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
 		Consumer<QRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
-		consumer.accept(operators.AND);
+		consumer.accept(whereOperators.AND);
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * HAVING 句を記述します。
+	 * @param consumer
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
+		Consumer<QRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		consumer.accept(havingOperators.AND);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -220,7 +291,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Criteria criteria) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.AND.addCriteria(operators.AND, criteria);
+		QueryCriteriaContext.AND.addCriteria(whereOperators.AND, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -231,7 +302,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Criteria criteria) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.OR.addCriteria(operators.OR, criteria);
+		QueryCriteriaContext.OR.addCriteria(whereOperators.OR, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -242,7 +313,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.AND.addCriteria(operators.AND, subquery.createCriteria(this));
+		QueryCriteriaContext.AND.addCriteria(whereOperators.AND, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -253,7 +324,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.OR.addCriteria(operators.OR, subquery.createCriteria(this));
+		QueryCriteriaContext.OR.addCriteria(whereOperators.OR, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -263,8 +334,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public LogicalOperators getLogicalOperators() /*++'++*/{/*++'++*/
-		return operators;
+	public LogicalOperators getWhereLogicalOperators() /*++'++*/{/*++'++*/
+		return whereOperators;
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public LogicalOperators getHavingLogicalOperators() /*++'++*/{/*++'++*/
+		return havingOperators;
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -347,10 +423,20 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 現在保持しているORDER BY 句をリセットします。
+	 * 現在保持している GROUP BY 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrder() /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetGroupBy() /*++'++*/{/*++'++*/
+		//groupByClause = null;
+		groupByClauseFunction = null;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 現在保持している ORDER BY 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrderBy() /*++'++*/{/*++'++*/
 		orderByClause = null;
 		orderByClauseFunction = null;
 		return this;
@@ -365,6 +451,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		optimizer = null;
 		orderByClause = null;
 		selectClauseFunction = null;
+		groupByClauseFunction = null;
 		orderByClauseFunction = null;
 		return this;
 	/*++'++*/}/*++'++*/
@@ -599,6 +686,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public int hashCode() /*++'++*/{/*++'++*/
 			return getRelationship().hashCode();
 		/*++'++*/}/*++'++*/
+
+
+		public AliasOffer MAX(SelectQueryColumn column) /*++'++*/{/*++'++*/
+			return null;
+		/*++'++*/}/*++'++*/
+
+		public OrderByQueryColumn MAX(OrderByQueryColumn column) /*++'++*/{/*++'++*/
+			return null;
+		/*++'++*/}/*++'++*/
+
+		public <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) /*++'++*/{/*++'++*/
+			return null;
+		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -615,10 +715,23 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * GROUP BY 句用
+	 */
+	public static class GroupByQueryColumn
+		extends AbstractOrderByQueryColumn<QRelationship<
+			GroupByQueryColumn,
+			Void>> /*++'++*/{/*++'++*/
+
+		private GroupByQueryColumn(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
+			super(relationship, name);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQueryColumn
-		extends AbstractOrderQueryColumn<QRelationship<
+		extends AbstractOrderByQueryColumn<QRelationship<
 			OrderByQueryColumn,
 			Void>> /*++'++*/{/*++'++*/
 
