@@ -186,6 +186,15 @@ public class ORMGenerator {
 		File rootPackageDir = new File(home, String.join("/", rootPackageName.split("\\.")));
 		rootPackageDir.mkdirs();
 
+		File rowPackageDir = new File(rootPackageDir, "row");
+		rowPackageDir.mkdir();
+
+		File managerPackageDir = new File(rootPackageDir, "manager");
+		managerPackageDir.mkdir();
+
+		File queryPackageDir = new File(rootPackageDir, "query");
+		queryPackageDir.mkdir();
+
 		TablePath[] tables = metadata.getTables(schemaName);
 		for (TablePath table : tables) {
 
@@ -193,21 +202,18 @@ public class ORMGenerator {
 
 			String tableName = relation.getTablePath().getTableName();
 
-			File packageDir = new File(rootPackageDir, tableName);
-			packageDir.mkdir();
-
 			write(
-				new File(packageDir, createRowManagerCompilationUnitName(tableName)),
+				new File(rowPackageDir, createRowManagerCompilationUnitName(tableName)),
 				buildRowManager(relation),
 				srcCharset);
 
 			write(
-				new File(packageDir, createRowCompilationUnitName(tableName)),
+				new File(managerPackageDir, createRowCompilationUnitName(tableName)),
 				buildRow(relation),
 				srcCharset);
 
 			write(
-				new File(packageDir, createQueryCompilationUnitName(tableName)),
+				new File(queryPackageDir, createQueryCompilationUnitName(tableName)),
 				buildQuery(relation),
 				srcCharset);
 		}
@@ -252,7 +258,7 @@ public class ORMGenerator {
 
 		return codeFormatter.formatRowManager(
 			managerTemplate,
-			packageName(target),
+			rootPackageName,
 			target.getTableName(),
 			managerSuperclass.getName(),
 			buildTableComment(metadata, target));
@@ -339,7 +345,7 @@ public class ORMGenerator {
 						foreignKey,
 						String.join(", ", crossReference.getForeignKeyColumnNames()),
 						methodName,
-						packageName(childPath)));
+						rootPackageName));
 			}
 
 			if (list.size() > 0) importPart.add(buildImportPart(RowRelationship.class));
@@ -349,7 +355,7 @@ public class ORMGenerator {
 
 		return codeFormatter.formatRow(
 			rowTemplate,
-			packageName(target),
+			rootPackageName,
 			schemaName,
 			tableName,
 			rowSuperclass.getName(),
@@ -371,8 +377,6 @@ public class ORMGenerator {
 		TablePath target = relation.getTablePath();
 		String rootTableName = target.getTableName();
 
-		String packageName = packageName(target);
-
 		String columnPart1, columnPart2;
 		{
 			List<String> list1 = new LinkedList<>();
@@ -388,7 +392,7 @@ public class ORMGenerator {
 						queryColumnPart2Template,
 						column.getName(),
 						rootTableName,
-						packageName));
+						rootPackageName));
 			}
 
 			columnPart1 = String.join("", list1);
@@ -409,10 +413,8 @@ public class ORMGenerator {
 
 				String relationship = "$" + (checker.get(tableName) ? tableName + "$" + foreignKey : tableName);
 
-				String typeParam = Many.class.getSimpleName() + "<" + rootTableName + ", M>";
+				String typeParam = Many.class.getSimpleName() + "<" + rootPackageName + ".row." + rootTableName + ", M>";
 
-				String childPackageName = packageName(childTablePath);
-				
 				list.add(
 					codeFormatter.formatQueryRelationshipPart(
 						queryRelationshipPartTemplate,
@@ -421,8 +423,7 @@ public class ORMGenerator {
 						relationship,
 						rootTableName,
 						typeParam,
-						packageName,
-						childPackageName));
+						rootPackageName));
 			}
 
 			myQueryTemplate = erase(queryTemplate, list.isEmpty());
@@ -434,7 +435,7 @@ public class ORMGenerator {
 
 		return codeFormatter.formatQuery(
 			myQueryTemplate,
-			packageName,
+			rootPackageName,
 			tableName,
 			querySuperclass.getName(),
 			columnPart1,
@@ -446,10 +447,6 @@ public class ORMGenerator {
 	@Override
 	public String toString() {
 		return U.toString(this);
-	}
-
-	private String packageName(TablePath table) {
-		return rootPackageName + "." + table.getTableName();
 	}
 
 	private static String buildAnnotationPart(

@@ -142,13 +142,15 @@ public class TableElement extends PropertySourceElement {
 		//自身をセット
 		tables.add(relation.getTablePath());
 
+		IPackageFragment rowPackage = getPackage(fragmentRoot, packageName + ".row");
+		IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + ".manager");
+		IPackageFragment queryPackage = getPackage(fragmentRoot, packageName + ".query");
+
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
 			Relationship target = factory.getInstance(targetPath);
-			if (!isAvailable(targetPath)) {
-				IPackageFragment myPackage = getPackage(fragmentRoot, packageName + "." + targetPath.getTableName());
-				build(generator, myPackage, target);
-			}
+
+			build(generator, rowPackage, managerPackage, queryPackage, target);
 
 			collect(tables, target);
 
@@ -193,10 +195,26 @@ public class TableElement extends PropertySourceElement {
 	}
 
 	private boolean isAvailable(TablePath path) {
-		return findPackage(BlendeePlugin.getDefault().getOutputPackage(parent.getName()) + "." + path.getTableName()) != null;
+		String typeName = String.join(
+			".",
+			new String[] {
+				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
+				"row",
+				path.getTableName() });
+		try {
+			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
+			return false;
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
-	private void build(ORMGenerator generator, IPackageFragment fragment, Relationship relation) {
+	private void build(
+		ORMGenerator generator,
+		IPackageFragment rowPackage,
+		IPackageFragment managerPackage,
+		IPackageFragment queryPackage,
+		Relationship relation) {
 		TablePath path = relation.getTablePath();
 		String tableName = path.getTableName();
 		try {
@@ -204,16 +222,16 @@ public class TableElement extends PropertySourceElement {
 				BlendeePlugin.getDefault().getProject().getOptions(true));
 
 			createSource(
-				ORMGenerator.createRowManagerCompilationUnitName(tableName),
-				fragment,
-				format(formatter, generator.buildRowManager(relation)));
-			createSource(
 				ORMGenerator.createRowCompilationUnitName(tableName),
-				fragment,
+				rowPackage,
 				format(formatter, generator.buildRow(relation)));
 			createSource(
+				ORMGenerator.createRowManagerCompilationUnitName(tableName),
+				managerPackage,
+				format(formatter, generator.buildRowManager(relation)));
+			createSource(
 				ORMGenerator.createQueryCompilationUnitName(tableName),
-				fragment,
+				queryPackage,
 				format(formatter, generator.buildQuery(relation)));
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);

@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++{0}.row++*//*--*/org.blendee.develop.ormgen/*--*/;
 
 /*++{8}++*/
 import org.blendee.jdbc.ContextManager;
@@ -117,9 +117,9 @@ extends /*++{3}++*//*--*/Object/*--*/
 	 * 項目名 {2}<br>
 	 * @return 参照しているレコードの Row
 	 */
-	@RowRelationship(fk = "{1}", referenced = /*++{4}.{0}++*//*--*/RowBase/*--*/.class)
-	public /*++{4}.{0}++*//*--*/RowBase/*--*/ /*++${3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
-		return new /*++{4}.{0}++*//*--*/RowBase/*--*/(
+	@RowRelationship(fk = "{1}", referenced = /*++{4}.row.{0}++*//*--*/RowBase/*--*/.class)
+	public /*++{4}.row.{0}++*//*--*/RowBase/*--*/ /*++${3}++*//*--*/getRelationship/*--*/() /*++'++*/{/*++'++*/
+		return new /*++{4}.row.{0}++*//*--*/RowBase/*--*/(
 			$data.getDataObject(/*++{0}++*/$/*++{1}++*/));
 	/*++'++*/}/*++'++*/
 

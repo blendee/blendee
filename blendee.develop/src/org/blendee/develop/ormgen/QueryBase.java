@@ -1,10 +1,10 @@
-/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++{0}.query++*//*--*/org.blendee.develop.ormgen/*--*/;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import /*++{0}.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
+import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -52,7 +52,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext =  QueryContext.newBuilder();
 
-	private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+	private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
@@ -150,7 +150,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
 		optimizer = ContextManager.get(AnchorOptimizerFactory.class).getInstance(
 			id,
-			/*++{1}++*//*--*/RowBase/*--*/.$TABLE,
+			/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
 			using);
 	/*++'++*/}/*++'++*/
 
@@ -163,7 +163,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		SelectOfferFunction<QRelationship<SelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
-		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
+		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
 		function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
 		selectClauseFunction = function;
@@ -278,42 +278,42 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
 		return getUnique(execute());
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
 		return getUnique(execute(options));
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
@@ -374,7 +374,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class O2MExecutor<M>
-		extends OneToManyExecutor</*++{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
+		extends OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
 		private O2MExecutor(QueryRelationship parent) /*++'++*/{/*++'++*/
 			super(parent);
@@ -383,7 +383,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
 		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(/*++{1}++*//*--*/RowBase/*--*/.$TABLE);
+		optimizer = new SimpleOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
 		return optimizer;
 	/*++'++*/}/*++'++*/
 
@@ -395,10 +395,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
-	private static Optional</*++{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
+	private static Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
 		if (!iterator.hasNext()) return Optional.empty();
 
-		/*++{1}++*//*--*/RowBase/*--*/ row = iterator.next();
+		/*++{0}.row.{1}++*//*--*/RowBase/*--*/ row = iterator.next();
 
 		if (iterator.hasNext()) throw new NotUniqueException();
 
@@ -428,7 +428,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/*--?--*/private final TablePath root$;/*--?--*/
 
-		private final /*++{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{1}Manager()++*//*--*/ManagerBase()/*--*/;
+		private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
 /*++{3}++*/
 /*==ColumnPart1==*/
@@ -463,7 +463,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 /*++{4}++*/
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder$.buildQueryColumn(
-				this, /*++{2}.{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
+				this, /*++{2}.row.{1}++*//*--*/RowBase/*--*/./*++{0}++*//*--*/columnName/*--*/);
 /*==ColumnPart2==*/
 		/*++'++*/}/*++'++*/
 
@@ -476,7 +476,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
-			path$ = /*++{0}.{1}++*//*--*/RowBase/*--*/.$TABLE;
+			path$ = /*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE;
 			/*--?--*/root$ = null;/*--?--*/
 
 			/*--*/columnName = null;/*--*/
@@ -490,14 +490,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * 外部キー名 {1}
 		 * @return {0} relationship
 		 */
-		public /*++{6}.{0}Query.++*/QRelationship<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+		public /*++{5}.query.{0}Query.++*/QRelationship<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
 			if (root$ != null) /*++'++*/{/*++'++*/
-				return new /*++{6}.{0}Query.++*/QRelationship<>(
-					builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
+				return new /*++{5}.query.{0}Query.++*/QRelationship<>(
+					builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
 			/*++'++*/}/*++'++*/
 
-			return new /*++{6}.{0}Query.++*/QRelationship<>(
-				builder$, this, /*++{5}.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{6}.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
+			return new /*++{5}.query.{0}Query.++*/QRelationship<>(
+				builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
 		/*++'++*/}/*++'++*/
 /*==RelationshipPart==*/
 
@@ -579,7 +579,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
+		public /*++{0}.row.{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
 			return manager$.createRow(data);
 		/*++'++*/}/*++'++*/
 

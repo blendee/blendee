@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package /*++{0}++*//*--*/org.blendee.develop.ormgen/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++{0}.manager++*//*--*/org.blendee.develop.ormgen/*--*/;
 
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
@@ -19,7 +19,7 @@ import org.blendee.support.RowManager;
  */
 public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements RowManager</*++{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
+	implements RowManager</*++{0}.row.{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
 	/**
 	 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。<br>
@@ -99,20 +99,20 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
-		return new /*++{1}++*//*--*/RowBase/*--*/(data);
+	public /*++{0}.row.{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
+		return new /*++{0}.row.{1}++*//*--*/RowBase/*--*/(data);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public TablePath getTablePath() /*++'++*/{/*++'++*/
-		return /*++{1}++*//*--*/RowBase/*--*/.$TABLE;
+		return /*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE;
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * '{'@link {1}Manager'}' が使用する Iterator クラスです。
 	 */
 	public class /*++{1}Iterator++*//*--*/IteratorBase/*--*/
-		extends /*++RowIterator<{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
+		extends /*++RowIterator<{0}.row.{1}>++*//*--*/RowIterator<RowBase>/*--*/ /*++'++*/{/*++'++*/
 
 		/**
 		 * 唯一のコンストラクタです。
@@ -124,7 +124,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}++*//*--*/RowBase/*--*/ next() /*++'++*/{/*++'++*/
+		public /*++{0}.row.{1}++*//*--*/RowBase/*--*/ next() /*++'++*/{/*++'++*/
 			return createRow(nextDataObject());
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/

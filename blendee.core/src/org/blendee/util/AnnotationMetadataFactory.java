@@ -78,7 +78,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	private VirtualSpace getInstance(String[] packages) {
 		VirtualSpace space = new VirtualSpace();
 		for (String name : packages) {
-			listClasses(getClassLoader(), name).stream()
+			listClasses(getClassLoader(), name + ".row").stream()
 				.map(AnnotationMetadataFactory::convert)
 				.forEach(table -> space.addTable(table));
 		}
@@ -118,12 +118,13 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			TablePath.parse(annotation.references()));
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Class<?>> listClasses(ClassLoader loader, String packageName) {
 		String path = packageName.replace('.', '/');
 
 		URL url = loader.getResource(path);
 
-		if (url == null) throw new IllegalStateException("パッケージ名 " + packageName + " は存在しません");
+		if (url == null) return Collections.EMPTY_LIST;
 
 		if ("file".equals(url.getProtocol())) return forFile(packageName, loader, url);
 
