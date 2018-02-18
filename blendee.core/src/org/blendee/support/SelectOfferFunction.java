@@ -16,7 +16,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル
-	 * @return {@link QueryRelationship#as(SelectOffer...)} で生成した {@link SelectOffers}
+	 * @return {@link QueryRelationship#of(SelectOffer...)} で生成した {@link SelectOffers}
 	 */
 	SelectOffers offer(R relation);
 

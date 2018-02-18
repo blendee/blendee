@@ -19,6 +19,7 @@ import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.AbstractOrderByQueryColumn;
+import org.blendee.support.AbstractGroupByQueryColumn;
 import org.blendee.support.AbstractSelectQueryColumn;
 /*++{6}++*/
 import org.blendee.support.AliasOffer;
@@ -223,7 +224,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ GROUP_BY(
 		GroupByOfferFunction<QRelationship<GroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
-		if (orderByClauseFunction == function) return this;
+		if (groupByClauseFunction == function) return this;
 
 		function.offer(groupBy);
 		groupByClauseFunction = function;
@@ -718,7 +719,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * GROUP BY 句用
 	 */
 	public static class GroupByQueryColumn
-		extends AbstractOrderByQueryColumn<QRelationship<
+		extends AbstractGroupByQueryColumn<QRelationship<
 			GroupByQueryColumn,
 			Void>> /*++'++*/{/*++'++*/
 
