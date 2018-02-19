@@ -464,8 +464,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static class O2MExecutor<M>
 		extends OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
-		private O2MExecutor(QueryRelationship parent) /*++'++*/{/*++'++*/
-			super(parent);
+		private O2MExecutor(QueryRelationship self) /*++'++*/{/*++'++*/
+			super(self);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
@@ -595,7 +595,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 */
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
-			return new O2MExecutor/*--*/<>(this);
+			return new O2MExecutor<>(this);
 		/*++'++*/}/*++'++*/
 
 		@Override
