@@ -14,7 +14,6 @@ import org.blendee.sql.RelationshipFactory;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
@@ -96,34 +95,16 @@ public class TableElement extends PropertySourceElement {
 		return "テーブル";
 	}
 
-	private IPackageFragmentRoot packageRoot() {
-		IJavaProject project = BlendeePlugin.getDefault().getProject();
-		try {
-			IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
-			List<IPackageFragmentRoot> srcRoots = new LinkedList<IPackageFragmentRoot>();
-			for (IPackageFragmentRoot root : roots) {
-				if (root.getKind() != IPackageFragmentRoot.K_SOURCE) continue;
-				srcRoots.add(root);
-			}
-
-			if (srcRoots.size() != 1)
-				throw new IllegalStateException(
-					"パッケージを作成するためのパッケージルートが複数あります");
-
-			return srcRoots.get(0);
-		} catch (JavaModelException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
 	void build() {
 		BlendeePlugin plugin = BlendeePlugin.getDefault();
 
 		String packageName = plugin.getOutputPackage(parent.getName());
 
-		IPackageFragmentRoot fragmentRoot = packageRoot();
+		IPackageFragment baseFragment = findPackage(packageName);
+		if (baseFragment == null)
+			throw new IllegalStateException("パッケージ " + packageName + " が存在しません");
 
-		IPackageFragment baseFragment = getPackage(fragmentRoot, packageName);
+		IPackageFragmentRoot fragmentRoot = findPackageRoot(baseFragment);
 
 		ORMGenerator generator = new ORMGenerator(
 			ContextManager.get(BlendeeManager.class).getConnection(),
@@ -169,6 +150,15 @@ public class TableElement extends PropertySourceElement {
 			TablePath childPath = child.getTablePath();
 			if (!isAvailable(childPath)) tables.add(childPath);
 		}
+	}
+
+	private IPackageFragmentRoot findPackageRoot(IPackageFragment fragment) {
+		IJavaElement e;
+		while (!((e = fragment.getParent()) instanceof IPackageFragmentRoot)) {
+			return findPackageRoot((IPackageFragment) e);
+		}
+
+		return (IPackageFragmentRoot) e;
 	}
 
 	private IPackageFragment getPackage(IPackageFragmentRoot fragmentRoot, String packageName) {

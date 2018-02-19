@@ -18,6 +18,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.QueryOption;
 import org.blendee.selector.Optimizer;
+import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
@@ -60,8 +61,11 @@ public class OneToManyExecutor<O extends Row, M>
 		self = relation;
 		route = new LinkedList<>();
 		QueryRelationship root = getRoot(relation, route);
+
 		order = convertOrderByClause(route, root.getOrderByClause());
-		optimizer = root.getOptimizer();
+
+		optimizer = convertOptimizer(route, root);
+
 		criteria = root.getWhereClause();
 
 		//1->n順をn->1順に変える
@@ -179,6 +183,22 @@ public class OneToManyExecutor<O extends Row, M>
 		QueryRelationship parent = relation.getParent();
 		if (parent == null) return relation;
 		return getRoot(parent, relations);
+	}
+
+	private static Optimizer convertOptimizer(List<QueryRelationship> route, QueryRelationship root) {
+		Set<Column> selectColumns = new LinkedHashSet<>();
+		SelectClause select = root.getOptimizer().getOptimizedSelectClause();
+		Arrays.asList(select.getColumns()).forEach(c -> selectColumns.add(c));
+		route.forEach(r -> {
+			for (Column column : r.getRelationship().getPrimaryKeyColumns()) {
+				selectColumns.add(column);
+			}
+		});
+
+		RuntimeOptimizer optimizer = new RuntimeOptimizer(root.getOptimizer().getTablePath());
+		selectColumns.forEach(c -> optimizer.add(c));
+
+		return optimizer;
 	}
 
 	private static OrderByClause convertOrderByClause(List<QueryRelationship> route, OrderByClause order) {
