@@ -23,7 +23,7 @@ public interface QueryRelationship {
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 * @return SELECT 句
 	 */
-	default SelectOffers as(SelectOffer... offers) {
+	default SelectOffers of(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		Arrays.asList(offers).forEach(offer -> offer.accept(visitor));
 		return visitor;
@@ -34,7 +34,7 @@ public interface QueryRelationship {
 	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 */
-	default void as(OrderByOffer... offers) {
+	default void of(OrderByOffer... offers) {
 		Arrays.asList(offers).forEach(offer -> offer.offer());
 	}
 
