@@ -688,7 +688,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			return getRelationship().hashCode();
 		/*++'++*/}/*++'++*/
 
-
 		public AliasOffer MAX(SelectQueryColumn column) /*++'++*/{/*++'++*/
 			return null;
 		/*++'++*/}/*++'++*/
