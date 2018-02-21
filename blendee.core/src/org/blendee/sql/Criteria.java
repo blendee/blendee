@@ -200,10 +200,15 @@ public class Criteria extends QueryClause {
 	 * @throws NotFoundException このインスタンスが持つカラムの属する {@link Relationship} の参照先に another が含まれない場合
 	 */
 	public void changeColumnsRelationshipTo(Relationship another) {
-		int size = columns.size();
-		for (int i = 0; i < size; i++) {
-			columns.set(i, columns.get(i).findAnotherRootColumn(another));
-		}
+		List<Column> buffer = new LinkedList<>();
+		columns.forEach(c -> {
+			c.findAnotherRootColumn(another);
+			buffer.add(c);
+		});
+
+		columns.clear();
+
+		columns.addAll(buffer);
 	}
 
 	/**
