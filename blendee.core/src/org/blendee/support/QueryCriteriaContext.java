@@ -45,7 +45,7 @@ public enum QueryCriteriaContext {
 	},
 
 	/**
-	 * WHERE 句以外
+	 * 条件句以外
 	 */
 	NULL {
 

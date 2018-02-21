@@ -48,6 +48,29 @@ public interface QueryRelationship {
 	}
 
 	/**
+	 * SELECT 句に、このテーブルのカラムすべてを追加します。
+	 * @return {@link SelectOffer}
+	 */
+	default SelectOffer all() {
+		return offers -> offers.add(getRelationship().getColumns());
+	}
+
+	default AliasOffer MAX(SelectQueryColumn column) {
+		getRoot().useAggregate();
+		return null;
+	}
+
+	default OrderByQueryColumn MAX(OrderByQueryColumn column) {
+		getRoot().useAggregate();
+		return null;
+	}
+
+	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
+		getRoot().useAggregate();
+		return null;
+	}
+
+	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext} 
 	 */

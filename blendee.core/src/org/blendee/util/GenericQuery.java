@@ -18,8 +18,8 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.support.AbstractOrderByQueryColumn;
-import org.blendee.support.AbstractSelectQueryColumn;
+import org.blendee.support.OrderByQueryColumn;
+import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
 import org.blendee.support.NotUniqueException;
@@ -198,7 +198,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public boolean hasCriteria() {
+	public boolean hasWhereClause() {
 		return criteria != null && criteria.isAvailable();
 	}
 
@@ -374,6 +374,11 @@ public class GenericQuery extends java.lang.Object implements Query {
 		selectClauseFunction = null;
 		orderByClauseFunction = null;
 		return this;
+	}
+
+	@Override
+	public void useAggregate() {
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -604,10 +609,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQueryColumn
-		extends AbstractSelectQueryColumn<GenericRelationship<SelectQueryColumn, Void>> {
+	public static class MySelectQueryColumn
+		extends SelectQueryColumn<GenericRelationship<MySelectQueryColumn, Void>> {
 
-		private SelectQueryColumn(QueryRelationship relationship, String name) {
+		private MySelectQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -615,10 +620,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQueryColumn
-		extends AbstractOrderByQueryColumn<GenericRelationship<OrderByQueryColumn, Void>> {
+	public static class MyOrderByQueryColumn
+		extends OrderByQueryColumn<GenericRelationship<MyOrderByQueryColumn, Void>> {
 
-		private OrderByQueryColumn(QueryRelationship relationship, String name) {
+		private MyOrderByQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}

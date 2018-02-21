@@ -25,24 +25,34 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 	 */
 	static class SelectOffers {
 
-		private final List<Column> columns = new LinkedList<>();
+		private final List<ColumnContainer> containers = new LinkedList<>();
 
 		SelectOffers() {}
 
 		/**
 		 * 内部処理用なので直接使用しないこと。
-		 * @param column 追加カラム
+		 * @param columns 追加カラム
 		 */
-		public void add(Column... column) {
-			columns.addAll(Arrays.asList(column));
+		public void add(Column... columns) {
+			for (Column column : columns) {
+				containers.add(new ColumnContainer(column));
+			}
+		}
+
+		/**
+		 * 内部処理用なので直接使用しないこと。
+		 * @param containers 追加関数
+		 */
+		public void add(ColumnContainer... containers) {
+			this.containers.addAll(Arrays.asList(containers));
 		}
 
 		/**
 		 * 内部処理用なので直接使用しないこと。
 		 * @return {@link SelectOfferFunction} で設定された対象カラム
 		 */
-		public List<Column> get() {
-			return new LinkedList<>(columns);
+		public List<ColumnContainer> get() {
+			return new LinkedList<>(containers);
 		}
 	}
 }

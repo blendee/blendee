@@ -6,7 +6,7 @@ package org.blendee.support;
  * @author 千葉 哲嗣
  * @param <T> 連続呼び出し用 {@link Query}
  */
-public class AbstractOrderByQueryColumn<T> extends AbstractQueryColumn<T> {
+public class OrderByQueryColumn<T> extends AbstractQueryColumn<T> {
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
@@ -23,7 +23,7 @@ public class AbstractOrderByQueryColumn<T> extends AbstractQueryColumn<T> {
 	 * @param helper 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
-	public AbstractOrderByQueryColumn(QueryRelationship helper, String name) {
+	public OrderByQueryColumn(QueryRelationship helper, String name) {
 		super(helper, name);
 	}
 }
