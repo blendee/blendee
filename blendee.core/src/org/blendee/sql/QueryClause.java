@@ -52,11 +52,7 @@ public abstract class QueryClause {
 	 */
 	public void adjustColumns(Relationship root) {
 		List<Column> columns = getColumnsInternal();
-		int size = columns.size();
-		for (int i = 0; i < size; i++) {
-			Column column = columns.get(i);
-			column.prepareForSQL(root);
-		}
+		columns.forEach(c -> c.prepareForSQL(root));
 	}
 
 	/**

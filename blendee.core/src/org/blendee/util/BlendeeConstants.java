@@ -1,6 +1,10 @@
 package org.blendee.util;
 
-import static org.blendee.util.ParsableOptionKey.OptionValueParser.*;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_BOOLEAN;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_CLASS;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
+import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
