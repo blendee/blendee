@@ -1,6 +1,22 @@
 package org.blendee.support;
 
-public interface AliasOffer extends SelectOffer {
+import org.blendee.support.SelectOfferFunction.SelectOffers;
 
-	SelectOffer AS(String alias);
+public class AliasOffer implements SelectOffer {
+
+	private final Expression expression;
+
+	AliasOffer(Expression expression) {
+		this.expression = expression;
+	}
+
+	public SelectOffer AS(String alias) {
+		expression.append(" AS " + alias);
+		return this;
+	}
+
+	@Override
+	public void accept(SelectOffers offers) {
+		offers.add(expression);
+	};
 }

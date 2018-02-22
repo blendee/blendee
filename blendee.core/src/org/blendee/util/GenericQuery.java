@@ -15,6 +15,7 @@ import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -166,7 +167,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		if (selectClauseFunction == function) return this;
 
 		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
-		function.offer(select).get().forEach(c -> myOptimizer.add(c));
+		//function.offer(select).get().forEach(c -> myOptimizer.add(c));
 		optimizer = myOptimizer;
 		selectClauseFunction = function;
 		return this;
@@ -534,6 +535,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 		@Override
 		public Optimizer getOptimizer() {
 			if (query != null) return query.getOptimizer();
+			return null;
+		}
+
+		@Override
+		public GroupByClause getGroupByClause() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 

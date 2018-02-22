@@ -6,6 +6,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -57,7 +58,7 @@ public interface QueryRelationship {
 
 	default AliasOffer MAX(SelectQueryColumn column) {
 		getRoot().useAggregate();
-		return null;
+		return new AliasOffer(new Expression("MAX({0})", column.column));
 	}
 
 	default OrderByQueryColumn MAX(OrderByQueryColumn column) {
@@ -87,6 +88,12 @@ public interface QueryRelationship {
 	 * @return 現在の検索に使用する {@link Optimizer}
 	 */
 	Optimizer getOptimizer();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return 現在の GROUP BY 句
+	 */
+	GroupByClause getGroupByClause();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

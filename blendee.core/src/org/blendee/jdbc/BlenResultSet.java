@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.sql.ResultSet;
+import java.util.function.Consumer;
 
 /**
  * {@link ResultSet} に似せ、機能を制限したインターフェイスです。
@@ -20,4 +21,18 @@ public interface BlenResultSet extends AutoCloseable, Result {
 	 */
 	@Override
 	void close();
+
+	/**
+	 * 全件処理するための簡易メソッドです。
+	 * @param consumer
+	 */
+	default void forEach(Consumer<Result> consumer) {
+		try {
+			while (next()) {
+				consumer.accept(this);
+			}
+		} finally {
+			close();
+		}
+	}
 }

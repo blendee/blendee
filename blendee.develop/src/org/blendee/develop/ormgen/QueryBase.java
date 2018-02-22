@@ -7,6 +7,9 @@ import java.util.function.Consumer;
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.QueryOption;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -18,8 +21,10 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.FromClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.QueryBuilder;
 import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.SelectQueryColumn;
@@ -430,6 +435,17 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
+	public BlenResultSet aggregate() /*++'++*/{/*++'++*/
+		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
+		builder.setSelectClause(selectClause);
+		builder.setGroupByClause(groupByClause);
+		builder.setWhereClause(whereClause);
+		builder.setHavingClause(havingClause);
+		builder.setOrderByClause(orderByClause);
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		return connection.getStatement(builder.toString(), builder).executeQuery();
+	/*++'++*/}/*++'++*/
+
 	@Override
 	public int count() /*++'++*/{/*++'++*/
 		checkAggregate();
@@ -667,6 +683,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public Optimizer getOptimizer() /*++'++*/{/*++'++*/
 			if (query$ != null) return query$.getOptimizer();
 			return null;
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public GroupByClause getGroupByClause() /*++'++*/{/*++'++*/
+			if (query$ == null) return parent$.getGroupByClause();
+
+			GroupByClause clause = query$.groupByClause;
+			if (clause == null) /*++'++*/{/*++'++*/
+				clause = new GroupByClause();
+				query$.groupByClause = clause;
+			/*++'++*/}/*++'++*/
+
+			return clause;
 		/*++'++*/}/*++'++*/
 
 		@Override
