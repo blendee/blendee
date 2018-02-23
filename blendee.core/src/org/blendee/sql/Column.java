@@ -61,6 +61,20 @@ public class Column implements Comparable<Column> {
 		hashCode = 0;
 	}
 
+	/**
+	 * コピーコンストラクタ
+	 * @param copyFrom コピー元
+	 */
+	Column(Column copyFrom) {
+		this.relationship = copyFrom.relationship;
+		this.metadata = copyFrom.metadata;
+		this.name = copyFrom.name;
+		this.type = copyFrom.type;
+		id = copyFrom.id;
+		complementedName = copyFrom.complementedName;
+		hashCode = copyFrom.hashCode;
+	}
+
 	@Override
 	public int hashCode() {
 		return hashCode;

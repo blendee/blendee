@@ -3,12 +3,13 @@ package org.blendee.support;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.Direction;
-import org.blendee.sql.OrderByClause.DirectionalColumn;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.TemplateColumn;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
@@ -68,30 +69,62 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MAX(SelectQueryColumn<?> column) {
-		getRoot().useAggregate();
-		return new AliasOffer(new ColumnExpression("MAX({0})", column.column));
+		return fn("MAX({0})", column);
 	}
 
 	/**
 	 * @param column
-	 * @return
+	 * @return {@link OrderByQueryColumn}
 	 */
 	default OrderByQueryColumn<?> MAX(OrderByQueryColumn<?> column) {
-		getRoot().useAggregate();
-
-		OrderByClause clause = column.relationship.getOrderByClause();
-		return new OrderByQueryColumn<>(
-			column,
-			() -> clause.add(new DirectionalColumn(column.column, Direction.ASC), "MAX({0})"),
-			() -> clause.add(new DirectionalColumn(column.column, Direction.DESC), "MAX({0})"));
+		return fn("MAX({0})", column);
 	}
 
 	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
+		return fn("MAX({0})", column);
+	}
+
+	/**
+	 * @param column
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
 		getRoot().useAggregate();
 
-		//TODO HAVING
+		Column[] columns = new Column[selectColumns.length];
+		for (int i = 0; i < selectColumns.length; i++) {
+			columns[i] = selectColumns[i].column;
+		}
 
-		return column;
+		return new AliasOffer(new ColumnExpression(template, columns));
+	}
+
+	/**
+	 * @param column
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default OrderByQueryColumn<?> fn(String template, OrderByQueryColumn<?>... orderByColumns) {
+		getRoot().useAggregate();
+
+		if (orderByColumns.length == 0) throw new IllegalStateException("カラムが 0 です");
+
+		Column[] columns = new Column[orderByColumns.length];
+		for (int i = 0; i < orderByColumns.length; i++) {
+			columns[i] = orderByColumns[i].column;
+		}
+
+		OrderByQueryColumn<?> delegate = orderByColumns[0];
+
+		OrderByClause clause = delegate.relationship.getOrderByClause();
+		return new OrderByQueryColumn<>(
+			delegate,
+			() -> clause.add(template, Direction.ASC, columns),
+			() -> clause.add(template, Direction.ASC, columns));
+	}
+
+	default <O extends LogicalOperators> HavingQueryColumn<O> fn(String template, HavingQueryColumn<O> column) {
+		getRoot().useAggregate();
+		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class OrderByQueryColumn<T> extends AbstractQueryColumn<T> {
 	 * @param asc
 	 * @param desc
 	 */
-	public OrderByQueryColumn(
+	OrderByQueryColumn(
 		OrderByQueryColumn<T> column,
 		OrderByOffer asc,
 		OrderByOffer desc) {

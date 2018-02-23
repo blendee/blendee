@@ -45,6 +45,8 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 
 	private final List<DirectionalColumn> added = new LinkedList<>();
 
+	private boolean canGetDirectionalColumns = true;
+
 	/**
 	 * パラメータで示されたテーブルの主キーで ORDER 句を生成します。
 	 * @param path 対象テーブル
@@ -119,16 +121,27 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 		add(new PhantomColumn(columnName), direction);
 	}
 
-	public void add(DirectionalColumn column, String template) {
+	/**
+	 * この ORDER BY 句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param template SQL 文のテンプレート
+	 * @param direction 方向
+	 * @param columns SQL 文に含まれるカラム
+	 * @see SQLFragmentFormat
+	 */
+	public void add(String template, Direction direction, Column... columns) {
 		clearCache();
+		List<String> localTemplates = new LinkedList<>();
+		for (int i = 0; i < columns.length; i++) {
+			localTemplates.add("{" + getColumnsSize() + "}");
+			addColumn(columns[i]);
+		}
 
-		template = SQLFragmentFormat.execute(
-			template.trim(),
-			"{" + getColumnsSize() + "}");
+		addTemplate(
+			SQLFragmentFormat.execute(
+				template.trim(),
+				localTemplates.toArray(new String[localTemplates.size()])) + direction);
 
-		addColumn(column.column);
-		addTemplate(template + column.direction);
-		added.add(column);
+		canGetDirectionalColumns = false;
 	}
 
 	/**
@@ -147,6 +160,9 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 	 * @return {@link DirectionalColumn}
 	 */
 	public DirectionalColumn[] getDirectionalColumns() {
+		if (!canGetDirectionalColumns)
+			throw new IllegalStateException("複数カラムで一つの DIrection の要素が追加されたため、 DirectionalColumn は不完全です。");
+
 		return added.toArray(new DirectionalColumn[added.size()]);
 	}
 

@@ -13,14 +13,14 @@ public enum QueryCriteriaContext {
 	/**
 	 * 条件 AND 結合
 	 */
-	AND {
+	WHERE_AND {
 
 		@Override
 		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
-			Criteria clause = relationship.getWhereClause();//TODO HAVING
+			Criteria clause = relationship.getWhereClause();
 			if (clause == null) {
 				clause = CriteriaFactory.create();
-				relationship.setWhereClause(clause);//TODO HAVING
+				relationship.setWhereClause(clause);
 			}
 
 			clause.and(criteria);
@@ -30,14 +30,48 @@ public enum QueryCriteriaContext {
 	/**
 	 * 条件 OR 結合
 	 */
-	OR {
+	WHERE_OR {
 
 		@Override
 		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
-			Criteria clause = relationship.getWhereClause();//TODO HAVING
+			Criteria clause = relationship.getWhereClause();
 			if (clause == null) {
 				clause = CriteriaFactory.create();
-				relationship.setWhereClause(clause);//TODO HAVING
+				relationship.setWhereClause(clause);
+			}
+
+			clause.or(criteria);
+		}
+	},
+
+	/**
+	 * 条件 AND 結合
+	 */
+	HAVING_AND {
+
+		@Override
+		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
+			Criteria clause = relationship.getHavingClause();
+			if (clause == null) {
+				clause = CriteriaFactory.create();
+				relationship.setHavingClause(clause);
+			}
+
+			clause.and(criteria);
+		}
+	},
+
+	/**
+	 * 条件 OR 結合
+	 */
+	HAVING_OR {
+
+		@Override
+		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
+			Criteria clause = relationship.getHavingClause();
+			if (clause == null) {
+				clause = CriteriaFactory.create();
+				relationship.setHavingClause(clause);
 			}
 
 			clause.or(criteria);

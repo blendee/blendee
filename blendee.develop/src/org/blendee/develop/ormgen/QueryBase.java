@@ -19,6 +19,7 @@ import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectDistinctClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.FromClause;
@@ -81,7 +82,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new MyQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
-				QueryCriteriaContext.AND);
+				QueryCriteriaContext.WHERE_AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -90,7 +91,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new MyQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
-				QueryCriteriaContext.OR);
+				QueryCriteriaContext.WHERE_OR);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -107,7 +108,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new MyQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				havingContext,
-				QueryCriteriaContext.AND);
+				QueryCriteriaContext.HAVING_AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -116,7 +117,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			new MyQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				havingContext,
-				QueryCriteriaContext.OR);
+				QueryCriteriaContext.HAVING_OR);
 	/*++'++*/}/*++'++*/
 
 	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
@@ -244,6 +245,27 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * SELECT 句を記述します。
+	 * @param function
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_DISTINCT(
+		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		if (selectClauseFunction == function) return this;
+
+		useAggregate();
+		
+		SelectOffers offers = function.offer(select);
+
+		SelectDistinctClause mySelectClause = new SelectDistinctClause();
+		offers.get().forEach(c -> c.accept(mySelectClause));
+		selectClause = mySelectClause;
+
+		selectClauseFunction = function;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * GROUP BY 句を記述します。
 	 * @param function
 	 * @return この '{'@link Query'}'
@@ -338,7 +360,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Criteria criteria) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.AND.addCriteria(whereOperators.AND, criteria);
+		QueryCriteriaContext.WHERE_AND.addCriteria(whereOperators.AND, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -349,7 +371,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Criteria criteria) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.OR.addCriteria(whereOperators.OR, criteria);
+		QueryCriteriaContext.WHERE_OR.addCriteria(whereOperators.OR, criteria);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -360,7 +382,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.AND.addCriteria(whereOperators.AND, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_AND.addCriteria(whereOperators.AND, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -371,7 +393,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Query'}' 自身
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
-		QueryCriteriaContext.OR.addCriteria(whereOperators.OR, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_OR.addCriteria(whereOperators.OR, subquery.createCriteria(this));
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -476,8 +498,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 現在保持している WHERE 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetCriteria() /*++'++*/{/*++'++*/
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetWhere() /*++'++*/{/*++'++*/
 		whereClause = null;
+		whereClauseConsumer = null;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 現在保持している HAVING 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetHaving() /*++'++*/{/*++'++*/
+		havingClause = null;
+		havingClauseConsumer = null;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -525,6 +558,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		selectClauseFunction = null;
 		groupByClauseFunction = null;
 		orderByClauseFunction = null;
+		whereClauseConsumer = null;
+		havingClauseConsumer = null;
 		useAggregate = false;
 		return this;
 	/*++'++*/}/*++'++*/
@@ -739,8 +774,23 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		@Override
 		public Criteria getWhereClause() /*++'++*/{/*++'++*/
 			if (query$ == null) return parent$.getWhereClause();
-
 			return query$.whereClause;
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public void setHavingClause(Criteria criteria) /*++'++*/{/*++'++*/
+			if (query$ == null) /*++'++*/{/*++'++*/
+				parent$.setHavingClause(criteria);
+				return;
+			/*++'++*/}/*++'++*/
+
+			query$.havingClause = criteria;
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public Criteria getHavingClause() /*++'++*/{/*++'++*/
+			if (query$ == null) return parent$.getHavingClause();
+			return query$.havingClause;
 		/*++'++*/}/*++'++*/
 
 		@Override

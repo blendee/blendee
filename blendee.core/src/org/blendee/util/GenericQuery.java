@@ -20,13 +20,12 @@ import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.support.OrderByQueryColumn;
-import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
+import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
@@ -37,6 +36,7 @@ import org.blendee.support.Row;
 import org.blendee.support.SelectOffer;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
+import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.util.GenericManager.GenericRowIterator;
@@ -69,7 +69,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		public final GenericRelationship<WhereQueryColumn<GenericQuery.GenericLogicalOperators>, Void> AND = new GenericRelationship<>(
 			GenericQuery.this,
 			whereContext,
-			QueryCriteriaContext.AND);
+			QueryCriteriaContext.WHERE_AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link QueryRelationship} です。
@@ -77,7 +77,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		public final GenericRelationship<WhereQueryColumn<GenericQuery.GenericLogicalOperators>, Void> OR = new GenericRelationship<>(
 			GenericQuery.this,
 			whereContext,
-			QueryCriteriaContext.OR);
+			QueryCriteriaContext.WHERE_OR);
 	}
 
 	private final GenericLogicalOperators operators = new GenericLogicalOperators();
@@ -224,7 +224,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery and(Criteria criteria) {
-		QueryCriteriaContext.AND.addCriteria(operators.AND, criteria);
+		QueryCriteriaContext.WHERE_AND.addCriteria(operators.AND, criteria);
 		return this;
 	}
 
@@ -235,7 +235,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery or(Criteria criteria) {
-		QueryCriteriaContext.OR.addCriteria(operators.OR, criteria);
+		QueryCriteriaContext.WHERE_OR.addCriteria(operators.OR, criteria);
 		return this;
 	}
 
@@ -246,7 +246,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery and(Subquery subquery) {
-		QueryCriteriaContext.AND.addCriteria(operators.AND, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_AND.addCriteria(operators.AND, subquery.createCriteria(this));
 		return this;
 	}
 
@@ -257,7 +257,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery or(Subquery subquery) {
-		QueryCriteriaContext.OR.addCriteria(operators.OR, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_OR.addCriteria(operators.OR, subquery.createCriteria(this));
 		return this;
 	}
 
@@ -579,6 +579,17 @@ public class GenericQuery extends java.lang.Object implements Query {
 			if (query == null) return parent.getWhereClause();
 
 			return query.criteria;
+		}
+
+		@Override
+		public void setHavingClause(Criteria criteria) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public Criteria getHavingClause() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
