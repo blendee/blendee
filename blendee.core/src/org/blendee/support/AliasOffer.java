@@ -11,7 +11,7 @@ public class AliasOffer implements SelectOffer {
 	}
 
 	public SelectOffer AS(String alias) {
-		expression.append(" AS " + alias);
+		expression.appendAlias(alias);
 		return this;
 	}
 

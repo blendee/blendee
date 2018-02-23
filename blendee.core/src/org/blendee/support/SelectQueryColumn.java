@@ -10,6 +10,8 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  */
 public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements SelectOffer {
 
+	private ColumnExpression expression;
+
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 * @param helper 条件作成に必要な情報を持った {@link QueryRelationship}
@@ -21,6 +23,17 @@ public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements Sele
 
 	@Override
 	public void accept(SelectOffers offers) {
-		offers.add(column);
+		if (expression != null) {
+			offers.add(expression);
+		} else {
+			offers.add(column);
+		}
+	}
+
+	public SelectOffer AS(String alias) {
+		relationship.getRoot().useAggregate();
+		expression = new ColumnExpression(column);
+		expression.appendAlias(alias);
+		return this;
 	}
 }

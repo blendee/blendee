@@ -1,7 +1,5 @@
 package org.blendee.support;
 
-import java.util.Arrays;
-
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;

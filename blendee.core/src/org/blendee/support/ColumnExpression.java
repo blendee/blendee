@@ -26,10 +26,18 @@ public class ColumnExpression {
 	}
 
 	public void accept(SelectClause selectClause) {
-		selectClause.add(expression.toString(), columns);
+		if (expression.length() == 0) {
+			selectClause.add(columns);
+		} else {
+			selectClause.add(expression.toString(), columns);
+		}
 	}
 
-	void append(String expression) {
-		this.expression.append(expression);
+	void appendAlias(String alias) {
+		if (expression.length() == 0) {
+			expression.append("{0} AS " + alias);
+		} else {
+			expression.append(" AS " + alias);
+		}
 	}
 }
