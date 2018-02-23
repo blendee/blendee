@@ -24,6 +24,15 @@ public abstract class AbstractQueryColumn<T> {
 		column = helper.getRelationship().getColumn(name);
 	}
 
+	/**
+	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
+	 * @param column コピー対象
+	 */
+	public AbstractQueryColumn(AbstractQueryColumn<T> column) {
+		relationship = column.relationship;
+		this.column = column.column;
+	}
+
 	@Override
 	public String toString() {
 		return U.toString(this);

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -380,6 +381,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 	@Override
 	public void useAggregate() {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public BlenResultSet aggregate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

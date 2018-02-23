@@ -6,6 +6,8 @@ import org.blendee.selector.Optimizer;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.OrderByClause.Direction;
+import org.blendee.sql.OrderByClause.DirectionalColumn;
 import org.blendee.sql.Relationship;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
@@ -61,19 +63,32 @@ public interface QueryRelationship {
 		return offers -> offers.add(getRelationship().getColumns());
 	}
 
-	default AliasOffer MAX(SelectQueryColumn column) {
+	/**
+	 * @param column
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer MAX(SelectQueryColumn<?> column) {
 		getRoot().useAggregate();
 		return new AliasOffer(new ColumnExpression("MAX({0})", column.column));
 	}
 
-	default OrderByQueryColumn MAX(OrderByQueryColumn column) {
+	/**
+	 * @param column
+	 * @return
+	 */
+	default OrderByQueryColumn<?> MAX(OrderByQueryColumn<?> column) {
 		getRoot().useAggregate();
-		return null;
+
+		OrderByClause clause = column.relationship.getOrderByClause();
+		return new OrderByQueryColumn<>(
+			column,
+			() -> clause.add(new DirectionalColumn(column.column, Direction.ASC), "MAX({0})"),
+			() -> clause.add(new DirectionalColumn(column.column, Direction.DESC), "MAX({0})"));
 	}
 
 	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
 		getRoot().useAggregate();
-		return null;
+		return column;
 	}
 
 	/**

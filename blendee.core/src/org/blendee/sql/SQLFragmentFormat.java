@@ -17,7 +17,7 @@ public class SQLFragmentFormat {
 	 * @param arguments 埋め込む値
 	 * @return 変換された文字列
 	 */
-	public static String execute(final String template, final String[] arguments) {
+	public static String execute(final String template, final String... arguments) {
 		final StringBuilder builder = new StringBuilder();
 
 		SQLFragmentUtilities.traverseSQLFragment(template, new SQLFragmentListener() {

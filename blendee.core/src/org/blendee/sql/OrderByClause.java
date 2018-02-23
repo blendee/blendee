@@ -119,6 +119,18 @@ public class OrderByClause extends SimpleQueryClause<OrderByClause> {
 		add(new PhantomColumn(columnName), direction);
 	}
 
+	public void add(DirectionalColumn column, String template) {
+		clearCache();
+
+		template = SQLFragmentFormat.execute(
+			template.trim(),
+			"{" + getColumnsSize() + "}");
+
+		addColumn(column.column);
+		addTemplate(template + column.direction);
+		added.add(column);
+	}
+
 	/**
 	 * この ORDER 句にカラムを追加します。
 	 * @param column 追加するカラム
