@@ -41,6 +41,7 @@ import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
+import org.blendee.support.SelectOfferFunction.SelectOffers;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.HavingQueryColumn;
@@ -149,6 +150,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private OrderByOfferFunction<?> orderByClauseFunction;
 
+	private Consumer<?> whereClauseConsumer;
+
+	private Consumer<?> havingClauseConsumer;
+
 	private boolean useAggregate;
 
 	/**
@@ -222,13 +227,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
+		SelectOffers offers = function.offer(select);
+
 		if (!useAggregate) /*++'++*/{/*++'++*/
 			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
-			function.offer(select).get().forEach(c -> c.accept(myOptimizer));
+			offers.get().forEach(c -> c.accept(myOptimizer));
 			optimizer = myOptimizer;
 		/*++'++*/}/*++'++*/ else /*++'++*/{/*++'++*/
 			SelectClause mySelectClause = new SelectClause();
-			function.offer(select).get().forEach(c -> c.accept(mySelectClause));
+			offers.get().forEach(c -> c.accept(mySelectClause));
 			selectClause = mySelectClause;
 		/*++'++*/}/*++'++*/
 
@@ -257,7 +264,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
 		Consumer<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		if (whereClauseConsumer == consumer) return this;
+
 		consumer.accept(whereOperators.AND);
+		whereClauseConsumer = consumer;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -268,7 +278,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
 		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		if (havingClauseConsumer == consumer) return this;
+
 		consumer.accept(havingOperators.AND);
+		havingClauseConsumer = consumer;
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -438,10 +451,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public BlenResultSet aggregate() /*++'++*/{/*++'++*/
 		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
 		builder.setSelectClause(selectClause);
-		builder.setGroupByClause(groupByClause);
-		builder.setWhereClause(whereClause);
-		builder.setHavingClause(havingClause);
-		builder.setOrderByClause(orderByClause);
+		if (groupByClause != null) builder.setGroupByClause(groupByClause);
+		if (whereClause != null) builder.setWhereClause(whereClause);
+		if (havingClause != null) builder.setHavingClause(havingClause);
+		if (orderByClause != null) builder.setOrderByClause(orderByClause);
+
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		return connection.getStatement(builder.toString(), builder).executeQuery();
 	/*++'++*/}/*++'++*/

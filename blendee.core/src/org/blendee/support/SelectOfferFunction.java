@@ -25,7 +25,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 	 */
 	static class SelectOffers {
 
-		private final List<Expression> expressions = new LinkedList<>();
+		private final List<ColumnExpression> expressions = new LinkedList<>();
 
 		SelectOffers() {}
 
@@ -35,7 +35,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 		 */
 		public void add(Column... columns) {
 			for (Column column : columns) {
-				expressions.add(new Expression(column));
+				expressions.add(new ColumnExpression(column));
 			}
 		}
 
@@ -43,7 +43,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 		 * 内部処理用なので直接使用しないこと。
 		 * @param containers 追加関数
 		 */
-		public void add(Expression... containers) {
+		public void add(ColumnExpression... containers) {
 			this.expressions.addAll(Arrays.asList(containers));
 		}
 
@@ -51,7 +51,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 		 * 内部処理用なので直接使用しないこと。
 		 * @return {@link SelectOfferFunction} で設定された対象カラム
 		 */
-		public List<Expression> get() {
+		public List<ColumnExpression> get() {
 			return new LinkedList<>(expressions);
 		}
 	}

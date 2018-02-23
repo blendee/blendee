@@ -4,17 +4,17 @@ import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
 
-public class Expression {
+public class ColumnExpression {
 
 	private final StringBuilder expression = new StringBuilder();
 
 	private final Column[] columns;
 
-	public Expression(Column... columns) {
+	public ColumnExpression(Column... columns) {
 		this.columns = columns;
 	}
 
-	public Expression(String expression, Column... columns) {
+	public ColumnExpression(String expression, Column... columns) {
 		this.expression.append(expression);
 		this.columns = columns;
 	}

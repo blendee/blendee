@@ -26,7 +26,10 @@ public interface QueryRelationship {
 	 */
 	default SelectOffers of(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
-		Arrays.asList(offers).forEach(offer -> offer.accept(visitor));
+		for (SelectOffer offer : offers) {
+			offer.accept(visitor);
+		}
+
 		return visitor;
 	}
 
@@ -36,7 +39,9 @@ public interface QueryRelationship {
 	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
 	 */
 	default void of(GroupByOffer... offers) {
-		Arrays.asList(offers).forEach(offer -> offer.offer());
+		for (GroupByOffer offer : offers) {
+			offer.offer();
+		}
 	}
 
 	/**
@@ -45,7 +50,9 @@ public interface QueryRelationship {
 	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
 	 */
 	default void of(OrderByOffer... offers) {
-		Arrays.asList(offers).forEach(offer -> offer.offer());
+		for (OrderByOffer offer : offers) {
+			offer.offer();
+		}
 	}
 
 	/**
@@ -58,7 +65,7 @@ public interface QueryRelationship {
 
 	default AliasOffer MAX(SelectQueryColumn column) {
 		getRoot().useAggregate();
-		return new AliasOffer(new Expression("MAX({0})", column.column));
+		return new AliasOffer(new ColumnExpression("MAX({0})", column.column));
 	}
 
 	default OrderByQueryColumn MAX(OrderByQueryColumn column) {

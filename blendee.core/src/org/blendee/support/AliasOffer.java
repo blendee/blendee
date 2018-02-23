@@ -4,9 +4,9 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 public class AliasOffer implements SelectOffer {
 
-	private final Expression expression;
+	private final ColumnExpression expression;
 
-	AliasOffer(Expression expression) {
+	AliasOffer(ColumnExpression expression) {
 		this.expression = expression;
 	}
 
