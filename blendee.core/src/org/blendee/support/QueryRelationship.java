@@ -91,6 +91,8 @@ public interface QueryRelationship {
 	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
 		getRoot().useAggregate();
 
+		if (selectColumns.length == 0) throw new IllegalStateException("カラムが 0 です");
+
 		Column[] columns = new Column[selectColumns.length];
 		for (int i = 0; i < selectColumns.length; i++) {
 			columns[i] = selectColumns[i].column;
