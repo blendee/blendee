@@ -88,6 +88,9 @@ public interface QueryRelationship {
 
 	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
 		getRoot().useAggregate();
+
+		//TODO HAVING
+
 		return column;
 	}
 
@@ -132,6 +135,18 @@ public interface QueryRelationship {
 	 * @return 現在の WHERE 句
 	 */
 	Criteria getWhereClause();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @param criteria 現在の検索に使用する HAVING 句
+	 */
+	void setHavingClause(Criteria criteria);
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return 現在の HAVING 句
+	 */
+	Criteria getHavingClause();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

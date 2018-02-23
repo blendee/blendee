@@ -17,10 +17,10 @@ public enum QueryCriteriaContext {
 
 		@Override
 		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
-			Criteria clause = relationship.getWhereClause();
+			Criteria clause = relationship.getWhereClause();//TODO HAVING
 			if (clause == null) {
 				clause = CriteriaFactory.create();
-				relationship.setWhereClause(clause);
+				relationship.setWhereClause(clause);//TODO HAVING
 			}
 
 			clause.and(criteria);
@@ -34,10 +34,10 @@ public enum QueryCriteriaContext {
 
 		@Override
 		public void addCriteria(QueryRelationship relationship, Criteria criteria) {
-			Criteria clause = relationship.getWhereClause();
+			Criteria clause = relationship.getWhereClause();//TODO HAVING
 			if (clause == null) {
 				clause = CriteriaFactory.create();
-				relationship.setWhereClause(clause);
+				relationship.setWhereClause(clause);//TODO HAVING
 			}
 
 			clause.or(criteria);
