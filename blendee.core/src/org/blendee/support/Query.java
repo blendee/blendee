@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.Optional;
 
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.sql.Relationship;
 
 /**
@@ -39,4 +40,10 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * 集合関数を使用するモードになります。
 	 */
 	void useAggregate();
+
+	/**
+	 * 集合関数を含む検索を実行します。
+	 * @return 集合 Query 実行結果
+	 */
+	BlenResultSet aggregate();
 }

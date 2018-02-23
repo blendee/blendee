@@ -448,6 +448,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
+	@Override
 	public BlenResultSet aggregate() /*++'++*/{/*++'++*/
 		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
 		builder.setSelectClause(selectClause);
