@@ -1,5 +1,11 @@
 package org.blendee.support;
 
+import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
+
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
@@ -65,28 +71,145 @@ public interface QueryRelationship {
 	}
 
 	/**
+	 * SELECT 句用 AVG(column)
+	 * @param column
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer AVG(SelectQueryColumn<?> column) {
+		return fn(AVG_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 AVG(column)
+	 * @param column
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc AVG(OrderByQueryColumn<?> column) {
+		return fn(AVG_TEMPLATE, column);
+	}
+
+	/**
+	 * GROUP BY 句用 AVG(column)
+	 * @param column
+	 * @return {@link LogicalOperators}
+	 */
+	default <O extends LogicalOperators> HavingQueryColumn<O> AVG(HavingQueryColumn<O> column) {
+		return fn(AVG_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句用 SUM(column)
+	 * @param column
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer SUM(SelectQueryColumn<?> column) {
+		return fn(SUM_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 SUM(column)
+	 * @param column
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc SUM(OrderByQueryColumn<?> column) {
+		return fn(SUM_TEMPLATE, column);
+	}
+
+	/**
+	 * GROUP BY 句用 SUM(column)
+	 * @param column
+	 * @return {@link LogicalOperators}
+	 */
+	default <O extends LogicalOperators> HavingQueryColumn<O> SUM(HavingQueryColumn<O> column) {
+		return fn(SUM_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句用 MAX(column)
 	 * @param column
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MAX(SelectQueryColumn<?> column) {
-		return fn("MAX({0})", column);
+		return fn(MAX_TEMPLATE, column);
 	}
 
 	/**
+	 * ORDER BY 句用 MAX(column)
 	 * @param column
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc MAX(OrderByQueryColumn<?> column) {
-		return fn("MAX({0})", column);
-	}
-
-	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
-		return fn("MAX({0})", column);
+		return fn(MAX_TEMPLATE, column);
 	}
 
 	/**
+	 * GROUP BY 句用 MAX(column)
+	 * @param column
+	 * @return {@link LogicalOperators}
+	 */
+	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
+		return fn(MAX_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句用 MIN(column)
 	 * @param column
 	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer MIN(SelectQueryColumn<?> column) {
+		return fn(MIN_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 MIN(column)
+	 * @param column
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc MIN(OrderByQueryColumn<?> column) {
+		return fn(MIN_TEMPLATE, column);
+	}
+
+	/**
+	 * GROUP BY 句用 MIN(column)
+	 * @param column
+	 * @return {@link LogicalOperators}
+	 */
+	default <O extends LogicalOperators> HavingQueryColumn<O> MIN(HavingQueryColumn<O> column) {
+		return fn(MIN_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句用 COUNT(column)
+	 * @param column
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer COUNT(SelectQueryColumn<?> column) {
+		return fn(COUNT_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 COUNT(column)
+	 * @param column
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc COUNT(OrderByQueryColumn<?> column) {
+		return fn(COUNT_TEMPLATE, column);
+	}
+
+	/**
+	 * GROUP BY 句用 COUNT(column)
+	 * @param column
+	 * @return {@link LogicalOperators}
+	 */
+	default <O extends LogicalOperators> HavingQueryColumn<O> COUNT(HavingQueryColumn<O> column) {
+		return fn(COUNT_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句に任意のカラムを追加します。
+	 * @param template カラムのテンプレート
+	 * @param selectColumns 使用するカラム
+	 * @return {@link AliasOffer} AS
 	 */
 	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
 		getRoot().useAggregate();
@@ -100,8 +223,10 @@ public interface QueryRelationship {
 	}
 
 	/**
-	 * @param column
-	 * @return {@link OrderByQueryColumn}
+	 * ORDER BY 句に任意のカラムを追加します。
+	 * @param template カラムのテンプレート
+	 * @param orderByColumns 使用するカラム
+	 * @return {@link AscDesc} ASC か DESC
 	 */
 	default AscDesc fn(String template, OrderByQueryColumn<?>... orderByColumns) {
 		getRoot().useAggregate();
@@ -117,6 +242,12 @@ public interface QueryRelationship {
 			() -> clause.add(template, Direction.ASC, columns));
 	}
 
+	/**
+	 * HAVING 句に任意のカラムを追加します。
+	 * @param template カラムのテンプレート
+	 * @param column 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> fn(String template, HavingQueryColumn<O> column) {
 		getRoot().useAggregate();
 		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));

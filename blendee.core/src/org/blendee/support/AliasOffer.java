@@ -2,6 +2,10 @@ package org.blendee.support;
 
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
+/**
+ * エイリアスをカラムに追加するための補助クラスです。
+ * @author 千葉 哲嗣
+ */
 public class AliasOffer implements SelectOffer {
 
 	private final ColumnExpression expression;
@@ -10,6 +14,11 @@ public class AliasOffer implements SelectOffer {
 		this.expression = expression;
 	}
 
+	/**
+	 * AS エイリアス となります。
+	 * @param alias
+	 * @return {@link SelectOffer}
+	 */
 	public SelectOffer AS(String alias) {
 		expression.appendAlias(alias);
 		return this;

@@ -30,6 +30,12 @@ public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements Sele
 		}
 	}
 
+	/**
+	 * カラムに別名を付けます。<br>
+	 * 別名をつけてしまうと {@link Query#aggregate()} しか使用できなくなります。
+	 * @param alias 別名
+	 * @return {@link SelectOffer}
+	 */
 	public SelectOffer AS(String alias) {
 		relationship.getRoot().useAggregate();
 		expression = new ColumnExpression(column);

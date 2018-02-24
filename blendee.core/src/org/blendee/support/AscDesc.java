@@ -1,5 +1,9 @@
 package org.blendee.support;
 
+/**
+ * ORDER BY 句のカラムに ASC DESC を追加するための補助クラスです。
+ * @author 千葉 哲嗣
+ */
 public class AscDesc {
 
 	/**
