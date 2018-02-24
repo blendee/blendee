@@ -76,7 +76,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default OrderByQueryColumn<?> MAX(OrderByQueryColumn<?> column) {
+	default AscDesc MAX(OrderByQueryColumn<?> column) {
 		return fn("MAX({0})", column);
 	}
 
@@ -91,8 +91,6 @@ public interface QueryRelationship {
 	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
 		getRoot().useAggregate();
 
-		if (selectColumns.length == 0) throw new IllegalStateException("カラムが 0 です");
-
 		Column[] columns = new Column[selectColumns.length];
 		for (int i = 0; i < selectColumns.length; i++) {
 			columns[i] = selectColumns[i].column;
@@ -105,21 +103,16 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default OrderByQueryColumn<?> fn(String template, OrderByQueryColumn<?>... orderByColumns) {
+	default AscDesc fn(String template, OrderByQueryColumn<?>... orderByColumns) {
 		getRoot().useAggregate();
-
-		if (orderByColumns.length == 0) throw new IllegalStateException("カラムが 0 です");
 
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
 			columns[i] = orderByColumns[i].column;
 		}
 
-		OrderByQueryColumn<?> delegate = orderByColumns[0];
-
-		OrderByClause clause = delegate.relationship.getOrderByClause();
-		return new OrderByQueryColumn<>(
-			delegate,
+		OrderByClause clause = getOrderByClause();
+		return new AscDesc(
 			() -> clause.add(template, Direction.ASC, columns),
 			() -> clause.add(template, Direction.ASC, columns));
 	}

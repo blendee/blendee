@@ -11,12 +11,12 @@ public class OrderByQueryColumn<T> extends AbstractQueryColumn<T> {
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
 	 */
-	public final OrderByOffer ASC;
+	public final OrderByOffer ASC = () -> relationship.getOrderByClause().asc(column);
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC として追加します。
 	 */
-	public final OrderByOffer DESC;
+	public final OrderByOffer DESC = () -> relationship.getOrderByClause().desc(column);
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -25,21 +25,5 @@ public class OrderByQueryColumn<T> extends AbstractQueryColumn<T> {
 	 */
 	public OrderByQueryColumn(QueryRelationship helper, String name) {
 		super(helper, name);
-		ASC = () -> relationship.getOrderByClause().asc(column);
-		DESC = () -> relationship.getOrderByClause().desc(column);
-	}
-
-	/**
-	 * @param column
-	 * @param asc
-	 * @param desc
-	 */
-	OrderByQueryColumn(
-		OrderByQueryColumn<T> column,
-		OrderByOffer asc,
-		OrderByOffer desc) {
-		super(column);
-		ASC = asc;
-		DESC = desc;
 	}
 }
