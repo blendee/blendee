@@ -5,8 +5,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Result;
+import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.QueryOption;
@@ -16,10 +21,17 @@ import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.FromClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectDistinctClause;
+import org.blendee.support.GroupByOfferFunction;
+import org.blendee.support.GroupByQueryColumn;
+import org.blendee.support.HavingQueryColumn;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
 import org.blendee.support.NotUniqueException;
@@ -46,11 +58,15 @@ import org.blendee.util.GenericManager.GenericRowIterator;
  */
 public class GenericQuery extends java.lang.Object implements Query {
 
-	private static final QueryContext<SelectQueryColumn> selectContext = (relationship, name) -> new SelectQueryColumn(relationship, name);
+	private static final QueryContext<MySelectQueryColumn> selectContext = (relationship, name) -> new MySelectQueryColumn(relationship, name);
 
-	private static final QueryContext<OrderByQueryColumn> orderByContext = (relationship, name) -> new OrderByQueryColumn(relationship, name);
+	private static final QueryContext<MyGroupByQueryColumn> groupByContext = (relationship, name) -> new MyGroupByQueryColumn(relationship, name);
 
-	private static final QueryContext<WhereQueryColumn<GenericLogicalOperators>> whereContext = QueryContext.newWhereBuilder();
+	private static final QueryContext<MyOrderByQueryColumn> orderByContext = (relationship, name) -> new MyOrderByQueryColumn(relationship, name);
+
+	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext = QueryContext.newWhereBuilder();
+
+	private static final QueryContext<HavingQueryColumn<HavingLogicalOperators>> havingContext = QueryContext.newHavingBuilder();
 
 	private final TablePath tablePath;
 
@@ -59,14 +75,14 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class GenericLogicalOperators implements LogicalOperators {
+	public class WhereLogicalOperators implements LogicalOperators {
 
-		private GenericLogicalOperators() {}
+		private WhereLogicalOperators() {}
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link QueryRelationship} です。
 		 */
-		public final GenericRelationship<WhereQueryColumn<GenericQuery.GenericLogicalOperators>, Void> AND = new GenericRelationship<>(
+		public final GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void> AND = new GenericRelationship<>(
 			GenericQuery.this,
 			whereContext,
 			QueryCriteriaContext.WHERE_AND);
@@ -74,13 +90,39 @@ public class GenericQuery extends java.lang.Object implements Query {
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link QueryRelationship} です。
 		 */
-		public final GenericRelationship<WhereQueryColumn<GenericQuery.GenericLogicalOperators>, Void> OR = new GenericRelationship<>(
+		public final GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void> OR = new GenericRelationship<>(
 			GenericQuery.this,
 			whereContext,
 			QueryCriteriaContext.WHERE_OR);
 	}
 
-	private final GenericLogicalOperators operators = new GenericLogicalOperators();
+	/**
+	 * HAVING 句 で使用する AND, OR です。
+	 */
+	public class HavingLogicalOperators implements LogicalOperators {
+
+		private HavingLogicalOperators() {}
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link QueryRelationship} です。
+		 */
+		public final GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void> AND = new GenericRelationship<>(
+			GenericQuery.this,
+			havingContext,
+			QueryCriteriaContext.HAVING_AND);
+
+		/**
+		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link QueryRelationship} です。
+		 */
+		public final GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void> OR = new GenericRelationship<>(
+			GenericQuery.this,
+			havingContext,
+			QueryCriteriaContext.HAVING_OR);
+	}
+
+	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
+
+	private final HavingLogicalOperators havingOperators = new HavingLogicalOperators();
 
 	/**
 	 * この {@link Query} のテーブルを表す {@link QueryRelationship} を参照するためのインスタンスです。
@@ -92,18 +134,32 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	private Optimizer optimizer;
 
-	private Criteria criteria;
+	private SelectClause selectClause;
+
+	private Criteria whereClause;
+
+	private Criteria havingClause;
+
+	private GroupByClause groupByClause;
 
 	private OrderByClause orderByClause;
 
 	private SelectOfferFunction<?> selectClauseFunction;
 
+	private GroupByOfferFunction<?> groupByClauseFunction;
+
 	private OrderByOfferFunction<?> orderByClauseFunction;
+
+	private Consumer<?> whereClauseConsumer;
+
+	private Consumer<?> havingClauseConsumer;
+
+	private boolean useAggregate;
 
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
-	private final GenericRelationship<SelectQueryColumn, Void> select = new GenericRelationship<>(
+	private final GenericRelationship<MySelectQueryColumn, Void> select = new GenericRelationship<>(
 		this,
 		selectContext,
 		QueryCriteriaContext.NULL);
@@ -111,7 +167,15 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
-	private final GenericRelationship<OrderByQueryColumn, Void> orderBy = new GenericRelationship<>(
+	private final GenericRelationship<MyGroupByQueryColumn, Void> groupBy = new GenericRelationship<>(
+		this,
+		groupByContext,
+		QueryCriteriaContext.NULL);
+
+	/**
+	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
+	 */
+	private final GenericRelationship<MyOrderByQueryColumn, Void> orderBy = new GenericRelationship<>(
 		this,
 		orderByContext,
 		QueryCriteriaContext.NULL);
@@ -164,13 +228,57 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery SELECT(
-		SelectOfferFunction<GenericRelationship<SelectQueryColumn, Void>> function) {
+		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
 		if (selectClauseFunction == function) return this;
 
-		RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
-		//function.offer(select).get().forEach(c -> myOptimizer.add(c));
-		optimizer = myOptimizer;
+		SelectOffers offers = function.offer(select);
+
+		if (!useAggregate) {
+			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
+			offers.get().forEach(c -> c.accept(myOptimizer));
+			optimizer = myOptimizer;
+		} else {
+			SelectClause mySelectClause = new SelectClause();
+			offers.get().forEach(c -> c.accept(mySelectClause));
+			selectClause = mySelectClause;
+		}
+
 		selectClauseFunction = function;
+		return this;
+	}
+
+	/**
+	 * SELECT 句を記述します。
+	 * @param function
+	 * @return この {@link Query}
+	 */
+	public GenericQuery SELECT_DISTINCT(
+		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
+		if (selectClauseFunction == function) return this;
+
+		useAggregate();
+
+		SelectOffers offers = function.offer(select);
+
+		SelectDistinctClause mySelectClause = new SelectDistinctClause();
+		offers.get().forEach(c -> c.accept(mySelectClause));
+		selectClause = mySelectClause;
+
+		selectClauseFunction = function;
+		return this;
+	}
+
+	/**
+	 * GROUP BY 句を記述します。
+	 * @param function
+	 * @return この {@link Query}
+	 */
+	public GenericQuery GROUP_BY(
+		GroupByOfferFunction<GenericRelationship<MyGroupByQueryColumn, Void>> function) {
+		if (groupByClauseFunction == function) return this;
+
+		function.offer(groupBy);
+		groupByClauseFunction = function;
 		return this;
 	}
 
@@ -180,8 +288,25 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery WHERE(
-		Consumer<GenericRelationship<WhereQueryColumn<GenericQuery.GenericLogicalOperators>, Void>> consumer) {
-		consumer.accept(operators.AND);
+		Consumer<GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void>> consumer) {
+		if (whereClauseConsumer == consumer) return this;
+
+		consumer.accept(whereOperators.AND);
+		whereClauseConsumer = consumer;
+		return this;
+	}
+
+	/**
+	 * HAVING 句を記述します。
+	 * @param consumer
+	 * @return この {@link Query}
+	 */
+	public GenericQuery HAVING(
+		Consumer<GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void>> consumer) {
+		if (havingClauseConsumer == consumer) return this;
+
+		consumer.accept(havingOperators.AND);
+		havingClauseConsumer = consumer;
 		return this;
 	}
 
@@ -191,7 +316,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery ORDER_BY(
-		OrderByOfferFunction<GenericRelationship<OrderByQueryColumn, Void>> function) {
+		OrderByOfferFunction<GenericRelationship<MyOrderByQueryColumn, Void>> function) {
 		if (orderByClauseFunction == function) return this;
 
 		function.offer(orderBy);
@@ -201,7 +326,21 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public boolean hasWhereClause() {
-		return criteria != null && criteria.isAvailable();
+		return whereClause != null && whereClause.isAvailable();
+	}
+
+	/**
+	 * 新規に GROUP BY 句をセットします。
+	 * @param clause 新 ORDER BY 句
+	 * @return {@link Query} 自身
+	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
+	 */
+	public GenericQuery groupBy(GroupByClause clause) {
+		useAggregate();
+		if (groupByClause != null)
+			throw new IllegalStateException("既に GROUP BY 句がセットされています");
+		groupByClause = clause;
+		return this;
 	}
 
 	/**
@@ -224,7 +363,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery and(Criteria criteria) {
-		QueryCriteriaContext.WHERE_AND.addCriteria(operators.AND, criteria);
+		QueryCriteriaContext.WHERE_AND.addCriteria(whereOperators.AND, criteria);
 		return this;
 	}
 
@@ -235,7 +374,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery or(Criteria criteria) {
-		QueryCriteriaContext.WHERE_OR.addCriteria(operators.OR, criteria);
+		QueryCriteriaContext.WHERE_OR.addCriteria(whereOperators.OR, criteria);
 		return this;
 	}
 
@@ -246,7 +385,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery and(Subquery subquery) {
-		QueryCriteriaContext.WHERE_AND.addCriteria(operators.AND, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_AND.addCriteria(whereOperators.AND, subquery.createCriteria(this));
 		return this;
 	}
 
@@ -257,7 +396,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return {@link Query} 自身
 	 */
 	public GenericQuery or(Subquery subquery) {
-		QueryCriteriaContext.WHERE_OR.addCriteria(operators.OR, subquery.createCriteria(this));
+		QueryCriteriaContext.WHERE_OR.addCriteria(whereOperators.OR, subquery.createCriteria(this));
 		return this;
 	}
 
@@ -268,22 +407,22 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public LogicalOperators getWhereLogicalOperators() {
-		return operators;
+		return whereOperators;
 	}
 
 	@Override
 	public LogicalOperators getHavingLogicalOperators() {
-		return null;
+		return havingOperators;
 	}
 
 	@Override
 	public GenericRowIterator execute() {
-		return manager.select(getOptimizer(), criteria, orderByClause);
+		return manager.select(getOptimizer(), whereClause, orderByClause);
 	}
 
 	@Override
 	public GenericRowIterator execute(QueryOption... options) {
-		return manager.select(getOptimizer(), criteria, orderByClause, options);
+		return manager.select(getOptimizer(), whereClause, orderByClause, options);
 	}
 
 	@Override
@@ -298,50 +437,85 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public Optional<GenericRow> fetch(String... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(Number... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(Bindable... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(QueryOptions options, String... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(QueryOptions options, Number... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(QueryOptions options, Bindable... primaryKeyMembers) {
+		checkAggregate();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
+	public void aggregate(Consumer<Result> consumer) {
+		QueryBuilder builder = aggregateInternal();
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) {
+			try (BlenResultSet result = statement.executeQuery()) {
+				consumer.accept(result);
+			}
+		}
+	}
+
+	@Override
+	public ResultSetIterator aggregate() {
+		QueryBuilder builder = aggregateInternal();
+		return new ResultSetIterator(builder.toString(), builder);
+	}
+
+	@Override
 	public int count() {
-		return manager.count(criteria);
+		checkAggregate();
+		return manager.count(whereClause);
 	}
 
 	@Override
 	public Criteria getCriteria() {
-		return criteria.replicate();
+		return whereClause.replicate();
 	}
 
 	/**
 	 * 現在保持している条件をリセットします。
 	 * @return このインスタンス
 	 */
-	public GenericQuery resetCriteria() {
-		criteria = null;
+	public GenericQuery resetWhere() {
+		whereClause = null;
+		whereClauseConsumer = null;
+		return this;
+	}
+
+	/**
+	 * 現在保持している HAVING 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public GenericQuery resetHaving() {
+		havingClause = null;
+		havingClauseConsumer = null;
 		return this;
 	}
 
@@ -352,6 +526,16 @@ public class GenericQuery extends java.lang.Object implements Query {
 	public GenericQuery resetSelect() {
 		optimizer = null;
 		selectClauseFunction = null;
+		return this;
+	}
+
+	/**
+	 * 現在保持している GROUP BY 句をリセットします。
+	 * @return このインスタンス
+	 */
+	public GenericQuery resetGroupBy() {
+		groupByClause = null;
+		groupByClauseFunction = null;
 		return this;
 	}
 
@@ -370,23 +554,29 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return このインスタンス
 	 */
 	public GenericQuery reset() {
-		criteria = null;
 		optimizer = null;
+		selectClause = null;
+		whereClause = null;
+		havingClause = null;
+		groupByClause = null;
 		orderByClause = null;
 		selectClauseFunction = null;
+		groupByClauseFunction = null;
 		orderByClauseFunction = null;
+		whereClauseConsumer = null;
+		havingClauseConsumer = null;
+		useAggregate = false;
 		return this;
 	}
 
 	@Override
 	public void useAggregate() {
-		// TODO Auto-generated method stub
+		useAggregate = true;
 	}
 
 	@Override
-	public BlenResultSet aggregate() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean usesAggregate() {
+		return useAggregate;
 	}
 
 	/**
@@ -406,6 +596,21 @@ public class GenericQuery extends java.lang.Object implements Query {
 		optimizer = new SimpleOptimizer(tablePath);
 		return optimizer;
 	}
+
+	private QueryBuilder aggregateInternal() {
+		QueryBuilder builder = new QueryBuilder(new FromClause(tablePath));
+		builder.setSelectClause(selectClause);
+		if (groupByClause != null) builder.setGroupByClause(groupByClause);
+		if (whereClause != null) builder.setWhereClause(whereClause);
+		if (havingClause != null) builder.setHavingClause(havingClause);
+		if (orderByClause != null) builder.setOrderByClause(orderByClause);
+
+		return builder;
+	}
+
+	private void checkAggregate() /*++'++*/ {/*++'++*/
+		if (useAggregate) throw new IllegalStateException("集計モードでは実行できない処理です");
+		/*++'++*/}/*++'++*/
 
 	private static Class<?> getUsing(StackTraceElement element) {
 		try {
@@ -520,6 +725,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		 */
 		public GenericExecutor<M> intercept() {
 			if (query != null) throw new IllegalStateException(path().getSchemaName() + " から直接使用することはできません");
+			if (getRoot().usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new GenericExecutor<>(this);
 		}
 
@@ -547,8 +753,15 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 		@Override
 		public GroupByClause getGroupByClause() {
-			// TODO Auto-generated method stub
-			return null;
+			if (query == null) return parent.getGroupByClause();
+
+			GroupByClause clause = query.groupByClause;
+			if (clause == null) {
+				clause = new GroupByClause();
+				query.groupByClause = clause;
+			}
+
+			return clause;
 		}
 
 		@Override
@@ -571,25 +784,30 @@ public class GenericQuery extends java.lang.Object implements Query {
 				return;
 			}
 
-			query.criteria = criteria;
+			query.whereClause = criteria;
 		}
 
 		@Override
 		public Criteria getWhereClause() {
 			if (query == null) return parent.getWhereClause();
 
-			return query.criteria;
+			return query.whereClause;
 		}
 
 		@Override
 		public void setHavingClause(Criteria criteria) {
-			// TODO Auto-generated method stub
+			if (query == null) {
+				parent.setHavingClause(criteria);
+				return;
+			}
+
+			query.havingClause = criteria;
 		}
 
 		@Override
 		public Criteria getHavingClause() {
-			// TODO Auto-generated method stub
-			return null;
+			if (query == null) return parent.getHavingClause();
+			return query.havingClause;
 		}
 
 		@Override
@@ -638,6 +856,17 @@ public class GenericQuery extends java.lang.Object implements Query {
 		extends SelectQueryColumn<GenericRelationship<MySelectQueryColumn, Void>> {
 
 		private MySelectQueryColumn(QueryRelationship relationship, String name) {
+			super(relationship, name);
+		}
+	}
+
+	/**
+	 * GROUP BY 句用
+	 */
+	public static class MyGroupByQueryColumn
+		extends GroupByQueryColumn<GenericRelationship<MyGroupByQueryColumn, Void>> {
+
+		private MyGroupByQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}

@@ -1,60 +1,62 @@
 package org.blendee.jdbc;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.Result;
 
 /**
- * {@link BlenResultSet} を、 {@link Iterator} として扱えるようにするラッパークラスです。
+ * {@link BlenResultSet} を {@link Iterator} として使用するためのクラスです。
  * @author 千葉 哲嗣
  */
-public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map<String, ?>> {
+public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, AutoCloseable {
 
-	private final BlenResultSet set;
+	private final BlenStatement statement;
 
-	private final Map<String, Object> map = new InnerMap();
-
-	private int counter = 0;
-
-	private boolean init = false;
+	private final BlenResultSet result;
 
 	private boolean hasNext = false;
 
+	private boolean nexted;
+
 	/**
 	 * ベースとなる結果セットを使用し、インスタンスを生成します。
-	 * @param set ベースとなる結果セット
+	 * @param sql 
+	 * @param complementer 
 	 */
-	public ResultSetIterator(BlenResultSet set) {
-		this.set = set;
+	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		statement = connection.getStatement(sql, complementer);
+		result = statement.executeQuery();
 	}
 
 	@Override
-	public Iterator<Map<String, ?>> iterator() {
+	public Iterator<Result> iterator() {
 		return this;
 	}
 
 	@Override
 	public boolean hasNext() {
-		hasNext = set.next();
-		init = true;
+		hasNext = result.next();
+		nexted = true;
 		return hasNext;
 	}
 
-	/**
-	 * {@link BlenResultSet} を一つ進め、一行の値を項目名がキーとなる {@link Map} として返します。<br>
-	 * 返される {@link Map} に対する変更操作は行えません。
-	 * @return 一行の値をもつ {@link Map}
-	 */
 	@Override
-	public Map<String, ?> next() {
-		if (!init) hasNext();
+	public Result next() {
+		if (!nexted) hasNext();
 		if (!hasNext) throw new NoSuchElementException();
-		counter++;
-		return map;
+
+		nexted = false;
+
+		return result;
 	}
 
 	/**
@@ -65,79 +67,17 @@ public class ResultSetIterator implements Iterable<Map<String, ?>>, Iterator<Map
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 現在の取得済み件数を返します。
-	 * @return 現在の取得済み件数
-	 */
-	public int getCounter() {
-		return counter;
+	@Override
+	public void close() throws Exception {
+		try {
+			result.close();
+		} finally {
+			statement.close();
+		}
 	}
 
 	@Override
 	public String toString() {
 		return U.toString(this);
-	}
-
-	private class InnerMap implements Map<String, Object> {
-
-		@Override
-		public int size() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean isEmpty() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean containsKey(Object key) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean containsValue(Object key) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Object get(Object key) {
-			return set.getObject(key.toString());
-		}
-
-		@Override
-		public Object put(String key, Object value) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Object remove(Object key) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void putAll(Map<? extends String, ? extends Object> map) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void clear() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Set<String> keySet() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Collection<Object> values() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Set<Entry<String, Object>> entrySet() {
-			throw new UnsupportedOperationException();
-		}
 	}
 }

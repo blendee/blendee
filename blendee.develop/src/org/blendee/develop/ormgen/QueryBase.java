@@ -8,8 +8,11 @@ import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormge
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.QueryOption;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -471,16 +474,20 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public BlenResultSet aggregate() /*++'++*/{/*++'++*/
-		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
-		builder.setSelectClause(selectClause);
-		if (groupByClause != null) builder.setGroupByClause(groupByClause);
-		if (whereClause != null) builder.setWhereClause(whereClause);
-		if (havingClause != null) builder.setHavingClause(havingClause);
-		if (orderByClause != null) builder.setOrderByClause(orderByClause);
-
+	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
+		QueryBuilder builder = aggregateInternal();
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		return connection.getStatement(builder.toString(), builder).executeQuery();
+		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) /*++'++*/{/*++'++*/
+			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
+				consumer.accept(result);
+			/*++'++*/}/*++'++*/
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
+		QueryBuilder builder = aggregateInternal();
+		return new ResultSetIterator(builder.toString(), builder);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -569,6 +576,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		useAggregate = true;
 	/*++'++*/}/*++'++*/
 
+	@Override
+	public boolean usesAggregate() /*++'++*/{/*++'++*/
+		return useAggregate;
+	/*++'++*/}/*++'++*/
+
 	/**
 	 * 自動生成された '{'@link OneToManyExecutor'}' の実装クラスです。
 	 * @param <M> Many 一対多の多側の型連鎖
@@ -605,8 +617,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
+	private QueryBuilder aggregateInternal() /*++'++*/{/*++'++*/
+		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
+		builder.setSelectClause(selectClause);
+		if (groupByClause != null) builder.setGroupByClause(groupByClause);
+		if (whereClause != null) builder.setWhereClause(whereClause);
+		if (havingClause != null) builder.setHavingClause(havingClause);
+		if (orderByClause != null) builder.setOrderByClause(orderByClause);
+
+		return builder;
+	/*++'++*/}/*++'++*/
+
 	private void checkAggregate() /*++'++*/{/*++'++*/
-		if (useAggregate) throw new IllegalStateException("集計モードでは実行できない処理です");
+		if (usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -710,6 +733,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 */
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
+			if (getRoot().usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new O2MExecutor<>(this);
 		/*++'++*/}/*++'++*/
 
