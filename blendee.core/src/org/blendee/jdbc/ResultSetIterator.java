@@ -4,13 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.Result;
 
 /**
  * {@link BlenResultSet} を {@link Iterator} として使用するためのクラスです。
@@ -28,8 +21,8 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 
 	/**
 	 * ベースとなる結果セットを使用し、インスタンスを生成します。
-	 * @param sql 
-	 * @param complementer 
+	 * @param sql
+	 * @param complementer
 	 */
 	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
@@ -45,13 +38,18 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 	@Override
 	public boolean hasNext() {
 		hasNext = result.next();
+
 		nexted = true;
+
+		if (!hasNext) close();
+
 		return hasNext;
 	}
 
 	@Override
 	public Result next() {
 		if (!nexted) hasNext();
+
 		if (!hasNext) throw new NoSuchElementException();
 
 		nexted = false;
@@ -68,7 +66,7 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		try {
 			result.close();
 		} finally {

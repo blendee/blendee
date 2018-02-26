@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import org.blendee.sql.Bindable;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.CriteriaFactory.ComparisonOperator;
@@ -43,7 +44,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	abstract O logocalOperators();
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -55,7 +56,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -68,7 +69,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -81,7 +82,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -94,7 +95,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -107,7 +108,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -120,7 +121,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -133,7 +134,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -146,7 +147,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -159,7 +160,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの = 条件を追加します。
+	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -172,7 +173,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -182,7 +183,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -192,7 +193,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -202,7 +203,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -212,7 +213,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -222,7 +223,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -232,7 +233,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -242,7 +243,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -252,7 +253,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -262,7 +263,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;&gt; 条件を追加します。
+	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -272,7 +273,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -282,7 +283,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -292,7 +293,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -302,7 +303,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -312,7 +313,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -322,7 +323,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -332,7 +333,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -342,7 +343,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -352,7 +353,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -362,7 +363,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt; 条件を追加します。
+	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -372,7 +373,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -382,7 +383,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -392,7 +393,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -402,7 +403,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -412,7 +413,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -422,7 +423,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -432,7 +433,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -442,7 +443,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -452,7 +453,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -462,7 +463,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt; 条件を追加します。
+	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -472,7 +473,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -482,7 +483,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -492,7 +493,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -502,7 +503,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -512,7 +513,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -522,7 +523,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -532,7 +533,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -542,7 +543,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -552,7 +553,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -562,7 +563,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &lt;= 条件を追加します。
+	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -572,7 +573,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -582,7 +583,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -592,7 +593,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -602,7 +603,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -612,7 +613,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -622,7 +623,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -632,7 +633,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -642,7 +643,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -652,7 +653,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -662,7 +663,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの &gt;= 条件を追加します。
+	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -672,7 +673,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの条件を追加します。
+	 * 条件句に、このカラムの条件を追加します。
 	 * @see ComparisonOperator
 	 * @param operator 比較演算子
 	 * @param value 検索条件の値
@@ -687,7 +688,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -701,7 +702,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -715,7 +716,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param type LIKE 検索の一致タイプ
 	 * @param value 検索条件の値
@@ -730,7 +731,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの LIKE 条件を追加します。
+	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param type LIKE 検索の一致タイプ
 	 * @param value 検索条件の値
@@ -745,7 +746,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの IN 条件を追加します。
+	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -758,7 +759,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの IN 条件を追加します。
+	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -771,7 +772,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの IN 条件を追加します。
+	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
@@ -784,7 +785,130 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの IS NULL 条件を追加します。
+	 * 条件句に、このカラムの NOT IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_IN(String... values) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_IN(Number... values) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_IN(Bindable... values) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O BETWEEN(Number v1, Number v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O BETWEEN(String v1, String v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O BETWEEN(Binder v1, Binder v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_BETWEEN(Number v1, Number v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_BETWEEN(String v1, String v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_BETWEEN(Binder v1, Binder v2) {
+		relationship.getContext().addCriteria(
+			relationship,
+			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの IS NULL 条件を追加します。
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NULL() {
@@ -796,7 +920,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの IS NOT NULL 条件を追加します。
+	 * 条件句に、このカラムの IS NOT NULL 条件を追加します。
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NOT_NULL() {
@@ -808,9 +932,9 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
 	}
 
 	/**
-	 * WHERE 句に、このカラムの条件を追加します。
+	 * 条件句に、このカラムの条件を追加します。
 	 * @see CriteriaFactory#createCriteria(String, Column, Bindable)
-	 * @param clause WHERE 句の元になるテンプレート
+	 * @param clause 条件句の元になるテンプレート
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
