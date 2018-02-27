@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.EMPTY_COLUMNS;
 import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
@@ -251,6 +252,26 @@ public interface QueryRelationship {
 	default <O extends LogicalOperators> HavingQueryColumn<O> fn(String template, HavingQueryColumn<O> column) {
 		getRoot().useAggregate();
 		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));
+	}
+
+	/**
+	 * SELECT 句に任意の文字列を追加します。
+	 * @param expression 文字列表現
+	 * @return {@link AliasOffer} AS
+	 */
+	default AliasOffer any(String expression) {
+		getRoot().useAggregate();
+		return new AliasOffer(new ColumnExpression(expression, EMPTY_COLUMNS));
+	}
+
+	/**
+	 * SELECT 句に任意の数値を追加します。
+	 * @param number 文字列表現
+	 * @return {@link AliasOffer} AS
+	 */
+	default AliasOffer any(Number number) {
+		getRoot().useAggregate();
+		return new AliasOffer(new ColumnExpression(number.toString(), EMPTY_COLUMNS));
 	}
 
 	/**
