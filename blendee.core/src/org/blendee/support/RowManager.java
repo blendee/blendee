@@ -135,7 +135,7 @@ public interface RowManager<T extends Row> {
 			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
-				Effectors.care(options).get());
+				options.get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}
@@ -156,7 +156,7 @@ public interface RowManager<T extends Row> {
 			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
-				Effectors.care(options).get());
+				options.get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}
@@ -197,7 +197,7 @@ public interface RowManager<T extends Row> {
 			object = new DataAccessHelper().getDataObject(
 				optimizer,
 				new PrimaryKey(getTablePath(), primaryKeyMembers),
-				Effectors.care(options).get());
+				options.get());
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}

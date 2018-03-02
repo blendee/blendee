@@ -75,7 +75,7 @@ public class OneToManyExecutor<O extends Row, M>
 	@Override
 	public Many<O, M> execute() {
 		return new Many<>(
-			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order, null, null), route),
+			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order), route),
 			null,
 			self,
 			route);
@@ -144,7 +144,7 @@ public class OneToManyExecutor<O extends Row, M>
 						optimizer,
 						criteria,
 						order,
-						Effectors.care(options).get()),
+						options.get()),
 					route),
 				null,
 				self,

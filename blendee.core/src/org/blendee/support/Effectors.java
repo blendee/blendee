@@ -25,10 +25,6 @@ public class Effectors {
 		return new Effectors(effectors);
 	}
 
-	static Effectors care(Effectors effectors) {
-		return effectors == null ? EMPTY_OPTIONS : effectors;
-	}
-
 	/**
 	 * {@link Effector} を持つインスタンスを生成します。
 	 * @param effectors 複数の {@link Effector}
