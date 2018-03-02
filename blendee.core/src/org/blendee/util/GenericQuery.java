@@ -30,6 +30,7 @@ import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
 import org.blendee.support.Effectors;
 import org.blendee.support.GroupByOfferFunction;
@@ -269,6 +270,16 @@ public class GenericQuery extends java.lang.Object implements Query {
 		selectClause = mySelectClause;
 
 		selectClauseFunction = function;
+		return this;
+	}
+
+	/**
+	 * COUNT(*) を使用した SELECT 句を記述します。
+	 * @return この {@link Query}
+	 */
+	public GenericQuery SELECT_COUNT() {
+		quitRowMode();
+		selectClause = new SelectCountClause();
 		return this;
 	}
 

@@ -282,17 +282,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * COUNT(*) AS alias を使用した SELECT 句を記述します。
-	 * @param alias 別名
-	 * @return この '{'@link Query'}'
-	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_COUNT_AS(String alias) /*++'++*/{/*++'++*/
-		quitRowMode();
-		selectClause = new SelectCountClause(alias);
-		return this;
-	/*++'++*/}/*++'++*/
-
-	/**
 	 * GROUP BY 句を記述します。
 	 * @param function
 	 * @return この '{'@link Query'}'
