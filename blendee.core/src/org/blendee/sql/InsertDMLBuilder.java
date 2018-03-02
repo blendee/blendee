@@ -20,7 +20,7 @@ public class InsertDMLBuilder extends Updater {
 	}
 
 	@Override
-	protected String buildSQL() {
+	protected String build() {
 		String[] columnNames = getColumnNames();
 		List<String> columns = new LinkedList<>();
 		List<String> placeHolders = new LinkedList<>();

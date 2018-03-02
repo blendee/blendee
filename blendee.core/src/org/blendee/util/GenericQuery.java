@@ -12,15 +12,17 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
+import org.blendee.jdbc.StatementSource;
 import org.blendee.jdbc.TablePath;
+import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
-import org.blendee.orm.QueryOption;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
@@ -29,6 +31,7 @@ import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.support.Effectors;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.HavingQueryColumn;
@@ -42,7 +45,6 @@ import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
-import org.blendee.support.QueryOptions;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.Row;
 import org.blendee.support.SelectOffer;
@@ -154,7 +156,9 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	private Consumer<?> havingClauseConsumer;
 
-	private boolean useAggregate;
+	private StatementSource statementSource;
+
+	private boolean rowMode = true;
 
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
@@ -233,7 +237,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 		SelectOffers offers = function.offer(select);
 
-		if (!useAggregate) {
+		if (rowMode) {
 			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
 			offers.get().forEach(c -> c.accept(myOptimizer));
 			optimizer = myOptimizer;
@@ -256,7 +260,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
 		if (selectClauseFunction == function) return this;
 
-		useAggregate();
+		quitRowMode();
 
 		SelectOffers offers = function.offer(select);
 
@@ -336,7 +340,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public GenericQuery groupBy(GroupByClause clause) {
-		useAggregate();
+		quitRowMode();
 		if (groupByClause != null)
 			throw new IllegalStateException("既に GROUP BY 句がセットされています");
 		groupByClause = clause;
@@ -421,7 +425,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public GenericRowIterator execute(QueryOption... options) {
+	public GenericRowIterator execute(Effector... options) {
 		return manager.select(getOptimizer(), whereClause, orderByClause, options);
 	}
 
@@ -431,72 +435,111 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public Optional<GenericRow> willUnique(QueryOption... options) {
+	public Optional<GenericRow> willUnique(Effector... options) {
 		return getUnique(execute(options));
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(String... primaryKeyMembers) {
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(Number... primaryKeyMembers) {
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
 	public Optional<GenericRow> fetch(Bindable... primaryKeyMembers) {
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	}
 
 	@Override
-	public Optional<GenericRow> fetch(QueryOptions options, String... primaryKeyMembers) {
-		checkAggregate();
+	public Optional<GenericRow> fetch(Effectors options, String... primaryKeyMembers) {
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
-	public Optional<GenericRow> fetch(QueryOptions options, Number... primaryKeyMembers) {
-		checkAggregate();
+	public Optional<GenericRow> fetch(Effectors options, Number... primaryKeyMembers) {
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
-	public Optional<GenericRow> fetch(QueryOptions options, Bindable... primaryKeyMembers) {
-		checkAggregate();
+	public Optional<GenericRow> fetch(Effectors options, Bindable... primaryKeyMembers) {
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	}
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) {
-		QueryBuilder builder = aggregateInternal();
+		statementSource = aggregateInternal(null);
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) {
+		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
 			}
 		}
+
 	}
 
 	@Override
-	public ResultSetIterator aggregate() {
-		QueryBuilder builder = aggregateInternal();
-		return new ResultSetIterator(builder.toString(), builder);
+	public void aggregate(Effectors options, Consumer<Result> consumer) {
+		statementSource = aggregateInternal(options.get());
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) {
+			try (BlenResultSet result = statement.executeQuery()) {
+				consumer.accept(result);
+			}
+
+		}
+
+	}
+
+	@Override
+	public ResultSetIterator aggregate(Effector... options) {
+		statementSource = aggregateInternal(options);
+		return new ResultSetIterator(statementSource.getSQL(), statementSource.getComplementer());
 	}
 
 	@Override
 	public int count() {
-		checkAggregate();
+		checkRowMode();
 		return manager.count(whereClause);
 	}
 
 	@Override
 	public Criteria getCriteria() {
 		return whereClause.replicate();
+	}
+
+	@Override
+	public void quitRowMode() {
+		rowMode = false;
+	}
+
+	@Override
+	public boolean rowMode() {
+		return rowMode;
+	}
+
+	@Override
+	public StatementSource getStatementSource(Effector... options) {
+		if (rowMode) {
+			statementSource = new DataAccessHelper().getSelector(
+				getOptimizer(),
+				whereClause,
+				orderByClause,
+				options).buildStatementSource();
+		} else {
+			statementSource = aggregateInternal(null);
+		}
+
+		return statementSource;
 	}
 
 	/**
@@ -565,18 +608,9 @@ public class GenericQuery extends java.lang.Object implements Query {
 		orderByClauseFunction = null;
 		whereClauseConsumer = null;
 		havingClauseConsumer = null;
-		useAggregate = false;
+		statementSource = null;
+		rowMode = true;
 		return this;
-	}
-
-	@Override
-	public void useAggregate() {
-		useAggregate = true;
-	}
-
-	@Override
-	public boolean usesAggregate() {
-		return useAggregate;
 	}
 
 	/**
@@ -597,20 +631,23 @@ public class GenericQuery extends java.lang.Object implements Query {
 		return optimizer;
 	}
 
-	private QueryBuilder aggregateInternal() {
+	private StatementSource aggregateInternal(Effector[] effectors) {
 		QueryBuilder builder = new QueryBuilder(new FromClause(tablePath));
+
 		builder.setSelectClause(selectClause);
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
-		return builder;
+		builder.addEffector(effectors);
+
+		return builder.getStatementSource();
 	}
 
-	private void checkAggregate() /*++'++*/ {/*++'++*/
-		if (useAggregate) throw new IllegalStateException("集計モードでは実行できない処理です");
-		/*++'++*/}/*++'++*/
+	private void checkRowMode() {
+		if (rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+	}
 
 	private static Class<?> getUsing(StackTraceElement element) {
 		try {
@@ -725,7 +762,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		 */
 		public GenericExecutor<M> intercept() {
 			if (query != null) throw new IllegalStateException(path().getSchemaName() + " から直接使用することはできません");
-			if (getRoot().usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			if (getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new GenericExecutor<>(this);
 		}
 

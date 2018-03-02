@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.StatementSource;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
@@ -14,6 +15,8 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 public class QueryBuilder implements PreparedStatementComplementer {
 
 	private final FromClause fromClause;
+
+	private final List<Effector> effectors = new LinkedList<>();
 
 	private SelectClause selectClause = new SelectAllColumnClause();
 
@@ -24,8 +27,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	private Criteria havingClause = CriteriaFactory.create();
 
 	private OrderByClause orderClause = new OrderByClause();
-
-	private SQLAdjuster adjuster = SQLAdjuster.DISABLED_ADJUSTER;
 
 	private String query;
 
@@ -124,20 +125,13 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * {@link SQLAdjuster} を設定します。
-	 * @param adjuster {@link SQLAdjuster}
+	 * {@link Effector} を設定します。
+	 * @param effectors {@link Effector}
 	 */
-	public synchronized void setAdjuster(SQLAdjuster adjuster) {
-		this.adjuster = adjuster;
-		//範囲指定部分を変更しただけのケースがあるので、ここではキャッシュクリアをしない
-	}
-
-	/**
-	 * 現在設定されている {@link SQLAdjuster} を返します。
-	 * @return {@link SQLAdjuster}
-	 */
-	public synchronized SQLAdjuster getAdjuster() {
-		return adjuster;
+	public synchronized void addEffector(Effector... effectors) {
+		for (Effector effector : effectors) {
+			this.effectors.add(effector);
+		}
 	}
 
 	/**
@@ -167,19 +161,6 @@ public class QueryBuilder implements PreparedStatementComplementer {
 			havingClause.setKeyword("HAVING");
 			whereClause.setKeyword("WHERE");
 
-			if (adjuster.canBuildQueryParts()) {
-				//SQLAdjuster 自身で組み立てる場合、キャッシュしない
-				//SQLAdjuster 内部の値が更新されただけの場合
-				//ここを通れないので調節ができないため
-				return adjuster.buildQueryParts(
-					selectClause.toString(joined).trim(),
-					fromClause.toString().trim(),
-					whereClause.toString(joined).trim(),
-					groupClause.toString(joined).trim(),
-					havingClause.toString(joined).trim(),
-					orderClause.toString(joined).trim());
-			}
-
 			List<String> clauses = new ArrayList<String>(6);
 			addClause(clauses, selectClause.toString(joined));
 			addClause(clauses, fromClause.toString());
@@ -190,13 +171,26 @@ public class QueryBuilder implements PreparedStatementComplementer {
 			query = String.join(" ", clauses).trim();
 		}
 
-		return adjuster.adjustSQL(query);
+		String currentQuery = query;
+		for (Effector effector : effectors) {
+			currentQuery = effector.effect(currentQuery);
+		}
+
+		return currentQuery;
 	}
 
 	@Override
 	public synchronized int complement(BlenPreparedStatement statement) {
 		int complemented = whereClause.getComplementer().complement(statement);
 		return complemented + havingClause.getComplementer(complemented).complement(statement);
+	}
+
+	/**
+	 * {@link StatementSource} を取得します。
+	 * @return {@link StatementSource}
+	 */
+	public StatementSource getStatementSource() {
+		return new StatementSource(toString(), this);
 	}
 
 	private Criteria prepareCriteria(Criteria oldCriteria, Criteria newCriteria) {

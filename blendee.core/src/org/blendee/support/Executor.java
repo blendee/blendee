@@ -1,16 +1,16 @@
 package org.blendee.support;
 
-import org.blendee.orm.QueryOption;
-import org.blendee.orm.RowLockOption;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Effector;
+import org.blendee.sql.RowLockOption;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
  * {@link Query} クラスのインスタンスは、複数のスレッドから同時にアクセスされることを前提としているため、トランザクションごとに、設定された条件はクリアされてしまいます。<br>
  * 一処理内で、同じ条件で複数回検索を実行したい場合を考慮し、検索実行時状態を保存しておくのが、このクラスのインスタンスの役割です。
  * @param <I> Iterator
- * @param <R> Element
+ * @param <R> Row
  */
 public interface Executor<I, R> {
 
@@ -27,7 +27,7 @@ public interface Executor<I, R> {
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @return 検索結果
 	 */
-	I execute(QueryOption... options);
+	I execute(Effector... options);
 
 	/**
 	 * このインスタンスが持つ検索条件を使用して、検索を実行します。<br>
@@ -44,7 +44,7 @@ public interface Executor<I, R> {
 	 * @return {@link Row}
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
-	R willUnique(QueryOption... options);
+	R willUnique(Effector... options);
 
 	/**
 	 * 主キーから Row 一件を選択するメソッドです。<br>
@@ -77,7 +77,7 @@ public interface Executor<I, R> {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(QueryOptions options, String... primaryKeyMembers);
+	R fetch(Effectors options, String... primaryKeyMembers);
 
 	/**
 	 * 主キーから Row 一件を選択するメソッドです。<br>
@@ -86,7 +86,7 @@ public interface Executor<I, R> {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(QueryOptions options, Number... primaryKeyMembers);
+	R fetch(Effectors options, Number... primaryKeyMembers);
 
 	/**
 	 * 主キーから {@link Row} 一件を選択するメソッドです。<br>
@@ -95,7 +95,7 @@ public interface Executor<I, R> {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(QueryOptions options, Bindable... primaryKeyMembers);
+	R fetch(Effectors options, Bindable... primaryKeyMembers);
 
 	/**
 	 * このインスタンスが持つ検索条件に合致するレコード件数を取得します。

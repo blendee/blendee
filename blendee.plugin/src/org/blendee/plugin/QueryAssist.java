@@ -13,9 +13,18 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -33,7 +42,63 @@ public class QueryAssist implements IJavaCompletionProposalComputer {
 	}
 
 	@Override
-	public void sessionEnded() {}
+	public void sessionEnded() {
+		ASTParser parser = ASTParser.newParser(AST.JLS9);
+		parser.setSource(unit);
+
+		CompilationUnit unitNode = (CompilationUnit) parser.createAST(null);
+		unitNode.recordModifications();
+
+		ASTRewrite rewrite = ASTRewrite.create(unitNode.getAST());
+
+		ASTNode replacement = rewrite.createStringPlaceholder("r -> r.of()", ASTNode.LAMBDA_EXPRESSION);
+
+		unitNode.accept(new ASTVisitor() {
+
+			@Override
+			public boolean preVisit2(ASTNode node) {
+				int start = node.getStartPosition();
+				int length = node.getLength();
+
+				System.out.println(offset + " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + start);
+				System.out.println(node.getClass());
+				System.out.println(node);
+				System.out.println(offset + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< " + (start + length));
+
+				return true;
+			}
+
+			@Override
+			public boolean visit(MethodInvocation node) {
+				System.out.println("----------------------:" + node);
+				return true;
+			}
+
+			@Override
+			public boolean visit(SimpleName node) {
+				System.out.println("!!!!!!!!!!!!!!!!!!!!:" + node);
+				if (!node.toString().equals("function")) return true;
+
+				System.out.println("####################:" + node);
+				System.out.println("####################:" + replacement);
+				rewrite.replace(node, replacement, null);
+
+				try {
+					rewrite.rewriteAST().apply(document);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return true;
+			}
+		});
+	}
+
+	private ICompilationUnit unit;
+
+	private IDocument document;
+
+	private int offset;
 
 	@Override
 	public List<ICompletionProposal> computeCompletionProposals(
@@ -47,9 +112,11 @@ public class QueryAssist implements IJavaCompletionProposalComputer {
 
 		JavaContentAssistInvocationContext javaContext = (JavaContentAssistInvocationContext) context;
 
-		ICompilationUnit unit = javaContext.getCompilationUnit();
+		unit = javaContext.getCompilationUnit();
 
-		int offset = context.getInvocationOffset();
+		document = javaContext.getDocument();
+
+		offset = context.getInvocationOffset();
 
 		TargetInfo targetInfo;
 		IJavaElement[] elements;

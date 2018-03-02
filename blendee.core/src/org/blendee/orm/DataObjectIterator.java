@@ -10,13 +10,14 @@ import org.blendee.internal.U;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SelectedValuesIterator;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Effector;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 
 /**
  * 検索結果から {@link DataObject} を生成するクラスです。
  * @author 千葉 哲嗣
- * @see DataAccessHelper#getDataObjects(Optimizer, Criteria, OrderByClause, QueryOption...)
+ * @see DataAccessHelper#getDataObjects(Optimizer, Criteria, OrderByClause, Effector...)
  * @see DataAccessHelper#regetDataObjects(Optimizer)
  */
 public class DataObjectIterator

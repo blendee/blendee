@@ -11,68 +11,6 @@ import java.util.List;
 public class SelectClause extends SimpleQueryClause<SelectClause> {
 
 	/**
-	 * 'SELECT *' となる SELECT 句です。
-	 */
-	public static final SelectClause SELECT_ALL_CLAUSE = new SelectClause() {
-
-		@Override
-		public String toString(boolean joining) {
-			return "SELECT * ";
-		}
-
-		@Override
-		public SelectClause replicate() {
-			return this;
-		}
-
-		@Override
-		void addColumn(Column column) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		void addTemplate(String template) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int hashCode() {
-			return System.identityHashCode(this);
-		}
-	};
-
-	/**
-	 * 'SELECT COUNT(*)' となる SELECT 句です。
-	 */
-	public static final SelectClause COUNT_CLAUSE = new SelectClause() {
-
-		@Override
-		public String toString(boolean joining) {
-			return "SELECT COUNT(*) ";
-		}
-
-		@Override
-		public SelectClause replicate() {
-			return this;
-		}
-
-		@Override
-		void addColumn(Column column) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		void addTemplate(String template) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int hashCode() {
-			return System.identityHashCode(this);
-		}
-	};
-
-	/**
 	 * この SELECT 句に新しいカラムを追加します。
 	 * @param columns 追加するカラム
 	 */

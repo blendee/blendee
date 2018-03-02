@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +27,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 
 	private final Map<String, String> fragmentMap = new HashMap<>();
 
-	private SQLAdjuster adjuster = SQLAdjuster.DISABLED_ADJUSTER;
+	private final List<Effector> adjusters = new LinkedList<>();
 
 	/**
 	 * パラメータの表すテーブルに対する更新を行うインスタンスを生成します。
@@ -82,17 +84,23 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * DML に対する微調整をするための {@link SQLAdjuster} をセットします。
-	 * @param adjuster SQL 文を調整する {@link SQLAdjuster}
+	 * DML に対する微調整をするための {@link Effector} をセットします。
+	 * @param effector SQL 文を調整する {@link Effector}
 	 */
-	public void setSQLAdjuster(SQLAdjuster adjuster) {
-		this.adjuster = adjuster;
+	public void addEffector(Effector effector) {
+		adjusters.add(effector);
 	}
 
 	@Override
 	public String toString() {
 		if (columns.size() == 0) throw new IllegalStateException("保存対象が設定されていません");
-		return adjuster.adjustSQL(buildSQL());
+
+		String sql = build();
+		for (Effector adjuster : adjusters) {
+			sql = adjuster.effect(sql);
+		}
+
+		return sql;
 	}
 
 	@Override
@@ -121,10 +129,10 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	/**
-	 * 更新用 SQL 文を生成します。
-	 * @return 更新用 SQL 文
+	 * 更新用 DML 文を生成します。
+	 * @return 更新用 DML 文
 	 */
-	protected abstract String buildSQL();
+	protected abstract String build();
 
 	/**
 	 * このカラム名に対応する SQL 文の一部かもしくはプレースホルダ '?' を返します。

@@ -7,6 +7,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.StatementSource;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
@@ -14,7 +15,7 @@ import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.SQLAdjuster;
+import org.blendee.sql.Effector;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.WindowFunction;
 
@@ -37,17 +38,9 @@ public class Selector {
 
 	private final Optimizer optimizer;
 
-	private final String myForUpdateClause;
-
-	private final String myNowaitClause;
-
 	private final List<WindowFunctionContainer> windowFunctions = new LinkedList<>();
 
 	private final Object lock = new Object();
-
-	private boolean forUpdate = false;
-
-	private boolean nowait = false;
 
 	/**
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
@@ -67,11 +60,6 @@ public class Selector {
 		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
 		builder = new QueryBuilder(new FromClause(path));
 		this.optimizer = optimizer;
-
-		SelectorConfigure config = ContextManager.get(SelectorConfigure.class);
-
-		myForUpdateClause = config.getForUpdateClause();
-		myNowaitClause = config.getNowaitClause();
 	}
 
 	/**
@@ -99,11 +87,11 @@ public class Selector {
 	}
 
 	/**
-	 * {@link SQLAdjuster} を設定します。
-	 * @param adjuster {@link SQLAdjuster}
+	 * {@link Effector} を設定します。
+	 * @param effectors {@link Effector}
 	 */
-	public void setSQLAdjuster(SQLAdjuster adjuster) {
-		builder.setAdjuster(adjuster);
+	public void addEffector(Effector... effectors) {
+		builder.addEffector(effectors);
 	}
 
 	/**
@@ -118,65 +106,12 @@ public class Selector {
 	}
 
 	/**
-	 * このインスタンスが生成する SELECT 文に FOR UPDATE 句を付加します。
-	 * @param forUpdate FOR UPDATE 句を使用する場合、 true
-	 */
-	public void forUpdate(boolean forUpdate) {
-		synchronized (lock) {
-			this.forUpdate = forUpdate;
-		}
-	}
-
-	/**
-	 * このインスタンスが FOR UPDATE 句を使用するかどうか検査します。
-	 * @return FOR UPDATE 句を使用する場合、 true
-	 */
-	public boolean isForUpdate() {
-		synchronized (lock) {
-			return forUpdate;
-		}
-	}
-
-	/**
-	 * このインスタンスが生成する SELECT 文に NOWAIT 句を付加します。
-	 * @param nowait NOWAIT 句を使用する場合、 true
-	 */
-	public void nowait(boolean nowait) {
-		synchronized (lock) {
-			this.nowait = nowait;
-		}
-	}
-
-	/**
-	 * このインスタンスが NOWAIT 句を使用するかどうか検査します。
-	 * @return NOWAIT 句を使用する場合、 true
-	 */
-	public boolean isNowait() {
-		synchronized (lock) {
-			return nowait;
-		}
-	}
-
-	/**
 	 * 検索を実行します。
 	 * @return 検索結果
 	 */
 	public SelectedValuesIterator select() {
-		String sql;
 		SelectClause clause = getSelectClause();
-		synchronized (lock) {
-			windowFunctions.forEach(container -> {
-				clause.add(container.function, container.alias);
-			});
-
-			builder.setSelectClause(clause);
-
-			sql = builder.toString();
-			if (forUpdate) {
-				sql += myForUpdateClause;
-				if (nowait) sql += myNowaitClause;
-			}
-		}
+		String sql = buildSQL(clause);
 
 		BlenStatement statement = manager.getConnection().getStatement(sql, builder);
 
@@ -185,6 +120,14 @@ public class Selector {
 			statement.executeQuery(),
 			clause.getColumns(),
 			optimizer);
+	}
+
+	/**
+	 * SQL とプレースホルダの値をセットします。
+	 * @return {@link StatementSource}
+	 */
+	public StatementSource buildStatementSource() {
+		return new StatementSource(buildSQL(getSelectClause()), builder);
 	}
 
 	@Override
@@ -198,6 +141,21 @@ public class Selector {
 	 */
 	protected SelectClause getSelectClause() {
 		return optimizer.getOptimizedSelectClause();
+	}
+
+	private String buildSQL(SelectClause clause) {
+		String sql;
+		synchronized (lock) {
+			windowFunctions.forEach(container -> {
+				clause.add(container.function, container.alias);
+			});
+
+			builder.setSelectClause(clause);
+
+			sql = builder.toString();
+		}
+
+		return sql;
 	}
 
 	private static class WindowFunctionContainer {

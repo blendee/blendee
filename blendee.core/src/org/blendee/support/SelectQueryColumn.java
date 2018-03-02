@@ -39,7 +39,7 @@ public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements Sele
 	 * @return {@link SelectOffer}
 	 */
 	public SelectOffer AS(String alias) {
-		relationship.getRoot().useAggregate();
+		relationship.getRoot().quitRowMode();
 		expression = new ColumnExpression(column);
 		expression.appendAlias(alias);
 		return this;

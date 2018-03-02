@@ -67,13 +67,8 @@ public class SynchronizedQueryBuilder extends QueryBuilder {
 	}
 
 	@Override
-	public synchronized void setAdjuster(SQLAdjuster adjuster) {
-		super.setAdjuster(adjuster);
-	}
-
-	@Override
-	public synchronized SQLAdjuster getAdjuster() {
-		return super.getAdjuster();
+	public synchronized void addEffector(Effector... effectors) {
+		super.addEffector(effectors);
 	}
 
 	@Override

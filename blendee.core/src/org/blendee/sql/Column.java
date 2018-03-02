@@ -16,7 +16,7 @@ import org.blendee.jdbc.DataTypeConverter;
  */
 public class Column implements Comparable<Column> {
 
-	//!! このクラスに新たにメソッドを追加する場合は、 PhantomColumn にも追加すること !!
+	//!! このクラスに新たにメソッドを追加する場合は、サブクラスにも追加すること !!
 
 	/**
 	 * 空配列
@@ -196,7 +196,7 @@ public class Column implements Comparable<Column> {
 
 	void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
-		if (!relationship.getRoot().equals(sqlRoot))
-			throw new IllegalStateException(complementedName + " は SQL 文の Relationship のツリーに含まれないカラムです");
+		if (!getRelationship().getRoot().equals(sqlRoot))
+			throw new IllegalStateException(getComplementedName() + " は SQL 文の Relationship のツリーに含まれないカラムです");
 	}
 }

@@ -49,7 +49,7 @@ public class UpdateDMLBuilder extends Updater {
 	}
 
 	@Override
-	protected String buildSQL() {
+	protected String build() {
 		String[] columnNames = getColumnNames();
 		List<String> list = new LinkedList<>();
 		for (int i = 0; i < columnNames.length; i++) {

@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
+import org.blendee.jdbc.StatementSource;
+import org.blendee.sql.Effector;
 import org.blendee.sql.Relationship;
 
 /**
@@ -39,15 +41,16 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	LogicalOperators getHavingLogicalOperators();
 
 	/**
-	 * 集合関数を使用するモードになります。
+	 * {@Row} で検索結果を受け取ることができなくなります。<br>
+	 * 代わりに{@link #aggregate} で結果を取得することになります。
 	 */
-	void useAggregate();
+	void quitRowMode();
 
 	/**
-	 * 集合関数を使用するモードかどうかを判定します。
-	 * @return 集合関数を使用するモードかどうか
+	 * 検索結果として {@Row} を使用するモードかどうかを判定します。
+	 * @return {@Row} を使用するモードかどうか
 	 */
-	boolean usesAggregate();
+	boolean rowMode();
 
 	/**
 	 * 集合関数を含む検索を実行します。
@@ -57,7 +60,22 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * 集合関数を含む検索を実行します。
+	 * @param options
+	 * @param consumer {@link Consumer}
+	 */
+	void aggregate(Effectors options, Consumer<Result> consumer);
+
+	/**
+	 * 集合関数を含む検索を実行します。
+	 * @param options
 	 * @return {@link ResultSetIterator}
 	 */
-	ResultSetIterator aggregate();
+	ResultSetIterator aggregate(Effector... options);
+
+	/**
+	 * {@link StatementSource} を取得します。
+	 * @param options
+	 * @return {@link StatementSource}
+	 */
+	StatementSource getStatementSource(Effector... options);
 }

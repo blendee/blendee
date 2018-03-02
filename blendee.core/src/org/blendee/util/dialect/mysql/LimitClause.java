@@ -1,13 +1,12 @@
 package org.blendee.util.dialect.mysql;
 
-import org.blendee.orm.SQLAdjusterOption;
-import org.blendee.sql.SQLAdjuster;
+import org.blendee.sql.Effector;
 
 /**
- * 検索結果を制限する SQL に加工する {@link SQLAdjuster} です。
+ * 検索結果を制限する SQL に加工する {@link Effector} です。
  * @author 千葉 哲嗣
  */
-public class LimitClause implements SQLAdjusterOption {
+public class LimitClause implements Effector {
 
 	private final String clause;
 
@@ -21,7 +20,7 @@ public class LimitClause implements SQLAdjusterOption {
 	}
 
 	@Override
-	public String adjustSQL(String sql) {
-		return clause;
+	public String effect(String sql) {
+		return sql + clause;
 	}
 }

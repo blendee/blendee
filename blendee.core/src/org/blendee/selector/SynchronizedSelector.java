@@ -3,7 +3,7 @@ package org.blendee.selector;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SQLAdjuster;
+import org.blendee.sql.Effector;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -45,28 +45,8 @@ public class SynchronizedSelector extends Selector {
 	}
 
 	@Override
-	public synchronized void setSQLAdjuster(SQLAdjuster adjuster) {
-		super.setSQLAdjuster(adjuster);
-	}
-
-	@Override
-	public synchronized void forUpdate(boolean forUpdate) {
-		super.forUpdate(forUpdate);
-	}
-
-	@Override
-	public synchronized boolean isForUpdate() {
-		return super.isForUpdate();
-	}
-
-	@Override
-	public synchronized void nowait(boolean nowait) {
-		super.nowait(nowait);
-	}
-
-	@Override
-	public synchronized boolean isNowait() {
-		return super.isNowait();
+	public synchronized void addEffector(Effector... effectors) {
+		super.addEffector(effectors);
 	}
 
 	@Override

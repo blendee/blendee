@@ -16,7 +16,6 @@ import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper;
-import org.blendee.orm.QueryOption;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Bindable;
@@ -24,6 +23,7 @@ import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
+import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
@@ -82,7 +82,7 @@ public class OneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public Many<O, M> execute(QueryOption... options) {
+	public Many<O, M> execute(Effector... options) {
 		return new Many<>(
 			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order, options), route),
 			null,
@@ -96,7 +96,7 @@ public class OneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public Optional<One<O, M>> willUnique(QueryOption... options) {
+	public Optional<One<O, M>> willUnique(Effector... options) {
 		return getUnique(execute(options));
 	}
 
@@ -112,21 +112,21 @@ public class OneToManyExecutor<O extends Row, M>
 
 	@Override
 	public Optional<One<O, M>> fetch(Bindable... primaryKeyMembers) {
-		return fetch(QueryOptions.EMPTY_OPTIONS, primaryKeyMembers);
+		return fetch(Effectors.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	@Override
-	public Optional<One<O, M>> fetch(QueryOptions options, String... primaryKeyMembers) {
+	public Optional<One<O, M>> fetch(Effectors options, String... primaryKeyMembers) {
 		return fetch(options, BindableConverter.convert(primaryKeyMembers));
 	}
 
 	@Override
-	public Optional<One<O, M>> fetch(QueryOptions options, Number... primaryKeyMembers) {
+	public Optional<One<O, M>> fetch(Effectors options, Number... primaryKeyMembers) {
 		return fetch(options, BindableConverter.convert(primaryKeyMembers));
 	}
 
 	@Override
-	public Optional<One<O, M>> fetch(QueryOptions options, Bindable... primaryKeyMembers) {
+	public Optional<One<O, M>> fetch(Effectors options, Bindable... primaryKeyMembers) {
 		Column[] columns = self.getRelationship().getPrimaryKeyColumns();
 
 		if (columns.length != primaryKeyMembers.length)
@@ -144,7 +144,7 @@ public class OneToManyExecutor<O extends Row, M>
 						optimizer,
 						criteria,
 						order,
-						QueryOptions.care(options).get()),
+						Effectors.care(options).get()),
 					route),
 				null,
 				self,

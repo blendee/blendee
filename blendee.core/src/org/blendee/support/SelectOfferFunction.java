@@ -23,7 +23,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 	/**
 	 * SELECT 句対象を束ねるクラスです。
 	 */
-	static class SelectOffers {
+	static class SelectOffers implements SelectOffer {
 
 		private final List<ColumnExpression> expressions = new LinkedList<>();
 
@@ -53,6 +53,11 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 		 */
 		public List<ColumnExpression> get() {
 			return new LinkedList<>(expressions);
+		}
+
+		@Override
+		public void accept(SelectOffers offers) {
+			expressions.forEach(e -> offers.add(e));
 		}
 	}
 }

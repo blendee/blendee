@@ -13,8 +13,9 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ResultSetIterator;
+import org.blendee.jdbc.StatementSource;
+import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
-import org.blendee.orm.QueryOption;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
@@ -22,7 +23,9 @@ import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.sql.Effector;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.FromClause;
@@ -42,7 +45,7 @@ import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
-import org.blendee.support.QueryOptions;
+import org.blendee.support.Effectors;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -158,7 +161,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private Consumer<?> havingClauseConsumer;
 
-	private boolean useAggregate;
+	private boolean rowMode = true;
 
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -233,7 +236,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		SelectOffers offers = function.offer(select);
 
-		if (!useAggregate) /*++'++*/{/*++'++*/
+		if (rowMode) /*++'++*/{/*++'++*/
 			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
 			offers.get().forEach(c -> c.accept(myOptimizer));
 			optimizer = myOptimizer;
@@ -248,7 +251,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * SELECT 句を記述します。
+	 * DISTINCT を使用した SELECT 句を記述します。
 	 * @param function
 	 * @return この '{'@link Query'}'
 	 */
@@ -256,8 +259,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
-		useAggregate();
-		
+		quitRowMode();
+
 		SelectOffers offers = function.offer(select);
 
 		SelectDistinctClause mySelectClause = new SelectDistinctClause();
@@ -265,6 +268,27 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		selectClause = mySelectClause;
 
 		selectClauseFunction = function;
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * COUNT(*) を使用した SELECT 句を記述します。
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_COUNT() /*++'++*/{/*++'++*/
+		quitRowMode();
+		selectClause = new SelectCountClause();
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * COUNT(*) AS alias を使用した SELECT 句を記述します。
+	 * @param alias 別名
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_COUNT_AS(String alias) /*++'++*/{/*++'++*/
+		quitRowMode();
+		selectClause = new SelectCountClause(alias);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -336,7 +360,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ groupBy(GroupByClause clause) /*++'++*/{/*++'++*/
-		useAggregate();
+		quitRowMode();
 		if (groupByClause != null)
 			throw new IllegalStateException("既に GROUP BY 句がセットされています");
 		groupByClause = clause;
@@ -417,13 +441,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), whereClause, orderByClause);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(QueryOption... options) /*++'++*/{/*++'++*/
-		checkAggregate();
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(Effector... options) /*++'++*/{/*++'++*/
+		checkRowMode();
 		return manager.select(getOptimizer(), whereClause, orderByClause, options);
 	/*++'++*/}/*++'++*/
 
@@ -433,51 +457,51 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique(QueryOption... options) /*++'++*/{/*++'++*/
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique(Effector... options) /*++'++*/{/*++'++*/
 		return getUnique(execute(options));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+		checkRowMode();
 		return manager.select(getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(QueryOptions options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkAggregate();
+	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+		checkRowMode();
 		return manager.select(getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		QueryBuilder builder = aggregateInternal();
+		StatementSource statementSource = aggregateInternal(null);
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) /*++'++*/{/*++'++*/
+		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
 				consumer.accept(result);
 			/*++'++*/}/*++'++*/
@@ -485,20 +509,44 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
-		QueryBuilder builder = aggregateInternal();
-		return new ResultSetIterator(builder.toString(), builder);
+	public void aggregate(Effectors options, Consumer<Result> consumer) /*++'++*/{/*++'++*/
+		StatementSource statementSource = aggregateInternal(options.get());
+		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) /*++'++*/{/*++'++*/
+			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
+				consumer.accept(result);
+			/*++'++*/}/*++'++*/
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public ResultSetIterator aggregate(Effector... options) /*++'++*/{/*++'++*/
+		StatementSource statementSource = aggregateInternal(options);
+		return new ResultSetIterator(statementSource.getSQL(), statementSource.getComplementer());
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public int count() /*++'++*/{/*++'++*/
-		checkAggregate();
+		checkRowMode();
 		return manager.count(whereClause);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Criteria getCriteria() /*++'++*/{/*++'++*/
 		return whereClause.replicate();
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public StatementSource getStatementSource(Effector... options) /*++'++*/{/*++'++*/
+		if (rowMode) /*++'++*/{/*++'++*/
+			return new DataAccessHelper().getSelector(
+				getOptimizer(),
+				whereClause,
+				orderByClause,
+				options).buildStatementSource();
+		/*++'++*/}/*++'++*/
+
+		return aggregateInternal(options);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -567,18 +615,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		orderByClauseFunction = null;
 		whereClauseConsumer = null;
 		havingClauseConsumer = null;
-		useAggregate = false;
+		rowMode = true;
 		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void useAggregate() /*++'++*/{/*++'++*/
-		useAggregate = true;
+	public void quitRowMode() /*++'++*/{/*++'++*/
+		rowMode = false;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public boolean usesAggregate() /*++'++*/{/*++'++*/
-		return useAggregate;
+	public boolean rowMode() /*++'++*/{/*++'++*/
+		return rowMode;
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -617,19 +665,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
-	private QueryBuilder aggregateInternal() /*++'++*/{/*++'++*/
+	private StatementSource aggregateInternal(Effector[] effectors) /*++'++*/{/*++'++*/
 		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
+
 		builder.setSelectClause(selectClause);
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
-		return builder;
+		builder.addEffector(effectors);
+
+		return builder.getStatementSource();
 	/*++'++*/}/*++'++*/
 
-	private void checkAggregate() /*++'++*/{/*++'++*/
-		if (usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
+	private void checkRowMode() /*++'++*/{/*++'++*/
+		if (rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -733,7 +784,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 */
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
-			if (getRoot().usesAggregate()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			if (getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new O2MExecutor<>(this);
 		/*++'++*/}/*++'++*/
 

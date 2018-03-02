@@ -2,7 +2,6 @@ package org.blendee.support;
 
 import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
-import static org.blendee.support.QueryRelationshipConstants.EMPTY_COLUMNS;
 import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
@@ -15,6 +14,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.Direction;
+import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.TemplateColumn;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -213,7 +213,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer} AS
 	 */
 	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
-		getRoot().useAggregate();
+		getRoot().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
 		for (int i = 0; i < selectColumns.length; i++) {
@@ -230,7 +230,7 @@ public interface QueryRelationship {
 	 * @return {@link AscDesc} ASC か DESC
 	 */
 	default AscDesc fn(String template, OrderByQueryColumn<?>... orderByColumns) {
-		getRoot().useAggregate();
+		getRoot().quitRowMode();
 
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
@@ -250,8 +250,22 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators} AND か OR
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> fn(String template, HavingQueryColumn<O> column) {
-		getRoot().useAggregate();
+		getRoot().quitRowMode();
 		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));
+	}
+
+	/**
+	 * SELECT 句に * を追加します。
+	 * @return {@link AliasOffer} AS
+	 */
+	default SelectOffers asterisk() {
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
+
+		SelectOffers offers = new SelectOffers();
+		offers.add(new ColumnExpression("{0}", columns));
+
+		return offers;
 	}
 
 	/**
@@ -260,8 +274,9 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer} AS
 	 */
 	default AliasOffer any(String expression) {
-		getRoot().useAggregate();
-		return new AliasOffer(new ColumnExpression(expression, EMPTY_COLUMNS));
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(getRelationship(), expression, false) };
+		return new AliasOffer(new ColumnExpression("{0}", columns));
 	}
 
 	/**
@@ -270,13 +285,14 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer} AS
 	 */
 	default AliasOffer any(Number number) {
-		getRoot().useAggregate();
-		return new AliasOffer(new ColumnExpression(number.toString(), EMPTY_COLUMNS));
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
+		return new AliasOffer(new ColumnExpression("{0}", columns));
 	}
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext} 
+	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext}
 	 */
 	QueryCriteriaContext getContext();
 

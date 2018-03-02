@@ -48,8 +48,7 @@ public interface Row extends Updatable {
 	default void insert() {
 		new DataAccessHelper().insert(
 			getTablePath(),
-			this,
-			null);
+			this);
 	}
 
 	/**
@@ -60,8 +59,7 @@ public interface Row extends Updatable {
 		new DataAccessHelper().insert(
 			statement,
 			getTablePath(),
-			this,
-			null);
+			this);
 	}
 
 	/**

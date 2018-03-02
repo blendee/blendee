@@ -4,12 +4,12 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
-import org.blendee.orm.QueryOption;
-import org.blendee.orm.RowLockOption;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Effector;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.RowLockOption;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
 
@@ -38,30 +38,12 @@ public class GenericManager extends java.lang.Object implements RowManager<Gener
 	public GenericRowIterator select(
 		Criteria criteria,
 		OrderByClause order,
-		QueryOption... options) {
+		Effector... options) {
 		return select(
 			new SimpleOptimizer(getTablePath()),
 			criteria,
 			order,
 			options);
-	}
-
-	/**
-	 * パラメータの条件にマッチするレコードを検索し、 {@link GenericRowIterator} として返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。<br>
-	 * {@link RowLockOption} には {@link RowLockOption#NONE} が使用されます。
-	 * @param criteria WHERE 句となる条件
-	 * @param order  ORDER 句
-	 * @return {@link RowIterator}
-	 */
-	public GenericRowIterator select(
-		Criteria criteria,
-		OrderByClause order) {
-		return select(
-			criteria,
-			order,
-			null,
-			RowLockOption.NONE);
 	}
 
 	/**
@@ -76,33 +58,13 @@ public class GenericManager extends java.lang.Object implements RowManager<Gener
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		QueryOption... options) {
+		Effector... options) {
 		return new GenericRowIterator(
 			new DataAccessHelper().getDataObjects(
 				optimizer,
 				criteria,
 				order,
 				options));
-	}
-
-	/**
-	 * パラメータの条件にマッチするレコードを検索し、 {@link GenericRowIterator} として返します。<br>
-	 * {@link RowLockOption} には {@link RowLockOption#NONE} が使用されます。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param criteria WHERE 句となる条件
-	 * @param order  ORDER 句
-	 * @return {@link RowIterator}
-	 */
-	public GenericRowIterator select(
-		Optimizer optimizer,
-		Criteria criteria,
-		OrderByClause order) {
-		return select(
-			optimizer,
-			criteria,
-			order,
-			null,
-			RowLockOption.NONE);
 	}
 
 	@Override
@@ -122,7 +84,7 @@ public class GenericManager extends java.lang.Object implements RowManager<Gener
 
 		/**
 		 * 唯一のコンストラクタです。
-		 * @param iterator 
+		 * @param iterator
 		 */
 		private GenericRowIterator(
 			DataObjectIterator iterator) {
