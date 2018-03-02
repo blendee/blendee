@@ -784,7 +784,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 */
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
-			if (getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new O2MExecutor<>(this);
 		/*++'++*/}/*++'++*/
 

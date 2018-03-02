@@ -762,7 +762,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		 */
 		public GenericExecutor<M> intercept() {
 			if (query != null) throw new IllegalStateException(path().getSchemaName() + " から直接使用することはできません");
-			if (getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new GenericExecutor<>(this);
 		}
 
