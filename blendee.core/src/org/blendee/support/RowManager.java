@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.Optional;
 
+import org.blendee.dialect.RowLockOption;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
@@ -14,7 +15,6 @@ import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
-import org.blendee.sql.RowLockOption;
 import org.blendee.sql.Updatable;
 
 /**

@@ -1,4 +1,4 @@
-package org.blendee.util.dialect.mysql;
+package org.blendee.dialect.mysql;
 
 import org.blendee.sql.Effector;
 

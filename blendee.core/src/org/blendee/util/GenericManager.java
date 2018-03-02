@@ -1,5 +1,6 @@
 package org.blendee.util;
 
+import org.blendee.dialect.RowLockOption;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -9,7 +10,6 @@ import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.RowLockOption;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
 

@@ -1,9 +1,9 @@
 package org.blendee.support;
 
+import org.blendee.dialect.RowLockOption;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
-import org.blendee.sql.RowLockOption;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>

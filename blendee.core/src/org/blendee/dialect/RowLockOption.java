@@ -1,4 +1,6 @@
-package org.blendee.sql;
+package org.blendee.dialect;
+
+import org.blendee.sql.Effector;
 
 /**
  * SELECT 時に行う行ロックのオプションです。

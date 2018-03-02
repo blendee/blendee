@@ -1,4 +1,4 @@
-package org.blendee.util.dialect.postgresql;
+package org.blendee.dialect.postgresql;
 
 import org.blendee.sql.Effector;
 

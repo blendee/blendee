@@ -1,4 +1,4 @@
-package org.blendee.util.dialect.postgresql;
+package org.blendee.dialect.postgresql;
 
 import java.util.Objects;
 import java.util.function.Consumer;
