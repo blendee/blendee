@@ -646,7 +646,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	private void checkRowMode() {
-		if (rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+		if (!rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 	}
 
 	private static Class<?> getUsing(StackTraceElement element) {

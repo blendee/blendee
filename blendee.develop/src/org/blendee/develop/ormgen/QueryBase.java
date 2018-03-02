@@ -680,7 +680,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	private void checkRowMode() /*++'++*/{/*++'++*/
-		if (rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+		if (!rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 	/*++'++*/}/*++'++*/
 
 	/**
