@@ -271,14 +271,16 @@ public class PrimaryKey extends PartialData {
 		final Criteria criteria = from.getCriteria();
 		sql.append(criteria.toString(false));
 
-		try (BlenStatement statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql.toString(), s -> {
-			int i = 0;
-			for (; i < to.bindables.length; i++) {
-				to.bindables[i].toBinder().bind(i + 1, s);
-			}
+		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
+			.getConnection()
+			.getStatement(sql.toString(), s -> {
+				int i = 0;
+				for (; i < to.bindables.length; i++) {
+					to.bindables[i].toBinder().bind(i + 1, s);
+				}
 
-			return criteria.getComplementer(i).complement(s);
-		})) {
+				return criteria.getComplementer(i).complement(s);
+			})) {
 			statement.executeUpdate();
 		}
 	}

@@ -56,7 +56,9 @@ public interface BlenConnection extends Metadata {
 	 * @param sql SQL とプレースホルダの値
 	 * @return {@link BlenStatement} のインスタンス
 	 */
-	BlenStatement getStatement(ComposedSQL sql);
+	default BlenStatement getStatement(ComposedSQL sql) {
+		return getStatement(sql.sql(), sql);
+	}
 
 	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。

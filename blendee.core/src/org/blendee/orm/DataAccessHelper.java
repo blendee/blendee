@@ -10,8 +10,8 @@ import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;
 import org.blendee.selector.Optimizer;
@@ -550,7 +550,7 @@ public class DataAccessHelper {
 		}
 
 		builder.add(updatable);
-		statement.process(builder.toString(), builder);
+		statement.process(builder);
 		statement.execute();
 	}
 
@@ -592,7 +592,7 @@ public class DataAccessHelper {
 			try {
 				Bindable bindable = sequencer.next(criteria);
 				builder.add(targetColumnName, bindable);
-				statement.process(builder.toString(), builder);
+				statement.process(builder);
 				statement.execute();
 				return bindable;
 			} catch (UniqueConstraintViolationException e) {}
@@ -625,7 +625,7 @@ public class DataAccessHelper {
 
 		builder.add(updatable);
 		if (criteria != null) builder.setCriteria(criteria);
-		statement.process(builder.toString(), builder);
+		statement.process(builder);
 		return statement.execute();
 	}
 
@@ -643,13 +643,13 @@ public class DataAccessHelper {
 		Criteria criteria) {
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
 		if (criteria != null) builder.setCriteria(criteria);
-		statement.process(builder.toString(), builder);
+		statement.process(builder);
 		return statement.execute();
 	}
 
 	static abstract class StatementFacade {
 
-		abstract void process(String sql, PreparedStatementComplementer complementer);
+		abstract void process(ComposedSQL sql);
 
 		abstract int execute();
 	}
@@ -665,8 +665,8 @@ public class DataAccessHelper {
 		}
 
 		@Override
-		void process(String sql, PreparedStatementComplementer complementer) {
-			statement.addBatch(sql, complementer);
+		void process(ComposedSQL sql) {
+			statement.addBatch(sql);
 		}
 
 		@Override
@@ -680,8 +680,8 @@ public class DataAccessHelper {
 		private BlenStatement statement;
 
 		@Override
-		void process(String sql, PreparedStatementComplementer complementer) {
-			statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql, complementer);
+		void process(ComposedSQL sql) {
+			statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql);
 		}
 
 		@Override

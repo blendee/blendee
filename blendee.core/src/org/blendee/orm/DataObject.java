@@ -684,7 +684,7 @@ public class DataObject
 
 		builder.setCriteria(PartialData.createCriteria(primaryKeyColumns, getPrimaryKeyBinders()));
 
-		statement.process(builder.toString(), builder);
+		statement.process(builder);
 		int result = statement.execute();
 
 		if (result == 1 || result == BatchStatementFacade.DUMMY_RESULT) return true;

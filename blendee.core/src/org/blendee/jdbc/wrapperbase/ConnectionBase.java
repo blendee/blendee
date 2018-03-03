@@ -5,7 +5,6 @@ import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 
@@ -34,11 +33,6 @@ public abstract class ConnectionBase extends MetadataBase implements BlenConnect
 	@Override
 	public BlenStatement getStatement(String sql, PreparedStatementComplementer complementer) {
 		return base.getStatement(sql, complementer);
-	}
-
-	@Override
-	public BlenStatement getStatement(ComposedSQL sql) {
-		return base.getStatement(sql);
 	}
 
 	@Override

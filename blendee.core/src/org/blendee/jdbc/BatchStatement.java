@@ -23,6 +23,14 @@ public interface BatchStatement {
 	void addBatch(String sql, PreparedStatementComplementer complementer);
 
 	/**
+	 * バッチ更新を行う SQL 文を追加します。<br>
+	 * @param sql SQL更新文
+	 */
+	default void addBatch(ComposedSQL sql) {
+		addBatch(sql.sql(), sql);
+	}
+
+	/**
 	 * 溜められた SQL 文を実行します。
 	 * @return 実行結果件数の配列
 	 */
