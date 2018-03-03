@@ -12,8 +12,8 @@ import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
-import org.blendee.jdbc.StatementSource;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -488,9 +488,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		StatementSource statementSource = aggregateInternal(null);
+		ComposedSQL sql = aggregateInternal(null);
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) /*++'++*/{/*++'++*/
+		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
 				consumer.accept(result);
 			/*++'++*/}/*++'++*/
@@ -499,9 +499,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Effectors options, Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		StatementSource statementSource = aggregateInternal(options.get());
+		ComposedSQL sql = aggregateInternal(options.get());
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) /*++'++*/{/*++'++*/
+		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
 				consumer.accept(result);
 			/*++'++*/}/*++'++*/
@@ -510,8 +510,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public ResultSetIterator aggregate(Effector... options) /*++'++*/{/*++'++*/
-		StatementSource statementSource = aggregateInternal(options);
-		return new ResultSetIterator(statementSource.getSQL(), statementSource.getComplementer());
+		ComposedSQL sql = aggregateInternal(options);
+		return new ResultSetIterator(sql);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -526,13 +526,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public StatementSource getStatementSource(Effector... options) /*++'++*/{/*++'++*/
+	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
 		if (rowMode) /*++'++*/{/*++'++*/
 			return new DataAccessHelper().getSelector(
 				getOptimizer(),
 				whereClause,
 				orderByClause,
-				options).buildStatementSource();
+				options).composeSQL();
 		/*++'++*/}/*++'++*/
 
 		return aggregateInternal(options);
@@ -654,7 +654,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
-	private StatementSource aggregateInternal(Effector[] effectors) /*++'++*/{/*++'++*/
+	private ComposedSQL aggregateInternal(Effector[] effectors) /*++'++*/{/*++'++*/
 		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
 
 		builder.setSelectClause(selectClause);
@@ -665,7 +665,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		builder.addEffector(effectors);
 
-		return builder.getStatementSource();
+		return builder;
 	/*++'++*/}/*++'++*/
 
 	private void checkRowMode() /*++'++*/{/*++'++*/

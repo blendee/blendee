@@ -10,14 +10,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
 
 /**
  * 登録更新用 SQL 文を生成するための抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class Updater implements PreparedStatementComplementer {
+public abstract class Updater implements ComposedSQL {
 
 	private final TablePath path;
 
@@ -92,7 +92,7 @@ public abstract class Updater implements PreparedStatementComplementer {
 	}
 
 	@Override
-	public String toString() {
+	public String sql() {
 		if (columns.size() == 0) throw new IllegalStateException("保存対象が設定されていません");
 
 		String sql = build();
@@ -110,6 +110,11 @@ public abstract class Updater implements PreparedStatementComplementer {
 			i.next().bind(counter + 1, statement);
 		}
 		return counter;
+	}
+
+	@Override
+	public String toString() {
+		return sql();
 	}
 
 	/**

@@ -52,6 +52,13 @@ public interface BlenConnection extends Metadata {
 	BlenStatement getStatement(String sql, PreparedStatementComplementer complementer);
 
 	/**
+	 * SQL 文から {@link BlenStatement} のインスタンスを生成し、返します。<br>
+	 * @param sql SQL とプレースホルダの値
+	 * @return {@link BlenStatement} のインスタンス
+	 */
+	BlenStatement getStatement(ComposedSQL sql);
+
+	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
@@ -68,6 +75,17 @@ public interface BlenConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
+	 * @param sql SQL とプレースホルダの値
+	 * @param consumer {@link BlenStatement} を受け取る {@link Consumer}
+	 */
+	default void execute(ComposedSQL sql, Consumer<BlenStatement> consumer) {
+		try (BlenStatement statement = getStatement(sql)) {
+			consumer.accept(statement);
+		}
+	}
+
+	/**
+	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @param function {@link BlenStatement} を受け取る {@link Function}
@@ -78,6 +96,18 @@ public interface BlenConnection extends Metadata {
 		PreparedStatementComplementer complementer,
 		Function<BlenStatement, T> function) {
 		try (BlenStatement statement = getStatement(sql, complementer)) {
+			return function.apply(statement);
+		}
+	}
+
+	/**
+	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
+	 * @param sql SQL とプレースホルダの値
+	 * @param function {@link BlenStatement} を受け取る {@link Function}
+	 * @return T
+	 */
+	default <T> T executeAndGet(ComposedSQL sql, Function<BlenStatement, T> function) {
+		try (BlenStatement statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
 	}

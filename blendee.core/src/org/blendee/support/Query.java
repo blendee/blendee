@@ -3,9 +3,9 @@ package org.blendee.support;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
-import org.blendee.jdbc.StatementSource;
 import org.blendee.sql.Effector;
 import org.blendee.sql.Relationship;
 
@@ -73,9 +73,9 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	ResultSetIterator aggregate(Effector... options);
 
 	/**
-	 * {@link StatementSource} を取得します。
+	 * {@link ComposedSQL} を取得します。
 	 * @param options
-	 * @return {@link StatementSource}
+	 * @return {@link ComposedSQL}
 	 */
-	StatementSource getStatementSource(Effector... options);
+	ComposedSQL composeSQL(Effector... options);
 }

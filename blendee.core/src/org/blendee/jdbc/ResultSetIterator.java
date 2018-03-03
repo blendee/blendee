@@ -21,12 +21,11 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 
 	/**
 	 * ベースとなる結果セットを使用し、インスタンスを生成します。
-	 * @param sql
-	 * @param complementer
+	 * @param sql {@link ComposedSQL}
 	 */
-	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
+	public ResultSetIterator(ComposedSQL sql) {
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		statement = connection.getStatement(sql, complementer);
+		statement = connection.getStatement(sql);
 		result = statement.executeQuery();
 	}
 

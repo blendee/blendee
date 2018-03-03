@@ -22,6 +22,7 @@ import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
@@ -92,6 +93,14 @@ class ConcreteConnection implements BlenConnection {
 		ConcretePreparedStatement statement = create(sql);
 		BlenPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
 		complementer.complement(wrapped);
+		return wrapped;
+	}
+
+	@Override
+	public BlenStatement getStatement(ComposedSQL sql) {
+		ConcretePreparedStatement statement = create(sql.sql());
+		BlenPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
+		sql.complement(wrapped);
 		return wrapped;
 	}
 

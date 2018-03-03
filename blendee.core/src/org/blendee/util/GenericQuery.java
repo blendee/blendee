@@ -9,10 +9,10 @@ import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
-import org.blendee.jdbc.StatementSource;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -156,8 +156,6 @@ public class GenericQuery extends java.lang.Object implements Query {
 	private Consumer<?> whereClauseConsumer;
 
 	private Consumer<?> havingClauseConsumer;
-
-	private StatementSource statementSource;
 
 	private boolean rowMode = true;
 
@@ -488,9 +486,9 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) {
-		statementSource = aggregateInternal(null);
+		ComposedSQL sql = aggregateInternal(null);
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) {
+		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
 			}
@@ -500,9 +498,9 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public void aggregate(Effectors options, Consumer<Result> consumer) {
-		statementSource = aggregateInternal(options.get());
+		ComposedSQL sql = aggregateInternal(options.get());
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(statementSource.getSQL(), statementSource.getComplementer())) {
+		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
 			}
@@ -513,8 +511,8 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	@Override
 	public ResultSetIterator aggregate(Effector... options) {
-		statementSource = aggregateInternal(options);
-		return new ResultSetIterator(statementSource.getSQL(), statementSource.getComplementer());
+		ComposedSQL sql = aggregateInternal(options);
+		return new ResultSetIterator(sql);
 	}
 
 	@Override
@@ -539,18 +537,16 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public StatementSource getStatementSource(Effector... options) {
+	public ComposedSQL composeSQL(Effector... options) {
 		if (rowMode) {
-			statementSource = new DataAccessHelper().getSelector(
+			return new DataAccessHelper().getSelector(
 				getOptimizer(),
 				whereClause,
 				orderByClause,
-				options).buildStatementSource();
-		} else {
-			statementSource = aggregateInternal(null);
+				options).composeSQL();
 		}
 
-		return statementSource;
+		return aggregateInternal(null);
 	}
 
 	/**
@@ -619,7 +615,6 @@ public class GenericQuery extends java.lang.Object implements Query {
 		orderByClauseFunction = null;
 		whereClauseConsumer = null;
 		havingClauseConsumer = null;
-		statementSource = null;
 		rowMode = true;
 		return this;
 	}
@@ -642,7 +637,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		return optimizer;
 	}
 
-	private StatementSource aggregateInternal(Effector[] effectors) {
+	private ComposedSQL aggregateInternal(Effector[] effectors) {
 		QueryBuilder builder = new QueryBuilder(new FromClause(tablePath));
 
 		builder.setSelectClause(selectClause);
@@ -653,7 +648,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 		builder.addEffector(effectors);
 
-		return builder.getStatementSource();
+		return builder;
 	}
 
 	private void checkRowMode() {

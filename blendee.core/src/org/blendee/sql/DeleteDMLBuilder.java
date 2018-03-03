@@ -1,15 +1,15 @@
 package org.blendee.sql;
 
 import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 
 /**
  * SQL の DELETE 文を生成するクラスです。
  * @author 千葉 哲嗣
  */
-public class DeleteDMLBuilder implements PreparedStatementComplementer {
+public class DeleteDMLBuilder implements ComposedSQL {
 
 	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
@@ -44,6 +44,11 @@ public class DeleteDMLBuilder implements PreparedStatementComplementer {
 
 	@Override
 	public String toString() {
+		return sql();
+	}
+
+	@Override
+	public String sql() {
 		criteria.setKeyword("WHERE");
 		return "DELETE FROM " + path + criteria.toString(false);
 	}

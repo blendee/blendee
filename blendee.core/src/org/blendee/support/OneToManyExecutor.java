@@ -160,7 +160,7 @@ public class OneToManyExecutor<O extends Row, M>
 		if (criteria != null) builder.setWhereClause(criteria);
 		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
 			.getConnection()
-			.getStatement(builder.toString(), builder)) {
+			.getStatement(builder)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);

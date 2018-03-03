@@ -191,7 +191,7 @@ public class DataAccessHelper {
 		builder.setSelectClause(new SelectCountClause());
 		if (criteria != null) builder.setWhereClause(criteria);
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
-		try (BlenStatement statement = connection.getStatement(builder.toString(), builder)) {
+		try (BlenStatement statement = connection.getStatement(builder)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);

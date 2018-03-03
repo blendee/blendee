@@ -5,14 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.StatementSource;
+import org.blendee.jdbc.ComposedSQL;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
  * @author 千葉 哲嗣
  */
-public class QueryBuilder implements PreparedStatementComplementer {
+public class QueryBuilder implements ComposedSQL {
 
 	private final FromClause fromClause;
 
@@ -139,7 +138,7 @@ public class QueryBuilder implements PreparedStatementComplementer {
 	 * @return SELECT 文
 	 */
 	@Override
-	public synchronized String toString() {
+	public synchronized String sql() {
 		if (query == null) {
 			fromClause.clearRelationships();
 
@@ -185,12 +184,9 @@ public class QueryBuilder implements PreparedStatementComplementer {
 		return complemented + havingClause.getComplementer(complemented).complement(statement);
 	}
 
-	/**
-	 * {@link StatementSource} を取得します。
-	 * @return {@link StatementSource}
-	 */
-	public StatementSource getStatementSource() {
-		return new StatementSource(toString(), this);
+	@Override
+	public String toString() {
+		return sql();
 	}
 
 	private Criteria prepareCriteria(Criteria oldCriteria, Criteria newCriteria) {

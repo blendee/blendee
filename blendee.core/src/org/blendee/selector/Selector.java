@@ -6,16 +6,16 @@ import java.util.List;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.StatementSource;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.Effector;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.WindowFunction;
 
@@ -111,9 +111,9 @@ public class Selector {
 	 */
 	public SelectedValuesIterator select() {
 		SelectClause clause = getSelectClause();
-		String sql = buildSQL(clause);
+		prepareBuilder(clause);
 
-		BlenStatement statement = manager.getConnection().getStatement(sql, builder);
+		BlenStatement statement = manager.getConnection().getStatement(builder);
 
 		return new SelectedValuesIterator(
 			statement,
@@ -124,10 +124,11 @@ public class Selector {
 
 	/**
 	 * SQL とプレースホルダの値をセットします。
-	 * @return {@link StatementSource}
+	 * @return {@link ComposedSQL}
 	 */
-	public StatementSource buildStatementSource() {
-		return new StatementSource(buildSQL(getSelectClause()), builder);
+	public ComposedSQL composeSQL() {
+		prepareBuilder(getSelectClause());
+		return builder;
 	}
 
 	@Override
@@ -143,19 +144,14 @@ public class Selector {
 		return optimizer.getOptimizedSelectClause();
 	}
 
-	private String buildSQL(SelectClause clause) {
-		String sql;
+	private void prepareBuilder(SelectClause clause) {
 		synchronized (lock) {
 			windowFunctions.forEach(container -> {
 				clause.add(container.function, container.alias);
 			});
 
 			builder.setSelectClause(clause);
-
-			sql = builder.toString();
 		}
-
-		return sql;
 	}
 
 	private static class WindowFunctionContainer {
