@@ -173,6 +173,10 @@ public class U {
 		}
 	}
 
+	public static void removeThreadLocal() {
+		cycleCheckerThreadLocal.remove();
+	}
+
 	private static byte[] concatByteArray(byte[] array1, int lengthof1, byte[] array2, int lengthof2) {
 		byte[] concat = new byte[lengthof1 + lengthof2];
 		System.arraycopy(array1, 0, concat, 0, lengthof1);

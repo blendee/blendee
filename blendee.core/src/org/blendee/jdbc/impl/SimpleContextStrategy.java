@@ -12,12 +12,16 @@ import org.blendee.jdbc.ContextStrategy;
  */
 public class SimpleContextStrategy implements ContextStrategy {
 
-	private final Object lock = new Object();
+	private static final Object lock = new Object();
 
-	private final Map<String, Map<Class<?>, Object>> original = new HashMap<>();
+	private static final Map<String, Map<Class<?>, Object>> originalContextMap = new HashMap<>();
 
-	private final ThreadLocal<Map<String, Map<Class<?>, Object>>> clones = ThreadLocal.withInitial(
-		() -> new HashMap<>(original));
+	private static final ThreadLocal<Map<String, Map<Class<?>, Object>>> clones = ThreadLocal.withInitial(
+		() -> {
+			synchronized (lock) {
+				return new HashMap<>(originalContextMap);
+			}
+		});
 
 	@Override
 	public <T> T getManagedInstance(String contextName, Class<T> clazz) {
@@ -25,11 +29,11 @@ public class SimpleContextStrategy implements ContextStrategy {
 
 		Map<String, Map<Class<?>, Object>> clone = clones.get();
 
-		Map<Class<?>, Object> map = getInnerMap(clone, contextName);
+		Map<Class<?>, Object> map = getContextMap(clone, contextName);
 		Object instance = map.get(clazz);
 		if (instance == null) {
 			synchronized (lock) {
-				Map<Class<?>, Object> originalMap = getInnerMap(original, contextName);
+				Map<Class<?>, Object> originalMap = getContextMap(originalContextMap, contextName);
 
 				instance = originalMap.get(clazz);
 				if (instance == null) {
@@ -52,13 +56,20 @@ public class SimpleContextStrategy implements ContextStrategy {
 		return result;
 	}
 
-	private static Map<Class<?>, Object> getInnerMap(Map<String, Map<Class<?>, Object>> map, String name) {
-		Map<Class<?>, Object> inner = map.get(name);
-		if (inner == null) {
-			inner = new HashMap<>();
-			map.put(name, inner);
+	/**
+	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
+	 */
+	public static void removeThreadLocal() {
+		clones.remove();
+	}
+
+	private static Map<Class<?>, Object> getContextMap(Map<String, Map<Class<?>, Object>> map, String name) {
+		Map<Class<?>, Object> contextMap = map.get(name);
+		if (contextMap == null) {
+			contextMap = new HashMap<>();
+			map.put(name, contextMap);
 		}
 
-		return inner;
+		return contextMap;
 	}
 }

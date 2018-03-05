@@ -67,6 +67,8 @@ public abstract class Transaction implements AutoCloseable, Committable {
 		} finally {
 			transactions.clear();
 		}
+
+		BlendeeManager.removeThreadLocal();
 	}
 
 	/**

@@ -95,4 +95,12 @@ public class ContextManager {
 		//GCの副作用でスレッド上のContextStrategy弱参照をなくす
 		System.gc();
 	}
+
+	/**
+	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
+	 */
+	public static void removeThreadLocal() {
+		contextName.remove();
+		threadLocal.remove();
+	}
 }

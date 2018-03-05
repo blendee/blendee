@@ -68,6 +68,10 @@ public class TransactionManager {
 		return U.toString(this);
 	}
 
+	public static void removeThreadLocal() {
+		current.remove();
+	}
+
 	private static Transactions changeCurrent(Transactions transactions) {
 		Transactions oldTransactions = current.get();
 		current.set(transactions);

@@ -9,7 +9,7 @@ import org.blendee.internal.Transactions;
  */
 public class BlendeeManager implements ManagementSubject {
 
-	private final ThreadLocal<ThreadLocalValues> threadLocalValues = ThreadLocal.withInitial(
+	private static final ThreadLocal<ThreadLocalValues> threadLocalValues = ThreadLocal.withInitial(
 		() -> new ThreadLocalValues());
 
 	private final Object lock = new Object();
@@ -152,6 +152,13 @@ public class BlendeeManager implements ManagementSubject {
 
 	void remove(Transaction transaction) {
 		threadLocalValues.get().remove(transaction);
+	}
+
+	/**
+	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
+	 */
+	public static void removeThreadLocal() {
+		threadLocalValues.remove();
 	}
 
 	private static class ThreadLocalValues {

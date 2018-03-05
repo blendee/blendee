@@ -483,6 +483,13 @@ public class DataAccessHelper {
 		return U.toString(this);
 	}
 
+	/**
+	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
+	 */
+	public static void removeThreadLocal() {
+		threadStatement.remove();
+	}
+
 	static StatementFacade getThreadStatement() {
 		StatementFacade statement = threadStatement.get();
 		if (statement == null) return new PreparedStatementFacade();

@@ -145,6 +145,8 @@ public class Blendee {
 		AutoCloseableFinalizer finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
 		finalizer.stop();
 		finalizer.closeAll();
+		clearCache();
+		ThreadLocalSweeper.execute();
 	}
 
 	/**

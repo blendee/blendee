@@ -488,7 +488,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		ComposedSQL sql = aggregateInternal(null);
+		ComposedSQL sql = aggregateInternal();
 		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
@@ -654,7 +654,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
-	private ComposedSQL aggregateInternal(Effector[] effectors) /*++'++*/{/*++'++*/
+	private ComposedSQL aggregateInternal(Effector... effectors) /*++'++*/{/*++'++*/
 		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
 
 		builder.setSelectClause(selectClause);
