@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/org/blendee/dialect/mysql/package-info.java=UTF-8
+encoding//src/org/blendee/dialect/package-info.java=UTF-8
+encoding//src/org/blendee/dialect/postgresql/package-info.java=UTF-8
 encoding//src/org/blendee/internal/package-info.java=UTF-8
 encoding//src/org/blendee/jdbc/package-info.java=UTF-8
 encoding//src/org/blendee/orm/package-info.java=UTF-8
