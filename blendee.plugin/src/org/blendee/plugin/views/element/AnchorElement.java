@@ -268,31 +268,35 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 	}
 
 	void selectColumn(Column column) {
-		LinkedList<Relationship> parents = new LinkedList<>();
+		LinkedList<Relationship> path = new LinkedList<>();
 
 		Relationship columnsRelationship = column.getRelationship();
-		columnsRelationship.addParentTo(parents);
-
-		//ルートは除去
-		parents.pop();
-		parents.add(columnsRelationship);
+		columnsRelationship.addParentTo(path);
 
 		prepareRelationship();
 
-		RelationshipElement[] current = { relationship };
-		parents.forEach(r -> {
-			current[0].prepareChildren();
-			current[0] = current[0].findRelationship(r);
-		});
+		RelationshipElement selected;
+		if (path.size() > 0) {
+			//対象カラムががルート要素ではない場合
+			//ルートは除去
+			path.pop();
+			path.add(columnsRelationship);
 
-		RelationshipElement selected = current[0];
+			RelationshipElement[] current = { relationship };
+			path.forEach(r -> {
+				current[0].prepareChildren();
+				current[0] = current[0].findRelationship(r);
+			});
+
+			selected = current[0];
+		} else {
+			//対象カラムががルート要素の場合
+			selected = relationship;
+		}
 
 		selected.prepareChildren();
 
 		Element element = selected.findColumn(column);
-
-		//仕方ないので何もしない
-		if (element == null) return;
 
 		BlendeePlugin.getDefault()
 			.getQueryEditorView()
