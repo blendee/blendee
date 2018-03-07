@@ -12,6 +12,7 @@ import org.blendee.plugin.Constants;
 import org.blendee.selector.CommandColumnRepository;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
+import org.blendee.util.Blendee;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
@@ -20,11 +21,21 @@ public class RelationshipElement extends PropertySourceElement {
 
 	private static final Image icon = Constants.RELATIONSHIP_ICON.createImage();
 
+	private final CommandColumnRepository repository;
+
 	private final Relationship relationship;
 
 	private final String name;
 
-	private final Element[] children;
+	private final String id;
+
+	private Map<Relationship, RelationshipElement> relationshipMap;
+
+	private Map<Column, ColumnElement> columnMap;
+
+	private Map<Column, ForeignKeyColumnElement> fkColumnMap;
+
+	private Element[] children;
 
 	private Element parent;
 
@@ -33,58 +44,11 @@ public class RelationshipElement extends PropertySourceElement {
 	RelationshipElement(
 		CommandColumnRepository repository,
 		String id,
-		Relationship relationship,
-		Map<Column, ColumnElement> allColumnMap) {
+		Relationship relationship) {
+		this.repository = repository;
 		this.relationship = relationship;
 		name = createName(relationship);
-		Map<Column, ColumnElement> myColumnMap = new HashMap<>();
-		List<ColumnElement> remain = new LinkedList<>();
-		Column[] myColumns = relationship.getColumns();
-		for (int i = 0; i < myColumns.length; i++) {
-			Column column = myColumns[i];
-			ColumnElement element = new ColumnElement(
-				this,
-				repository,
-				id,
-				column);
-			element.setParent(this);
-			myColumnMap.put(column, element);
-			allColumnMap.put(column, element);
-			remain.add(element);
-		}
-
-		List<Element> elements = new LinkedList<>();
-
-		Column[] pkColumns = relationship.getPrimaryKeyColumns();
-		if (pkColumns.length > 0) {
-			ColumnElement[] pkColumnElements = new ColumnElement[pkColumns.length];
-			for (int i = 0; i < pkColumns.length; i++) {
-				pkColumnElements[i] = myColumnMap.get(pkColumns[i]);
-				remain.remove(pkColumnElements[i]);
-			}
-
-			elements.add(
-				new PrimaryKeyElement(
-					this,
-					MetadataUtilities.getPrimaryKeyName(
-						relationship.getTablePath()),
-					pkColumnElements));
-		}
-
-		Relationship[] relations = relationship.getRelationships();
-		for (Relationship element : relations)
-			elements.add(
-				createForeignKeyElement(
-					repository,
-					id,
-					relationship,
-					element,
-					myColumnMap,
-					allColumnMap,
-					remain));
-
-		elements.addAll(remain);
-		children = elements.toArray(new Element[elements.size()]);
+		this.id = id;
 	}
 
 	@Override
@@ -114,11 +78,27 @@ public class RelationshipElement extends PropertySourceElement {
 
 	@Override
 	public Element[] getChildren() {
+		if (children != null) return children.clone();
+
+		try {
+			Blendee.execute(t -> {
+				prepareChildren();
+			});
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+
 		return children.clone();
 	}
 
 	@Override
+	public String toString() {
+		return relationship.toString();
+	}
+
+	@Override
 	public boolean hasChildren() {
+		if (children == null) prepareChildren();
 		return children.length > 0;
 	}
 
@@ -145,6 +125,17 @@ public class RelationshipElement extends PropertySourceElement {
 		return relationship;
 	}
 
+	RelationshipElement findRelationship(Relationship relationship) {
+		return relationshipMap.get(relationship);
+	}
+
+	Element findColumn(Column column) {
+		ForeignKeyColumnElement element = fkColumnMap.get(column);
+		if (element != null) return element;
+
+		return columnMap.get(column);
+	}
+
 	static String createName(Relationship relationship) {
 		return relationship.getTablePath()
 			+ "("
@@ -152,28 +143,88 @@ public class RelationshipElement extends PropertySourceElement {
 			+ ")";
 	}
 
+	void prepareChildren() {
+		relationshipMap = new HashMap<>();
+		columnMap = new HashMap<>();
+		fkColumnMap = new HashMap<>();
+
+		List<ColumnElement> remain = new LinkedList<>();
+		Column[] myColumns = relationship.getColumns();
+		for (int i = 0; i < myColumns.length; i++) {
+			Column column = myColumns[i];
+			ColumnElement element = new ColumnElement(
+				this,
+				repository,
+				id,
+				column);
+			element.setParent(this);
+			columnMap.put(column, element);
+			remain.add(element);
+		}
+
+		List<Element> elements = new LinkedList<>();
+
+		Column[] pkColumns = relationship.getPrimaryKeyColumns();
+		if (pkColumns.length > 0) {
+			ColumnElement[] pkColumnElements = new ColumnElement[pkColumns.length];
+			for (int i = 0; i < pkColumns.length; i++) {
+				pkColumnElements[i] = columnMap.get(pkColumns[i]);
+				remain.remove(pkColumnElements[i]);
+			}
+
+			elements.add(
+				new PrimaryKeyElement(
+					this,
+					MetadataUtilities.getPrimaryKeyName(
+						relationship.getTablePath()),
+					pkColumnElements));
+		}
+
+		Relationship[] relations = relationship.getRelationships();
+		for (Relationship element : relations) {
+			RelationshipElement relationshipElement = new RelationshipElement(repository, id, element);
+			relationshipMap.put(element, relationshipElement);
+			elements.add(
+				createForeignKeyElement(
+					repository,
+					relationship,
+					element,
+					relationshipElement,
+					columnMap,
+					remain));
+		}
+
+		elements.addAll(remain);
+		children = elements.toArray(new Element[elements.size()]);
+	}
+
 	private ForeignKeyElement createForeignKeyElement(
 		CommandColumnRepository repository,
-		String id,
 		Relationship parent,
 		Relationship child,
+		RelationshipElement element,
 		Map<Column, ColumnElement> myColumns,
-		Map<Column, ColumnElement> allColumns,
 		List<ColumnElement> remain) {
 		CrossReference reference = child.getCrossReference();
 		String[] fks = reference.getForeignKeyColumnNames();
 		String[] pks = reference.getPrimaryKeyColumnNames();
 		ForeignKeyColumnElement[] columns = new ForeignKeyColumnElement[fks.length];
 		for (int i = 0; i < fks.length; i++) {
-			ColumnElement base = myColumns.get(parent.getColumn(fks[i]));
-			columns[i] = new ForeignKeyColumnElement(base, pks[i]);
+			Column key = parent.getColumn(fks[i]);
+			ColumnElement base = myColumns.get(key);
+
+			ForeignKeyColumnElement fkColumnElement = new ForeignKeyColumnElement(base, pks[i]);
+
+			columns[i] = fkColumnElement;
+
+			fkColumnMap.put(key, fkColumnElement);
 			remain.remove(base);
 		}
 
 		return new ForeignKeyElement(
 			this,
 			reference.getForeignKeyName(),
-			new RelationshipElement(repository, id, child, allColumns),
+			element,
 			columns);
 	}
 

@@ -30,8 +30,6 @@ public class Selector {
 	 */
 	public static final SelectedValuesIterator EMPTY_SELECTED_VALUES_ITERATOR = new EmptySelectedValuesIterator();
 
-	private final BlendeeManager manager = ContextManager.get(BlendeeManager.class);
-
 	private final Relationship root;
 
 	private final QueryBuilder builder;
@@ -113,7 +111,7 @@ public class Selector {
 		SelectClause clause = getSelectClause();
 		prepareBuilder(clause);
 
-		BlenStatement statement = manager.getConnection().getStatement(builder);
+		BlenStatement statement = BlendeeManager.getConnection().getStatement(builder);
 
 		return new SelectedValuesIterator(
 			statement,

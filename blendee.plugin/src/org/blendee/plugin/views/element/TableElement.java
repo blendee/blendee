@@ -11,6 +11,7 @@ import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.util.Blendee;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -106,38 +107,44 @@ public class TableElement extends PropertySourceElement {
 
 		IPackageFragmentRoot fragmentRoot = findPackageRoot(baseFragment);
 
-		ORMGenerator generator = new ORMGenerator(
-			ContextManager.get(BlendeeManager.class).getConnection(),
-			baseFragment.getElementName(),
-			parent.getName(),
-			plugin.getRowManagerParentClass(),
-			plugin.getRowParentClass(),
-			plugin.getQueryParentClass(),
-			plugin.getCodeFormatter(),
-			plugin.useNumberClass(),
-			!plugin.notUseNullGuard());
+		try {
+			Blendee.execute(t -> {
+				ORMGenerator generator = new ORMGenerator(
+					BlendeeManager.getConnection(),
+					baseFragment.getElementName(),
+					parent.getName(),
+					plugin.getRowManagerParentClass(),
+					plugin.getRowParentClass(),
+					plugin.getQueryParentClass(),
+					plugin.getCodeFormatter(),
+					plugin.useNumberClass(),
+					!plugin.notUseNullGuard());
 
-		RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
-		Relationship relation = factory.getInstance(path);
-		LinkedList<TablePath> tables = new LinkedList<>();
-		//自身をセット
-		tables.add(relation.getTablePath());
+				RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+				Relationship relation = factory.getInstance(path);
+				LinkedList<TablePath> tables = new LinkedList<>();
+				//自身をセット
+				tables.add(relation.getTablePath());
 
-		IPackageFragment rowPackage = getPackage(fragmentRoot, packageName + ".row");
-		IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + ".manager");
-		IPackageFragment queryPackage = getPackage(fragmentRoot, packageName + ".query");
+				IPackageFragment rowPackage = getPackage(fragmentRoot, packageName + ".row");
+				IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + ".manager");
+				IPackageFragment queryPackage = getPackage(fragmentRoot, packageName + ".query");
 
-		while (tables.size() > 0) {
-			TablePath targetPath = tables.pop();
-			Relationship target = factory.getInstance(targetPath);
+				while (tables.size() > 0) {
+					TablePath targetPath = tables.pop();
+					Relationship target = factory.getInstance(targetPath);
 
-			build(generator, rowPackage, managerPackage, queryPackage, target);
+					build(generator, rowPackage, managerPackage, queryPackage, target);
 
-			collect(tables, target);
+					collect(tables, target);
 
-			//大量のテーブルを一度に実行したときのための節約クリア
-			//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
-			factory.clearCache();
+					//大量のテーブルを一度に実行したときのための節約クリア
+					//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
+					factory.clearCache();
+				}
+			});
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 

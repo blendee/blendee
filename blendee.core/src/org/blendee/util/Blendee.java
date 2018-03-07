@@ -8,8 +8,6 @@ import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.blendee.internal.TransactionManager;
-import org.blendee.internal.TransactionShell;
 import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
@@ -147,7 +145,6 @@ public class Blendee {
 		finalizer.stop();
 		finalizer.closeAll();
 		clearCache();
-		ThreadLocalSweeper.execute();
 	}
 
 	/**
@@ -157,40 +154,50 @@ public class Blendee {
 	 */
 	public static void execute(Function function) throws Exception {
 		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
-		if (manager.hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
 
-		Transaction transaction = manager.startTransaction();
+		boolean top;
+		Transaction transaction;
+		if (manager.startsTransaction()) {
+			transaction = manager.getCurrentTransaction();
+			top = false;
+		} else {
+			transaction = manager.startTransaction();
+			top = true;
+		}
 
 		try {
 			function.execute(transaction);
-			transaction.commit();
+			if (top) transaction.commit();
 		} catch (Exception e) {
 			try {
-				transaction.rollback();
-			} catch (RuntimeException ee) {
-				ee.printStackTrace(getPrintStream());
+				if (top) transaction.rollback();
+			} catch (Throwable t) {
+				t.printStackTrace(getPrintStream());
 			}
 
 			throw e;
 		} finally {
-			try {
-				manager.getAutoCloseableFinalizer().closeAll();
-				if (transaction != null) transaction.close();
-			} catch (RuntimeException e) {
-				e.printStackTrace(getPrintStream());
-			}
+			if (!top) return;
+
+			doFinally(
+				() -> manager.getAutoCloseableFinalizer().closeAll(),
+				() -> doFinally(
+					() -> transaction.close(),
+					ContextManager::releaseContext));
 		}
-
-		TransactionManager.start(new TransactionShell() {
-
-			@Override
-			public void execute() throws Exception {
-				function.execute(getTransaction());
-			}
-		});
 	}
 
 	private static PrintStream stream = System.err;
+
+	private static void doFinally(Runnable mainFunction, Runnable finallyFunction) {
+		try {
+			mainFunction.run();
+		} catch (Throwable t) {
+			t.printStackTrace(getPrintStream());
+		} finally {
+			finallyFunction.run();
+		}
+	}
 
 	/**
 	 * TODO なんとかする

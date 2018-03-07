@@ -3,11 +3,9 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.internal.TransactionManager;
-import org.blendee.internal.TransactionShell;
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
+import org.blendee.util.Blendee;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -18,15 +16,10 @@ public class ORMGeneratorRootElement implements Element {
 	public ORMGeneratorRootElement(final String[] schemas) {
 		final List<SchemaElement> list = new LinkedList<SchemaElement>();
 		try {
-			TransactionManager.start(new TransactionShell() {
-
-				@Override
-				public void execute() throws Exception {
-					BlenConnection connection = ContextManager.get(BlendeeManager.class)
-						.getConnection();
-					for (String schema : schemas) {
-						list.add(new SchemaElement(connection, schema));
-					}
+			Blendee.execute(t -> {
+				BlenConnection connection = BlendeeManager.getConnection();
+				for (String schema : schemas) {
+					list.add(new SchemaElement(connection, schema));
 				}
 			});
 		} catch (Throwable t) {

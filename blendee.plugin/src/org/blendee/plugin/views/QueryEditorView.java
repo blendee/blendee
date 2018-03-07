@@ -93,6 +93,7 @@ public class QueryEditorView extends AbstractView {
 			if (inputElement.equals(getViewSite())) {
 				return getChildren(root);
 			}
+
 			return getChildren(inputElement);
 		}
 

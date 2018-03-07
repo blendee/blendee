@@ -4,7 +4,6 @@ package org.blendee.jdbc;
  * {@link ContextManager} で扱われるインスタンスの管理方法を表すインターフェイスです。
  * @author 千葉 哲嗣
  */
-@FunctionalInterface
 public interface ContextStrategy {
 
 	/**

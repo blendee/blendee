@@ -1,6 +1,5 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.Committable;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 
@@ -9,7 +8,7 @@ import org.blendee.sql.Column;
  * @author 千葉 哲嗣
  * @see ColumnRepositoryFactory#createColumnRepository()
  */
-public interface ColumnRepository extends Committable {
+public interface ColumnRepository {
 
 	/**
 	 * ID に対応するテーブルを返します。<br>
@@ -118,6 +117,16 @@ public interface ColumnRepository extends Committable {
 	 * @return 使用されているクラス名
 	 */
 	String[] getUsingClassNames(String id);
+
+	/**
+	 * コミットします。
+	 */
+	void commit();
+
+	/**
+	 * ロールバックします。
+	 */
+	void rollback();
 
 	/**
 	 * このリポジトリに対する変更があり、コミットが可能かどうかを返します。

@@ -10,7 +10,6 @@ import java.util.Set;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.MetadataUtilities;
 import org.blendee.jdbc.TablePath;
@@ -212,7 +211,7 @@ public class PrimaryKey extends PartialData {
 
 			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria());
 
-			try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
+			try (BlenStatement statement = BlendeeManager
 				.getConnection()
 				.getStatement(builder.toString(), builder)) {
 				statement.executeUpdate();
@@ -271,7 +270,7 @@ public class PrimaryKey extends PartialData {
 		final Criteria criteria = from.getCriteria();
 		sql.append(criteria.toString(false));
 
-		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
+		try (BlenStatement statement = BlendeeManager
 			.getConnection()
 			.getStatement(sql.toString(), s -> {
 				int i = 0;
@@ -292,7 +291,7 @@ public class PrimaryKey extends PartialData {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
 		builder.setCriteria(from.getCriteria());
 		builder.add(to);
-		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
+		try (BlenStatement statement = BlendeeManager
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
 			statement.executeUpdate();

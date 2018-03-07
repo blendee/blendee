@@ -74,8 +74,8 @@ public class U {
 		if (checker == null) {
 			checker = new HashSet<>();
 			checker.add(new Container(object));
-			cycleCheckerThreadLocal.set(checker);
 			top = true;
+			cycleCheckerThreadLocal.set(checker);
 		}
 
 		try {

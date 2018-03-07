@@ -487,7 +487,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	@Override
 	public void aggregate(Consumer<Result> consumer) {
 		ComposedSQL sql = aggregateInternal(null);
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
@@ -499,14 +499,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 	@Override
 	public void aggregate(Effectors options, Consumer<Result> consumer) {
 		ComposedSQL sql = aggregateInternal(options.get());
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
 			}
-
 		}
-
 	}
 
 	@Override

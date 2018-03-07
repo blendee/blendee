@@ -24,7 +24,7 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 	 * @param sql {@link ComposedSQL}
 	 */
 	public ResultSetIterator(ComposedSQL sql) {
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql);
 		result = statement.executeQuery();
 	}

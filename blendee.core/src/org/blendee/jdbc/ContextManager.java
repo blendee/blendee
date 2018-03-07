@@ -1,6 +1,6 @@
 package org.blendee.jdbc;
 
-import java.lang.ref.WeakReference;
+import java.util.UUID;
 
 import org.blendee.jdbc.impl.SimpleContextStrategy;
 
@@ -10,7 +10,7 @@ import org.blendee.jdbc.impl.SimpleContextStrategy;
  */
 public class ContextManager {
 
-	private static final String defaultContextName = ContextManager.class.getName() + ".defaultContext";
+	private static final String defaultContextName = ContextManager.class.getName() + ".defaultContext." + UUID.randomUUID();
 
 	private static final Object lock = new Object();
 
@@ -18,15 +18,21 @@ public class ContextManager {
 
 	private static final ThreadLocal<String> contextName = ThreadLocal.withInitial(() -> defaultContextName);
 
-	private static ThreadLocal<WeakReference<ContextStrategy>> threadLocal = ThreadLocal
-		.withInitial(() -> new WeakReference<>(strategy));
-
 	/**
 	 * 指定した名前のコンテキストに切り替えます。
 	 * @param name 新しいコンテキスト名
 	 */
-	public static void switchContext(String name) {
+	public static void setContext(String name) {
 		contextName.set(name);
+	}
+
+	/**
+	 * クラス内に保持する {@link ThreadLocal} の値を解放します。<br>
+	 * {@link #setContext(String)} を行った場合は、必ず同じスレッドでこのメソッドを実行してください。<br>
+	 * そうしないとメモリリークの原因となる可能性があります。
+	 */
+	public static void releaseContext() {
+		contextName.remove();
 	}
 
 	/**
@@ -45,18 +51,11 @@ public class ContextManager {
 	 * @return 管理されているインスタンス
 	 */
 	public static <T extends ManagementSubject> T get(Class<T> clazz) {
-		ContextStrategy mine = threadLocal.get().get();
-
-		if (mine == null) {
-			synchronized (lock) {
-				if (strategy == null) strategy = new SimpleContextStrategy();
-				mine = strategy;
-			}
-
-			threadLocal.set(new WeakReference<>(mine));
+		synchronized (lock) {
+			if (strategy == null) strategy = new SimpleContextStrategy();
 		}
 
-		return mine.getManagedInstance(getCurrentContextName(), clazz);
+		return strategy.getManagedInstance(getCurrentContextName(), clazz);
 	}
 
 	/**
@@ -77,30 +76,5 @@ public class ContextManager {
 		synchronized (lock) {
 			ContextManager.strategy = strategy;
 		}
-	}
-
-	/**
-	 * インスタンスの管理方法を変更した場合、ガベージコレクションの状態によってはすぐに反映されていない可能性があります。<br>
-	 * {@link ContextStrategy} はスレッド毎に紐づけられているので、 このスレッドが持つ {@link ContextStrategy} を、最新のものに更新します。
-	 */
-	public static void updateStrategyOnThisThread() {
-		threadLocal.set(new WeakReference<>(strategy));
-	}
-
-	/**
-	 * {@link ContextStrategy} を、最新のものに更新します。<br>
-	 * この処理の実装は実験的なものなので、将来変更される可能性があります。
-	 */
-	public static void updateStrategy() {
-		//GCの副作用でスレッド上のContextStrategy弱参照をなくす
-		System.gc();
-	}
-
-	/**
-	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
-	 */
-	public static void removeThreadLocal() {
-		contextName.remove();
-		threadLocal.remove();
 	}
 }

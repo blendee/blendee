@@ -35,7 +35,7 @@ public class ReturningInserter<T> {
 	public ReturningInserter(TablePath path) {
 		this.path = path;
 
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 
 		PrimaryKeyMetadata pkMetadata = connection.getPrimaryKeyMetadata(path);
 

@@ -489,7 +489,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
 		ComposedSQL sql = aggregateInternal();
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
 				consumer.accept(result);
@@ -500,7 +500,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public void aggregate(Effectors options, Consumer<Result> consumer) /*++'++*/{/*++'++*/
 		ComposedSQL sql = aggregateInternal(options.get());
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
 			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
 				consumer.accept(result);

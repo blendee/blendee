@@ -9,14 +9,13 @@ import org.blendee.internal.U;
  * @author 千葉 哲嗣
  * @see BlendeeManager#startTransaction()
  */
-public abstract class Transaction implements AutoCloseable, Committable {
+public abstract class Transaction implements AutoCloseable {
 
 	private BlenConnection connection;
 
 	/**
 	 * コミットします。
 	 */
-	@Override
 	public void commit() {
 		try {
 			commitInternal();
@@ -28,7 +27,6 @@ public abstract class Transaction implements AutoCloseable, Committable {
 	/**
 	 * ロールバックします。
 	 */
-	@Override
 	public void rollback() {
 		try {
 			rollbackInternal();

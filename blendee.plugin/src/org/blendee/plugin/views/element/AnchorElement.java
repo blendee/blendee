@@ -3,10 +3,8 @@ package org.blendee.plugin.views.element;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
@@ -19,6 +17,7 @@ import org.blendee.selector.CommandColumnRepository;
 import org.blendee.sql.Column;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.QueryBuilder;
+import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
 import org.eclipse.jdt.core.IType;
@@ -103,8 +102,6 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 	private String anchorModeName;
 
 	private RelationshipElement relationship;
-
-	private Map<Column, ColumnElement> allColumns = new HashMap<>();
 
 	AnchorElement(
 		EditorRootElement root,
@@ -271,7 +268,32 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 	}
 
 	void selectColumn(Column column) {
-		ColumnElement element = allColumns.get(column);
+		LinkedList<Relationship> parents = new LinkedList<>();
+
+		Relationship columnsRelationship = column.getRelationship();
+		columnsRelationship.addParentTo(parents);
+
+		//ルートは除去
+		parents.pop();
+		parents.add(columnsRelationship);
+
+		prepareRelationship();
+
+		RelationshipElement[] current = { relationship };
+		parents.forEach(r -> {
+			current[0].prepareChildren();
+			current[0] = current[0].findRelationship(r);
+		});
+
+		RelationshipElement selected = current[0];
+
+		selected.prepareChildren();
+
+		Element element = selected.findColumn(column);
+
+		//仕方ないので何もしない
+		if (element == null) return;
+
 		BlendeePlugin.getDefault()
 			.getQueryEditorView()
 			.getTreeViewer()
@@ -339,14 +361,11 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 		if (relationship != null) return;
 
-		allColumns.clear();
-
 		relationship = new RelationshipElement(
 			repository,
 			id,
 			ContextManager.get(RelationshipFactory.class).getInstance(
-				repository.getTablePath(id)),
-			allColumns);
+				repository.getTablePath(id)));
 		relationship.setParent(this);
 		relationship.setParentForPath(this);
 	}

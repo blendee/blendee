@@ -7,7 +7,6 @@ import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -56,7 +55,7 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		InsertDMLBuilder builder = new InsertDMLBuilder(path);
 		builder.add(data);
 
@@ -108,7 +107,7 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 		builder.add(data);
 		builder.setCriteria(criteria);
@@ -159,7 +158,7 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
 		builder.setCriteria(criteria);
 

@@ -102,7 +102,7 @@ public class SQLProxyBuilder {
 
 			Class<?> returnType = method.getReturnType();
 
-			BlenStatement statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql, s -> {
+			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, s -> {
 				for (int i = 0; i < binders.length; i++) {
 					binders[i].bind(i + 1, s);
 				}

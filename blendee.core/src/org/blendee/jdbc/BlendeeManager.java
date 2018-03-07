@@ -8,7 +8,7 @@ import org.blendee.internal.LoggingManager;
  */
 public class BlendeeManager implements ManagementSubject {
 
-	private static final ThreadLocal<Transaction> threadLocalValues = new ThreadLocal<>();
+	private static final ThreadLocal<Transaction> transactionThreadLocal = new ThreadLocal<>();
 
 	private final Object lock = new Object();
 
@@ -72,11 +72,11 @@ public class BlendeeManager implements ManagementSubject {
 	}
 
 	/**
-	 * 現在実行中のスレッドが接続を持っているか検査します。
-	 * @return スレッドが接続を持っているかどうか
+	 * トランザクションが開始されているか検査します。
+	 * @return トランザクションが開始されているかどうか
 	 */
-	public boolean hasConnection() {
-		return threadLocalValues.get() != null;
+	public boolean startsTransaction() {
+		return transactionThreadLocal.get() != null;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * @throws IllegalStateException 既にこのスレッド用にトランザクションが開始されている場合
 	 */
 	public Transaction startTransaction() {
-		if (hasConnection()) throw new IllegalStateException("既にこのスレッド用にトランザクションが開始されています");
+		if (startsTransaction()) throw new IllegalStateException("既にこのスレッド用にトランザクションが開始されています");
 
 		Configure config = getConfigure();
 		config.check();
@@ -103,7 +103,18 @@ public class BlendeeManager implements ManagementSubject {
 
 		transaction.prepareConnection(config);
 
-		threadLocalValues.set(transaction);
+		transactionThreadLocal.set(transaction);
+
+		return transaction;
+	}
+
+	/**
+	 * 現在のスレッドが持つトランザクションを返します。
+	 * @return トランザクション
+	 */
+	public Transaction getCurrentTransaction() {
+		Transaction transaction = transactionThreadLocal.get();
+		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
 		return transaction;
 	}
@@ -112,8 +123,8 @@ public class BlendeeManager implements ManagementSubject {
 	 * 現在のスレッドが持つ接続を返します。
 	 * @return 接続
 	 */
-	public BlenConnection getConnection() {
-		Transaction transaction = threadLocalValues.get();
+	public static BlenConnection getConnection() {
+		Transaction transaction = transactionThreadLocal.get();
 		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
 		BlenConnection connection = transaction.getConnection();
@@ -135,10 +146,7 @@ public class BlendeeManager implements ManagementSubject {
 		}
 	}
 
-	/**
-	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
-	 */
-	public static void removeThreadLocal() {
-		threadLocalValues.remove();
+	static void removeThreadLocal() {
+		transactionThreadLocal.remove();
 	}
 }

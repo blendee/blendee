@@ -14,7 +14,6 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
@@ -158,7 +157,7 @@ public class OneToManyExecutor<O extends Row, M>
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 
 		if (criteria != null) builder.setWhereClause(criteria);
-		try (BlenStatement statement = ContextManager.get(BlendeeManager.class)
+		try (BlenStatement statement = BlendeeManager
 			.getConnection()
 			.getStatement(builder)) {
 			try (BlenResultSet result = statement.executeQuery()) {

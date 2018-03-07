@@ -24,7 +24,6 @@ public class BlendeeStarter {
 		PluginAnnotationMetadataFactory.setClassLoader(loader);
 
 		ContextManager.newStrategy();
-		ContextManager.updateStrategy();
 
 		Blendee blendee = new Blendee();
 

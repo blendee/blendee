@@ -190,7 +190,7 @@ public class DataAccessHelper {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(new SelectCountClause());
 		if (criteria != null) builder.setWhereClause(criteria);
-		BlenConnection connection = ContextManager.get(BlendeeManager.class).getConnection();
+		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(builder)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				result.next();
@@ -213,7 +213,7 @@ public class DataAccessHelper {
 		try {
 			callback.execute();
 		} finally {
-			threadStatement.set(null);
+			threadStatement.remove();
 		}
 	}
 
@@ -688,7 +688,7 @@ public class DataAccessHelper {
 
 		@Override
 		void process(ComposedSQL sql) {
-			statement = ContextManager.get(BlendeeManager.class).getConnection().getStatement(sql);
+			statement = BlendeeManager.getConnection().getStatement(sql);
 		}
 
 		@Override

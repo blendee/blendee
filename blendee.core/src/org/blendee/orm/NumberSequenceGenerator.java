@@ -6,7 +6,6 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
@@ -96,11 +95,9 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 */
 	@Override
 	public Bindable next(Criteria depends) {
-		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
-
 		BlenStatement statement;
 		if (depends.isAvailable()) {
-			statement = manager.getConnection().getStatement(
+			statement = BlendeeManager.getConnection().getStatement(
 				"SELECT MAX("
 					+ getTargetColumnName()
 					+ ") FROM "
@@ -109,7 +106,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 					+ depends.toString(false).trim(),
 				depends.getComplementer());
 		} else {
-			statement = manager.getConnection()
+			statement = BlendeeManager.getConnection()
 				.getStatement("SELECT MAX(" + getTargetColumnName() + ") FROM " + path);
 		}
 
