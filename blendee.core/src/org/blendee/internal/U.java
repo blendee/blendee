@@ -84,7 +84,7 @@ public class U {
 		} catch (IllegalAccessException e) {
 			throw new IllegalStateException(e);
 		} finally {
-			if (top) cycleCheckerThreadLocal.set(null);
+			if (top) cycleCheckerThreadLocal.remove();
 		}
 	}
 
@@ -171,10 +171,6 @@ public class U {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	public static void removeThreadLocal() {
-		cycleCheckerThreadLocal.remove();
 	}
 
 	private static byte[] concatByteArray(byte[] array1, int lengthof1, byte[] array2, int lengthof2) {

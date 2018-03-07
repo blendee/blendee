@@ -35,7 +35,7 @@ import org.blendee.jdbc.TablePath;
  * Blendee が使用する {@link BlenConnection} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-class ConcreteConnection implements BlenConnection {
+public class ConcreteConnection implements BlenConnection {
 
 	private static final String[] tableTypes = { "TABLE", "VIEW" };
 
@@ -55,9 +55,10 @@ class ConcreteConnection implements BlenConnection {
 
 	/**
 	 * JDBC 接続を使用してインスタンスを生成します。
+	 * @param config
 	 * @param connection JDBC 接続
 	 */
-	ConcreteConnection(Configure config, Connection connection) {
+	public ConcreteConnection(Configure config, Connection connection) {
 		try {
 			connection.setAutoCommit(false);
 

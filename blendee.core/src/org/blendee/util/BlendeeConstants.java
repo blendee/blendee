@@ -6,12 +6,14 @@ import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
+import org.blendee.jdbc.DefaultErrorConverter;
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
+import org.blendee.sql.DefaultValueExtractors;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
@@ -21,6 +23,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
 public interface BlendeeConstants {
 
 	/**
+	 * required: true
 	 * (String[]) SCHEMA_NAMES
 	 * @see Initializer#addSchemaName(String)
 	 */
@@ -29,12 +32,14 @@ public interface BlendeeConstants {
 		TO_STRING_ARRAY);
 
 	/**
+	 * default: false
 	 * (Boolean) ENABLE_LOG
 	 * @see Initializer#enableLog(boolean)
 	 */
 	public static final ParsableOptionKey<Boolean> ENABLE_LOG = new ParsableOptionKey<>("enable-log", TO_BOOLEAN);
 
 	/**
+	 * default: false
 	 * (Boolean) USE_LAZY_TRANSACTION
 	 * @see Initializer#setUseLazyTransaction(boolean)
 	 */
@@ -43,6 +48,7 @@ public interface BlendeeConstants {
 		TO_BOOLEAN);
 
 	/**
+	 * default: true
 	 * (Boolean) USE_METADATA_CACHE
 	 * @see Initializer#setUseMetadataCache(boolean)
 	 */
@@ -51,6 +57,7 @@ public interface BlendeeConstants {
 		TO_BOOLEAN);
 
 	/**
+	 * default: 0
 	 * (Boolean) AUTO_CLOSE_INTERVAL_MILLIS
 	 * @see Initializer#setAutoCloseIntervalMillis(int)
 	 */
@@ -59,6 +66,7 @@ public interface BlendeeConstants {
 		TO_INTEGER);
 
 	/**
+	 * default: ^(?!org\.blendee\.)
 	 * (String) LOG_STACKTRACE_FILTER
 	 * @see Initializer#setLogStackTraceFilter(java.util.regex.Pattern)
 	 */
@@ -67,6 +75,7 @@ public interface BlendeeConstants {
 		TO_STRING);
 
 	/**
+	 * default: {@link DefaultErrorConverter}
 	 * (Class&lt;ErrorConverter&gt;) ERROR_CONVERTER_CLASS
 	 * @see Initializer#setErrorConverterClass(Class)
 	 */
@@ -75,6 +84,7 @@ public interface BlendeeConstants {
 		TO_CLASS);
 
 	/**
+	 * default: {@link AnnotationMetadataFactory}
 	 * (Class&lt;MetadataFactory&gt;) METADATA_FACTORY_CLASS
 	 * @see Initializer#setMetadataFactoryClass(Class)
 	 */
@@ -83,6 +93,7 @@ public interface BlendeeConstants {
 		TO_CLASS);
 
 	/**
+	 * default: {@link DriverTransactionFactory}
 	 * (Class&lt;TransactionFactory&gt;) TRANSACTION_FACTORY_CLASS
 	 * @see Initializer#setTransactionFactoryClass(Class)
 	 */
@@ -91,7 +102,8 @@ public interface BlendeeConstants {
 		TO_CLASS);
 
 	/**
-	 * (String) COLUMN_REPOSITORY_FILE
+	 * default: /blendee-metadata.xml
+	 * (String) METADATTA_XML_FILE
 	 * @see FileMetadataFactory
 	 */
 	public static final ParsableOptionKey<String> METADATTA_XML_FILE = new ParsableOptionKey<>(
@@ -99,6 +111,7 @@ public interface BlendeeConstants {
 		TO_STRING);
 
 	/**
+	 * default: {@link DefaultValueExtractors}
 	 * (Class&lt;ValueExtractors&gt;) VALUE_EXTRACTORS_CLASS
 	 * @see ValueExtractorsConfigure#setValueExtractorsClass(Class)
 	 */
@@ -107,6 +120,7 @@ public interface BlendeeConstants {
 		TO_CLASS);
 
 	/**
+	 * default: false
 	 * (Boolean) CAN_ADD_NEW_ENTRIES
 	 * @see AnchorOptimizerFactory#setCanAddNewEntries(boolean)
 	 */
@@ -115,6 +129,7 @@ public interface BlendeeConstants {
 		TO_BOOLEAN);
 
 	/**
+	 * default: DEFAULT
 	 * (String) HOME_STORAGE_IDENTIFIER
 	 * @see FileColumnRepositoryFactory
 	 */
@@ -123,6 +138,7 @@ public interface BlendeeConstants {
 		TO_STRING);
 
 	/**
+	 * default: org.blendee.repository
 	 * (String) COLUMN_REPOSITORY_FILE
 	 * @see FileColumnRepositoryFactory
 	 */
@@ -131,6 +147,7 @@ public interface BlendeeConstants {
 		TO_STRING);
 
 	/**
+	 * default: {@link FileColumnRepositoryFactory}
 	 * (Class&lt;ColumnRepositoryFactory&gt;) COLUMN_REPOSITORY_FACTORY_CLASS
 	 * @see AnchorOptimizerFactory#setColumnRepositoryFactoryClass(Class)
 	 */

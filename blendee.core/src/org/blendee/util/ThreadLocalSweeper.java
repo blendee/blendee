@@ -1,7 +1,6 @@
 package org.blendee.util;
 
 import org.blendee.internal.TransactionManager;
-import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.impl.SimpleContextStrategy;
@@ -16,7 +15,6 @@ class ThreadLocalSweeper {
 
 	static void execute() {
 		TransactionManager.removeThreadLocal();
-		U.removeThreadLocal();
 		BlendeeManager.removeThreadLocal();
 		ContextManager.removeThreadLocal();
 		SimpleContextStrategy.removeThreadLocal();

@@ -1,5 +1,6 @@
 package org.blendee.util;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -155,7 +156,30 @@ public class Blendee {
 	 * @throws Exception 処理内で起こった例外
 	 */
 	public static void execute(Function function) throws Exception {
-		if (ContextManager.get(BlendeeManager.class).hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
+		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+		if (manager.hasConnection()) throw new IllegalStateException("既にトランザクションが開始されています");
+
+		Transaction transaction = manager.startTransaction();
+
+		try {
+			function.execute(transaction);
+			transaction.commit();
+		} catch (Exception e) {
+			try {
+				transaction.rollback();
+			} catch (RuntimeException ee) {
+				ee.printStackTrace(getPrintStream());
+			}
+
+			throw e;
+		} finally {
+			try {
+				manager.getAutoCloseableFinalizer().closeAll();
+				if (transaction != null) transaction.close();
+			} catch (RuntimeException e) {
+				e.printStackTrace(getPrintStream());
+			}
+		}
 
 		TransactionManager.start(new TransactionShell() {
 
@@ -164,6 +188,20 @@ public class Blendee {
 				function.execute(getTransaction());
 			}
 		});
+	}
+
+	private static PrintStream stream = System.err;
+
+	/**
+	 * TODO なんとかする
+	 * @param stream
+	 */
+	public static synchronized void setPrintStream(PrintStream stream) {
+		Blendee.stream = stream;
+	}
+
+	private static synchronized PrintStream getPrintStream() {
+		return stream;
 	}
 
 	/**

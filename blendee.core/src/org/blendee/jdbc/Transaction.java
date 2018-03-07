@@ -2,7 +2,6 @@ package org.blendee.jdbc;
 
 import java.sql.Connection;
 
-import org.blendee.internal.Transactions;
 import org.blendee.internal.U;
 
 /**
@@ -12,63 +11,42 @@ import org.blendee.internal.U;
  */
 public abstract class Transaction implements AutoCloseable, Committable {
 
-	private final BlendeeManager manager = ContextManager.get(BlendeeManager.class);
-
 	private BlenConnection connection;
 
 	/**
-	 * 接続及び {@link BlendeeManager#synchroniseWithCurrentTransaction(Committable)} で登録された {@link Committable} をコミットします。
-	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Committable)
+	 * コミットします。
 	 */
 	@Override
 	public void commit() {
-		Transactions transactions = manager.getTransactions();
 		try {
 			commitInternal();
 		} catch (Throwable t) {
-			transactions.clear();
 			throw new RuntimeException(t);
 		}
-
-		transactions.commit();
 	}
 
 	/**
-	 * 接続及び {@link BlendeeManager#synchroniseWithCurrentTransaction(Committable)} で登録された {@link Committable} をロールバックします。
-	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Committable)
+	 * ロールバックします。
 	 */
 	@Override
 	public void rollback() {
-		Transactions transactions = manager.getTransactions();
 		try {
 			rollbackInternal();
 		} catch (Throwable t) {
-			transactions.clear();
 			throw new RuntimeException(t);
 		}
-
-		transactions.rollback();
 	}
 
 	/**
 	 * 接続を閉じます。
-	 * @throws IllegalStateException {@link BlendeeManager#synchroniseWithCurrentTransaction(Committable)} で登録された {@link Committable} があり、 {@link Transaction#commit()} または {@link Transaction#rollback} が実行されていない場合
-	 * @see BlendeeManager#synchroniseWithCurrentTransaction(Committable)
 	 */
 	@Override
 	public void close() {
-		//close中に例外が出るかもしれないので、Connectionの削除が先
-		manager.remove(this);
-
-		Transactions transactions = manager.getTransactions();
 		try {
 			closeInternal();
-			if (transactions.size() > 0) throw new IllegalStateException("commit もしくは rollback が実行されていません");
 		} finally {
-			transactions.clear();
+			BlendeeManager.removeThreadLocal();
 		}
-
-		BlendeeManager.removeThreadLocal();
 	}
 
 	/**

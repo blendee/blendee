@@ -1,7 +1,6 @@
 package org.blendee.jdbc;
 
 import org.blendee.internal.LoggingManager;
-import org.blendee.internal.Transactions;
 
 /**
  * Blendee の設定を管理し、トランザクションの生成、接続の管理等をおこなうハブクラスです。
@@ -9,8 +8,7 @@ import org.blendee.internal.Transactions;
  */
 public class BlendeeManager implements ManagementSubject {
 
-	private static final ThreadLocal<ThreadLocalValues> threadLocalValues = ThreadLocal.withInitial(
-		() -> new ThreadLocalValues());
+	private static final ThreadLocal<Transaction> threadLocalValues = new ThreadLocal<>();
 
 	private final Object lock = new Object();
 
@@ -78,7 +76,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return スレッドが接続を持っているかどうか
 	 */
 	public boolean hasConnection() {
-		return threadLocalValues.get().transaction != null;
+		return threadLocalValues.get() != null;
 	}
 
 	/**
@@ -105,8 +103,7 @@ public class BlendeeManager implements ManagementSubject {
 
 		transaction.prepareConnection(config);
 
-		ThreadLocalValues values = threadLocalValues.get();
-		values.transaction = transaction;
+		threadLocalValues.set(transaction);
 
 		return transaction;
 	}
@@ -116,7 +113,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return 接続
 	 */
 	public BlenConnection getConnection() {
-		Transaction transaction = threadLocalValues.get().transaction;
+		Transaction transaction = threadLocalValues.get();
 		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
 		BlenConnection connection = transaction.getConnection();
@@ -126,22 +123,10 @@ public class BlendeeManager implements ManagementSubject {
 	}
 
 	/**
-	 * 現在のトランザクションに、パラメータで渡されたトランザクションを連動させます。
-	 * @param transaction 連動させたいトランザクション
-	 */
-	public void synchroniseWithCurrentTransaction(Committable transaction) {
-		threadLocalValues.get().transactions.regist(transaction);
-	}
-
-	/**
 	 * {@link Configure#usesMetadataCache() } を使用した場合にできるキャッシュを空にします。
 	 */
 	public void clearMetadataCache() {
 		ContextManager.get(MetadataCache.class).clearCache();
-	}
-
-	Transactions getTransactions() {
-		return threadLocalValues.get().transactions;
 	}
 
 	boolean isCurrent(Configure config) {
@@ -150,29 +135,10 @@ public class BlendeeManager implements ManagementSubject {
 		}
 	}
 
-	void remove(Transaction transaction) {
-		threadLocalValues.get().remove(transaction);
-	}
-
 	/**
 	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
 	 */
 	public static void removeThreadLocal() {
 		threadLocalValues.remove();
-	}
-
-	private static class ThreadLocalValues {
-
-		private final Transactions transactions = new Transactions();
-
-		private Transaction transaction;
-
-		/**
-		 * このクラスで管理するトランザクションの場合のみ削除する
-		 */
-		private void remove(Transaction transaction) {
-			if (this.transaction != transaction) return;
-			this.transaction = null;
-		}
 	}
 }
