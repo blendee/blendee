@@ -10,6 +10,7 @@ public interface OrderByOfferFunction<R extends QueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル
+	 * @return {@link Offers}
 	 */
-	void offer(R relation);
+	Offers<OrderByOffer> apply(R relation);
 }

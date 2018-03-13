@@ -48,10 +48,11 @@ import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.Effectors;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
-import org.blendee.support.SelectOfferFunction.SelectOffers;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.HavingQueryColumn;
+import org.blendee.support.Offers;
+import org.blendee.support.ColumnExpression;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -234,7 +235,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (selectClauseFunction == function) return this;
 
-		SelectOffers offers = function.offer(select);
+		Offers<ColumnExpression> offers = function.apply(select);
 
 		if (rowMode) /*++'++*/{/*++'++*/
 			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
@@ -261,7 +262,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		quitRowMode();
 
-		SelectOffers offers = function.offer(select);
+		Offers<ColumnExpression> offers = function.apply(select);
 
 		SelectDistinctClause mySelectClause = new SelectDistinctClause();
 		offers.get().forEach(c -> c.accept(mySelectClause));
@@ -290,7 +291,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		GroupByOfferFunction<MyQueryRelationship<MyGroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (groupByClauseFunction == function) return this;
 
-		function.offer(groupBy);
+		function.apply(groupBy).get().forEach(o -> o.offer());
 		groupByClauseFunction = function;
 		return this;
 	/*++'++*/}/*++'++*/
@@ -332,7 +333,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		OrderByOfferFunction<MyQueryRelationship<MyOrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		if (orderByClauseFunction == function) return this;
 
-		function.offer(orderBy);
+		function.apply(orderBy).get().forEach(o -> o.offer());
 		orderByClauseFunction = function;
 		return this;
 	/*++'++*/}/*++'++*/

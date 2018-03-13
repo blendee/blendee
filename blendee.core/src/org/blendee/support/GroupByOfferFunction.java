@@ -10,6 +10,7 @@ public interface GroupByOfferFunction<R extends QueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル
+	 * @return {@link Offers}
 	 */
-	void offer(R relation);
+	Offers<GroupByOffer> apply(R relation);
 }

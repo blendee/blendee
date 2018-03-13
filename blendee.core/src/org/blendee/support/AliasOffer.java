@@ -1,5 +1,8 @@
 package org.blendee.support;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
@@ -27,5 +30,12 @@ public class AliasOffer implements SelectOffer {
 	@Override
 	public void accept(SelectOffers offers) {
 		offers.add(expression);
+	}
+
+	@Override
+	public List<ColumnExpression> get() {
+		LinkedList<ColumnExpression> list = new LinkedList<>();
+		list.add(expression);
+		return list;
 	};
 }

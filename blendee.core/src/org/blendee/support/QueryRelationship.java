@@ -6,6 +6,10 @@ import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
@@ -32,7 +36,7 @@ public interface QueryRelationship {
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 * @return SELECT 句
 	 */
-	default SelectOffers of(SelectOffer... offers) {
+	default Offers<ColumnExpression> list(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		for (SelectOffer offer : offers) {
 			offer.accept(visitor);
@@ -45,22 +49,20 @@ public interface QueryRelationship {
 	 * {@link GroupByOfferFunction} 内で使用する GROUP BY 句生成用メソッドです。<br>
 	 * パラメータの項目と順序を GROUP BY 句に割り当てます。
 	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
+	 * @return offers
 	 */
-	default void of(GroupByOffer... offers) {
-		for (GroupByOffer offer : offers) {
-			offer.offer();
-		}
+	default Offers<GroupByOffer> list(GroupByOffer... offers) {
+		return () -> Arrays.asList(offers);
 	}
 
 	/**
 	 * {@link OrderByOfferFunction} 内で使用する ORDER BY 句生成用メソッドです。<br>
 	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
 	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
+	 * @return offers
 	 */
-	default void of(OrderByOffer... offers) {
-		for (OrderByOffer offer : offers) {
-			offer.offer();
-		}
+	default Offers<OrderByOffer> list(OrderByOffer... offers) {
+		return () -> Arrays.asList(offers);
 	}
 
 	/**
@@ -68,7 +70,21 @@ public interface QueryRelationship {
 	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer all() {
-		return offers -> offers.add(getRelationship().getColumns());
+		return new SelectOffer() {
+
+			@Override
+			public List<ColumnExpression> get() {
+				return Arrays.asList(getRelationship().getColumns())
+					.stream()
+					.map(c -> new ColumnExpression(c))
+					.collect(Collectors.toList());
+			}
+
+			@Override
+			public void accept(SelectOffers offers) {
+				offers.add(getRelationship().getColumns());
+			}
+		};
 	}
 
 	/**
@@ -77,7 +93,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer AVG(SelectQueryColumn<?> column) {
-		return fn(AVG_TEMPLATE, column);
+		return any(AVG_TEMPLATE, column);
 	}
 
 	/**
@@ -86,7 +102,7 @@ public interface QueryRelationship {
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc AVG(OrderByQueryColumn<?> column) {
-		return fn(AVG_TEMPLATE, column);
+		return any(AVG_TEMPLATE, column);
 	}
 
 	/**
@@ -95,7 +111,7 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> AVG(HavingQueryColumn<O> column) {
-		return fn(AVG_TEMPLATE, column);
+		return any(AVG_TEMPLATE, column);
 	}
 
 	/**
@@ -104,7 +120,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer SUM(SelectQueryColumn<?> column) {
-		return fn(SUM_TEMPLATE, column);
+		return any(SUM_TEMPLATE, column);
 	}
 
 	/**
@@ -113,7 +129,7 @@ public interface QueryRelationship {
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc SUM(OrderByQueryColumn<?> column) {
-		return fn(SUM_TEMPLATE, column);
+		return any(SUM_TEMPLATE, column);
 	}
 
 	/**
@@ -122,7 +138,7 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> SUM(HavingQueryColumn<O> column) {
-		return fn(SUM_TEMPLATE, column);
+		return any(SUM_TEMPLATE, column);
 	}
 
 	/**
@@ -131,7 +147,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MAX(SelectQueryColumn<?> column) {
-		return fn(MAX_TEMPLATE, column);
+		return any(MAX_TEMPLATE, column);
 	}
 
 	/**
@@ -140,7 +156,7 @@ public interface QueryRelationship {
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc MAX(OrderByQueryColumn<?> column) {
-		return fn(MAX_TEMPLATE, column);
+		return any(MAX_TEMPLATE, column);
 	}
 
 	/**
@@ -149,7 +165,7 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
-		return fn(MAX_TEMPLATE, column);
+		return any(MAX_TEMPLATE, column);
 	}
 
 	/**
@@ -158,7 +174,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MIN(SelectQueryColumn<?> column) {
-		return fn(MIN_TEMPLATE, column);
+		return any(MIN_TEMPLATE, column);
 	}
 
 	/**
@@ -167,7 +183,7 @@ public interface QueryRelationship {
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc MIN(OrderByQueryColumn<?> column) {
-		return fn(MIN_TEMPLATE, column);
+		return any(MIN_TEMPLATE, column);
 	}
 
 	/**
@@ -176,7 +192,7 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> MIN(HavingQueryColumn<O> column) {
-		return fn(MIN_TEMPLATE, column);
+		return any(MIN_TEMPLATE, column);
 	}
 
 	/**
@@ -185,7 +201,7 @@ public interface QueryRelationship {
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer COUNT(SelectQueryColumn<?> column) {
-		return fn(COUNT_TEMPLATE, column);
+		return any(COUNT_TEMPLATE, column);
 	}
 
 	/**
@@ -194,7 +210,7 @@ public interface QueryRelationship {
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc COUNT(OrderByQueryColumn<?> column) {
-		return fn(COUNT_TEMPLATE, column);
+		return any(COUNT_TEMPLATE, column);
 	}
 
 	/**
@@ -203,7 +219,7 @@ public interface QueryRelationship {
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators> HavingQueryColumn<O> COUNT(HavingQueryColumn<O> column) {
-		return fn(COUNT_TEMPLATE, column);
+		return any(COUNT_TEMPLATE, column);
 	}
 
 	/**
@@ -212,7 +228,7 @@ public interface QueryRelationship {
 	 * @param selectColumns 使用するカラム
 	 * @return {@link AliasOffer} AS
 	 */
-	default AliasOffer fn(String template, SelectQueryColumn<?>... selectColumns) {
+	default AliasOffer any(String template, SelectQueryColumn<?>... selectColumns) {
 		getRoot().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
@@ -229,7 +245,7 @@ public interface QueryRelationship {
 	 * @param orderByColumns 使用するカラム
 	 * @return {@link AscDesc} ASC か DESC
 	 */
-	default AscDesc fn(String template, OrderByQueryColumn<?>... orderByColumns) {
+	default AscDesc any(String template, OrderByQueryColumn<?>... orderByColumns) {
 		getRoot().quitRowMode();
 
 		Column[] columns = new Column[orderByColumns.length];
@@ -239,8 +255,8 @@ public interface QueryRelationship {
 
 		OrderByClause clause = getOrderByClause();
 		return new AscDesc(
-			() -> clause.add(template, Direction.ASC, columns),
-			() -> clause.add(template, Direction.ASC, columns));
+			new OrderByOffer(() -> clause.add(template, Direction.ASC, columns)),
+			new OrderByOffer(() -> clause.add(template, Direction.DESC, columns)));
 	}
 
 	/**
@@ -249,23 +265,11 @@ public interface QueryRelationship {
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> fn(String template, HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators> HavingQueryColumn<O> any(
+		String template,
+		HavingQueryColumn<O> column) {
 		getRoot().quitRowMode();
 		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));
-	}
-
-	/**
-	 * SELECT 句に * を追加します。
-	 * @return {@link AliasOffer} AS
-	 */
-	default SelectOffers asterisk() {
-		getRoot().quitRowMode();
-		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
-
-		SelectOffers offers = new SelectOffers();
-		offers.add(new ColumnExpression("{0}", columns));
-
-		return offers;
 	}
 
 	/**
@@ -288,6 +292,20 @@ public interface QueryRelationship {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
 		return new AliasOffer(new ColumnExpression("{0}", columns));
+	}
+
+	/**
+	 * SELECT 句に * を追加します。
+	 * @return {@link AliasOffer} AS
+	 */
+	default SelectOffers asterisk() {
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
+
+		SelectOffers offers = new SelectOffers();
+		offers.add(new ColumnExpression("{0}", columns));
+
+		return offers;
 	}
 
 	/**

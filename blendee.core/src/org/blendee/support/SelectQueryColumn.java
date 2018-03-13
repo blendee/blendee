@@ -1,5 +1,7 @@
 package org.blendee.support;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -10,7 +12,7 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  * @author 千葉 哲嗣
  * @param <T> 連続呼び出し用 {@link Query}
  */
-public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements SelectOffer {
+public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements SelectOffer, Offers<ColumnExpression> {
 
 	private ColumnExpression expression;
 
@@ -30,6 +32,18 @@ public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements Sele
 		} else {
 			offers.add(column);
 		}
+	}
+
+	@Override
+	public List<ColumnExpression> get() {
+		List<ColumnExpression> list = new LinkedList<>();
+		if (expression != null) {
+			list.add(expression);
+		} else {
+			list.add(new ColumnExpression(column));
+		}
+
+		return list;
 	}
 
 	/**

@@ -32,6 +32,7 @@ import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.support.ColumnExpression;
 import org.blendee.support.Effectors;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
@@ -39,6 +40,7 @@ import org.blendee.support.HavingQueryColumn;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
 import org.blendee.support.NotUniqueException;
+import org.blendee.support.Offers;
 import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByQueryColumn;
@@ -48,9 +50,7 @@ import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.Row;
-import org.blendee.support.SelectOffer;
 import org.blendee.support.SelectOfferFunction;
-import org.blendee.support.SelectOfferFunction.SelectOffers;
 import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
@@ -234,7 +234,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
 		if (selectClauseFunction == function) return this;
 
-		SelectOffers offers = function.offer(select);
+		Offers<ColumnExpression> offers = function.apply(select);
 
 		if (rowMode) {
 			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(tablePath);
@@ -261,7 +261,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 		quitRowMode();
 
-		SelectOffers offers = function.offer(select);
+		Offers<ColumnExpression> offers = function.apply(select);
 
 		SelectDistinctClause mySelectClause = new SelectDistinctClause();
 		offers.get().forEach(c -> c.accept(mySelectClause));
@@ -290,7 +290,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		GroupByOfferFunction<GenericRelationship<MyGroupByQueryColumn, Void>> function) {
 		if (groupByClauseFunction == function) return this;
 
-		function.offer(groupBy);
+		function.apply(groupBy).get().forEach(o -> o.offer());
 		groupByClauseFunction = function;
 		return this;
 	}
@@ -332,7 +332,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 		OrderByOfferFunction<GenericRelationship<MyOrderByQueryColumn, Void>> function) {
 		if (orderByClauseFunction == function) return this;
 
-		function.offer(orderBy);
+		function.apply(orderBy).get().forEach(o -> o.offer());
 		orderByClauseFunction = function;
 		return this;
 	}
@@ -678,7 +678,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class GenericRelationship<T, M>
-		implements QueryRelationship, SelectOffer {
+		implements QueryRelationship {
 
 		private final GenericQuery query;
 
@@ -870,11 +870,6 @@ public class GenericQuery extends java.lang.Object implements Query {
 		@Override
 		public GenericRow createRow(DataObject data) {
 			return manager.createRow(data);
-		}
-
-		@Override
-		public void accept(SelectOffers offers) {
-			offers.add(getRelationship().getColumns());
 		}
 
 		@Override

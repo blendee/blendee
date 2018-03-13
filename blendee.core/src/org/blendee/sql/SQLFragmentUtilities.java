@@ -23,26 +23,37 @@ public class SQLFragmentUtilities {
 	public static void traverseSQLFragment(String sqlFragment, SQLFragmentListener listener) {
 		if (!hasStringConstants(sqlFragment)) {
 			listener.receiveSQLFragment(sqlFragment);
+
 			return;
 		}
 
 		for (Matcher outerMatcher = outerPattern.matcher(sqlFragment); outerMatcher
 			.find(); outerMatcher = outerPattern.matcher(sqlFragment)) {
 			String matched = outerMatcher.group(1);
-			if (matched.length() > 0) listener.receiveSQLFragment(matched);
+			if (matched.length() > 0)
+				listener.receiveSQLFragment(matched);
+
 			listener.receiveQuote("'");
+
 			sqlFragment = sqlFragment.substring(outerMatcher.end());
+
 			StringBuilder constants = new StringBuilder();
+
 			boolean terminated = false;
-			for (Matcher innerMatcher = innerPattern.matcher(sqlFragment); innerMatcher
-				.find(); innerMatcher = innerPattern.matcher(sqlFragment)) {
+
+			for (Matcher innerMatcher = innerPattern.matcher(sqlFragment); innerMatcher.find(); innerMatcher = innerPattern.matcher(sqlFragment)) {
 				sqlFragment = sqlFragment.substring(innerMatcher.end());
+
 				if (innerMatcher.group(2).length() == 1) {
 					String matchedConstants = innerMatcher.group(1);
+
 					constants.append(matchedConstants);
+
 					listener.receiveStringConstants(constants.toString());
 					listener.receiveQuote("'");
+
 					terminated = true;
+
 					break;
 				}
 

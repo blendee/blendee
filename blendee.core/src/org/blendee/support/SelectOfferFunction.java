@@ -16,14 +16,14 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル
-	 * @return {@link QueryRelationship#of(SelectOffer...)} で生成した {@link SelectOffers}
+	 * @return {@link QueryRelationship#list(SelectOffer...)} で生成した {@link SelectOffers}
 	 */
-	SelectOffers offer(R relation);
+	Offers<ColumnExpression> apply(R relation);
 
 	/**
 	 * SELECT 句対象を束ねるクラスです。
 	 */
-	static class SelectOffers implements SelectOffer {
+	static class SelectOffers implements SelectOffer, Offers<ColumnExpression> {
 
 		private final List<ColumnExpression> expressions = new LinkedList<>();
 
@@ -51,6 +51,7 @@ public interface SelectOfferFunction<R extends QueryRelationship> {
 		 * 内部処理用なので直接使用しないこと。
 		 * @return {@link SelectOfferFunction} で設定された対象カラム
 		 */
+		@Override
 		public List<ColumnExpression> get() {
 			return new LinkedList<>(expressions);
 		}
