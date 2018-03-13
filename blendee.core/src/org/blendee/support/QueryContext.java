@@ -21,7 +21,7 @@ public interface QueryContext<T> {
 	 * @param <O> {@link Query} 実装
 	 * @return WHERE 句用 QueryContext
 	 */
-	static <O extends LogicalOperators> QueryContext<WhereQueryColumn<O>> newWhereBuilder() {
+	static <O extends LogicalOperators<?>> QueryContext<WhereQueryColumn<O>> newWhereBuilder() {
 		return (relationship, name) -> new WhereQueryColumn<>(relationship, name);
 	}
 
@@ -30,7 +30,7 @@ public interface QueryContext<T> {
 	 * @param <O> {@link Query} 実装
 	 * @return HAVING 句用 QueryContext
 	 */
-	static <O extends LogicalOperators> QueryContext<HavingQueryColumn<O>> newHavingBuilder() {
+	static <O extends LogicalOperators<?>> QueryContext<HavingQueryColumn<O>> newHavingBuilder() {
 		return (relationship, name) -> new HavingQueryColumn<>(relationship, name);
 	}
 

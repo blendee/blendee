@@ -27,7 +27,7 @@ import org.blendee.sql.binder.UUIDBinder;
  * @author 千葉 哲嗣
  * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public abstract class CriteriaQueryColumn<O extends LogicalOperators> {
+public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 
 	final QueryRelationship relationship;
 

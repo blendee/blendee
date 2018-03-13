@@ -110,7 +110,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> AVG(HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> AVG(HavingQueryColumn<O> column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -137,7 +137,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> SUM(HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> SUM(HavingQueryColumn<O> column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -164,7 +164,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -191,7 +191,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> MIN(HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> MIN(HavingQueryColumn<O> column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -218,7 +218,7 @@ public interface QueryRelationship {
 	 * @param column
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> COUNT(HavingQueryColumn<O> column) {
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COUNT(HavingQueryColumn<O> column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -265,7 +265,7 @@ public interface QueryRelationship {
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
 	 */
-	default <O extends LogicalOperators> HavingQueryColumn<O> any(
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> any(
 		String template,
 		HavingQueryColumn<O> column) {
 		getRoot().quitRowMode();

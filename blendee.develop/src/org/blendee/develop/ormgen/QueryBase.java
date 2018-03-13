@@ -7,31 +7,19 @@ import java.util.function.Consumer;
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.Result;
-import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
-import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.RuntimeOptimizer;
-import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SelectClause;
-import org.blendee.sql.SelectCountClause;
-import org.blendee.sql.SelectDistinctClause;
 import org.blendee.sql.Effector;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.FromClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.QueryBuilder;
 import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.SelectQueryColumn;
@@ -45,14 +33,13 @@ import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
+import org.blendee.support.QueryHelper;
 import org.blendee.support.Effectors;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.HavingQueryColumn;
-import org.blendee.support.Offers;
-import org.blendee.support.ColumnExpression;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -78,7 +65,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class WhereLogicalOperators implements LogicalOperators /*++'++*/{/*++'++*/
+	public class WhereLogicalOperators implements LogicalOperators<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> /*++'++*/{/*++'++*/
 
 		private WhereLogicalOperators() /*++'++*/{}/*++'++*/
 
@@ -99,12 +86,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.WHERE_OR);
+
+		@Override
+		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND() /*++'++*/{/*++'++*/
+			return AND;
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR() /*++'++*/{/*++'++*/
+			return OR;
+		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * HAVING 句 で使用する AND, OR です。
 	 */
-	public class HavingLogicalOperators implements LogicalOperators /*++'++*/{/*++'++*/
+	public class HavingLogicalOperators implements LogicalOperators<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> /*++'++*/{/*++'++*/
 
 		private HavingLogicalOperators() /*++'++*/{}/*++'++*/
 
@@ -125,6 +122,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				havingContext,
 				QueryCriteriaContext.HAVING_OR);
+
+		@Override
+		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> AND() /*++'++*/{/*++'++*/
+			return AND;
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> OR() /*++'++*/{/*++'++*/
+			return OR;
+		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
 	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
@@ -139,30 +146,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			this,
 			QueryContext.OTHER,
 			QueryCriteriaContext.NULL);
-
-	private Optimizer optimizer;
-
-	private SelectClause selectClause;
-
-	private Criteria whereClause;
-
-	private Criteria havingClause;
-
-	private GroupByClause groupByClause;
-
-	private OrderByClause orderByClause;
-
-	private SelectOfferFunction<?> selectClauseFunction;
-
-	private GroupByOfferFunction<?> groupByClauseFunction;
-
-	private OrderByOfferFunction<?> orderByClauseFunction;
-
-	private Consumer<?> whereClauseConsumer;
-
-	private Consumer<?> havingClauseConsumer;
-
-	private boolean rowMode = true;
 
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -191,6 +174,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			orderByContext,
 			QueryCriteriaContext.NULL);
 
+	private final QueryHelper<
+		MyQueryRelationship<MySelectQueryColumn, Void>,
+		MyQueryRelationship<MyGroupByQueryColumn, Void>,
+		MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>,
+		MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>,
+		MyQueryRelationship<MyOrderByQueryColumn, Void>> helper = new QueryHelper<>(
+		/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
+		select,
+		groupBy,
+		orderBy,
+		whereOperators,
+		havingOperators);
+
 	/**
 	 * このクラスのインスタンスを生成します。<br>
 	 * インスタンスは ID として、引数で渡された id を使用します。<br>
@@ -216,14 +212,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param optimizer SELECT 句を決定する
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/(Optimizer optimizer) /*++'++*/{/*++'++*/
-		this.optimizer = Objects.requireNonNull(optimizer);
+		helper.setOptimizer(Objects.requireNonNull(optimizer));
 	/*++'++*/}/*++'++*/
 
 	private /*++{1}Query++*//*--*/QueryBase/*--*/(Class<?> using, String id) /*++'++*/{/*++'++*/
-		optimizer = ContextManager.get(AnchorOptimizerFactory.class).getInstance(
-			id,
-			/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
-			using);
+		helper.setOptimizer(
+			ContextManager.get(AnchorOptimizerFactory.class).getInstance(
+				id,
+				/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
+				using));
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -233,21 +230,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
 		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
-		if (selectClauseFunction == function) return this;
-
-		Offers<ColumnExpression> offers = function.apply(select);
-
-		if (rowMode) /*++'++*/{/*++'++*/
-			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
-			offers.get().forEach(c -> c.accept(myOptimizer));
-			optimizer = myOptimizer;
-		/*++'++*/}/*++'++*/ else /*++'++*/{/*++'++*/
-			SelectClause mySelectClause = new SelectClause();
-			offers.get().forEach(c -> c.accept(mySelectClause));
-			selectClause = mySelectClause;
-		/*++'++*/}/*++'++*/
-
-		selectClauseFunction = function;
+		helper.SELECT(function);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -258,17 +241,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_DISTINCT(
 		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
-		if (selectClauseFunction == function) return this;
-
-		quitRowMode();
-
-		Offers<ColumnExpression> offers = function.apply(select);
-
-		SelectDistinctClause mySelectClause = new SelectDistinctClause();
-		offers.get().forEach(c -> c.accept(mySelectClause));
-		selectClause = mySelectClause;
-
-		selectClauseFunction = function;
+		helper.SELECT_DISTINCT(function);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -277,8 +250,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_COUNT() /*++'++*/{/*++'++*/
-		quitRowMode();
-		selectClause = new SelectCountClause();
+		helper.SELECT_COUNT();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -289,10 +261,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ GROUP_BY(
 		GroupByOfferFunction<MyQueryRelationship<MyGroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
-		if (groupByClauseFunction == function) return this;
-
-		function.apply(groupBy).get().forEach(o -> o.offer());
-		groupByClauseFunction = function;
+		helper.GROUP_BY(function);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -303,10 +272,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
 		Consumer<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
-		if (whereClauseConsumer == consumer) return this;
-
-		consumer.accept(whereOperators.AND);
-		whereClauseConsumer = consumer;
+		helper.WHERE(consumer);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -317,10 +283,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
 		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
-		if (havingClauseConsumer == consumer) return this;
-
-		consumer.accept(havingOperators.AND);
-		havingClauseConsumer = consumer;
+		helper.HAVING(consumer);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -331,16 +294,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
 		OrderByOfferFunction<MyQueryRelationship<MyOrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
-		if (orderByClauseFunction == function) return this;
-
-		function.apply(orderBy).get().forEach(o -> o.offer());
-		orderByClauseFunction = function;
+		helper.ORDER_BY(function);
 		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public boolean hasWhereClause() /*++'++*/{/*++'++*/
-		return whereClause != null && whereClause.isAvailable();
+		return helper.hasWhereClause();
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -350,10 +310,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ groupBy(GroupByClause clause) /*++'++*/{/*++'++*/
-		quitRowMode();
-		if (groupByClause != null)
-			throw new IllegalStateException("既に GROUP BY 句がセットされています");
-		groupByClause = clause;
+		helper.setGroupByClause(clause);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -364,9 +321,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ orderBy(OrderByClause clause) /*++'++*/{/*++'++*/
-		if (orderByClause != null)
-			throw new IllegalStateException("既に ORDER BY 句がセットされています");
-		orderByClause = clause;
+		helper.setOrderByClause(clause);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -420,25 +375,25 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public LogicalOperators getWhereLogicalOperators() /*++'++*/{/*++'++*/
+	public LogicalOperators<?> getWhereLogicalOperators() /*++'++*/{/*++'++*/
 		return whereOperators;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public LogicalOperators getHavingLogicalOperators() /*++'++*/{/*++'++*/
+	public LogicalOperators<?> getHavingLogicalOperators() /*++'++*/{/*++'++*/
 		return havingOperators;
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), whereClause, orderByClause);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), helper.getWhereClause(), helper.getOrderByClause());
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(Effector... options) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), whereClause, orderByClause, options);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), helper.getWhereClause(), helper.getOrderByClause(), options);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -453,90 +408,69 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), options, primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), options, primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.select(getOptimizer(), options, primaryKeyMembers);
+		helper.checkRowMode();
+		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		ComposedSQL sql = aggregateInternal();
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
-			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
-				consumer.accept(result);
-			/*++'++*/}/*++'++*/
-		/*++'++*/}/*++'++*/
+		helper.aggregate(consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void aggregate(Effectors options, Consumer<Result> consumer) /*++'++*/{/*++'++*/
-		ComposedSQL sql = aggregateInternal(options.get());
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) /*++'++*/{/*++'++*/
-			try (BlenResultSet result = statement.executeQuery()) /*++'++*/{/*++'++*/
-				consumer.accept(result);
-			/*++'++*/}/*++'++*/
-		/*++'++*/}/*++'++*/
+		helper.aggregate(options, consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public ResultSetIterator aggregate(Effector... options) /*++'++*/{/*++'++*/
-		ComposedSQL sql = aggregateInternal(options);
-		return new ResultSetIterator(sql);
+		return helper.aggregate(options);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public int count() /*++'++*/{/*++'++*/
-		checkRowMode();
-		return manager.count(whereClause);
+		helper.checkRowMode();
+		return manager.count(helper.getWhereClause());
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Criteria getCriteria() /*++'++*/{/*++'++*/
-		return whereClause.replicate();
+		return helper.getWhereClause().replicate();
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
-		if (rowMode) /*++'++*/{/*++'++*/
-			return new DataAccessHelper().getSelector(
-				getOptimizer(),
-				whereClause,
-				orderByClause,
-				options).composeSQL();
-		/*++'++*/}/*++'++*/
-
-		return aggregateInternal(options);
+		return helper.composeSQL(options);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -544,8 +478,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetWhere() /*++'++*/{/*++'++*/
-		whereClause = null;
-		whereClauseConsumer = null;
+		helper.resetWhere();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -554,8 +487,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetHaving() /*++'++*/{/*++'++*/
-		havingClause = null;
-		havingClauseConsumer = null;
+		helper.resetHaving();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -564,8 +496,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetSelect() /*++'++*/{/*++'++*/
-		optimizer = null;
-		selectClauseFunction = null;
+		helper.resetSelect();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -574,8 +505,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetGroupBy() /*++'++*/{/*++'++*/
-		groupByClause = null;
-		groupByClauseFunction = null;
+		helper.resetGroupBy();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -584,8 +514,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetOrderBy() /*++'++*/{/*++'++*/
-		orderByClause = null;
-		orderByClauseFunction = null;
+		helper.resetOrderBy();
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -594,29 +523,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ reset() /*++'++*/{/*++'++*/
-		optimizer = null;
-		selectClause = null;
-		whereClause = null;
-		havingClause = null;
-		groupByClause = null;
-		orderByClause = null;
-		selectClauseFunction = null;
-		groupByClauseFunction = null;
-		orderByClauseFunction = null;
-		whereClauseConsumer = null;
-		havingClauseConsumer = null;
-		rowMode = true;
+		helper.reset();
 		return this;
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public void quitRowMode() /*++'++*/{/*++'++*/
-		rowMode = false;
+		helper.quitRowMode();
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public boolean rowMode() /*++'++*/{/*++'++*/
-		return rowMode;
+		return helper.rowMode();
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -629,12 +547,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		private O2MExecutor(QueryRelationship self) /*++'++*/{/*++'++*/
 			super(self);
 		/*++'++*/}/*++'++*/
-	/*++'++*/}/*++'++*/
-
-	private Optimizer getOptimizer() /*++'++*/{/*++'++*/
-		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE);
-		return optimizer;
 	/*++'++*/}/*++'++*/
 
 	private static Class<?> getUsing(StackTraceElement element) /*++'++*/{/*++'++*/
@@ -653,24 +565,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		if (iterator.hasNext()) throw new NotUniqueException();
 
 		return Optional.of(row);
-	/*++'++*/}/*++'++*/
-
-	private ComposedSQL aggregateInternal(Effector... effectors) /*++'++*/{/*++'++*/
-		QueryBuilder builder = new QueryBuilder(new FromClause(/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE));
-
-		builder.setSelectClause(selectClause);
-		if (groupByClause != null) builder.setGroupByClause(groupByClause);
-		if (whereClause != null) builder.setWhereClause(whereClause);
-		if (havingClause != null) builder.setHavingClause(havingClause);
-		if (orderByClause != null) builder.setOrderByClause(orderByClause);
-
-		builder.addEffector(effectors);
-
-		return builder;
-	/*++'++*/}/*++'++*/
-
-	private void checkRowMode() /*++'++*/{/*++'++*/
-		if (!rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -796,34 +690,20 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		@Override
 		public Optimizer getOptimizer() /*++'++*/{/*++'++*/
-			if (query$ != null) return query$.getOptimizer();
+			if (query$ != null) return query$.helper.getOptimizer();
 			return null;
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public GroupByClause getGroupByClause() /*++'++*/{/*++'++*/
 			if (query$ == null) return parent$.getGroupByClause();
-
-			GroupByClause clause = query$.groupByClause;
-			if (clause == null) /*++'++*/{/*++'++*/
-				clause = new GroupByClause();
-				query$.groupByClause = clause;
-			/*++'++*/}/*++'++*/
-
-			return clause;
+			return query$.helper.getGroupByClause();
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public OrderByClause getOrderByClause() /*++'++*/{/*++'++*/
 			if (query$ == null) return parent$.getOrderByClause();
-
-			OrderByClause clause = query$.orderByClause;
-			if (clause == null) /*++'++*/{/*++'++*/
-				clause = new OrderByClause();
-				query$.orderByClause = clause;
-			/*++'++*/}/*++'++*/
-
-			return clause;
+			return query$.helper.getOrderByClause();
 		/*++'++*/}/*++'++*/
 
 		@Override
@@ -833,13 +713,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				return;
 			/*++'++*/}/*++'++*/
 
-			query$.whereClause = criteria;
+			query$.helper.setWhereClause(criteria);
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Criteria getWhereClause() /*++'++*/{/*++'++*/
 			if (query$ == null) return parent$.getWhereClause();
-			return query$.whereClause;
+			return query$.helper.getWhereClause();
 		/*++'++*/}/*++'++*/
 
 		@Override
@@ -849,13 +729,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				return;
 			/*++'++*/}/*++'++*/
 
-			query$.havingClause = criteria;
+			query$.helper.setHavingClause(criteria);
 		/*++'++*/}/*++'++*/
 
 		@Override
 		public Criteria getHavingClause() /*++'++*/{/*++'++*/
 			if (query$ == null) return parent$.getHavingClause();
-			return query$.havingClause;
+			return query$.helper.getHavingClause();
 		/*++'++*/}/*++'++*/
 
 		@Override

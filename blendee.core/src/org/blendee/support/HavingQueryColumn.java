@@ -8,7 +8,7 @@ import org.blendee.sql.Column;
  * @author 千葉 哲嗣
  * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public class HavingQueryColumn<O extends LogicalOperators> extends CriteriaQueryColumn<O> {
+public class HavingQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryColumn<O> {
 
 	private final Column column;
 
