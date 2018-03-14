@@ -84,7 +84,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * SELECT 句を記述します。
-	 * @param function
+	 * @param function {@link SelectOfferFunction}
 	 */
 	public void SELECT(SelectOfferFunction<S> function) {
 		if (selectClauseFunction == function) return;
@@ -106,7 +106,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * DISTINCT を使用した SELECT 句を記述します。
-	 * @param function
+	 * @param function {@link SelectOfferFunction}
 	 */
 	public void SELECT_DISTINCT(
 		SelectOfferFunction<S> function) {
@@ -133,7 +133,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * GROUP BY 句を記述します。
-	 * @param function
+	 * @param function {@link GroupByOfferFunction}
 	 */
 	public void GROUP_BY(
 		GroupByOfferFunction<G> function) {
@@ -145,7 +145,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * WHERE 句を記述します。
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 */
 	public void WHERE(
 		Consumer<W> consumer) {
@@ -157,7 +157,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * HAVING 句を記述します。
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 */
 	public void HAVING(
 		Consumer<H> consumer) {
@@ -169,7 +169,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	/**
 	 * ORDER BY 句を記述します。
-	 * @param function
+	 * @param function {@link OrderByOfferFunction}
 	 */
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
@@ -332,7 +332,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	}
 
 	/**
-	 * @param options
+	 * @param options 検索オプション
 	 * @return {@link ComposedSQL}
 	 */
 	public ComposedSQL composeSQL(Effector[] options) {
@@ -348,7 +348,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	}
 
 	/**
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 */
 	public void aggregate(Consumer<Result> consumer) {
 		ComposedSQL sql = aggregateInternal();
@@ -361,8 +361,8 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	}
 
 	/**
-	 * @param options
-	 * @param consumer
+	 * @param options 検索オプション
+	 * @param consumer {@link Consumer}
 	 */
 	public void aggregate(Effectors options, Consumer<Result> consumer) {
 		ComposedSQL sql = aggregateInternal(options.get());
@@ -375,7 +375,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	}
 
 	/**
-	 * @param options
+	 * @param options 検索オプション
 	 * @return {@link ResultSetIterator}
 	 */
 	public ResultSetIterator aggregate(Effector... options) {
@@ -386,7 +386,14 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	private ComposedSQL aggregateInternal(Effector... effectors) {
 		QueryBuilder builder = new QueryBuilder(new FromClause(table));
 
-		builder.setSelectClause(selectClause);
+		if (selectClause != null) {
+			builder.setSelectClause(selectClause);
+		} else if (optimizer != null) {
+			builder.setSelectClause(optimizer.getOptimizedSelectClause());
+		} else {
+			throw new IllegalStateException("検索のための SELECT 句が準備されていません");
+		}
+
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);

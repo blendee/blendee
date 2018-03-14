@@ -12,7 +12,7 @@ public class OrderByOffer implements Offers<OrderByOffer> {
 	private final Runnable offerFunction;
 
 	/**
-	 * @param offerFunction
+	 * @param offerFunction {@link Runnable}
 	 */
 	public OrderByOffer(Runnable offerFunction) {
 		this.offerFunction = offerFunction;

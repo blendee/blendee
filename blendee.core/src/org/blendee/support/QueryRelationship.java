@@ -89,7 +89,7 @@ public interface QueryRelationship {
 
 	/**
 	 * SELECT 句用 AVG(column)
-	 * @param column
+	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer AVG(SelectQueryColumn<?> column) {
@@ -98,7 +98,7 @@ public interface QueryRelationship {
 
 	/**
 	 * ORDER BY 句用 AVG(column)
-	 * @param column
+	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc AVG(OrderByQueryColumn<?> column) {
@@ -107,7 +107,8 @@ public interface QueryRelationship {
 
 	/**
 	 * GROUP BY 句用 AVG(column)
-	 * @param column
+	 * @param <O> operator
+	 * @param column {@link HavingQueryColumn}
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> AVG(HavingQueryColumn<O> column) {
@@ -116,7 +117,7 @@ public interface QueryRelationship {
 
 	/**
 	 * SELECT 句用 SUM(column)
-	 * @param column
+	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer SUM(SelectQueryColumn<?> column) {
@@ -125,7 +126,7 @@ public interface QueryRelationship {
 
 	/**
 	 * ORDER BY 句用 SUM(column)
-	 * @param column
+	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc SUM(OrderByQueryColumn<?> column) {
@@ -134,7 +135,8 @@ public interface QueryRelationship {
 
 	/**
 	 * GROUP BY 句用 SUM(column)
-	 * @param column
+	 * @param <O> operator
+	 * @param column {@link HavingQueryColumn}
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> SUM(HavingQueryColumn<O> column) {
@@ -143,7 +145,7 @@ public interface QueryRelationship {
 
 	/**
 	 * SELECT 句用 MAX(column)
-	 * @param column
+	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MAX(SelectQueryColumn<?> column) {
@@ -152,7 +154,7 @@ public interface QueryRelationship {
 
 	/**
 	 * ORDER BY 句用 MAX(column)
-	 * @param column
+	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc MAX(OrderByQueryColumn<?> column) {
@@ -161,7 +163,8 @@ public interface QueryRelationship {
 
 	/**
 	 * GROUP BY 句用 MAX(column)
-	 * @param column
+	 * @param <O> operator
+	 * @param column {@link HavingQueryColumn}
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> MAX(HavingQueryColumn<O> column) {
@@ -170,7 +173,7 @@ public interface QueryRelationship {
 
 	/**
 	 * SELECT 句用 MIN(column)
-	 * @param column
+	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer MIN(SelectQueryColumn<?> column) {
@@ -179,7 +182,7 @@ public interface QueryRelationship {
 
 	/**
 	 * ORDER BY 句用 MIN(column)
-	 * @param column
+	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc MIN(OrderByQueryColumn<?> column) {
@@ -188,7 +191,8 @@ public interface QueryRelationship {
 
 	/**
 	 * GROUP BY 句用 MIN(column)
-	 * @param column
+	 * @param <O> operator
+	 * @param column {@link HavingQueryColumn}
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> MIN(HavingQueryColumn<O> column) {
@@ -197,7 +201,7 @@ public interface QueryRelationship {
 
 	/**
 	 * SELECT 句用 COUNT(column)
-	 * @param column
+	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
 	default AliasOffer COUNT(SelectQueryColumn<?> column) {
@@ -206,7 +210,7 @@ public interface QueryRelationship {
 
 	/**
 	 * ORDER BY 句用 COUNT(column)
-	 * @param column
+	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
 	default AscDesc COUNT(OrderByQueryColumn<?> column) {
@@ -215,7 +219,8 @@ public interface QueryRelationship {
 
 	/**
 	 * GROUP BY 句用 COUNT(column)
-	 * @param column
+	 * @param <O> operator
+	 * @param column {@link HavingQueryColumn}
 	 * @return {@link LogicalOperators}
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COUNT(HavingQueryColumn<O> column) {
@@ -261,6 +266,7 @@ public interface QueryRelationship {
 
 	/**
 	 * HAVING 句に任意のカラムを追加します。
+	 * @param <O> operator
 	 * @param template カラムのテンプレート
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR

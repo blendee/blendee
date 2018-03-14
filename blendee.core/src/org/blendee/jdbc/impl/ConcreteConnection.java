@@ -55,7 +55,7 @@ public class ConcreteConnection implements BlenConnection {
 
 	/**
 	 * JDBC 接続を使用してインスタンスを生成します。
-	 * @param config
+	 * @param config {@link Configure}
 	 * @param connection JDBC 接続
 	 */
 	public ConcreteConnection(Configure config, Connection connection) {

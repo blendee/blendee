@@ -19,7 +19,7 @@ public class AliasOffer implements SelectOffer {
 
 	/**
 	 * AS エイリアス となります。
-	 * @param alias
+	 * @param alias エイリアス
 	 * @return {@link SelectOffer}
 	 */
 	public SelectOffer AS(String alias) {

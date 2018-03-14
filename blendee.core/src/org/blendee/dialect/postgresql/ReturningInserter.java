@@ -30,7 +30,7 @@ public class ReturningInserter<T> {
 	private final ValueExtractor extractor;
 
 	/**
-	 * @param path
+	 * @param path 対象テーブル
 	 */
 	public ReturningInserter(TablePath path) {
 		this.path = path;

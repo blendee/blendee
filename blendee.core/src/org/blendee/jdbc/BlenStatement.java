@@ -31,6 +31,7 @@ public interface BlenStatement extends AutoCloseable {
 	/**
 	 * 検索を行います。<br>
 	 * 何らかの結果を返すことが可能です。
+	 * @param <T> function の戻り値
 	 * @param function 検索結果を受け取る {@link Function}
 	 * @return T
 	 */
@@ -48,7 +49,7 @@ public interface BlenStatement extends AutoCloseable {
 
 	/**
 	 * SQL文を実行します。
-	 * @return 最初の結果が {@link BlenResultSet} オブジェクトの場合は true 
+	 * @return 最初の結果が {@link BlenResultSet} オブジェクトの場合は true
 	 */
 	boolean execute();
 
@@ -60,7 +61,7 @@ public interface BlenStatement extends AutoCloseable {
 
 	/**
 	 * {@link #execute()} の結果の、更新カウントを取得します。
-	 * @return 現在の結果が {@link BlenResultSet} オブジェクトであるか、または結果がない場合は -1 
+	 * @return 現在の結果が {@link BlenResultSet} オブジェクトであるか、または結果がない場合は -1
 	 */
 	int getUpdateCount();
 

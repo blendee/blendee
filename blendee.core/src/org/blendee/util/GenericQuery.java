@@ -222,7 +222,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * SELECT 句を記述します。
-	 * @param function
+	 * @param function {@link SelectOfferFunction}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery SELECT(
@@ -233,7 +233,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * SELECT 句を記述します。
-	 * @param function
+	 * @param function {@link SelectOfferFunction}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery SELECT_DISTINCT(
@@ -253,7 +253,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * GROUP BY 句を記述します。
-	 * @param function
+	 * @param function {@link GroupByOfferFunction}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery GROUP_BY(
@@ -264,7 +264,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * WHERE 句を記述します。
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery WHERE(
@@ -275,7 +275,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * HAVING 句を記述します。
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery HAVING(
@@ -286,7 +286,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 	/**
 	 * ORDER BY 句を記述します。
-	 * @param function
+	 * @param function {@link OrderByOfferFunction}
 	 * @return この {@link Query}
 	 */
 	public GenericQuery ORDER_BY(
@@ -591,11 +591,11 @@ public class GenericQuery extends java.lang.Object implements Query {
 
 		/**
 		 * 直接使用しないでください。
-		 * @param builder
-		 * @param parent
-		 * @param fkName
-		 * @param path
-		 * @param root
+		 * @param builder {@link QueryContext}
+		 * @param parent 親インスタンス
+		 * @param fkName FK 名
+		 * @param path テーブル
+		 * @param root ルートテーブル
 		 */
 		public GenericRelationship(
 			QueryContext<T> builder,

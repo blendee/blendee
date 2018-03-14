@@ -41,14 +41,14 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	LogicalOperators<?> getHavingLogicalOperators();
 
 	/**
-	 * {@Row} で検索結果を受け取ることができなくなります。<br>
+	 * {@link Row} で検索結果を受け取ることができなくなります。<br>
 	 * 代わりに{@link #aggregate} で結果を取得することになります。
 	 */
 	void quitRowMode();
 
 	/**
-	 * 検索結果として {@Row} を使用するモードかどうかを判定します。
-	 * @return {@Row} を使用するモードかどうか
+	 * 検索結果として {@link Row} を使用するモードかどうかを判定します。
+	 * @return {@link Row} を使用するモードかどうか
 	 */
 	boolean rowMode();
 
@@ -60,21 +60,21 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param options
+	 * @param options 検索オプション
 	 * @param consumer {@link Consumer}
 	 */
 	void aggregate(Effectors options, Consumer<Result> consumer);
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param options
+	 * @param options 検索オプション
 	 * @return {@link ResultSetIterator}
 	 */
 	ResultSetIterator aggregate(Effector... options);
 
 	/**
 	 * {@link ComposedSQL} を取得します。
-	 * @param options
+	 * @param options 検索オプション
 	 * @return {@link ComposedSQL}
 	 */
 	ComposedSQL composeSQL(Effector... options);

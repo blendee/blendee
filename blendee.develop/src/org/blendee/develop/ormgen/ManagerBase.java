@@ -25,7 +25,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * '{'@link Optimizer} には '{'@link SimpleOptimizer'}' が使用されます。
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
+	 * @param options 検索オプション
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
@@ -44,7 +44,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
 	 * @param criteria WHERE 句となる条件
 	 * @param order  ORDER 句
-	 * @param options 行ロックオプション '{'@link RowLockOption'}' 等
+	 * @param options 検索オプション
 	 * @return '{'@link RowIterator'}'
 	 */
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(

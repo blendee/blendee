@@ -32,6 +32,7 @@ public interface BlenConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String)} の簡易実行メソッドです。
+	 * @param <T> function の戻り値
 	 * @param sql プレースホルダを持たない SQL
 	 * @param function {@link BlenStatement} を受け取る {@link Function}
 	 * @return T
@@ -88,6 +89,7 @@ public interface BlenConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
+	 * @param <T> function の戻り値
 	 * @param sql プレースホルダを持つ SQL
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @param function {@link BlenStatement} を受け取る {@link Function}
@@ -104,6 +106,7 @@ public interface BlenConnection extends Metadata {
 
 	/**
 	 * {@link #getStatement(String, PreparedStatementComplementer)} の簡易実行メソッドです。
+	 * @param <T> function の戻り値
 	 * @param sql SQL とプレースホルダの値
 	 * @param function {@link BlenStatement} を受け取る {@link Function}
 	 * @return T
@@ -135,6 +138,7 @@ public interface BlenConnection extends Metadata {
 
 	/**
 	 * {@link #prepareStatement(String)} の簡易実行メソッドです。
+	 * @param <T> function の戻り値
 	 * @param sql プレースホルダを持つ SQL
 	 * @param function {@link BlenPreparedStatement} を受け取る {@link Function}
 	 * @return T

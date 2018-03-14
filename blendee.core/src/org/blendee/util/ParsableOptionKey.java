@@ -59,7 +59,7 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 				try {
 					return (T) Class.forName(value);
 				} catch (Exception e) {
-					throw new IllegalStateException();
+					throw new IllegalStateException(e);
 				}
 			}
 		};

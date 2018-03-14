@@ -16,15 +16,15 @@ public class ColumnExpression {
 	private final Column[] columns;
 
 	/**
-	 * @param columns
+	 * @param columns {@link Column}
 	 */
 	public ColumnExpression(Column... columns) {
 		this.columns = columns;
 	}
 
 	/**
-	 * @param expression
-	 * @param columns
+	 * @param expression テンプレート
+	 * @param columns {@link Column}
 	 */
 	public ColumnExpression(String expression, Column... columns) {
 		this.expression.append(expression);
@@ -32,7 +32,7 @@ public class ColumnExpression {
 	}
 
 	/**
-	 * @param optimizer
+	 * @param optimizer {@link RuntimeOptimizer}
 	 */
 	public void accept(RuntimeOptimizer optimizer) {
 		for (Column column : columns) {
@@ -41,7 +41,7 @@ public class ColumnExpression {
 	}
 
 	/**
-	 * @param selectClause
+	 * @param selectClause SELECT 句
 	 */
 	public void accept(SelectClause selectClause) {
 		if (expression.length() == 0) {

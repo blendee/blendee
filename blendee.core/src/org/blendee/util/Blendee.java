@@ -42,7 +42,7 @@ public class Blendee {
 	}
 
 	/**
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 */
 	public Blendee(Consumer<Initializer> consumer) {
 		this.consumer = consumer;
@@ -201,7 +201,7 @@ public class Blendee {
 
 	/**
 	 * TODO なんとかする
-	 * @param stream
+	 * @param stream {@link PrintStream}
 	 */
 	public static synchronized void setPrintStream(PrintStream stream) {
 		Blendee.stream = stream;

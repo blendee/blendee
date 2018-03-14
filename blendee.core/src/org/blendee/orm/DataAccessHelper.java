@@ -444,10 +444,10 @@ public class DataAccessHelper {
 
 	/**
 	 * {@link Selector} を取得します。
-	 * @param optimizer
-	 * @param criteria
-	 * @param order
-	 * @param options
+	 * @param optimizer SELECT 句
+	 * @param criteria WHERE 句
+	 * @param order ORDER BY 句
+	 * @param options オプション
 	 * @return {@link Selector}
 	 */
 	public Selector getSelector(

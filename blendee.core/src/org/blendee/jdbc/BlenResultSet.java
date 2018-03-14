@@ -24,7 +24,7 @@ public interface BlenResultSet extends AutoCloseable, Result {
 
 	/**
 	 * 全件処理するための簡易メソッドです。
-	 * @param consumer
+	 * @param consumer {@link Consumer}
 	 */
 	default void forEach(Consumer<Result> consumer) {
 		try {
