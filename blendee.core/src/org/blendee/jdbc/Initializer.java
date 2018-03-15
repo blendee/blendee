@@ -26,6 +26,8 @@ public final class Initializer {
 
 	private Class<? extends MetadataFactory> metadataFactoryClass = DefaultMetadataFactory.class;
 
+	private boolean useAutoCommit = false;
+
 	private boolean useLazyTransaction = false;
 
 	private boolean useMetadataCache = true;
@@ -106,6 +108,16 @@ public final class Initializer {
 		if (schemaNames.size() == 1 && (schemaNames.get(0).length() == 0 || schemaName.length() == 0))
 			throw new IllegalArgumentException("スキーマ名を複数件使用する場合、空のスキーマ名は使用できません");
 		schemaNames.add(schemaName);
+	}
+
+	/**
+	 * 自動コミットを行うかを設定します。
+	 * @param useAutoCommit 自動コミットを行う場合、 true
+	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
+	 */
+	public synchronized void setUseAutoCommit(boolean useAutoCommit) {
+		if (freeze) throw new IllegalStateException();
+		this.useAutoCommit = useAutoCommit;
 	}
 
 	/**
@@ -203,6 +215,7 @@ public final class Initializer {
 			dataTypeConverterClass,
 			metadataFactoryClass,
 			schemaNames.toArray(new String[schemaNames.size()]),
+			useAutoCommit,
 			useLazyTransaction,
 			useMetadataCache,
 			autoCloseIntervalMillis,

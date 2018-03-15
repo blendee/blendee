@@ -11,12 +11,17 @@ import org.blendee.internal.U;
  */
 public abstract class Transaction implements AutoCloseable {
 
+	private Configure config;
+
 	private BlenConnection connection;
 
 	/**
 	 * コミットします。
 	 */
 	public void commit() {
+		//自動コミットの場合何もしない
+		if (getConfigure().usesAutoCommit()) return;
+
 		try {
 			commitInternal();
 		} catch (Throwable t) {
@@ -28,6 +33,9 @@ public abstract class Transaction implements AutoCloseable {
 	 * ロールバックします。
 	 */
 	public void rollback() {
+		//自動コミットの場合何もしない
+		if (getConfigure().usesAutoCommit()) return;
+
 		try {
 			rollbackInternal();
 		} catch (Throwable t) {
@@ -85,7 +93,21 @@ public abstract class Transaction implements AutoCloseable {
 	 */
 	protected abstract void closeInternal();
 
-	void prepareConnection(Configure config) {
+	/**
+	 * 現在の設定を返します。
+	 * @return {@link Configure}
+	 */
+	protected Configure getConfigure() {
+		if (config == null) {
+			config = ContextManager.get(BlendeeManager.class).getConfigure();
+		}
+
+		return config;
+	}
+
+	void prepareConnection() {
+		Configure config = getConfigure();
+
 		BlenConnection connection = getConnection();
 
 		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);

@@ -40,6 +40,15 @@ public interface BlendeeConstants {
 
 	/**
 	 * default: false
+	 * (Boolean) USE_AUTO_COMMIT
+	 * @see Initializer#setUseLazyTransaction(boolean)
+	 */
+	public static final ParsableOptionKey<Boolean> USE_AUTO_COMMIT = new ParsableOptionKey<>(
+		"use-auto-commit",
+		TO_BOOLEAN);
+
+	/**
+	 * default: false
 	 * (Boolean) USE_LAZY_TRANSACTION
 	 * @see Initializer#setUseLazyTransaction(boolean)
 	 */

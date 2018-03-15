@@ -26,6 +26,8 @@ public final class Configure {
 
 	private final String[] schemaNames;
 
+	private final boolean useAutoCommit;
+
 	private final boolean useLazyTransaction;
 
 	private final boolean useMetadataCache;
@@ -60,6 +62,7 @@ public final class Configure {
 		Class<? extends DataTypeConverter> dataTypeConverterClass,
 		Class<? extends MetadataFactory> metadataFactoryClass,
 		String[] schemaNames,
+		boolean useAutoCommit,
 		boolean useLazyTransaction,
 		boolean useMetadataCache,
 		int autoCloseIntervalMillis,
@@ -73,6 +76,7 @@ public final class Configure {
 		this.dataTypeConverterClass = dataTypeConverterClass;
 		this.metadataFactoryClass = metadataFactoryClass;
 		this.schemaNames = schemaNames.clone();
+		this.useAutoCommit = useAutoCommit;
 		this.useLazyTransaction = useLazyTransaction;
 		this.useMetadataCache = useMetadataCache;
 		this.autoCloseIntervalMillis = autoCloseIntervalMillis;
@@ -146,6 +150,16 @@ public final class Configure {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 自動コミットを行うかを設定します。
+	 * @return 自動コミットを行う場合、 true
+	 * @throws IllegalStateException 古い設定を使用している場合
+	 */
+	public boolean usesAutoCommit() {
+		check();
+		return useAutoCommit;
 	}
 
 	/**

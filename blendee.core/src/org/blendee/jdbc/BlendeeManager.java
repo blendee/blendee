@@ -101,7 +101,7 @@ public class BlendeeManager implements ManagementSubject {
 			transaction = factory.createTransaction();
 		}
 
-		transaction.prepareConnection(config);
+		transaction.prepareConnection();
 
 		transactionThreadLocal.set(transaction);
 

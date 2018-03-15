@@ -6,8 +6,6 @@ class LazyTransaction extends Transaction {
 
 	private Transaction transaction;
 
-	private Configure config;
-
 	LazyTransaction(TransactionFactory factory) {
 		this.factory = factory;
 	}
@@ -51,14 +49,12 @@ class LazyTransaction extends Transaction {
 	}
 
 	@Override
-	void prepareConnection(Configure config) {
-		this.config = config;
-	}
+	void prepareConnection() {}
 
 	private Transaction prepareTransaction() {
 		if (transaction == null) {
 			transaction = factory.createTransaction();
-			transaction.prepareConnection(config);
+			transaction.prepareConnection();
 		}
 
 		return transaction;

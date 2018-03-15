@@ -89,6 +89,8 @@ public class Blendee {
 
 		BlendeeConstants.ENABLE_LOG.extract(initValues).ifPresent(flag -> init.enableLog(flag));
 
+		BlendeeConstants.USE_AUTO_COMMIT.extract(initValues).ifPresent(flag -> init.setUseAutoCommit(flag));
+
 		BlendeeConstants.USE_LAZY_TRANSACTION.extract(initValues).ifPresent(flag -> init.setUseLazyTransaction(flag));
 
 		BlendeeConstants.USE_METADATA_CACHE.extract(initValues).ifPresent(flag -> init.setUseMetadataCache(flag));

@@ -60,7 +60,8 @@ public class ConcreteConnection implements BlenConnection {
 	 */
 	public ConcreteConnection(Configure config, Connection connection) {
 		try {
-			connection.setAutoCommit(false);
+			if (!config.usesAutoCommit())
+				connection.setAutoCommit(false);
 
 			DatabaseMetaData metadata = connection.getMetaData();
 
