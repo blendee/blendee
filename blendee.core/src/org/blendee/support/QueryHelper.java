@@ -7,7 +7,6 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
@@ -350,7 +349,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	/**
 	 * @param consumer {@link Consumer}
 	 */
-	public void aggregate(Consumer<Result> consumer) {
+	public void aggregate(Consumer<BlenResultSet> consumer) {
 		ComposedSQL sql = aggregateInternal();
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
@@ -364,7 +363,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param options 検索オプション
 	 * @param consumer {@link Consumer}
 	 */
-	public void aggregate(Effectors options, Consumer<Result> consumer) {
+	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) {
 		ComposedSQL sql = aggregateInternal(options.get());
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {

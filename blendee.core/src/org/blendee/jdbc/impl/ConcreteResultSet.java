@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.function.Consumer;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
@@ -19,7 +20,7 @@ import org.blendee.jdbc.Configure;
  * Blendee が使用する {@link BlenResultSet} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-class ConcreteResultSet implements BlenResultSet {
+public class ConcreteResultSet implements BlenResultSet {
 
 	private final Configure config;
 
@@ -31,7 +32,8 @@ class ConcreteResultSet implements BlenResultSet {
 	//ResultSetをnext()中でもResultSetがクローズされてしまう
 	private ConcretePreparedStatement statement;
 
-	ConcreteResultSet(
+	@SuppressWarnings("javadoc")
+	public ConcreteResultSet(
 		Configure config,
 		ResultSet base,
 		ConcretePreparedStatement statement,
@@ -373,6 +375,14 @@ class ConcreteResultSet implements BlenResultSet {
 		//statement は GC をコントロールするために参照している
 		//万が一コンパイラの最適化等で参照が消されないようにpublicメソッドで使用しているようにする
 		return statement;
+	}
+
+	/**
+	 * 内部で持っている {@link ResultSet} を直接操作できるようにします。
+	 * @param consumer {@link Consumer}
+	 */
+	public void borrow(Consumer<ResultSet> consumer) {
+		consumer.accept(base);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.Result;
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.orm.DataObject;
@@ -443,12 +443,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void aggregate(Consumer<Result> consumer) /*++'++*/{/*++'++*/
+	public void aggregate(Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
 		helper.aggregate(consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void aggregate(Effectors options, Consumer<Result> consumer) /*++'++*/{/*++'++*/
+	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
 		helper.aggregate(options, consumer);
 	/*++'++*/}/*++'++*/
 

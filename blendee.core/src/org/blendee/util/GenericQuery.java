@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -440,12 +440,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public void aggregate(Consumer<Result> consumer) {
+	public void aggregate(Consumer<BlenResultSet> consumer) {
 		helper.aggregate(consumer);
 	}
 
 	@Override
-	public void aggregate(Effectors options, Consumer<Result> consumer) {
+	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) {
 		helper.aggregate(options, consumer);
 	}
 

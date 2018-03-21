@@ -19,7 +19,7 @@ import org.blendee.jdbc.Configure;
  * Blendee が使用する {@link BlenPreparedStatement} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-class ConcretePreparedStatement implements BlenPreparedStatement {
+public class ConcretePreparedStatement implements BlenPreparedStatement {
 
 	private final Configure config;
 
@@ -29,9 +29,11 @@ class ConcretePreparedStatement implements BlenPreparedStatement {
 
 	/**
 	 * インスタンスを生成します。
+	 * @param config {@link Configure}
 	 * @param statement {@link PreparedStatement}
+	 * @param finalizer
 	 */
-	ConcretePreparedStatement(Configure config, PreparedStatement statement, AutoCloseableFinalizer finalizer) {
+	public ConcretePreparedStatement(Configure config, PreparedStatement statement, AutoCloseableFinalizer finalizer) {
 		this.config = config;
 		this.statement = statement;
 		this.finalizer = finalizer;

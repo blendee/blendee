@@ -3,8 +3,8 @@ package org.blendee.support;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Effector;
 import org.blendee.sql.Relationship;
@@ -56,14 +56,14 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * 集合関数を含む検索を実行します。
 	 * @param consumer {@link Consumer}
 	 */
-	void aggregate(Consumer<Result> consumer);
+	void aggregate(Consumer<BlenResultSet> consumer);
 
 	/**
 	 * 集合関数を含む検索を実行します。
 	 * @param options 検索オプション
 	 * @param consumer {@link Consumer}
 	 */
-	void aggregate(Effectors options, Consumer<Result> consumer);
+	void aggregate(Effectors options, Consumer<BlenResultSet> consumer);
 
 	/**
 	 * 集合関数を含む検索を実行します。
