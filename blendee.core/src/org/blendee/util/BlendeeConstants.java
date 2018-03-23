@@ -112,10 +112,10 @@ public interface BlendeeConstants {
 
 	/**
 	 * default: /blendee-metadata.xml
-	 * (String) METADATTA_XML_FILE
+	 * (String) METADATA_XML_FILE
 	 * @see FileMetadataFactory
 	 */
-	public static final ParsableOptionKey<String> METADATTA_XML_FILE = new ParsableOptionKey<>(
+	public static final ParsableOptionKey<String> METADATA_XML_FILE = new ParsableOptionKey<>(
 		"metadata-xml-file",
 		TO_STRING);
 

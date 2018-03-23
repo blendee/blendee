@@ -35,7 +35,7 @@ public class FileMetadataFactory implements MetadataFactory {
 	public FileMetadataFactory() throws IOException, ClassNotFoundException {
 		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
-		Optional<String> fileOfOption = manager.getConfigure().getOption(BlendeeConstants.METADATTA_XML_FILE);
+		Optional<String> fileOfOption = manager.getConfigure().getOption(BlendeeConstants.METADATA_XML_FILE);
 
 		xml = fileOfOption.map(name -> {
 			try {
