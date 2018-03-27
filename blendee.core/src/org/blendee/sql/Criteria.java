@@ -290,12 +290,11 @@ public class Criteria extends QueryClause {
 		}
 
 		@Override
-		public int complement(BlenPreparedStatement statement) {
+		public void complement(BlenPreparedStatement statement) {
 			int counter = skipCount;
 			for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
 				i.next().bind(counter + 1, statement);
 			}
-			return counter;
 		}
 	}
 
@@ -332,13 +331,13 @@ public class Criteria extends QueryClause {
 
 		@Override
 		public PreparedStatementComplementer getComplementer() {
-			if (inclusion == null) return new ProxyInnerComplementer();
+			if (inclusion == null) return proxyInnerComplementer;
 			return inclusion.getComplementer();
 		}
 
 		@Override
 		public PreparedStatementComplementer getComplementer(int skipCount) {
-			if (inclusion == null) return new ProxyInnerComplementer();
+			if (inclusion == null) return proxyInnerComplementer;
 			return inclusion.getComplementer(skipCount);
 
 		}
@@ -426,11 +425,5 @@ public class Criteria extends QueryClause {
 		}
 	}
 
-	private static class ProxyInnerComplementer implements PreparedStatementComplementer {
-
-		@Override
-		public int complement(BlenPreparedStatement statement) {
-			return 0;
-		}
-	}
+	private static final PreparedStatementComplementer proxyInnerComplementer = statement -> {};
 }

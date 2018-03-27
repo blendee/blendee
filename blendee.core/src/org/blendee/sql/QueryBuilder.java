@@ -179,9 +179,10 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	@Override
-	public synchronized int complement(BlenPreparedStatement statement) {
-		int complemented = whereClause.getComplementer().complement(statement);
-		return complemented + havingClause.getComplementer(complemented).complement(statement);
+	public synchronized void complement(BlenPreparedStatement statement) {
+		CountingPreparedStatement counter = new CountingPreparedStatement(statement);
+		whereClause.getComplementer().complement(counter);
+		havingClause.getComplementer(counter.getComplementedCount()).complement(statement);
 	}
 
 	@Override

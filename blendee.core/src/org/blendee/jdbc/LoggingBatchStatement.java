@@ -54,11 +54,10 @@ class LoggingBatchStatement extends BatchStatementBase {
 		}
 
 		@Override
-		public int complement(BlenPreparedStatement statement) {
+		public void complement(BlenPreparedStatement statement) {
 			logger.setSql(sql);
-			int result = base.complement(statement);
+			base.complement(statement);
 			logger.flush();
-			return result;
 		}
 	}
 }

@@ -77,7 +77,7 @@ public class SynchronizedQueryBuilder extends QueryBuilder {
 	}
 
 	@Override
-	public synchronized int complement(BlenPreparedStatement statement) {
-		return super.complement(statement);
+	public synchronized void complement(BlenPreparedStatement statement) {
+		super.complement(statement);
 	}
 }

@@ -106,8 +106,6 @@ public class SQLProxyBuilder {
 				for (int i = 0; i < binders.length; i++) {
 					binders[i].bind(i + 1, s);
 				}
-
-				return binders.length;
 			});
 
 			if (returnType.equals(BlenResultSet.class)) {

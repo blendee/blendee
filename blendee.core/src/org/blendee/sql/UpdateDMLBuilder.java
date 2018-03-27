@@ -26,9 +26,10 @@ public class UpdateDMLBuilder extends Updater {
 	}
 
 	@Override
-	public int complement(BlenPreparedStatement statement) {
-		int complemented = super.complement(statement);
-		return complemented + criteria.getComplementer(complemented).complement(statement);
+	public void complement(BlenPreparedStatement statement) {
+		CountingPreparedStatement counter = new CountingPreparedStatement(statement);
+		super.complement(counter);
+		criteria.getComplementer(counter.getComplementedCount()).complement(statement);
 	}
 
 	/**

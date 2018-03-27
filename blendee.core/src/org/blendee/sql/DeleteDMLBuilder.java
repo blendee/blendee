@@ -54,7 +54,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	}
 
 	@Override
-	public int complement(BlenPreparedStatement statement) {
-		return criteria.getComplementer().complement(statement);
+	public void complement(BlenPreparedStatement statement) {
+		criteria.getComplementer().complement(statement);
 	}
 }

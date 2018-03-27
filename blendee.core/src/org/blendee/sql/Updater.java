@@ -104,12 +104,11 @@ public abstract class Updater implements ComposedSQL {
 	}
 
 	@Override
-	public int complement(BlenPreparedStatement statement) {
+	public void complement(BlenPreparedStatement statement) {
 		int counter = 0;
 		for (Iterator<Binder> i = values.values().iterator(); i.hasNext(); counter++) {
 			i.next().bind(counter + 1, statement);
 		}
-		return counter;
 	}
 
 	@Override
