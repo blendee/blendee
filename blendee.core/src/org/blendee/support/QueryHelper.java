@@ -1,6 +1,7 @@
 package org.blendee.support;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
@@ -360,6 +361,19 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	}
 
 	/**
+	 * @param function {@link Function}
+	 */
+	public <T> T aggregate(Function<BlenResultSet, T> function) {
+		ComposedSQL sql = aggregateInternal();
+		BlenConnection connection = BlendeeManager.getConnection();
+		try (BlenStatement statement = connection.getStatement(sql)) {
+			try (BlenResultSet result = statement.executeQuery()) {
+				return function.apply(result);
+			}
+		}
+	}
+
+	/**
 	 * @param options 検索オプション
 	 * @param consumer {@link Consumer}
 	 */
@@ -369,6 +383,20 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
+			}
+		}
+	}
+
+	/**
+	 * @param options 検索オプション
+	 * @param function {@link Function}
+	 */
+	public <T> T aggregate(Effectors options, Function<BlenResultSet, T> function) {
+		ComposedSQL sql = aggregateInternal(options.get());
+		BlenConnection connection = BlendeeManager.getConnection();
+		try (BlenStatement statement = connection.getStatement(sql)) {
+			try (BlenResultSet result = statement.executeQuery()) {
+				return function.apply(result);
 			}
 		}
 	}

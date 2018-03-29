@@ -3,6 +3,7 @@ package org.blendee.util;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenResultSet;
@@ -445,8 +446,18 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
+	public <T> T aggregate(Function<BlenResultSet, T> consumer) {
+		return helper.aggregate(consumer);
+	}
+
+	@Override
 	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) {
 		helper.aggregate(options, consumer);
+	}
+
+	@Override
+	public <T> T aggregate(Effectors options, Function<BlenResultSet, T> consumer) {
+		return helper.aggregate(options, consumer);
 	}
 
 	@Override

@@ -3,6 +3,7 @@
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.ContextManager;
@@ -448,8 +449,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
+	public <T> T aggregate(Function<BlenResultSet, T> consumer) /*++'++*/{/*++'++*/
+		return helper.aggregate(consumer);
+	/*++'++*/}/*++'++*/
+
+	@Override
 	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
 		helper.aggregate(options, consumer);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public <T> T aggregate(Effectors options, Function<BlenResultSet, T> consumer) /*++'++*/{/*++'++*/
+		return helper.aggregate(options, consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override

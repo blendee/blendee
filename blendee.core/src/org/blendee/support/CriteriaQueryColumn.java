@@ -792,7 +792,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O NOT_IN(String... values) {
 		relationship.getContext().addCriteria(
 			relationship,
-			CriteriaFactory.createInCriteria(column(), values));
+			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
 	}
@@ -805,7 +805,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O NOT_IN(Number... values) {
 		relationship.getContext().addCriteria(
 			relationship,
-			CriteriaFactory.createInCriteria(column(), values));
+			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
 	}
@@ -818,7 +818,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O NOT_IN(Bindable... values) {
 		relationship.getContext().addCriteria(
 			relationship,
-			CriteriaFactory.createInCriteria(column(), values));
+			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
 	}
