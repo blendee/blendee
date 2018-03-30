@@ -446,8 +446,8 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public <T> T aggregate(Function<BlenResultSet, T> consumer) {
-		return helper.aggregate(consumer);
+	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
+		return helper.aggregateAndGet(function);
 	}
 
 	@Override
@@ -456,8 +456,8 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public <T> T aggregate(Effectors options, Function<BlenResultSet, T> consumer) {
-		return helper.aggregate(options, consumer);
+	public <T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function) {
+		return helper.aggregateAndGet(options, function);
 	}
 
 	@Override

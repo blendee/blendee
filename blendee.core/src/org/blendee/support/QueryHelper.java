@@ -363,7 +363,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	/**
 	 * @param function {@link Function}
 	 */
-	public <T> T aggregate(Function<BlenResultSet, T> function) {
+	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
 		ComposedSQL sql = aggregateInternal();
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
@@ -391,7 +391,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param options 検索オプション
 	 * @param function {@link Function}
 	 */
-	public <T> T aggregate(Effectors options, Function<BlenResultSet, T> function) {
+	public <T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function) {
 		ComposedSQL sql = aggregateInternal(options.get());
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {

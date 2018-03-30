@@ -61,10 +61,10 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param consumer {@link Consumer}
+	 * @param function {@link Function}
 	 * @return 任意の型の戻り値
 	 */
-	<T> T aggregate(Function<BlenResultSet, T> consumer);
+	<T> T aggregateAndGet(Function<BlenResultSet, T> function);
 
 	/**
 	 * 集合関数を含む検索を実行します。
@@ -76,10 +76,10 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	/**
 	 * 集合関数を含む検索を実行します。
 	 * @param options 検索オプション
-	 * @param consumer {@link Consumer}
+	 * @param function {@link Function}
 	 * @return 任意の型の戻り値
 	 */
-	<T> T aggregate(Effectors options, Function<BlenResultSet, T> consumer);
+	<T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function);
 
 	/**
 	 * 集合関数を含む検索を実行します。
