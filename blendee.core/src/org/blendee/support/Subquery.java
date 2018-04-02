@@ -1,5 +1,8 @@
 package org.blendee.support;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.blendee.internal.Traversable;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
@@ -61,6 +64,8 @@ public class Subquery {
 	}
 
 	private static Relationship find(Relationship root, TablePath target) {
+		Set<Relationship> visited = new HashSet<>();
+
 		Relationship[] finded = { null };
 		TraverserOperator.operate(new Traverser() {
 
@@ -73,14 +78,17 @@ public class Subquery {
 			public void execute(Traversable traversable) {
 				Relationship relation = (Relationship) traversable;
 
+				if (visited.contains(relation)) throw new IllegalStateException("循環参照があるため、結合箇所が特定できません");
+				visited.add(relation);
+
 				if (target.equals(relation.getTablePath()))
 					if (finded[0] != null)
-						throw new SubqueryException(target + " が複数存在するため、結合箇所が特定できません。");
+						throw new SubqueryException(target + " が複数存在するため、結合箇所が特定できません");
 				finded[0] = relation;
 			}
 		}, root);
 
-		if (finded[0] == null) throw new SubqueryException(target + " との結合箇所が存在しませんでした。");
+		if (finded[0] == null) throw new SubqueryException(target + " との結合箇所が存在しませんでした");
 
 		return finded[0];
 	}
