@@ -64,7 +64,7 @@ public class Subquery {
 	}
 
 	private static Relationship find(Relationship root, TablePath target) {
-		Set<Relationship> visited = new HashSet<>();
+		Set<TablePath> visited = new HashSet<>();
 
 		Relationship[] finded = { null };
 		TraverserOperator.operate(new Traverser() {
@@ -78,8 +78,9 @@ public class Subquery {
 			public void execute(Traversable traversable) {
 				Relationship relation = (Relationship) traversable;
 
-				if (visited.contains(relation)) throw new IllegalStateException("循環参照があるため、結合箇所が特定できません");
-				visited.add(relation);
+				TablePath current = relation.getTablePath();
+				if (visited.contains(current)) throw new IllegalStateException("循環参照があるため、結合箇所が特定できません");
+				visited.add(current);
 
 				if (target.equals(relation.getTablePath()))
 					if (finded[0] != null)
