@@ -89,13 +89,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				QueryCriteriaContext.OR);
 
 		@Override
-		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND() /*++'++*/{/*++'++*/
+		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
 			return AND;
-		/*++'++*/}/*++'++*/
-
-		@Override
-		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR() /*++'++*/{/*++'++*/
-			return OR;
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
@@ -125,13 +120,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				QueryCriteriaContext.OR);
 
 		@Override
-		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> AND() /*++'++*/{/*++'++*/
+		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
 			return AND;
-		/*++'++*/}/*++'++*/
-
-		@Override
-		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> OR() /*++'++*/{/*++'++*/
-			return OR;
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 

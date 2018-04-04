@@ -7,12 +7,8 @@ package org.blendee.support;
 public interface LogicalOperators<T> {
 
 	/**
-	 * @return AND
+	 * 条件生成のスタートに使用する演算子を返します。
+	 * @return 初期用演算子
 	 */
-	T AND();
-
-	/**
-	 * @return OR
-	 */
-	T OR();
+	T defaultOperator();
 }

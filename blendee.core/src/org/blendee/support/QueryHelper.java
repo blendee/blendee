@@ -156,7 +156,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
 
-			consumer.accept(whereOperators.AND());
+			consumer.accept(whereOperators.defaultOperator());
 
 			whereClause().and(contextCriteria);
 		} finally {
@@ -178,7 +178,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
 
-			consumer.accept(havingOperators.AND());
+			consumer.accept(havingOperators.defaultOperator());
 
 			havingClause().and(contextCriteria);
 		} finally {

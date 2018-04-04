@@ -87,13 +87,8 @@ public class GenericQuery extends java.lang.Object implements Query {
 			QueryCriteriaContext.OR);
 
 		@Override
-		public GenericRelationship<WhereQueryColumn<WhereLogicalOperators>, Void> AND() {
+		public GenericRelationship<WhereQueryColumn<WhereLogicalOperators>, Void> defaultOperator() {
 			return AND;
-		}
-
-		@Override
-		public GenericRelationship<WhereQueryColumn<WhereLogicalOperators>, Void> OR() {
-			return OR;
 		}
 	}
 
@@ -121,13 +116,8 @@ public class GenericQuery extends java.lang.Object implements Query {
 			QueryCriteriaContext.OR);
 
 		@Override
-		public GenericRelationship<HavingQueryColumn<HavingLogicalOperators>, Void> AND() {
+		public GenericRelationship<HavingQueryColumn<HavingLogicalOperators>, Void> defaultOperator() {
 			return AND;
-		}
-
-		@Override
-		public GenericRelationship<HavingQueryColumn<HavingLogicalOperators>, Void> OR() {
-			return OR;
 		}
 	}
 
