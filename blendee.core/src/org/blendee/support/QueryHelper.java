@@ -15,6 +15,7 @@ import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.GroupByClause;
@@ -151,7 +152,17 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		Consumer<W> consumer) {
 		if (whereClauseConsumer == consumer) return;
 
-		consumer.accept(whereOperators.AND());
+		try {
+			Criteria contextCriteria = CriteriaFactory.create();
+			QueryCriteriaContext.setContextCriteria(contextCriteria);
+
+			consumer.accept(whereOperators.AND());
+
+			whereClause().and(contextCriteria);
+		} finally {
+			QueryCriteriaContext.removeContextCriteria();
+		}
+
 		whereClauseConsumer = consumer;
 	}
 
@@ -163,7 +174,17 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		Consumer<H> consumer) {
 		if (havingClauseConsumer == consumer) return;
 
-		consumer.accept(havingOperators.AND());
+		try {
+			Criteria contextCriteria = CriteriaFactory.create();
+			QueryCriteriaContext.setContextCriteria(contextCriteria);
+
+			consumer.accept(havingOperators.AND());
+
+			havingClause().and(contextCriteria);
+		} finally {
+			QueryCriteriaContext.removeContextCriteria();
+		}
+
 		havingClauseConsumer = consumer;
 	}
 
@@ -177,6 +198,14 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 		function.apply(orderBy).get().forEach(o -> o.offer());
 		orderByClauseFunction = function;
+	}
+
+	public void and(Criteria whereClause) {
+		whereClause().and(whereClause);
+	}
+
+	public void or(Criteria whereClause) {
+		whereClause().or(whereClause);
 	}
 
 	public void quitRowMode() {
@@ -212,13 +241,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		return whereClause;
 	}
 
-	/**
-	 * @param whereClause WHERE
-	 */
-	public void setWhereClause(Criteria whereClause) {
-		this.whereClause = whereClause;
-	}
-
 	public boolean hasWhereClause() {
 		return whereClause != null && whereClause.isAvailable();
 	}
@@ -247,13 +269,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public Criteria getHavingClause() {
 		return havingClause;
-	}
-
-	/**
-	 * @param havingClause HAVING
-	 */
-	public void setHavingClause(Criteria havingClause) {
-		this.havingClause = havingClause;
 	}
 
 	/**
@@ -429,5 +444,15 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		builder.addEffector(effectors);
 
 		return builder;
+	}
+
+	private Criteria whereClause() {
+		if (whereClause == null) whereClause = CriteriaFactory.create();
+		return whereClause;
+	}
+
+	private Criteria havingClause() {
+		if (havingClause == null) havingClause = CriteriaFactory.create();
+		return havingClause;
 	}
 }

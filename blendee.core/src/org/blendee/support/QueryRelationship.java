@@ -346,27 +346,9 @@ public interface QueryRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @param criteria 現在の検索に使用する WHERE 句
-	 */
-	void setWhereClause(Criteria criteria);
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
 	 * @return 現在の WHERE 句
 	 */
 	Criteria getWhereClause();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @param criteria 現在の検索に使用する HAVING 句
-	 */
-	void setHavingClause(Criteria criteria);
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return 現在の HAVING 句
-	 */
-	Criteria getHavingClause();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

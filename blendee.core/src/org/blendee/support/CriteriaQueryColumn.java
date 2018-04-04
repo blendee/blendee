@@ -50,7 +50,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(BigDecimal value) {
 		relationship.getContext()
-			.addCriteria(relationship, CriteriaFactory.create(column(), new BigDecimalBinder(value)));
+			.addCriteria(CriteriaFactory.create(column(), new BigDecimalBinder(value)));
 
 		return logocalOperators();
 	}
@@ -62,7 +62,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(boolean value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new BooleanBinder(value)));
 
 		return logocalOperators();
@@ -75,7 +74,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(double value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new DoubleBinder(value)));
 
 		return logocalOperators();
@@ -88,7 +86,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(float value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new FloatBinder(value)));
 
 		return logocalOperators();
@@ -101,7 +98,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(int value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new IntBinder(value)));
 
 		return logocalOperators();
@@ -114,7 +110,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(long value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new LongBinder(value)));
 
 		return logocalOperators();
@@ -127,7 +122,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(String value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), value));
 
 		return logocalOperators();
@@ -140,7 +134,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(Timestamp value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new TimestampBinder(value)));
 
 		return logocalOperators();
@@ -153,7 +146,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(UUID value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), new UUIDBinder(value)));
 
 		return logocalOperators();
@@ -166,7 +158,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(Bindable value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(column(), value));
 
 		return logocalOperators();
@@ -681,7 +672,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O compare(ComparisonOperator operator, Bindable value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(operator, column(), value));
 
 		return logocalOperators();
@@ -695,7 +685,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O LIKE(String value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createLikeCriteria(Match.OPTIONAL, column(), value));
 
 		return logocalOperators();
@@ -709,7 +698,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_LIKE(String value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotLikeCriteria(Match.OPTIONAL, column(), value));
 
 		return logocalOperators();
@@ -724,7 +712,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O LIKE(Match type, String value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createLikeCriteria(type, column(), value));
 
 		return logocalOperators();
@@ -739,7 +726,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_LIKE(Match type, String value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotLikeCriteria(type, column(), value));
 
 		return logocalOperators();
@@ -752,7 +738,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O IN(String... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -765,7 +750,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O IN(Number... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -778,7 +762,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O IN(Bindable... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -791,7 +774,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_IN(String... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -804,7 +786,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_IN(Number... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -817,7 +798,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_IN(Bindable... values) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -831,7 +811,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O BETWEEN(Number v1, Number v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -845,7 +824,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O BETWEEN(String v1, String v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -859,7 +837,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O BETWEEN(Binder v1, Binder v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -873,7 +850,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_BETWEEN(Number v1, Number v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -887,7 +863,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_BETWEEN(String v1, String v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -901,7 +876,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O NOT_BETWEEN(Binder v1, Binder v2) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -913,7 +887,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O IS_NULL() {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(NullComparisonOperator.IS_NULL, column()));
 
 		return logocalOperators();
@@ -925,7 +898,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O IS_NOT_NULL() {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.create(NullComparisonOperator.IS_NOT_NULL, column()));
 
 		return logocalOperators();
@@ -940,7 +912,6 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 */
 	public O add(String clause, Bindable value) {
 		relationship.getContext().addCriteria(
-			relationship,
 			CriteriaFactory.createCriteria(clause, column(), value));
 
 		return logocalOperators();
