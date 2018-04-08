@@ -46,17 +46,9 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 
 	private boolean rowMode = true;
 
-	private SelectOfferFunction<S> selectClauseFunction;
-
-	private GroupByOfferFunction<G> groupByClauseFunction;
-
-	private OrderByOfferFunction<O> orderByClauseFunction;
-
-	private Consumer<W> whereClauseConsumer;
-
-	private Consumer<H> havingClauseConsumer;
-
 	private Optimizer optimizer;
+
+	private RuntimeOptimizer optimizerForSelect;
 
 	private SelectClause selectClause;
 
@@ -88,21 +80,20 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param function {@link SelectOfferFunction}
 	 */
 	public void SELECT(SelectOfferFunction<S> function) {
-		if (selectClauseFunction == function) return;
-
 		Offers<ColumnExpression> offers = function.apply(select);
 
 		if (rowMode) {
-			RuntimeOptimizer myOptimizer = new RuntimeOptimizer(table);
-			offers.get().forEach(c -> c.accept(myOptimizer));
-			optimizer = myOptimizer;
-		} else {
-			SelectClause mySelectClause = new SelectClause();
-			offers.get().forEach(c -> c.accept(mySelectClause));
-			selectClause = mySelectClause;
-		}
+			if (optimizerForSelect == null)
+				optimizerForSelect = new RuntimeOptimizer(table);
 
-		selectClauseFunction = function;
+			offers.get().forEach(c -> c.accept(optimizerForSelect));
+
+			optimizer = optimizerForSelect;
+		} else {
+			if (selectClause == null)
+				selectClause = new SelectClause();
+			offers.get().forEach(c -> c.accept(selectClause));
+		}
 	}
 
 	/**
@@ -111,8 +102,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void SELECT_DISTINCT(
 		SelectOfferFunction<S> function) {
-		if (selectClauseFunction == function) return;
-
 		quitRowMode();
 
 		Offers<ColumnExpression> offers = function.apply(select);
@@ -120,8 +109,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		SelectDistinctClause mySelectClause = new SelectDistinctClause();
 		offers.get().forEach(c -> c.accept(mySelectClause));
 		selectClause = mySelectClause;
-
-		selectClauseFunction = function;
 	}
 
 	/**
@@ -138,10 +125,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void GROUP_BY(
 		GroupByOfferFunction<G> function) {
-		if (groupByClauseFunction == function) return;
-
 		function.apply(groupBy).get().forEach(o -> o.offer());
-		groupByClauseFunction = function;
 	}
 
 	/**
@@ -150,8 +134,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void WHERE(
 		Consumer<W> consumer) {
-		if (whereClauseConsumer == consumer) return;
-
 		try {
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
@@ -162,8 +144,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		} finally {
 			QueryCriteriaContext.removeContextCriteria();
 		}
-
-		whereClauseConsumer = consumer;
 	}
 
 	/**
@@ -172,8 +152,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void HAVING(
 		Consumer<H> consumer) {
-		if (havingClauseConsumer == consumer) return;
-
 		try {
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
@@ -184,8 +162,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		} finally {
 			QueryCriteriaContext.removeContextCriteria();
 		}
-
-		havingClauseConsumer = consumer;
 	}
 
 	/**
@@ -194,10 +170,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
-		if (orderByClauseFunction == function) return;
-
 		function.apply(orderBy).get().forEach(o -> o.offer());
-		orderByClauseFunction = function;
 	}
 
 	public void and(Criteria whereClause) {
@@ -293,7 +266,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void resetWhere() {
 		whereClause = null;
-		whereClauseConsumer = null;
 	}
 
 	/**
@@ -301,7 +273,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void resetHaving() {
 		havingClause = null;
-		havingClauseConsumer = null;
 	}
 
 	/**
@@ -309,7 +280,8 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void resetSelect() {
 		optimizer = null;
-		selectClauseFunction = null;
+		optimizerForSelect = null;
+		selectClause = null;
 	}
 
 	/**
@@ -317,7 +289,6 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void resetGroupBy() {
 		groupByClause = null;
-		groupByClauseFunction = null;
 	}
 
 	/**
@@ -325,24 +296,17 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 */
 	public void resetOrderBy() {
 		orderByClause = null;
-		orderByClauseFunction = null;
 	}
 
 	/**
 	 * 現在保持している条件、並び順をリセットします。
 	 */
 	public void reset() {
-		optimizer = null;
-		selectClause = null;
+		resetSelect();
 		whereClause = null;
 		havingClause = null;
 		groupByClause = null;
 		orderByClause = null;
-		selectClauseFunction = null;
-		groupByClauseFunction = null;
-		orderByClauseFunction = null;
-		whereClauseConsumer = null;
-		havingClauseConsumer = null;
 		rowMode = true;
 	}
 
