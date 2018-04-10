@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -301,6 +302,21 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createInCriteria(
 		Column column,
+		Timestamp... values) {
+		return createCriteria(
+			buildInClause(values.length),
+			new Column[] { column },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createInCriteria(
+		Column column,
 		Bindable... values) {
 		return createCriteria(
 			buildInClause(values.length),
@@ -332,6 +348,21 @@ public class CriteriaFactory {
 	public static Criteria createInCriteria(
 		String columnName,
 		Number... values) {
+		return createCriteria(
+			buildInClause(values.length),
+			new Column[] { new PhantomColumn(columnName) },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createInCriteria(
+		String columnName,
+		Timestamp... values) {
 		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
@@ -391,6 +422,21 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createNotInCriteria(
 		Column column,
+		Timestamp... values) {
+		return createCriteria(
+			buildNotInClause(values.length),
+			new Column[] { column },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createNotInCriteria(
+		Column column,
 		Bindable... values) {
 		return createCriteria(
 			buildNotInClause(values.length),
@@ -422,6 +468,21 @@ public class CriteriaFactory {
 	public static Criteria createNotInCriteria(
 		String columnName,
 		Number... values) {
+		return createCriteria(
+			buildNotInClause(values.length),
+			new Column[] { new PhantomColumn(columnName) },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createNotInCriteria(
+		String columnName,
+		Timestamp... values) {
 		return createCriteria(
 			buildNotInClause(values.length),
 			new Column[] { new PhantomColumn(columnName) },
@@ -492,6 +553,23 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createBetweenCriteria(
 		Column column,
+		Timestamp value1,
+		Timestamp value2) {
+		return createCriteria(
+			BETWEEN_TEMPLATE,
+			new Column[] { column },
+			BindableConverter.convert(value1, value2));
+	}
+
+	/**
+	 * BETWEEN を使用した条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @param value1 from
+	 * @param value2 to
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createBetweenCriteria(
+		Column column,
 		Bindable value1,
 		Bindable value2) {
 		return createCriteria(
@@ -528,6 +606,23 @@ public class CriteriaFactory {
 		String columnName,
 		Number value1,
 		Number value2) {
+		return createBetweenCriteria(
+			new PhantomColumn(columnName),
+			value1,
+			value2);
+	}
+
+	/**
+	 * BETWEEN を使用した条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @param value1 from
+	 * @param value2 to
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createBetweenCriteria(
+		String columnName,
+		Timestamp value1,
+		Timestamp value2) {
 		return createBetweenCriteria(
 			new PhantomColumn(columnName),
 			value1,
@@ -596,6 +691,23 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createNotBetweenCriteria(
 		Column column,
+		Timestamp value1,
+		Timestamp value2) {
+		return createCriteria(
+			NOT_BETWEEN_TEMPLATE,
+			new Column[] { column },
+			BindableConverter.convert(value1, value2));
+	}
+
+	/**
+	 * BETWEEN を使用した条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @param value1 from
+	 * @param value2 to
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createNotBetweenCriteria(
+		Column column,
 		Bindable value1,
 		Bindable value2) {
 		return createCriteria(
@@ -632,6 +744,23 @@ public class CriteriaFactory {
 		String columnName,
 		Number value1,
 		Number value2) {
+		return createNotBetweenCriteria(
+			new PhantomColumn(columnName),
+			value1,
+			value2);
+	}
+
+	/**
+	 * BETWEEN を使用した条件句を生成します。
+	 * @param columnName 対象となるカラム
+	 * @param value1 from
+	 * @param value2 to
+	 * @return 作成されたインスタンス
+	 */
+	public static Criteria createNotBetweenCriteria(
+		String columnName,
+		Timestamp value1,
+		Timestamp value2) {
 		return createNotBetweenCriteria(
 			new PhantomColumn(columnName),
 			value1,

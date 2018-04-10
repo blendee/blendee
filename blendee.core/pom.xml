@@ -6,7 +6,7 @@
 
 	<groupId>org.blendee</groupId>
 	<artifactId>blendee</artifactId>
-	<version>0.3.19</version>
+	<version>0.3.21</version>
 	<packaging>jar</packaging>
 
 	<name>Blendee</name>

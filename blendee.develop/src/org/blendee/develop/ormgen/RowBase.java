@@ -97,7 +97,6 @@ extends /*++{3}++*//*--*/Object/*--*/
 	@RowGetter(column = "{1}", type = /*++{2}++*//*--*/Object/*--*/.class, optional = /*++{8}++*//*--*/false/*--*/)
 	public /*++{5}++*/ /*--*/String/*--*/get/*++{0}++*/() /*++'++*/{/*++'++*/
 		Binder binder = $data.getBinder("{1}");
-		if (binder == null) return null;
 		return /*++{6}++*/(/*++{2}++*//*--*/String/*--*/) binder.getValue()/*++{7}++*/;
 	/*++'++*/}/*++'++*/
 

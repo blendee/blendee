@@ -63,6 +63,9 @@ public class SelectedValuesIterator
 		if (called) return hasNext;
 		hasNext = result.next();
 		called = true;
+
+		if (!hasNext) close();
+
 		return hasNext;
 	}
 

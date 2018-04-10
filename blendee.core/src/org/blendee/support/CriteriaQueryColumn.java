@@ -760,6 +760,18 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
 	 */
+	public O IN(Timestamp... values) {
+		relationship.getContext().addCriteria(
+			CriteriaFactory.createInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
 	public O IN(Bindable... values) {
 		relationship.getContext().addCriteria(
 			CriteriaFactory.createInCriteria(column(), values));
@@ -785,6 +797,18 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(Number... values) {
+		relationship.getContext().addCriteria(
+			CriteriaFactory.createNotInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_IN(Timestamp... values) {
 		relationship.getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
 
@@ -835,6 +859,19 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @param v2 to
 	 * @return 連続呼び出し用 {@link Query}
 	 */
+	public O BETWEEN(Timestamp v1, Timestamp v2) {
+		relationship.getContext().addCriteria(
+			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
 	public O BETWEEN(Binder v1, Binder v2) {
 		relationship.getContext().addCriteria(
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
@@ -862,6 +899,19 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_BETWEEN(String v1, String v2) {
+		relationship.getContext().addCriteria(
+			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
+	 * @param v1 from
+	 * @param v2 to
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_BETWEEN(Timestamp v1, Timestamp v2) {
 		relationship.getContext().addCriteria(
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 

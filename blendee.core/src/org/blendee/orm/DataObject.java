@@ -1009,7 +1009,7 @@ public class DataObject
 
 		@Override
 		public Binder getBinder(Column column) {
-			return null;
+			return new NullBinder(column.getColumnMetadata().getType());
 		}
 
 		@Override
@@ -1079,7 +1079,7 @@ public class DataObject
 
 		@Override
 		public boolean isNull(Column column) {
-			return false;
+			return true;
 		}
 
 		@Override
