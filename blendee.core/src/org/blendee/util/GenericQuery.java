@@ -265,6 +265,16 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	/**
+	 * WHERE 句で使用できる {@link  Criteria} を作成します。
+	 * @param consumer {@link Consumer}
+	 * @return {@link Criteria}
+	 */
+	public Criteria createWhereCriteria(
+		Consumer<GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void>> consumer) {
+		return helper.createWhereCriteria(consumer);
+	}
+
+	/**
 	 * HAVING 句を記述します。
 	 * @param consumer {@link Consumer}
 	 * @return この {@link Query}
@@ -273,6 +283,16 @@ public class GenericQuery extends java.lang.Object implements Query {
 		Consumer<GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void>> consumer) {
 		helper.HAVING(consumer);
 		return this;
+	}
+
+	/**
+	 * HAVING 句で使用できる {@link  Criteria} を作成します。
+	 * @param consumer {@link Consumer}
+	 * @return {@link Criteria}
+	 */
+	public Criteria createHavingCriteria(
+		Consumer<GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void>> consumer) {
+		return helper.createHavingCriteria(consumer);
 	}
 
 	/**

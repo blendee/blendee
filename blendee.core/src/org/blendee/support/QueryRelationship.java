@@ -315,6 +315,14 @@ public interface QueryRelationship {
 	}
 
 	/**
+	 * WHERE 句または HAVING 句に条件を追加します。
+	 * @param criteria 追加条件
+	 */
+	default void with(Criteria criteria) {
+		getContext().addCriteria(criteria);
+	}
+
+	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext}
 	 */

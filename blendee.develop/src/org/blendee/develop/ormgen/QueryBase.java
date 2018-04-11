@@ -268,6 +268,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * WHERE 句で使用できる '{'@link  Criteria'}' を作成します。
+	 * @param consumer '{'@link Consumer'}'
+	 * @return '{'@link Criteria'}'
+	 */
+	public Criteria createWhereCriteria(
+		Consumer<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		return helper.createWhereCriteria(consumer);
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * HAVING 句を記述します。
 	 * @param consumer
 	 * @return この '{'@link Query'}'
@@ -276,6 +286,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		helper.HAVING(consumer);
 		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * HAVING 句で使用できる '{'@link  Criteria'}' を作成します。
+	 * @param consumer '{'@link Consumer'}'
+	 * @return '{'@link Criteria'}'
+	 */
+	public Criteria createHavingCriteria(
+		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		return helper.createHavingCriteria(consumer);
 	/*++'++*/}/*++'++*/
 
 	/**

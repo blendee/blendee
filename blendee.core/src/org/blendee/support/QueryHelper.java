@@ -181,6 +181,42 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 		whereClause().or(whereClause);
 	}
 
+	/**
+	 * WHERE 句で使用できる {@link  Criteria} を作成します。
+	 * @param consumer {@link Consumer}
+	 */
+	public Criteria createWhereCriteria(
+		Consumer<W> consumer) {
+		try {
+			Criteria criteria = CriteriaFactory.create();
+			QueryCriteriaContext.setContextCriteria(criteria);
+
+			consumer.accept(whereOperators.defaultOperator());
+
+			return criteria;
+		} finally {
+			QueryCriteriaContext.removeContextCriteria();
+		}
+	}
+
+	/**
+	 * HAVING 句で使用できる {@link  Criteria} を作成します。
+	 * @param consumer {@link Consumer}
+	 */
+	public Criteria createHavingCriteria(
+		Consumer<H> consumer) {
+		try {
+			Criteria criteria = CriteriaFactory.create();
+			QueryCriteriaContext.setContextCriteria(criteria);
+
+			consumer.accept(havingOperators.defaultOperator());
+
+			return criteria;
+		} finally {
+			QueryCriteriaContext.removeContextCriteria();
+		}
+	}
+
 	public void quitRowMode() {
 		rowMode = false;
 	}
