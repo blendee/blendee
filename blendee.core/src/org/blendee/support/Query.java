@@ -94,4 +94,11 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link ComposedSQL}
 	 */
 	ComposedSQL composeSQL(Effector... options);
+
+	/**
+	 * {@link Subquery} を生成します。
+	 * @param options 検索オプション
+	 * @return {@link Subquery}
+	 */
+	Subquery toSubquery(Effector... options);
 }

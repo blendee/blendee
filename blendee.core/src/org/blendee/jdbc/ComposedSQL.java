@@ -4,7 +4,7 @@ package org.blendee.jdbc;
  * プレースホルダを持つ SQL 文と、プレースホルダにセットする値を持つものを表すインターフェイスです。
  * @author 千葉 哲嗣
  */
-public interface ComposedSQL extends PreparedStatementComplementer {
+public interface ComposedSQL extends ChainPreparedStatementComplementer {
 
 	/**
 	 * このインスタンスが持つ SQL 文を返します。

@@ -104,7 +104,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 					+ path
 					+ " WHERE "
 					+ depends.toString(false).trim(),
-				depends.getComplementer());
+				depends);
 		} else {
 			statement = BlendeeManager.getConnection()
 				.getStatement("SELECT MAX(" + getTargetColumnName() + ") FROM " + path);

@@ -65,7 +65,7 @@ public class OverClause {
 		return columns.toArray(new Column[columns.size()]);
 	}
 
-	private static final String buildTemplate(SimpleQueryClause<?> clause, int start) {
+	private static final String buildTemplate(ListQueryClause<?> clause, int start) {
 		if (clause == null) return "";
 		List<String> localTemplates = new LinkedList<>();
 

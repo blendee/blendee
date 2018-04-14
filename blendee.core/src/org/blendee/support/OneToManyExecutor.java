@@ -168,11 +168,6 @@ public class OneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public Criteria getCriteria() {
-		return criteria;
-	}
-
-	@Override
 	public String toString() {
 		return U.toString(this);
 	}

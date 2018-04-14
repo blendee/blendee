@@ -16,6 +16,7 @@ import org.blendee.selector.Optimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.GroupByClause;
+import org.blendee.sql.MultiColumn;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.Direction;
 import org.blendee.sql.PseudoColumn;
@@ -268,14 +269,24 @@ public interface QueryRelationship {
 	 * HAVING 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
-	 * @param column 使用するカラム
+	 * @param columns 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> any(
 		String template,
-		HavingQueryColumn<O> column) {
+		HavingQueryColumn<?>... columns) {
 		getRoot().quitRowMode();
-		return new HavingQueryColumn<>(column.relationship, new TemplateColumn(template, column.column()));
+
+		if (columns.length == 1)
+			return new HavingQueryColumn<>(
+				columns[0].relationship,
+				new TemplateColumn(template, columns[0].column()));
+
+		List<Column> list = Arrays.asList(columns).stream().map(c -> c.column()).collect(Collectors.toList());
+
+		return new HavingQueryColumn<>(
+			this,
+			new MultiColumn(getRelationship(), template, list.toArray(new Column[list.size()])));
 	}
 
 	/**

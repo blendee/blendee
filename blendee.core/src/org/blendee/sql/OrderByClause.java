@@ -13,7 +13,7 @@ import org.blendee.jdbc.TablePath;
  * @author 千葉 哲嗣
  * @see QueryBuilder#setOrderByClause(OrderByClause)
  */
-public class OrderByClause extends SimpleQueryClause<OrderByClause> {
+public class OrderByClause extends ListQueryClause<OrderByClause> {
 
 	/**
 	 * ソートする方向を表す列挙型です。

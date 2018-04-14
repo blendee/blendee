@@ -482,11 +482,6 @@ public class GenericQuery extends java.lang.Object implements Query {
 	}
 
 	@Override
-	public Criteria getCriteria() {
-		return helper.getWhereClause().replicate();
-	}
-
-	@Override
 	public void quitRowMode() {
 		helper.quitRowMode();
 	}
@@ -499,6 +494,11 @@ public class GenericQuery extends java.lang.Object implements Query {
 	@Override
 	public ComposedSQL composeSQL(Effector... options) {
 		return helper.composeSQL(options);
+	}
+
+	@Override
+	public Subquery toSubquery(Effector... options) {
+		return helper.toSubquery(options);
 	}
 
 	/**

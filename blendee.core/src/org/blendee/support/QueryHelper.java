@@ -359,14 +359,21 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 				options).composeSQL();
 		}
 
-		return aggregateInternal(options);
+		return buildBuilder(options);
+	}
+
+	/**
+	 * @return {@link QueryBuilder}
+	 */
+	public Subquery toSubquery(Effector[] options) {
+		return new Subquery(buildBuilder(options));
 	}
 
 	/**
 	 * @param consumer {@link Consumer}
 	 */
 	public void aggregate(Consumer<BlenResultSet> consumer) {
-		ComposedSQL sql = aggregateInternal();
+		ComposedSQL sql = buildBuilder();
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
@@ -379,7 +386,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param function {@link Function}
 	 */
 	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
-		ComposedSQL sql = aggregateInternal();
+		ComposedSQL sql = buildBuilder();
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
@@ -393,7 +400,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param consumer {@link Consumer}
 	 */
 	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) {
-		ComposedSQL sql = aggregateInternal(options.get());
+		ComposedSQL sql = buildBuilder(options.get());
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
@@ -407,7 +414,7 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @param function {@link Function}
 	 */
 	public <T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function) {
-		ComposedSQL sql = aggregateInternal(options.get());
+		ComposedSQL sql = buildBuilder(options.get());
 		BlenConnection connection = BlendeeManager.getConnection();
 		try (BlenStatement statement = connection.getStatement(sql)) {
 			try (BlenResultSet result = statement.executeQuery()) {
@@ -421,11 +428,11 @@ public class QueryHelper<S extends QueryRelationship, G extends QueryRelationshi
 	 * @return {@link ResultSetIterator}
 	 */
 	public ResultSetIterator aggregate(Effector... options) {
-		ComposedSQL sql = aggregateInternal(options);
+		ComposedSQL sql = buildBuilder(options);
 		return new ResultSetIterator(sql);
 	}
 
-	private ComposedSQL aggregateInternal(Effector... effectors) {
+	private QueryBuilder buildBuilder(Effector... effectors) {
 		QueryBuilder builder = new QueryBuilder(new FromClause(table));
 
 		if (selectClause != null) {

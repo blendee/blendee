@@ -2,7 +2,6 @@ package org.blendee.support;
 
 import org.blendee.dialect.RowLockOption;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
 
 /**
@@ -102,10 +101,4 @@ public interface Executor<I, R> {
 	 * @return 件数
 	 */
 	int count();
-
-	/**
-	 * この検索での条件を返します。
-	 * @return WHERE 句
-	 */
-	Criteria getCriteria();
 }

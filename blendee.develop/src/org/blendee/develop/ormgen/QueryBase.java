@@ -485,13 +485,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Criteria getCriteria() /*++'++*/{/*++'++*/
-		return helper.getWhereClause().replicate();
+	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
+		return helper.composeSQL(options);
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
-		return helper.composeSQL(options);
+	public Subquery toSubquery(Effector... options) /*++'++*/{/*++'++*/
+		return helper.toSubquery(options);
 	/*++'++*/}/*++'++*/
 
 	/**

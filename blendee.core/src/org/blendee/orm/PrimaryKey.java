@@ -278,7 +278,7 @@ public class PrimaryKey extends PartialData {
 					to.bindables[i].toBinder().bind(i + 1, s);
 				}
 
-				criteria.getComplementer(i).complement(s);
+				criteria.complement(i, s);
 			})) {
 			statement.executeUpdate();
 		}

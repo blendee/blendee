@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
@@ -127,23 +126,14 @@ public class Criteria extends QueryClause {
 		return binders.toArray(new Binder[binders.size()]);
 	}
 
-	/**
-	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。
-	 * @return {@link PreparedStatementComplementer}
-	 */
-	public PreparedStatementComplementer getComplementer() {
-		return new InnerComplementer(0);
-	}
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) {
+		for (Iterator<Binder> i = binders.iterator(); i.hasNext(); done++) {
+			i.next().bind(done + 1, statement);
+		}
 
-	/**
-	 * プレースホルダにセットする予定の値を {@link PreparedStatementComplementer} として返します。<br>
-	 * 返される PreparedStatementComplementer は、パラメータの skipCount 分だけプレースホルダ位置をスキップして値をセットします。
-	 * @param skipCount 飛ばすプレースホルダ数
-	 * @return {@link PreparedStatementComplementer}
-	 */
-	public PreparedStatementComplementer getComplementer(int skipCount) {
-		return new InnerComplementer(skipCount);
-	}
+		return done;
+	};
 
 	@Override
 	public boolean equals(Object o) {
@@ -281,23 +271,6 @@ public class Criteria extends QueryClause {
 		return criteria;
 	}
 
-	private class InnerComplementer implements PreparedStatementComplementer {
-
-		private final int skipCount;
-
-		private InnerComplementer(int skipCount) {
-			this.skipCount = skipCount;
-		}
-
-		@Override
-		public void complement(BlenPreparedStatement statement) {
-			int counter = skipCount;
-			for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
-				i.next().bind(counter + 1, statement);
-			}
-		}
-	}
-
 	static class ProxyCriteria extends Criteria {
 
 		private Criteria inclusion;
@@ -330,16 +303,9 @@ public class Criteria extends QueryClause {
 		}
 
 		@Override
-		public PreparedStatementComplementer getComplementer() {
-			if (inclusion == null) return proxyInnerComplementer;
-			return inclusion.getComplementer();
-		}
-
-		@Override
-		public PreparedStatementComplementer getComplementer(int skipCount) {
-			if (inclusion == null) return proxyInnerComplementer;
-			return inclusion.getComplementer(skipCount);
-
+		public int complement(int done, BlenPreparedStatement statement) {
+			if (inclusion == null) return done;
+			return inclusion.complement(done, statement);
 		}
 
 		@Override
@@ -424,6 +390,4 @@ public class Criteria extends QueryClause {
 			inclusion.join(fromClause);
 		}
 	}
-
-	private static final PreparedStatementComplementer proxyInnerComplementer = statement -> {};
 }

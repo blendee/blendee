@@ -8,7 +8,7 @@ import java.util.List;
  * @author 千葉 哲嗣
  * @see QueryBuilder#setSelectClause(SelectClause)
  */
-public class SelectClause extends SimpleQueryClause<SelectClause> {
+public class SelectClause extends ListQueryClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に新しいカラムを追加します。

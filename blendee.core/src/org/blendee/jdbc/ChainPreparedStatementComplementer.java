@@ -6,11 +6,18 @@ package org.blendee.jdbc;
  * @see BlenConnection#getStatement(String, PreparedStatementComplementer)
  */
 @FunctionalInterface
-public interface PreparedStatementComplementer {
+public interface ChainPreparedStatementComplementer extends PreparedStatementComplementer {
 
 	/**
 	 * プレースホルダに値を設定します。
+	 * @param done 既に先頭から statement にセットした数
 	 * @param statement 対象となるステートメント
+	 * @return statement にセットした数
 	 */
-	void complement(BlenPreparedStatement statement);
+	int complement(int done, BlenPreparedStatement statement);
+
+	@Override
+	default void complement(BlenPreparedStatement statement) {
+		complement(0, statement);
+	}
 }
