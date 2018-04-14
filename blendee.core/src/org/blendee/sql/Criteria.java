@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 
 /**
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
@@ -15,7 +16,7 @@ import org.blendee.jdbc.BlenPreparedStatement;
  * @see QueryBuilder#setWhereClause(Criteria)
  * @see QueryBuilder#setHavingClause(Criteria)
  */
-public class Criteria extends QueryClause {
+public class Criteria extends QueryClause implements ChainPreparedStatementComplementer {
 
 	//!! このクラスに新たにメソッドを追加する場合は、 ProxyCriteria にも追加すること !!
 

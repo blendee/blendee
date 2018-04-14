@@ -4,13 +4,11 @@ import static org.blendee.sql.FromClause.JoinType.LEFT_OUTER_JOIN;
 
 import java.util.List;
 
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
-
 /**
  * SELECT 文を構成する各句の抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class QueryClause implements ChainPreparedStatementComplementer {
+public abstract class QueryClause {
 
 	private String cache;
 
