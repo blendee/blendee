@@ -21,6 +21,7 @@ import org.blendee.sql.FromClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
+import org.blendee.sql.QueryBuilder.UnionOperator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
@@ -57,6 +58,10 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private GroupByClause groupByClause;
 
 	private Criteria havingClause;
+
+	private UnionOperator unionOperator;
+
+	private ComposedSQL union;
 
 	private OrderByClause orderByClause;
 
@@ -171,6 +176,18 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
 		function.apply(orderBy).get().forEach(o -> o.offer());
+	}
+
+	public void UNION(ComposedSQL query) {
+		quitRowMode();
+		unionOperator = UnionOperator.UNION;
+		this.union = query;
+	}
+
+	public void UNION_ALL(ComposedSQL query) {
+		quitRowMode();
+		unionOperator = UnionOperator.UNION_ALL;
+		this.union = query;
 	}
 
 	public void and(Criteria whereClause) {
@@ -327,6 +344,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		groupByClause = null;
 	}
 
+	public void resetUnion() {
+		unionOperator = null;
+		union = null;
+	}
+
 	/**
 	 * 現在保持している ORDER BY 句をリセットします。
 	 */
@@ -342,6 +364,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		whereClause = null;
 		havingClause = null;
 		groupByClause = null;
+		resetUnion();
 		orderByClause = null;
 		rowMode = true;
 	}
@@ -446,6 +469,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
+		if (union != null) builder.union(unionOperator, union);
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
 		builder.addEffector(effectors);

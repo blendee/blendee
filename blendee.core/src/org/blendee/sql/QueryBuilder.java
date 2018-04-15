@@ -25,9 +25,35 @@ public class QueryBuilder implements ComposedSQL {
 
 	private Criteria havingClause = CriteriaFactory.create();
 
+	private UnionOperator unionOperator = null;
+
+	private ComposedSQL union = null;
+
 	private OrderByClause orderClause = new OrderByClause();
 
 	private String query;
+
+	/**
+	 * 使用可能な UNION キーワードです。
+	 */
+	public enum UnionOperator {
+
+		/**
+		 * UNION
+		 */
+		UNION("UNION"),
+
+		/**
+		 * UNION ALL
+		 */
+		UNION_ALL("UNION ALL");
+
+		private final String expression;
+
+		private UnionOperator(String expression) {
+			this.expression = expression;
+		}
+	}
 
 	/**
 	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
@@ -106,6 +132,17 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	/**
+	 * UNION するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param operator 
+	 * @param query UNION 対象
+	 */
+	public synchronized void union(UnionOperator operator, ComposedSQL query) {
+		unionOperator = operator;
+		union = query;
+	}
+
+	/**
 	 * ORDER BY 句を設定します。
 	 * @param clause ORDER BY 句
 	 */
@@ -166,6 +203,12 @@ public class QueryBuilder implements ComposedSQL {
 			addClause(clauses, whereClause.toString(joined));
 			addClause(clauses, groupClause.toString(joined));
 			addClause(clauses, havingClause.toString(joined));
+
+			if (union != null) {
+				clauses.add(unionOperator.expression);
+				clauses.add(union.sql());
+			}
+
 			addClause(clauses, orderClause.toString(joined));
 			query = String.join(" ", clauses).trim();
 		}
@@ -181,7 +224,11 @@ public class QueryBuilder implements ComposedSQL {
 	@Override
 	public synchronized int complement(int done, BlenPreparedStatement statement) {
 		done = whereClause.complement(done, statement);
-		return havingClause.complement(done, statement);
+		done = havingClause.complement(done, statement);
+
+		if (union != null) done = union.complement(done, statement);
+
+		return done;
 	}
 
 	@Override
