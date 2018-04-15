@@ -18,9 +18,8 @@ public class WhereQueryColumn<O extends LogicalOperators<?>> extends CriteriaQue
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
-	 * @param name カラム名
 	 */
+	@SuppressWarnings("javadoc")
 	public WhereQueryColumn(Query root, QueryCriteriaContext context, Column column) {
 		this.root = root;
 		this.context = context;
