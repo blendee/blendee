@@ -1,5 +1,7 @@
 package org.blendee.support;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -59,9 +61,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Criteria havingClause;
 
-	private UnionOperator unionOperator;
-
-	private ComposedSQL union;
+	private final List<UnionContainer> unions = new LinkedList<>();;
 
 	private OrderByClause orderByClause;
 
@@ -180,14 +180,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	public void UNION(ComposedSQL query) {
 		quitRowMode();
-		unionOperator = UnionOperator.UNION;
-		this.union = query;
+		unions.add(new UnionContainer(UnionOperator.UNION, query));
 	}
 
 	public void UNION_ALL(ComposedSQL query) {
 		quitRowMode();
-		unionOperator = UnionOperator.UNION_ALL;
-		this.union = query;
+		unions.add(new UnionContainer(UnionOperator.UNION_ALL, query));
 	}
 
 	public void and(Criteria whereClause) {
@@ -345,8 +343,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	public void resetUnion() {
-		unionOperator = null;
-		union = null;
+		unions.clear();
 	}
 
 	/**
@@ -364,7 +361,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		whereClause = null;
 		havingClause = null;
 		groupByClause = null;
-		resetUnion();
+		unions.clear();
 		orderByClause = null;
 		rowMode = true;
 	}
@@ -469,7 +466,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
-		if (union != null) builder.union(unionOperator, union);
+
+		unions.forEach(u -> builder.union(u.unionOperator, u.query));
+
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
 		builder.addEffector(effectors);
@@ -485,5 +484,17 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private Criteria havingClause() {
 		if (havingClause == null) havingClause = CriteriaFactory.create();
 		return havingClause;
+	}
+
+	private static class UnionContainer {
+
+		private final UnionOperator unionOperator;
+
+		private final ComposedSQL query;
+
+		private UnionContainer(UnionOperator unionOperator, ComposedSQL query) {
+			this.unionOperator = unionOperator;
+			this.query = query;
+		}
 	}
 }

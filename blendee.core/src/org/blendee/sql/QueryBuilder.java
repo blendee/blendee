@@ -17,6 +17,8 @@ public class QueryBuilder implements ComposedSQL {
 
 	private final List<Effector> effectors = new LinkedList<>();
 
+	private final List<UnionContainer> unions = new LinkedList<>();;
+
 	private SelectClause selectClause = new SelectAllColumnClause();
 
 	private Criteria whereClause = CriteriaFactory.create();
@@ -24,10 +26,6 @@ public class QueryBuilder implements ComposedSQL {
 	private GroupByClause groupClause = new GroupByClause();
 
 	private Criteria havingClause = CriteriaFactory.create();
-
-	private UnionOperator unionOperator = null;
-
-	private ComposedSQL union = null;
 
 	private OrderByClause orderClause = new OrderByClause();
 
@@ -138,8 +136,7 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param query UNION 対象
 	 */
 	public synchronized void union(UnionOperator operator, ComposedSQL query) {
-		unionOperator = operator;
-		union = query;
+		unions.add(new UnionContainer(operator, query));
 	}
 
 	/**
@@ -204,10 +201,10 @@ public class QueryBuilder implements ComposedSQL {
 			addClause(clauses, groupClause.toString(joined));
 			addClause(clauses, havingClause.toString(joined));
 
-			if (union != null) {
-				clauses.add(unionOperator.expression);
-				clauses.add(union.sql());
-			}
+			unions.forEach(u -> {
+				clauses.add(u.unionOperator.expression);
+				clauses.add(u.query.sql());
+			});
 
 			addClause(clauses, orderClause.toString(joined));
 			query = String.join(" ", clauses).trim();
@@ -226,7 +223,9 @@ public class QueryBuilder implements ComposedSQL {
 		done = whereClause.complement(done, statement);
 		done = havingClause.complement(done, statement);
 
-		if (union != null) done = union.complement(done, statement);
+		for (UnionContainer union : unions) {
+			done = union.query.complement(done, statement);
+		}
 
 		return done;
 	}
@@ -265,6 +264,18 @@ public class QueryBuilder implements ComposedSQL {
 			}
 
 			return super.toString(joining);
+		}
+	}
+
+	private static class UnionContainer {
+
+		private final UnionOperator unionOperator;
+
+		private final ComposedSQL query;
+
+		private UnionContainer(UnionOperator unionOperator, ComposedSQL query) {
+			this.unionOperator = unionOperator;
+			this.query = query;
 		}
 	}
 }

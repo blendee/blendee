@@ -226,6 +226,6 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 
 	@Override
 	String getKeyword() {
-		return getColumnsSize() == 0 ? "" : "ORDER BY";
+		return getColumnsSize() == 0 && getTemplatesSize() == 0 ? "" : "ORDER BY";
 	}
 }
