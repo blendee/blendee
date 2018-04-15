@@ -10,6 +10,10 @@ import org.blendee.sql.Column;
  */
 public class WhereQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryColumn<O> {
 
+	private final Query root;
+
+	private final QueryCriteriaContext context;
+
 	private final Column column;
 
 	/**
@@ -17,9 +21,10 @@ public class WhereQueryColumn<O extends LogicalOperators<?>> extends CriteriaQue
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
-	public WhereQueryColumn(QueryRelationship relationship, String name) {
-		super(relationship);
-		column = relationship.getRelationship().getColumn(name);
+	public WhereQueryColumn(Query root, QueryCriteriaContext context, Column column) {
+		this.root = root;
+		this.context = context;
+		this.column = column;
 	}
 
 	@Override
@@ -30,6 +35,11 @@ public class WhereQueryColumn<O extends LogicalOperators<?>> extends CriteriaQue
 	@SuppressWarnings("unchecked")
 	@Override
 	O logocalOperators() {
-		return (O) relationship.getRoot().getWhereLogicalOperators();
+		return (O) root.getWhereLogicalOperators();
+	}
+
+	@Override
+	QueryCriteriaContext getContext() {
+		return context;
 	}
 }

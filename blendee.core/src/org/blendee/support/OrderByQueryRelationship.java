@@ -1,0 +1,108 @@
+package org.blendee.support;
+
+import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
+
+import java.util.Arrays;
+
+import org.blendee.sql.Column;
+import org.blendee.sql.OrderByClause;
+import org.blendee.sql.OrderByClause.Direction;
+
+/**
+ * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
+ * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
+ * @author 千葉 哲嗣
+ */
+public interface OrderByQueryRelationship {
+
+	/**
+	 * {@link OrderByOfferFunction} 内で使用する ORDER BY 句生成用メソッドです。<br>
+	 * パラメータの項目と順序を ORDER BY 句に割り当てます。
+	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
+	 * @return offers
+	 */
+	default Offers<OrderByOffer> list(OrderByOffer... offers) {
+		return () -> Arrays.asList(offers);
+	}
+
+	/**
+	 * ORDER BY 句用 AVG(column)
+	 * @param column {@link OrderByQueryColumn}
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc AVG(OrderByQueryColumn<?> column) {
+		return any(AVG_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 SUM(column)
+	 * @param column {@link OrderByQueryColumn}
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc SUM(OrderByQueryColumn<?> column) {
+		return any(SUM_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 MAX(column)
+	 * @param column {@link OrderByQueryColumn}
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc MAX(OrderByQueryColumn<?> column) {
+		return any(MAX_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 MIN(column)
+	 * @param column {@link OrderByQueryColumn}
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc MIN(OrderByQueryColumn<?> column) {
+		return any(MIN_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句用 COUNT(column)
+	 * @param column {@link OrderByQueryColumn}
+	 * @return {@link OrderByQueryColumn}
+	 */
+	default AscDesc COUNT(OrderByQueryColumn<?> column) {
+		return any(COUNT_TEMPLATE, column);
+	}
+
+	/**
+	 * ORDER BY 句に任意のカラムを追加します。
+	 * @param template カラムのテンプレート
+	 * @param orderByColumns 使用するカラム
+	 * @return {@link AscDesc} ASC か DESC
+	 */
+	default AscDesc any(String template, OrderByQueryColumn<?>... orderByColumns) {
+		getRoot().quitRowMode();
+
+		Column[] columns = new Column[orderByColumns.length];
+		for (int i = 0; i < orderByColumns.length; i++) {
+			columns[i] = orderByColumns[i].column;
+		}
+
+		OrderByClause clause = getOrderByClause();
+		return new AscDesc(
+			new OrderByOffer(() -> clause.add(template, Direction.ASC, columns)),
+			new OrderByOffer(() -> clause.add(template, Direction.DESC, columns)));
+	}
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return 現在の ORDER BY 句
+	 */
+	OrderByClause getOrderByClause();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return このインスタンスの大元の {@link Query}
+	 */
+	Query getRoot();
+}

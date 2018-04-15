@@ -10,6 +10,10 @@ import org.blendee.sql.Column;
  */
 public class HavingQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryColumn<O> {
 
+	private final Query root;
+
+	private final QueryCriteriaContext context;
+
 	private final Column column;
 
 	/**
@@ -17,13 +21,9 @@ public class HavingQueryColumn<O extends LogicalOperators<?>> extends CriteriaQu
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
-	public HavingQueryColumn(QueryRelationship relationship, String name) {
-		super(relationship);
-		column = relationship.getRelationship().getColumn(name);
-	}
-
-	HavingQueryColumn(QueryRelationship relationship, Column column) {
-		super(relationship);
+	public HavingQueryColumn(Query root, QueryCriteriaContext context, Column column) {
+		this.root = root;
+		this.context = context;
 		this.column = column;
 	}
 
@@ -35,6 +35,11 @@ public class HavingQueryColumn<O extends LogicalOperators<?>> extends CriteriaQu
 	@SuppressWarnings("unchecked")
 	@Override
 	O logocalOperators() {
-		return (O) relationship.getRoot().getHavingLogicalOperators();
+		return (O) root.getHavingLogicalOperators();
+	}
+
+	@Override
+	QueryCriteriaContext getContext() {
+		return context;
 	}
 }

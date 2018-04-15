@@ -6,7 +6,7 @@ package org.blendee.support;
  * @param <R> 使用する {@link Query} のルートテーブル
  */
 @FunctionalInterface
-public interface OrderByOfferFunction<R extends QueryRelationship> {
+public interface OrderByOfferFunction<R extends OrderByQueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル

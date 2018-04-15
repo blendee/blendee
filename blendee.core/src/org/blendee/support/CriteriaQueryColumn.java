@@ -29,19 +29,15 @@ import org.blendee.sql.binder.UUIDBinder;
  */
 public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 
-	final QueryRelationship relationship;
-
-	/**
-	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
-	 */
-	public CriteriaQueryColumn(QueryRelationship relationship) {
-		this.relationship = relationship;
-	}
-
 	abstract Column column();
 
 	abstract O logocalOperators();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext}
+	 */
+	abstract QueryCriteriaContext getContext();
 
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
@@ -49,7 +45,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(BigDecimal value) {
-		relationship.getContext()
+		getContext()
 			.addCriteria(CriteriaFactory.create(column(), new BigDecimalBinder(value)));
 
 		return logocalOperators();
@@ -61,7 +57,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(boolean value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new BooleanBinder(value)));
 
 		return logocalOperators();
@@ -73,7 +69,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(double value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new DoubleBinder(value)));
 
 		return logocalOperators();
@@ -85,7 +81,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(float value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new FloatBinder(value)));
 
 		return logocalOperators();
@@ -97,7 +93,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(int value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new IntBinder(value)));
 
 		return logocalOperators();
@@ -109,7 +105,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(long value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new LongBinder(value)));
 
 		return logocalOperators();
@@ -121,7 +117,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(String value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), value));
 
 		return logocalOperators();
@@ -133,7 +129,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(Timestamp value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new TimestampBinder(value)));
 
 		return logocalOperators();
@@ -145,7 +141,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(UUID value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), new UUIDBinder(value)));
 
 		return logocalOperators();
@@ -157,7 +153,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O eq(Bindable value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(column(), value));
 
 		return logocalOperators();
@@ -671,7 +667,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O compare(ComparisonOperator operator, Bindable value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(operator, column(), value));
 
 		return logocalOperators();
@@ -684,7 +680,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O LIKE(String value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createLikeCriteria(Match.OPTIONAL, column(), value));
 
 		return logocalOperators();
@@ -697,7 +693,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_LIKE(String value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotLikeCriteria(Match.OPTIONAL, column(), value));
 
 		return logocalOperators();
@@ -711,7 +707,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O LIKE(Match type, String value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createLikeCriteria(type, column(), value));
 
 		return logocalOperators();
@@ -725,7 +721,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_LIKE(Match type, String value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotLikeCriteria(type, column(), value));
 
 		return logocalOperators();
@@ -737,7 +733,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(String... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -749,7 +745,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Number... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -761,7 +757,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Timestamp... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -773,7 +769,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Bindable... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createInCriteria(column(), values));
 
 		return logocalOperators();
@@ -785,7 +781,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(String... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -797,7 +793,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(Number... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -809,7 +805,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(Timestamp... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -821,7 +817,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(Bindable... values) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
 
 		return logocalOperators();
@@ -834,7 +830,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O BETWEEN(Number v1, Number v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -847,7 +843,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O BETWEEN(String v1, String v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -860,7 +856,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O BETWEEN(Timestamp v1, Timestamp v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -873,7 +869,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O BETWEEN(Binder v1, Binder v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -886,7 +882,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_BETWEEN(Number v1, Number v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -899,7 +895,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_BETWEEN(String v1, String v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -912,7 +908,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_BETWEEN(Timestamp v1, Timestamp v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -925,7 +921,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_BETWEEN(Binder v1, Binder v2) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createNotBetweenCriteria(column(), v1, v2));
 
 		return logocalOperators();
@@ -936,7 +932,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NULL() {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(NullComparisonOperator.IS_NULL, column()));
 
 		return logocalOperators();
@@ -947,7 +943,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IS_NOT_NULL() {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.create(NullComparisonOperator.IS_NOT_NULL, column()));
 
 		return logocalOperators();
@@ -961,7 +957,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O add(String clause, Bindable value) {
-		relationship.getContext().addCriteria(
+		getContext().addCriteria(
 			CriteriaFactory.createCriteria(clause, column(), value));
 
 		return logocalOperators();

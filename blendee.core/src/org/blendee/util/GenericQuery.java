@@ -24,13 +24,16 @@ import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.Effectors;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
+import org.blendee.support.GroupByQueryRelationship;
 import org.blendee.support.HavingQueryColumn;
+import org.blendee.support.HavingQueryRelationship;
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.Many;
 import org.blendee.support.NotUniqueException;
 import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByQueryColumn;
+import org.blendee.support.OrderByQueryRelationship;
 import org.blendee.support.Query;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
@@ -40,8 +43,10 @@ import org.blendee.support.QueryRelationship;
 import org.blendee.support.Row;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectQueryColumn;
+import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
+import org.blendee.support.WhereQueryRelationship;
 import org.blendee.util.GenericManager.GenericRowIterator;
 
 /**
@@ -49,11 +54,11 @@ import org.blendee.util.GenericManager.GenericRowIterator;
  */
 public class GenericQuery extends java.lang.Object implements Query {
 
-	private static final QueryContext<MySelectQueryColumn> selectContext = (relationship, name) -> new MySelectQueryColumn(relationship, name);
+	private static final QueryContext<GenericSelectQueryColumn> selectContext = (relationship, name) -> new GenericSelectQueryColumn(relationship, name);
 
-	private static final QueryContext<MyGroupByQueryColumn> groupByContext = (relationship, name) -> new MyGroupByQueryColumn(relationship, name);
+	private static final QueryContext<GenericGroupByQueryColumn> groupByContext = (relationship, name) -> new GenericGroupByQueryColumn(relationship, name);
 
-	private static final QueryContext<MyOrderByQueryColumn> orderByContext = (relationship, name) -> new MyOrderByQueryColumn(relationship, name);
+	private static final QueryContext<GenericOrderByQueryColumn> orderByContext = (relationship, name) -> new GenericOrderByQueryColumn(relationship, name);
 
 	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext = QueryContext.newWhereBuilder();
 
@@ -136,7 +141,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
-	private final GenericRelationship<MySelectQueryColumn, Void> select = new GenericRelationship<>(
+	private final GenericSelectRelationship<GenericSelectQueryColumn, Void> select = new GenericSelectRelationship<>(
 		this,
 		selectContext,
 		QueryCriteriaContext.NULL);
@@ -144,7 +149,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
-	private final GenericRelationship<MyGroupByQueryColumn, Void> groupBy = new GenericRelationship<>(
+	private final GenericGroupByRelationship<GenericGroupByQueryColumn, Void> groupBy = new GenericGroupByRelationship<>(
 		this,
 		groupByContext,
 		QueryCriteriaContext.NULL);
@@ -152,12 +157,12 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
-	private final GenericRelationship<MyOrderByQueryColumn, Void> orderBy = new GenericRelationship<>(
+	private final GenericOrderByRelationship<GenericOrderByQueryColumn, Void> orderBy = new GenericOrderByRelationship<>(
 		this,
 		orderByContext,
 		QueryCriteriaContext.NULL);
 
-	private final QueryHelper<GenericRelationship<MySelectQueryColumn, Void>, GenericRelationship<MyGroupByQueryColumn, Void>, GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void>, GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void>, GenericRelationship<MyOrderByQueryColumn, Void>> helper;
+	private final QueryHelper<GenericSelectRelationship<GenericSelectQueryColumn, Void>, GenericGroupByRelationship<GenericGroupByQueryColumn, Void>, GenericRelationship<WhereQueryColumn<GenericQuery.WhereLogicalOperators>, Void>, GenericRelationship<HavingQueryColumn<GenericQuery.HavingLogicalOperators>, Void>, GenericOrderByRelationship<GenericOrderByQueryColumn, Void>> helper;
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
@@ -217,7 +222,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery SELECT(
-		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
+		SelectOfferFunction<GenericSelectRelationship<GenericSelectQueryColumn, Void>> function) {
 		helper.SELECT(function);
 		return this;
 	}
@@ -228,7 +233,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery SELECT_DISTINCT(
-		SelectOfferFunction<GenericRelationship<MySelectQueryColumn, Void>> function) {
+		SelectOfferFunction<GenericSelectRelationship<GenericSelectQueryColumn, Void>> function) {
 		helper.SELECT_DISTINCT(function);
 		return this;
 	}
@@ -248,7 +253,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery GROUP_BY(
-		GroupByOfferFunction<GenericRelationship<MyGroupByQueryColumn, Void>> function) {
+		GroupByOfferFunction<GenericGroupByRelationship<GenericGroupByQueryColumn, Void>> function) {
 		helper.GROUP_BY(function);
 		return this;
 	}
@@ -301,7 +306,7 @@ public class GenericQuery extends java.lang.Object implements Query {
 	 * @return この {@link Query}
 	 */
 	public GenericQuery ORDER_BY(
-		OrderByOfferFunction<GenericRelationship<MyOrderByQueryColumn, Void>> function) {
+		OrderByOfferFunction<GenericOrderByRelationship<GenericOrderByQueryColumn, Void>> function) {
 		helper.ORDER_BY(function);
 		return this;
 	}
@@ -759,13 +764,113 @@ public class GenericQuery extends java.lang.Object implements Query {
 		}
 	}
 
+	@SuppressWarnings("javadoc")
+	public static class GenericSelectRelationship<T, M> extends GenericRelationship<T, M> implements SelectQueryRelationship {
+
+		public GenericSelectRelationship(
+			QueryContext<T> builder,
+			QueryRelationship parent,
+			String fkName,
+			TablePath path,
+			TablePath root) {
+			super(builder, parent, fkName, path, root);
+		}
+
+		private GenericSelectRelationship(
+			GenericQuery query,
+			QueryContext<T> builder,
+			QueryCriteriaContext context) {
+			super(query, builder, context);
+		}
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class GenericWhereRelationship<T, M> extends GenericRelationship<T, M> implements WhereQueryRelationship {
+
+		public GenericWhereRelationship(
+			QueryContext<T> builder,
+			QueryRelationship parent,
+			String fkName,
+			TablePath path,
+			TablePath root) {
+			super(builder, parent, fkName, path, root);
+		}
+
+		private GenericWhereRelationship(
+			GenericQuery query,
+			QueryContext<T> builder,
+			QueryCriteriaContext context) {
+			super(query, builder, context);
+		}
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class GenericGroupByRelationship<T, M> extends GenericRelationship<T, M> implements GroupByQueryRelationship {
+
+		public GenericGroupByRelationship(
+			QueryContext<T> builder,
+			QueryRelationship parent,
+			String fkName,
+			TablePath path,
+			TablePath root) {
+			super(builder, parent, fkName, path, root);
+		}
+
+		private GenericGroupByRelationship(
+			GenericQuery query,
+			QueryContext<T> builder,
+			QueryCriteriaContext context) {
+			super(query, builder, context);
+		}
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class GenericHavingRelationship<T, M> extends GenericRelationship<T, M> implements HavingQueryRelationship {
+
+		public GenericHavingRelationship(
+			QueryContext<T> builder,
+			QueryRelationship parent,
+			String fkName,
+			TablePath path,
+			TablePath root) {
+			super(builder, parent, fkName, path, root);
+		}
+
+		private GenericHavingRelationship(
+			GenericQuery query,
+			QueryContext<T> builder,
+			QueryCriteriaContext context) {
+			super(query, builder, context);
+		}
+	}
+
+	@SuppressWarnings("javadoc")
+	public static class GenericOrderByRelationship<T, M> extends GenericRelationship<T, M> implements OrderByQueryRelationship {
+
+		public GenericOrderByRelationship(
+			QueryContext<T> builder,
+			QueryRelationship parent,
+			String fkName,
+			TablePath path,
+			TablePath root) {
+			super(builder, parent, fkName, path, root);
+		}
+
+		private GenericOrderByRelationship(
+			GenericQuery query,
+			QueryContext<T> builder,
+			QueryCriteriaContext context) {
+			super(query, builder, context);
+		}
+	}
+
 	/**
 	 * SELECT 句用
 	 */
-	public static class MySelectQueryColumn
-		extends SelectQueryColumn<GenericRelationship<MySelectQueryColumn, Void>> {
+	public static class GenericSelectQueryColumn
+		extends SelectQueryColumn<GenericRelationship<GenericSelectQueryColumn, Void>> {
 
-		private MySelectQueryColumn(QueryRelationship relationship, String name) {
+		private GenericSelectQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -773,10 +878,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * GROUP BY 句用
 	 */
-	public static class MyGroupByQueryColumn
-		extends GroupByQueryColumn<GenericRelationship<MyGroupByQueryColumn, Void>> {
+	public static class GenericGroupByQueryColumn
+		extends GroupByQueryColumn<GenericRelationship<GenericGroupByQueryColumn, Void>> {
 
-		private MyGroupByQueryColumn(QueryRelationship relationship, String name) {
+		private GenericGroupByQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -784,10 +889,10 @@ public class GenericQuery extends java.lang.Object implements Query {
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class MyOrderByQueryColumn
-		extends OrderByQueryColumn<GenericRelationship<MyOrderByQueryColumn, Void>> {
+	public static class GenericOrderByQueryColumn
+		extends OrderByQueryColumn<GenericRelationship<GenericOrderByQueryColumn, Void>> {
 
-		private MyOrderByQueryColumn(QueryRelationship relationship, String name) {
+		private GenericOrderByQueryColumn(QueryRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}

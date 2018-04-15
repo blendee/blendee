@@ -37,6 +37,11 @@ import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
 import org.blendee.support.Effectors;
 import org.blendee.support.QueryRelationship;
+import org.blendee.support.SelectQueryRelationship;
+import org.blendee.support.WhereQueryRelationship;
+import org.blendee.support.GroupByQueryRelationship;
+import org.blendee.support.HavingQueryRelationship;
+import org.blendee.support.OrderByQueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
@@ -66,15 +71,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class WhereLogicalOperators implements LogicalOperators<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> /*++'++*/{/*++'++*/
+	public class WhereLogicalOperators implements LogicalOperators<MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> /*++'++*/{/*++'++*/
 
 		private WhereLogicalOperators() /*++'++*/{}/*++'++*/
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND =
-			new MyQueryRelationship<>(
+		public final MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> AND =
+			new MyWhereQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.AND);
@@ -82,14 +87,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR =
-			new MyQueryRelationship<>(
+		public final MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> OR =
+			new MyWhereQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				whereContext,
 				QueryCriteriaContext.OR);
 
 		@Override
-		public MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
+		public MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
 			return AND;
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
@@ -97,15 +102,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * HAVING 句 で使用する AND, OR です。
 	 */
-	public class HavingLogicalOperators implements LogicalOperators<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> /*++'++*/{/*++'++*/
+	public class HavingLogicalOperators implements LogicalOperators<MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> /*++'++*/{/*++'++*/
 
 		private HavingLogicalOperators() /*++'++*/{}/*++'++*/
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> AND =
-			new MyQueryRelationship<>(
+		public final MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> AND =
+			new MyHavingQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				havingContext,
 				QueryCriteriaContext.AND);
@@ -113,14 +118,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> OR =
-			new MyQueryRelationship<>(
+		public final MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> OR =
+			new MyHavingQueryRelationship<>(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
 				havingContext,
 				QueryCriteriaContext.OR);
 
 		@Override
-		public MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
+		public MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void> defaultOperator() /*++'++*/{/*++'++*/
 			return AND;
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
@@ -141,8 +146,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final MyQueryRelationship<MySelectQueryColumn, Void> select =
-		new MyQueryRelationship<>(
+	private final MySelectQueryRelationship<MySelectQueryColumn, Void> select =
+		new MySelectQueryRelationship<>(
 			this,
 			selectContext,
 			QueryCriteriaContext.NULL);
@@ -150,8 +155,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * GROUP BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final MyQueryRelationship<MyGroupByQueryColumn, Void> groupBy =
-		new MyQueryRelationship<>(
+	private final MyGroupByQueryRelationship<MyGroupByQueryColumn, Void> groupBy =
+		new MyGroupByQueryRelationship<>(
 			this,
 			groupByContext,
 			QueryCriteriaContext.NULL);
@@ -159,18 +164,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
 	 */
-	private final MyQueryRelationship<MyOrderByQueryColumn, Void> orderBy =
-		new MyQueryRelationship<>(
+	private final MyOrderByQueryRelationship<MyOrderByQueryColumn, Void> orderBy =
+		new MyOrderByQueryRelationship<>(
 			this,
 			orderByContext,
 			QueryCriteriaContext.NULL);
 
 	private final QueryHelper<
-		MyQueryRelationship<MySelectQueryColumn, Void>,
-		MyQueryRelationship<MyGroupByQueryColumn, Void>,
-		MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>,
-		MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>,
-		MyQueryRelationship<MyOrderByQueryColumn, Void>> helper = new QueryHelper<>(
+		MySelectQueryRelationship<MySelectQueryColumn, Void>,
+		MyGroupByQueryRelationship<MyGroupByQueryColumn, Void>,
+		MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>,
+		MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>,
+		MyOrderByQueryRelationship<MyOrderByQueryColumn, Void>> helper = new QueryHelper<>(
 		/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
 		select,
 		groupBy,
@@ -220,7 +225,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT(
-		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		SelectOfferFunction<MySelectQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		helper.SELECT(function);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -231,7 +236,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ SELECT_DISTINCT(
-		SelectOfferFunction<MyQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		SelectOfferFunction<MySelectQueryRelationship<MySelectQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		helper.SELECT_DISTINCT(function);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -251,7 +256,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ GROUP_BY(
-		GroupByOfferFunction<MyQueryRelationship<MyGroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		GroupByOfferFunction<MyGroupByQueryRelationship<MyGroupByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		helper.GROUP_BY(function);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -262,7 +267,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
-		Consumer<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		Consumer<MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		helper.WHERE(consumer);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -273,7 +278,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Criteria'}'
 	 */
 	public Criteria createWhereCriteria(
-		Consumer<MyQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		Consumer<MyWhereQueryRelationship<WhereQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.WhereLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		return helper.createWhereCriteria(consumer);
 	/*++'++*/}/*++'++*/
 
@@ -283,7 +288,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
-		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		Consumer<MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		helper.HAVING(consumer);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -294,7 +299,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return '{'@link Criteria'}'
 	 */
 	public Criteria createHavingCriteria(
-		Consumer<MyQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
+		Consumer<MyHavingQueryRelationship<HavingQueryColumn</*++{1}Query++*//*--*/QueryBase/*--*/.HavingLogicalOperators>, Void>> consumer) /*++'++*/{/*++'++*/
 		return helper.createHavingCriteria(consumer);
 	/*++'++*/}/*++'++*/
 
@@ -304,7 +309,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @return この '{'@link Query'}'
 	 */
 	public /*++{1}Query++*//*--*/QueryBase/*--*/ ORDER_BY(
-		OrderByOfferFunction<MyQueryRelationship<MyOrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
+		OrderByOfferFunction<MyOrderByQueryRelationship<MyOrderByQueryColumn, Void>> function) /*++'++*/{/*++'++*/
 		helper.ORDER_BY(function);
 		return this;
 	/*++'++*/}/*++'++*/
@@ -770,8 +775,123 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * SELECT 句用
 	 */
+	@SuppressWarnings("javadoc")
+	public static class MySelectQueryRelationship<T, M> extends MyQueryRelationship<T, M> implements SelectQueryRelationship /*++'++*/{/*++'++*/
+
+		public MySelectQueryRelationship(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$, root$);
+		/*++'++*/}/*++'++*/
+
+		private MySelectQueryRelationship(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * WHERE 句用
+	 */
+	@SuppressWarnings("javadoc")
+	public static class MyWhereQueryRelationship<T, M> extends MyQueryRelationship<T, M> implements WhereQueryRelationship /*++'++*/{/*++'++*/
+
+		public MyWhereQueryRelationship(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$, root$);
+		/*++'++*/}/*++'++*/
+
+		private MyWhereQueryRelationship(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * GROUB BY 句用
+	 */
+	@SuppressWarnings("javadoc")
+	public static class MyGroupByQueryRelationship<T, M> extends MyQueryRelationship<T, M> implements GroupByQueryRelationship /*++'++*/{/*++'++*/
+
+		public MyGroupByQueryRelationship(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$, root$);
+		/*++'++*/}/*++'++*/
+
+		private MyGroupByQueryRelationship(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * HAVING 句用
+	 */
+	@SuppressWarnings("javadoc")
+	public static class MyHavingQueryRelationship<T, M> extends MyQueryRelationship<T, M> implements HavingQueryRelationship /*++'++*/{/*++'++*/
+
+		public MyHavingQueryRelationship(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$, root$);
+		/*++'++*/}/*++'++*/
+
+		private MyHavingQueryRelationship(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * ORDER BY 句用
+	 */
+	@SuppressWarnings("javadoc")
+	public static class MyOrderByQueryRelationship<T, M> extends MyQueryRelationship<T, M> implements OrderByQueryRelationship /*++'++*/{/*++'++*/
+
+		public MyOrderByQueryRelationship(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$, root$);
+		/*++'++*/}/*++'++*/
+
+		private MyOrderByQueryRelationship(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * SELECT 句用
+	 */
 	public static class MySelectQueryColumn
-		extends SelectQueryColumn<MyQueryRelationship<
+		extends SelectQueryColumn<MySelectQueryRelationship<
 			MySelectQueryColumn,
 			Void>> /*++'++*/{/*++'++*/
 

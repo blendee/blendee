@@ -7,6 +7,7 @@ import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.CriteriaFactory.ComparisonOperator;
 import org.blendee.sql.CriteriaFactory.Match;
 import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
+import org.blendee.sql.Relationship;
 
 /**
  * WHERE 句に追加する新しい条件を生成するクラスです。<br>
@@ -22,8 +23,8 @@ public class QueryColumn {
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名
 	 */
-	public QueryColumn(QueryRelationship relationship, String name) {
-		column = relationship.getRelationship().getColumn(name);
+	public QueryColumn(Relationship relationship, String name) {
+		column = relationship.getColumn(name);
 	}
 
 	/**

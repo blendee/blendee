@@ -12,11 +12,11 @@ import org.blendee.sql.Column;
  * @param <R> 使用する {@link Query} のルートテーブル
  */
 @FunctionalInterface
-public interface SelectOfferFunction<R extends QueryRelationship> {
+public interface SelectOfferFunction<R extends SelectQueryRelationship> {
 
 	/**
 	 * @param relation 使用する {@link Query} のルートテーブル
-	 * @return {@link QueryRelationship#list(SelectOffer...)} で生成した {@link SelectOffers}
+	 * @return {@link SelectQueryRelationship#list(SelectOffer...)} で生成した {@link SelectOffers}
 	 */
 	Offers<ColumnExpression> apply(R relation);
 

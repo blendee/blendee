@@ -13,7 +13,7 @@ public interface QueryContext<T> {
 	 * 参照用
 	 */
 	static final QueryContext<QueryColumn> OTHER = (relationship, name) -> new QueryColumn(
-		relationship,
+		relationship.getRelationship(),
 		name);
 
 	/**
@@ -22,7 +22,10 @@ public interface QueryContext<T> {
 	 * @return WHERE 句用 QueryContext
 	 */
 	static <O extends LogicalOperators<?>> QueryContext<WhereQueryColumn<O>> newWhereBuilder() {
-		return (relationship, name) -> new WhereQueryColumn<>(relationship, name);
+		return (relationship, name) -> new WhereQueryColumn<>(
+			relationship.getRoot(),
+			relationship.getContext(),
+			relationship.getRelationship().getColumn(name));
 	}
 
 	/**
@@ -31,7 +34,10 @@ public interface QueryContext<T> {
 	 * @return HAVING 句用 QueryContext
 	 */
 	static <O extends LogicalOperators<?>> QueryContext<HavingQueryColumn<O>> newHavingBuilder() {
-		return (relationship, name) -> new HavingQueryColumn<>(relationship, name);
+		return (relationship, name) -> new HavingQueryColumn<>(
+			relationship.getRoot(),
+			relationship.getContext(),
+			relationship.getRelationship().getColumn(name));
 	}
 
 	/**
