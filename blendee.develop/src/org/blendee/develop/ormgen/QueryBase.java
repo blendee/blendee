@@ -304,6 +304,28 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * UNION するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param query UNION 対象
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ UNION(ComposedSQL query) /*++'++*/{/*++'++*/
+		helper.UNION(query);
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * UNION ALL するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param query UNION ALL 対象
+	 * @return この '{'@link Query'}'
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ UNION_ALL(ComposedSQL query) /*++'++*/{/*++'++*/
+		helper.UNION_ALL(query);
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * ORDER BY 句を記述します。
 	 * @param function
 	 * @return この '{'@link Query'}'
