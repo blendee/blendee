@@ -81,8 +81,6 @@ public interface OrderByQueryRelationship {
 	 * @return {@link AscDesc} ASC か DESC
 	 */
 	default AscDesc any(String template, OrderByQueryColumn<?>... orderByColumns) {
-		getRoot().quitRowMode();
-
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
 			columns[i] = orderByColumns[i].column;

@@ -25,8 +25,6 @@ public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 	default <O extends LogicalOperators<?>> WhereQueryColumn<O> any(
 		String template,
 		WhereQueryColumn<?>... columns) {
-		getRoot().quitRowMode();
-
 		if (columns.length == 1)
 			return new WhereQueryColumn<>(
 				getRoot(),

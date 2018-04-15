@@ -81,8 +81,6 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> any(
 		String template,
 		HavingQueryColumn<?>... columns) {
-		getRoot().quitRowMode();
-
 		if (columns.length == 1)
 			return new HavingQueryColumn<>(
 				getRoot(),
