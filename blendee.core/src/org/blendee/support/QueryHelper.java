@@ -33,7 +33,7 @@ import org.blendee.sql.SelectDistinctClause;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W, H, O extends OrderByQueryRelationship> {
+public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W extends WhereQueryRelationship, H extends HavingQueryRelationship, O extends OrderByQueryRelationship> {
 
 	private final TablePath table;
 

@@ -12,33 +12,18 @@ public class HavingQueryColumn<O extends LogicalOperators<?>> extends CriteriaQu
 
 	private final Query root;
 
-	private final QueryCriteriaContext context;
-
-	private final Column column;
-
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 */
 	@SuppressWarnings("javadoc")
 	public HavingQueryColumn(Query root, QueryCriteriaContext context, Column column) {
+		super(context, column);
 		this.root = root;
-		this.context = context;
-		this.column = column;
-	}
-
-	@Override
-	Column column() {
-		return column;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	O logocalOperators() {
 		return (O) root.getHavingLogicalOperators();
-	}
-
-	@Override
-	QueryCriteriaContext getContext() {
-		return context;
 	}
 }

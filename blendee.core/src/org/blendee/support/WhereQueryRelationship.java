@@ -16,7 +16,7 @@ import org.blendee.sql.TemplateColumn;
 public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 
 	/**
-	 * HAVING 句に任意のカラムを追加します。
+	 * WHERE 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
 	 * @param columns 使用するカラム

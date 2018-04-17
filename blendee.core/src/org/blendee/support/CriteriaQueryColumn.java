@@ -29,15 +29,28 @@ import org.blendee.sql.binder.UUIDBinder;
  */
 public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 
-	abstract Column column();
+	private final QueryCriteriaContext context;
+
+	private final Column column;
+
+	CriteriaQueryColumn(QueryCriteriaContext context, Column column) {
+		this.context = context;
+		this.column = column;
+	}
 
 	abstract O logocalOperators();
+
+	Column column() {
+		return column;
+	}
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link QueryCriteriaContext}
 	 */
-	abstract QueryCriteriaContext getContext();
+	QueryCriteriaContext getContext() {
+		return context;
+	}
 
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
