@@ -1099,6 +1099,34 @@ public class CriteriaFactory {
 		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
 	}
 
+	/**
+	 * サブクエリを使用した条件句を生成します。
+	 * @param columns 主となるクエリ側のカラム
+	 * @param subquery サブクエリ
+	 * @return 生成されたインスタンス
+	 * @throws SubqueryException 主となるクエリ側のカラムが空の場合
+	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
+	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
+	 */
+	public static Criteria createSubqueryWithoutCheck(
+		Column[] columns,
+		QueryBuilder subquery) {
+		if (columns.length == 0) throw new SubqueryException("columns が空です");
+
+		List<String> columnPartList = new LinkedList<>();
+		for (int i = 0; i < columns.length; i++) {
+			columnPartList.add("{" + i + "}");
+		}
+
+		List<Binder> binders = new LinkedList<>();
+		binders.addAll(Arrays.asList(subquery.getWhereClause().getBinders()));
+		binders.addAll(Arrays.asList(subquery.getHavingClause().getBinders()));
+
+		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.toString() + ")";
+
+		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
+	}
+
 	private static String buildInClause(int length) {
 		return "{0} IN ("
 			+ String.join(

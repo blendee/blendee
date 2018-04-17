@@ -84,7 +84,9 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param clause WHERE 句
 	 */
 	public synchronized void setWhereClause(Criteria clause) {
-		whereClause = prepareCriteria(whereClause, clause);
+		if (whereClause.equals(clause)) return;
+		whereClause = clause.replicate();
+		query = null;
 	}
 
 	/**
@@ -118,7 +120,9 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param clause HAVING 句
 	 */
 	public synchronized void setHavingClause(Criteria clause) {
-		havingClause = prepareCriteria(havingClause, clause);
+		if (havingClause.equals(clause)) return;
+		havingClause = clause.replicate();
+		query = null;
 	}
 
 	/**
@@ -132,7 +136,7 @@ public class QueryBuilder implements ComposedSQL {
 	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param operator 
+	 * @param operator
 	 * @param query UNION 対象
 	 */
 	public synchronized void union(UnionOperator operator, ComposedSQL query) {
@@ -233,16 +237,6 @@ public class QueryBuilder implements ComposedSQL {
 	@Override
 	public String toString() {
 		return sql();
-	}
-
-	private Criteria prepareCriteria(Criteria oldCriteria, Criteria newCriteria) {
-		if (oldCriteria.equalsWithoutBinders(newCriteria)) {
-			oldCriteria.changeBinders(newCriteria.getBinders());
-			return oldCriteria;
-		}
-
-		query = null;
-		return newCriteria.replicate();
 	}
 
 	private static void addClause(List<String> list, String clause) {

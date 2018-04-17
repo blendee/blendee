@@ -23,7 +23,8 @@ public class Subquery {
 	 */
 	public Criteria createCriteria(Query mainquery) {
 		return CriteriaFactory
-			.createSubquery(
+			//EffectorでSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
+			.createSubqueryWithoutCheck(
 				mainquery.getRootRealtionship().getPrimaryKeyColumns(),
 				builder);
 	}

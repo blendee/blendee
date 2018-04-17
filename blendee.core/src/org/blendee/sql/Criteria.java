@@ -142,7 +142,12 @@ public class Criteria extends QueryClause implements ChainPreparedStatementCompl
 		if (!(o instanceof Criteria)) return false;
 		Criteria target = strip((Criteria) o);
 		if (target == null) return false;
-		if (!equalsWithoutBinders(target) || !binders.equals(target.binders)) return false;
+
+		if (!clause.equals(target.clause)
+			|| !columns.equals(target.columns)
+			|| binders.size() != target.binders.size()
+			|| current != target.current
+			|| !binders.equals(target.binders)) return false;
 		return true;
 	}
 
@@ -215,17 +220,6 @@ public class Criteria extends QueryClause implements ChainPreparedStatementCompl
 		columns.addAll(target.columns);
 		binders.addAll(target.binders);
 		current = operator;
-	}
-
-	boolean equalsWithoutBinders(Criteria target) {
-		if (this == target) return true;
-		target = strip(target);
-		if (target == null) return false;
-		if (!clause.equals(target.clause)
-			|| !columns.equals(target.columns)
-			|| binders.size() != target.binders.size()
-			|| current != target.current) return false;
-		return true;
 	}
 
 	void changeBinders(Binder[] newBinders) {
@@ -347,12 +341,6 @@ public class Criteria extends QueryClause implements ChainPreparedStatementCompl
 			} else {
 				inclusion.append(operator, clause);
 			}
-		}
-
-		@Override
-		boolean equalsWithoutBinders(Criteria target) {
-			if (inclusion == null) return !target.isAvailable();
-			return inclusion.equalsWithoutBinders(target);
 		}
 
 		@Override
