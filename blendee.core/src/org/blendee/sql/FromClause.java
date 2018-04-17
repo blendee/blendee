@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.TablePath;
@@ -17,7 +19,7 @@ import org.blendee.jdbc.TablePath;
  * @author 千葉 哲嗣
  * @see QueryBuilder#QueryBuilder(FromClause)
  */
-public class FromClause {
+public class FromClause implements ChainPreparedStatementComplementer {
 
 	/**
 	 * テーブルの結合方式を表す列挙型です。
@@ -123,6 +125,21 @@ public class FromClause {
 	}
 
 	/**
+	 * この FROM 句に、他のテーブルを結合します。
+	 * @param type 結合方式
+	 * @param another 結合するテーブル
+	 * @param onCriteria この FROM 句のテーブルと another の ON に使用する条件句
+	 */
+	public void join(JoinType type, TablePath another, Criteria onCriteria) {
+		cache = null;
+		joints.add(
+			new JointContainer(
+				type,
+				ContextManager.get(RelationshipFactory.class).getInstance(another),
+				onCriteria));
+	}
+
+	/**
 	 * 他の FROM 句と結合するためのジョイントを生成します。
 	 * @param base このインスタンスとルートが同じで、結合する {@link Relationship}
 	 * @param columnNames base に属する結合するカラム
@@ -157,6 +174,16 @@ public class FromClause {
 			columns[i] = base.getColumn(columnNames[i]);
 		}
 		return new Joint(base, columns);
+	}
+
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) {
+		int[] result = { done };
+		joints.forEach(j -> {
+			result[0] = j.complement(result[0], statement);
+		});
+
+		return result[0];
 	}
 
 	/**
@@ -194,6 +221,7 @@ public class FromClause {
 		for (RelationshipContainer element : localRelationships) {
 			collection.add(element.relationship);
 		}
+
 		for (JointContainer element : joints) {
 			element.addUsingRelationships(collection);
 		}
@@ -218,9 +246,11 @@ public class FromClause {
 		for (RelationshipContainer element : localList) {
 			element.append(clause);
 		}
+
 		for (JointContainer element : joints) {
 			element.append(clause);
 		}
+
 		return clause;
 	}
 
@@ -230,9 +260,8 @@ public class FromClause {
 		Column[] left,
 		Column[] right) {
 		Criteria criteria = CriteriaFactory.create();
-		Bindable[] bindables = new Bindable[0];
 		for (int i = 0; i < left.length; i++) {
-			criteria.and(CriteriaFactory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, bindables));
+			criteria.and(CriteriaFactory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, Bindable.EMPTY_ARRAY));
 		}
 
 		return type
@@ -242,6 +271,20 @@ public class FromClause {
 			+ relationship.getID()
 			+ " ON ("
 			+ criteria.toString(true).trim()
+			+ ")";
+	}
+
+	private static String processPart(
+		JoinType type,
+		Relationship relationship,
+		Criteria onCriteria) {
+		return type
+			+ " "
+			+ relationship.getTablePath()
+			+ " "
+			+ relationship.getID()
+			+ " ON ("
+			+ onCriteria.toString(true).trim()
 			+ ")";
 	}
 
@@ -342,8 +385,7 @@ public class FromClause {
 	}
 
 	/**
-	 * Immutable<br>
-	 * selfColumns が外部から変更される可能性がある場合、 Immutable が守れなくなるので注意すること。
+	 * Immutable
 	 */
 	private static class JointContainer {
 
@@ -351,12 +393,26 @@ public class FromClause {
 
 		private final Column[] selfColumns;
 
+		private final Criteria onCriteria;
+
 		private final Joint another;
+
+		private final Relationship anotherRelationship;
 
 		private JointContainer(JoinType type, Column[] selfColumns, Joint another) {
 			this.type = type;
-			this.selfColumns = selfColumns;
+			this.selfColumns = selfColumns.clone();
+			onCriteria = null;
 			this.another = another;
+			anotherRelationship = another.base;
+		}
+
+		private JointContainer(JoinType type, Relationship anotherRelationship, Criteria onCriteria) {
+			this.type = type;
+			selfColumns = null;
+			this.anotherRelationship = anotherRelationship;
+			this.onCriteria = onCriteria;
+			another = null;
 		}
 
 		private void addUsingRelationships(Collection<Relationship> collection) {
@@ -364,8 +420,17 @@ public class FromClause {
 		}
 
 		private void append(List<String> list) {
-			list.add(processPart(type, another.base, selfColumns, another.columns));
-			list.addAll(another.getFromClause().process());
+			if (selfColumns != null) {
+				list.add(processPart(type, anotherRelationship, selfColumns, another.columns));
+				list.addAll(another.getFromClause().process());
+			} else {
+				list.add(processPart(type, anotherRelationship, onCriteria));
+			}
+		}
+
+		private int complement(int done, BlenPreparedStatement statement) {
+			if (onCriteria == null) return done;
+			return onCriteria.complement(done, statement);
 		}
 	}
 }

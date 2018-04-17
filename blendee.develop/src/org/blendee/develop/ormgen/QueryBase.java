@@ -42,10 +42,12 @@ import org.blendee.support.WhereQueryRelationship;
 import org.blendee.support.GroupByQueryRelationship;
 import org.blendee.support.HavingQueryRelationship;
 import org.blendee.support.OrderByQueryRelationship;
+import org.blendee.support.OnQueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.HavingQueryColumn;
+import org.blendee.support.OnQueryColumn;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -65,6 +67,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	private static final QueryContext<WhereQueryColumn<WhereLogicalOperators>> whereContext =  QueryContext.newWhereBuilder();
 
 	private static final QueryContext<HavingQueryColumn<HavingLogicalOperators>> havingContext =  QueryContext.newHavingBuilder();
+
+	private static final QueryContext<OnQueryColumn<OnLogicalOperators>> onContext =  QueryContext.newOnBuilder();
 
 	private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -105,7 +109,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		private HavingLogicalOperators() /*++'++*/{}/*++'++*/
 
 		/**
-		 * WHERE 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 * HAVING 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
 		public final HavingQRel AND =
 			new HavingQRel(
@@ -114,7 +118,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 				QueryCriteriaContext.AND);
 
 		/**
-		 * WHERE 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 * HAVING 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
 		public final HavingQRel OR = new HavingQRel(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
@@ -127,14 +131,54 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
+	/**
+	 * ON 句 で使用する AND, OR です。
+	 */
+	public class OnLogicalOperators implements LogicalOperators<OnQRel> /*++'++*/{/*++'++*/
+
+		private OnLogicalOperators() /*++'++*/{}/*++'++*/
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final OnQRel AND =
+			new OnQRel(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				onContext,
+				QueryCriteriaContext.AND);
+
+		/**
+		 * ON 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final OnQRel OR = new OnQRel(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				onContext,
+				QueryCriteriaContext.OR);
+
+		@Override
+		public OnQRel defaultOperator() /*++'++*/{/*++'++*/
+			return AND;
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
 	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
 
 	private final HavingLogicalOperators havingOperators = new HavingLogicalOperators();
 
+	private final OnLogicalOperators onOperators = new OnLogicalOperators();
+
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
 	 */
-	public final QRel<QueryColumn, Void> rel = new QRel<>(
+	public final ExtQRel<QueryColumn, Void> rel = new ExtQRel<>(
+			this,
+			QueryContext.OTHER,
+			QueryCriteriaContext.NULL);
+
+	/**
+	 * 他の '{'@link Query'}' に JOIN するための接続ポイントです。
+	 */
+	public final QRel<QueryColumn, Void> joint = new QRel<>(
 			this,
 			QueryContext.OTHER,
 			QueryCriteriaContext.NULL);
@@ -163,13 +207,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			orderByContext,
 			QueryCriteriaContext.NULL);
 
-	private final QueryHelper<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel> helper = new QueryHelper<>(
+	private final QueryHelper<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnQRel> helper = new QueryHelper<>(
 		/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
 		select,
 		groupBy,
 		orderBy,
 		whereOperators,
-		havingOperators);
+		havingOperators,
+		onOperators);
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
@@ -292,6 +337,42 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * このクエリに INNER JOIN で別テーブルを結合します。
+	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @return ON
+	 */
+	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+		return helper.INNER_JOIN(rightJoint, this);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * このクエリに LEFT OUTER JOIN で別テーブルを結合します。
+	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @return ON
+	 */
+	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+		return helper.LEFT_OUTER_JOIN(rightJoint, this);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * このクエリに RIGHT OUTER JOIN で別テーブルを結合します。
+	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @return ON
+	 */
+	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+		return helper.RIGHT_OUTER_JOIN(rightJoint, this);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * このクエリに FULL OUTER JOIN で別テーブルを結合します。
+	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @return ON
+	 */
+	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+		return helper.FULL_OUTER_JOIN(rightJoint, this);
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param query UNION 対象
@@ -408,6 +489,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public LogicalOperators<?> getHavingLogicalOperators() /*++'++*/{/*++'++*/
 		return havingOperators;
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public LogicalOperators<?> getOnLogicalOperators() /*++'++*/{/*++'++*/
+		return onOperators;
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -605,7 +691,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * 自動生成された '{'@link QueryRelationship'}' の実装クラスです。<br>
-	 * 条件として使用できるカラムと、参照しているテーブルを内包しており、それらを使用して検索 SQL を生成可能にします。
+	 * 条件として使用できるカラムを内包しており、それらを使用して検索 SQL を生成可能にします。
 	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
@@ -615,15 +701,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final QueryCriteriaContext context$;
 
-		/*--?--*/private final QueryContext<T> builder$;/*--?--*/
-
 		private final QueryRelationship parent$;
 
 		private final String fkName$;
 
 		private final TablePath path$;
-
-		/*--?--*/private final TablePath root$;/*--?--*/
 
 		private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager$ = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -638,25 +720,21 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/**
 		 * 直接使用しないでください。
-		 * @param builder$
-		 * @param parent$
-		 * @param fkName$
-		 * @param path$
-		 * @param root$
+		 * @param builder$ builder
+		 * @param parent$ parent
+		 * @param fkName$ fkName
+		 * @param path$ path
 		 */
 		public QRel(
 			QueryContext<T> builder$,
 			QueryRelationship parent$,
 			String fkName$,
-			TablePath path$,
-			TablePath root$) /*++'++*/{/*++'++*/
+			TablePath path$) /*++'++*/{/*++'++*/
 			query$ = null;
-			/*--?--*/this.builder$ = builder$;/*--?--*/
 			context$ = null;
 			this.parent$ = parent$;
 			this.fkName$ = fkName$;
 			this.path$ = path$;
-			/*--?--*/this.root$ = root$;/*--?--*/
 
 /*++{4}++*/
 /*==ColumnPart2==*/this./*++{0}++*//*--*/columnName/*--*/ = builder$.buildQueryColumn(
@@ -669,34 +747,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			QueryContext<T> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			this.query$ = query$;
-			/*--?--*/this.builder$ = builder$;/*--?--*/
 			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
 			path$ = /*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE;
-			/*--?--*/root$ = null;/*--?--*/
 
 			/*--*/columnName = null;/*--*/
 /*++{4}++*/
 		/*++'++*/}/*++'++*/
-
-/*++{5}++*/
-/*==RelationshipPart==*/
-		/**
-		 * 参照先テーブル名 {0}
-		 * 外部キー名 {1}
-		 * @return {0} relationship
-		 */
-		public /*++{5}.query.{0}Query.++*/QRel<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
-			if (root$ != null) /*++'++*/{/*++'++*/
-				return new /*++{5}.query.{0}Query.++*/QRel<>(
-					builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
-			/*++'++*/}/*++'++*/
-
-			return new /*++{5}.query.{0}Query.++*/QRel<>(
-				builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, path$);
-		/*++'++*/}/*++'++*/
-/*==RelationshipPart==*/
 
 		/**
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
@@ -783,9 +841,68 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * 自動生成された '{'@link QueryRelationship'}' の実装クラスです。<br>
+	 * 条件として使用できるカラムと、参照しているテーブルを内包しており、それらを使用して検索 SQL を生成可能にします。
+	 * @param <T> 使用されるカラムのタイプにあった型
+	 * @param <M> Many 一対多の多側の型連鎖
+	 */
+	public static class ExtQRel<T, M> extends QRel<T, M> /*++'++*/{/*++'++*/
+
+		/*--?--*/private final QueryContext<T> builder$;/*--?--*/
+
+		/*--?--*/private final TablePath root$;/*--?--*/
+
+		/**
+		 * 直接使用しないでください。
+		 * @param builder$ builder
+		 * @param parent$ parent
+		 * @param fkName$ fkName
+		 * @param path$ path
+		 * @param root$ root
+		 */
+		public ExtQRel(
+			QueryContext<T> builder$,
+			QueryRelationship parent$,
+			String fkName$,
+			TablePath path$,
+			TablePath root$) /*++'++*/{/*++'++*/
+			super(builder$, parent$, fkName$, path$);
+			/*--?--*/this.builder$ = builder$;/*--?--*/
+			/*--?--*/this.root$ = root$;/*--?--*/
+		/*++'++*/}/*++'++*/
+
+		private ExtQRel(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<T> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+			/*--?--*/this.builder$ = builder$;/*--?--*/
+			/*--?--*/root$ = null;/*--?--*/
+		/*++'++*/}/*++'++*/
+
+/*++{5}++*/
+/*==RelationshipPart==*/
+		/**
+		 * 参照先テーブル名 {0}
+		 * 外部キー名 {1}
+		 * @return {0} relationship
+		 */
+		public /*++{5}.query.{0}Query.++*/ExtQRel<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
+			if (root$ != null) /*++'++*/{/*++'++*/
+				return new /*++{5}.query.{0}Query.++*/ExtQRel<>(
+					builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
+			/*++'++*/}/*++'++*/
+
+			return new /*++{5}.query.{0}Query.++*/ExtQRel<>(
+				builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, super.path$);
+		/*++'++*/}/*++'++*/
+/*==RelationshipPart==*/
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQRel extends QRel<SelectQCol, Void> implements SelectQueryRelationship /*++'++*/{/*++'++*/
+	public static class SelectQRel extends ExtQRel<SelectQCol, Void> implements SelectQueryRelationship /*++'++*/{/*++'++*/
 
 		private SelectQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
@@ -798,7 +915,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * WHERE 句用
 	 */
-	public static class WhereQRel extends QRel<WhereQueryColumn<WhereLogicalOperators>, Void> implements WhereQueryRelationship /*++'++*/{/*++'++*/
+	public static class WhereQRel extends ExtQRel<WhereQueryColumn<WhereLogicalOperators>, Void> implements WhereQueryRelationship /*++'++*/{/*++'++*/
 
 		private WhereQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
@@ -811,7 +928,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * GROUB BY 句用
 	 */
-	public static class GroupByQRel extends QRel<GroupByQCol, Void> implements GroupByQueryRelationship /*++'++*/{/*++'++*/
+	public static class GroupByQRel extends ExtQRel<GroupByQCol, Void> implements GroupByQueryRelationship /*++'++*/{/*++'++*/
 
 		private GroupByQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
@@ -824,7 +941,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * HAVING 句用
 	 */
-	public static class HavingQRel extends QRel<HavingQueryColumn<HavingLogicalOperators>, Void> implements HavingQueryRelationship /*++'++*/{/*++'++*/
+	public static class HavingQRel extends ExtQRel<HavingQueryColumn<HavingLogicalOperators>, Void> implements HavingQueryRelationship /*++'++*/{/*++'++*/
 
 		private HavingQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
@@ -837,11 +954,24 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQRel extends QRel<OrderByQCol, Void> implements OrderByQueryRelationship /*++'++*/{/*++'++*/
+	public static class OrderByQRel extends ExtQRel<OrderByQCol, Void> implements OrderByQueryRelationship /*++'++*/{/*++'++*/
 
 		private OrderByQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
 			QueryContext<OrderByQCol> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * ON 句用
+	 */
+	public static class OnQRel extends QRel<OnQueryColumn<OnLogicalOperators>, Void> implements OnQueryRelationship /*++'++*/{/*++'++*/
+
+		private OnQRel(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<OnQueryColumn<OnLogicalOperators>> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			super(query$, builder$, context$);
 		/*++'++*/}/*++'++*/

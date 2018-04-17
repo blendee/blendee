@@ -224,6 +224,7 @@ public class QueryBuilder implements ComposedSQL {
 
 	@Override
 	public synchronized int complement(int done, BlenPreparedStatement statement) {
+		done = fromClause.complement(done, statement);
 		done = whereClause.complement(done, statement);
 		done = havingClause.complement(done, statement);
 

@@ -10,7 +10,7 @@ import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
 import org.blendee.sql.Relationship;
 
 /**
- * WHERE 句に追加する新しい条件を生成するクラスです。<br>
+ * 汎用的な {@link Query} カラムクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */

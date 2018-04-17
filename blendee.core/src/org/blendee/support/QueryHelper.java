@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -20,6 +21,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause;
+import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -33,7 +35,7 @@ import org.blendee.sql.SelectDistinctClause;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W extends WhereQueryRelationship, H extends HavingQueryRelationship, O extends OrderByQueryRelationship> {
+public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W extends WhereQueryRelationship, H extends HavingQueryRelationship, O extends OrderByQueryRelationship, L extends OnQueryRelationship> {
 
 	private final TablePath table;
 
@@ -46,6 +48,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private final LogicalOperators<W> whereOperators;
 
 	private final LogicalOperators<H> havingOperators;
+
+	private final LogicalOperators<L> left;
 
 	private boolean rowMode = true;
 
@@ -65,19 +69,23 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private OrderByClause orderByClause;
 
+	private FromClause fromClause;
+
 	public QueryHelper(
 		TablePath table,
 		S select,
 		G groupBy,
 		O orderBy,
 		LogicalOperators<W> whereOperators,
-		LogicalOperators<H> havingOperators) {
+		LogicalOperators<H> havingOperators,
+		LogicalOperators<L> onOperators) {
 		this.table = table;
 		this.select = select;
 		this.groupBy = groupBy;
 		this.orderBy = orderBy;
 		this.whereOperators = whereOperators;
 		this.havingOperators = havingOperators;
+		left = onOperators;
 	}
 
 	/**
@@ -130,6 +138,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 */
 	public void GROUP_BY(
 		GroupByOfferFunction<G> function) {
+		quitRowMode();
 		function.apply(groupBy).get().forEach(o -> o.offer());
 	}
 
@@ -157,6 +166,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 */
 	public void HAVING(
 		Consumer<H> consumer) {
+		quitRowMode();
 		try {
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
@@ -176,6 +186,56 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
 		function.apply(orderBy).get().forEach(o -> o.offer());
+	}
+
+	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> INNER_JOIN(R rightJoint, Q query) {
+		return new Joint<>(JoinType.INNER_JOIN, rightJoint, query);
+	}
+
+	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> LEFT_OUTER_JOIN(R rightJoint, Q query) {
+		return new Joint<>(JoinType.LEFT_OUTER_JOIN, rightJoint, query);
+	}
+
+	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> RIGHT_OUTER_JOIN(R rightJoint, Q query) {
+		return new Joint<>(JoinType.RIGHT_OUTER_JOIN, rightJoint, query);
+	}
+
+	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> FULL_OUTER_JOIN(R rightJoint, Q query) {
+		return new Joint<>(JoinType.FULL_OUTER_JOIN, rightJoint, query);
+	}
+
+	public class Joint<R extends QueryRelationship, Q extends Query> {
+
+		private final JoinType joinType;
+
+		private final R right;
+
+		private final Q query;
+
+		private Joint(JoinType joinType, R right, Q query) {
+			this.joinType = joinType;
+			this.right = right;
+			this.query = query;
+		}
+
+		public Q ON(BiConsumer<L, R> consumer) {
+			quitRowMode();
+			try {
+				Criteria contextCriteria = CriteriaFactory.create();
+				QueryCriteriaContext.setContextCriteria(contextCriteria);
+
+				consumer.accept(left.defaultOperator(), right);
+
+				getFromClause().join(
+					joinType,
+					right.getRoot().getRootRealtionship().getTablePath(),
+					contextCriteria);
+			} finally {
+				QueryCriteriaContext.removeContextCriteria();
+			}
+
+			return query;
+		}
 	}
 
 	public void UNION(ComposedSQL query) {
@@ -310,6 +370,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		if (orderByClause != null)
 			throw new IllegalStateException("既に ORDER BY 句がセットされています");
 		this.orderByClause = orderByClause;
+	}
+
+	/**
+	 * @return FROM
+	 */
+	public FromClause getFromClause() {
+		if (fromClause == null) fromClause = new FromClause(table);
+		return fromClause;
 	}
 
 	/**
@@ -453,7 +521,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	private QueryBuilder buildBuilder(Effector... effectors) {
-		QueryBuilder builder = new QueryBuilder(new FromClause(table));
+		QueryBuilder builder = new QueryBuilder(getFromClause());
 
 		if (selectClause != null) {
 			builder.setSelectClause(selectClause);

@@ -41,6 +41,18 @@ public interface QueryContext<T> {
 	}
 
 	/**
+	 * ON 句用
+	 * @param <O> {@link Query} 実装
+	 * @return ON 句用 QueryContext
+	 */
+	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnBuilder() {
+		return (relationship, name) -> new OnQueryColumn<>(
+			relationship.getRoot(),
+			relationship.getContext(),
+			relationship.getRelationship().getColumn(name));
+	}
+
+	/**
 	 * このインスタンスに対応したカラムインスタンスを生成します。
 	 * @param relationship 条件作成に必要な情報を持った {@link QueryRelationship}
 	 * @param name カラム名

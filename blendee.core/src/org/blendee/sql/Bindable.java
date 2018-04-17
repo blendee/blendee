@@ -8,6 +8,11 @@ package org.blendee.sql;
 public interface Bindable {
 
 	/**
+	 * 空配列
+	 */
+	Bindable[] EMPTY_ARRAY = {};
+
+	/**
 	 * 自身が保持する値を Binder 化します。
 	 * @return 変換された {@link Binder}
 	 */

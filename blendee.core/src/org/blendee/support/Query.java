@@ -42,6 +42,12 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	LogicalOperators<?> getHavingLogicalOperators();
 
 	/**
+	 * この Query の ON 句用 {@link LogicalOperators} を返します。
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators<?> getOnLogicalOperators();
+
+	/**
 	 * {@link Row} で検索結果を受け取ることができなくなります。<br>
 	 * 代わりに{@link #aggregate} で結果を取得することになります。
 	 */
