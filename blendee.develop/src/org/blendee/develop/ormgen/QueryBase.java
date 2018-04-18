@@ -378,7 +378,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * このクエリに INNER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
@@ -387,7 +387,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * このクエリに LEFT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
@@ -396,7 +396,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * このクエリに RIGHT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
@@ -405,7 +405,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * このクエリに FULL OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
+	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
