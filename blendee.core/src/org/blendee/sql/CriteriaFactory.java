@@ -967,7 +967,10 @@ public class CriteriaFactory {
 		String clause,
 		String columnName,
 		Bindable bindable) {
-		return createCriteria(clause, new Column[] { new PhantomColumn(columnName) }, new Bindable[] { bindable });
+		return createCriteria(
+			clause,
+			new Column[] { new PhantomColumn(columnName) },
+			new Bindable[] { bindable });
 	}
 
 	/**
@@ -985,6 +988,7 @@ public class CriteriaFactory {
 		for (int i = 0; i < bindables.length; i++) {
 			binders[i] = bindables[i].toBinder();
 		}
+
 		return new Criteria(clause, columns, binders);
 	}
 
@@ -1119,6 +1123,7 @@ public class CriteriaFactory {
 		}
 
 		List<Binder> binders = new LinkedList<>();
+		binders.addAll(Arrays.asList(subquery.getFromClause().getBinders()));
 		binders.addAll(Arrays.asList(subquery.getWhereClause().getBinders()));
 		binders.addAll(Arrays.asList(subquery.getHavingClause().getBinders()));
 

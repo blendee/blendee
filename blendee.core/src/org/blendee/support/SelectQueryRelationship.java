@@ -158,6 +158,20 @@ public interface SelectQueryRelationship {
 	}
 
 	/**
+	 * SELECT 句に * を追加します。
+	 * @return {@link AliasOffer} AS
+	 */
+	default SelectOffers asteriskAll() {
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
+
+		SelectOffers offers = new SelectOffers();
+		offers.add(new ColumnExpression("{0}", columns));
+
+		return offers;
+	}
+
+	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスが表す {@link Relationship}
 	 */

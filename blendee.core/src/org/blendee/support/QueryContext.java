@@ -41,12 +41,24 @@ public interface QueryContext<T> {
 	}
 
 	/**
-	 * ON 句用
+	 * ON 句 (LEFT) 用
 	 * @param <O> {@link Query} 実装
 	 * @return ON 句用 QueryContext
 	 */
-	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnBuilder() {
-		return (relationship, name) -> new OnQueryColumn<>(
+	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnLeftBuilder() {
+		return (relationship, name) -> new OnLeftQueryColumn<>(
+			relationship.getRoot(),
+			relationship.getContext(),
+			relationship.getRelationship().getColumn(name));
+	}
+
+	/**
+	 * ON 句 (RIGHT) 用
+	 * @param <O> {@link Query} 実装
+	 * @return ON 句用 QueryContext
+	 */
+	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnRightBuilder() {
+		return (relationship, name) -> new OnRightQueryColumn<>(
 			relationship.getRoot(),
 			relationship.getContext(),
 			relationship.getRelationship().getColumn(name));

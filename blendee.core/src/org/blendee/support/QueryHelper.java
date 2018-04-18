@@ -2,7 +2,6 @@ package org.blendee.support;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -35,7 +34,7 @@ import org.blendee.sql.SelectDistinctClause;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W extends WhereQueryRelationship, H extends HavingQueryRelationship, O extends OrderByQueryRelationship, L extends OnQueryRelationship> {
+public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQueryRelationship, W extends WhereQueryRelationship, H extends HavingQueryRelationship, O extends OrderByQueryRelationship, L extends OnLeftQueryRelationship> {
 
 	private final TablePath table;
 
@@ -70,6 +69,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private OrderByClause orderByClause;
 
 	private FromClause fromClause;
+
+	private List<JoinResource> joinResources = new LinkedList<>();
 
 	public QueryHelper(
 		TablePath table,
@@ -144,17 +145,21 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	/**
 	 * WHERE 句を記述します。
-	 * @param consumer {@link Consumer}
+	 * @param consumers {@link Consumer}
 	 */
-	public void WHERE(
-		Consumer<W> consumer) {
+	@SafeVarargs
+	public final void WHERE(
+		Consumer<W>... consumers) {
 		try {
-			Criteria contextCriteria = CriteriaFactory.create();
-			QueryCriteriaContext.setContextCriteria(contextCriteria);
+			for (Consumer<W> consumer : consumers) {
+				Criteria contextCriteria = CriteriaFactory.create();
+				QueryCriteriaContext.setContextCriteria(contextCriteria);
 
-			consumer.accept(whereOperators.defaultOperator());
+				consumer.accept(whereOperators.defaultOperator());
 
-			whereClause().and(contextCriteria);
+				whereClause().and(contextCriteria);
+			}
+
 		} finally {
 			QueryCriteriaContext.removeContextCriteria();
 		}
@@ -164,16 +169,19 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 * HAVING 句を記述します。
 	 * @param consumer {@link Consumer}
 	 */
-	public void HAVING(
-		Consumer<H> consumer) {
+	@SafeVarargs
+	public final void HAVING(
+		Consumer<H>... consumers) {
 		quitRowMode();
 		try {
-			Criteria contextCriteria = CriteriaFactory.create();
-			QueryCriteriaContext.setContextCriteria(contextCriteria);
+			for (Consumer<H> consumer : consumers) {
+				Criteria contextCriteria = CriteriaFactory.create();
+				QueryCriteriaContext.setContextCriteria(contextCriteria);
 
-			consumer.accept(havingOperators.defaultOperator());
+				consumer.accept(havingOperators.defaultOperator());
 
-			havingClause().and(contextCriteria);
+				havingClause().and(contextCriteria);
+			}
 		} finally {
 			QueryCriteriaContext.removeContextCriteria();
 		}
@@ -188,54 +196,20 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		function.apply(orderBy).get().forEach(o -> o.offer());
 	}
 
-	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> INNER_JOIN(R rightJoint, Q query) {
-		return new Joint<>(JoinType.INNER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> INNER_JOIN(R rightJoint, Q query) {
+		return joinInternal(JoinType.INNER_JOIN, rightJoint, query);
 	}
 
-	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> LEFT_OUTER_JOIN(R rightJoint, Q query) {
-		return new Joint<>(JoinType.LEFT_OUTER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> LEFT_OUTER_JOIN(R rightJoint, Q query) {
+		return joinInternal(JoinType.LEFT_OUTER_JOIN, rightJoint, query);
 	}
 
-	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> RIGHT_OUTER_JOIN(R rightJoint, Q query) {
-		return new Joint<>(JoinType.RIGHT_OUTER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> RIGHT_OUTER_JOIN(R rightJoint, Q query) {
+		return joinInternal(JoinType.RIGHT_OUTER_JOIN, rightJoint, query);
 	}
 
-	public <R extends QueryRelationship, Q extends Query> Joint<R, Q> FULL_OUTER_JOIN(R rightJoint, Q query) {
-		return new Joint<>(JoinType.FULL_OUTER_JOIN, rightJoint, query);
-	}
-
-	public class Joint<R extends QueryRelationship, Q extends Query> {
-
-		private final JoinType joinType;
-
-		private final R right;
-
-		private final Q query;
-
-		private Joint(JoinType joinType, R right, Q query) {
-			this.joinType = joinType;
-			this.right = right;
-			this.query = query;
-		}
-
-		public Q ON(BiConsumer<L, R> consumer) {
-			quitRowMode();
-			try {
-				Criteria contextCriteria = CriteriaFactory.create();
-				QueryCriteriaContext.setContextCriteria(contextCriteria);
-
-				consumer.accept(left.defaultOperator(), right);
-
-				getFromClause().join(
-					joinType,
-					right.getRoot().getRootRealtionship().getTablePath(),
-					contextCriteria);
-			} finally {
-				QueryCriteriaContext.removeContextCriteria();
-			}
-
-			return query;
-		}
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> FULL_OUTER_JOIN(R rightJoint, Q query) {
+		return joinInternal(JoinType.FULL_OUTER_JOIN, rightJoint, query);
 	}
 
 	public void UNION(ComposedSQL query) {
@@ -520,15 +494,13 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new ResultSetIterator(sql);
 	}
 
-	private QueryBuilder buildBuilder(Effector... effectors) {
+	public QueryBuilder buildBuilder(Effector... effectors) {
 		QueryBuilder builder = new QueryBuilder(getFromClause());
 
 		if (selectClause != null) {
 			builder.setSelectClause(selectClause);
-		} else if (optimizer != null) {
-			builder.setSelectClause(optimizer.getOptimizedSelectClause());
 		} else {
-			throw new IllegalStateException("検索のための SELECT 句が準備されていません");
+			builder.setSelectClause(getOptimizer().getOptimizedSelectClause());
 		}
 
 		if (groupByClause != null) builder.setGroupByClause(groupByClause);
@@ -541,7 +513,28 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		builder.addEffector(effectors);
 
+		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
+
 		return builder;
+	}
+
+	private <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> joinInternal(
+		JoinType joinType,
+		R rightJoint,
+		Q query) {
+		quitRowMode();
+
+		JoinResource joinResource = new JoinResource();
+		joinResource.rightRoot = rightJoint.getRoot();
+		joinResource.joinType = joinType;
+
+		joinResources.add(joinResource);
+
+		return new QueryOnClause<>(
+			joinResource,
+			left.defaultOperator(),
+			rightJoint,
+			query);
 	}
 
 	private Criteria whereClause() {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
+import org.blendee.sql.FromClause.JoinType;
 
 /**
  * SQL の SELECT 文を生成するクラスです。
@@ -18,6 +19,8 @@ public class QueryBuilder implements ComposedSQL {
 	private final List<Effector> effectors = new LinkedList<>();
 
 	private final List<UnionContainer> unions = new LinkedList<>();;
+
+	private final List<JoinContainer> joins = new LinkedList<>();;
 
 	private SelectClause selectClause = new SelectAllColumnClause();
 
@@ -59,6 +62,14 @@ public class QueryBuilder implements ComposedSQL {
 	 */
 	public QueryBuilder(FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
+	}
+
+	/**
+	 * 現在設定されている FROM 句を返します。
+	 * @return FROM 句
+	 */
+	public synchronized FromClause getFromClause() {
+		return fromClause.replicate();
 	}
 
 	/**
@@ -172,37 +183,46 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	/**
+	 * 他のクエリと JOIN します。<br>
+	 * このインスタンスがメインの取り込む側になります。
+	 * @param joinType {@link JoinType}
+	 * @param another 取り込まれる側
+	 * @param onCriteria ON 句
+	 */
+	public synchronized void join(JoinType joinType, QueryBuilder another, Criteria onCriteria) {
+		if (unions.size() > 0 || another.unions.size() > 0)
+			throw new IllegalArgumentException("UNION されたクエリはマージできません");
+
+		query = null;
+		joins.add(new JoinContainer(joinType, another, onCriteria));
+	}
+
+	/**
 	 * 現在設定されている各句から SELECT 文を生成し返します。
 	 * @return SELECT 文
 	 */
 	@Override
 	public synchronized String sql() {
 		if (query == null) {
-			fromClause.clearRelationships();
+			prepareFrom();
 
-			Relationship root = fromClause.getRoot();
+			ListClauses listClauses = new ListClauses();
+			merge(listClauses);
 
-			selectClause.adjustColumns(root);
-			whereClause.adjustColumns(root);
-			groupClause.adjustColumns(root);
-			havingClause.adjustColumns(root);
-			orderClause.adjustColumns(root);
+			listClauses.addSelect(selectClause);
+			listClauses.addGroupBy(groupClause);
+			listClauses.addOrderBy(orderClause);
 
-			selectClause.join(fromClause);
-			whereClause.join(fromClause);
-			groupClause.join(fromClause);
-			havingClause.join(fromClause);
-			orderClause.join(fromClause);
 			boolean joined = fromClause.isJoined();
 
 			havingClause.setKeyword("HAVING");
 			whereClause.setKeyword("WHERE");
 
-			List<String> clauses = new ArrayList<String>(6);
-			addClause(clauses, selectClause.toString(joined));
+			List<String> clauses = new ArrayList<String>();
+			addClause(clauses, listClauses.toSelectString(joined));
 			addClause(clauses, fromClause.toString());
 			addClause(clauses, whereClause.toString(joined));
-			addClause(clauses, groupClause.toString(joined));
+			addClause(clauses, listClauses.toGroupByString(joined));
 			addClause(clauses, havingClause.toString(joined));
 
 			unions.forEach(u -> {
@@ -210,7 +230,7 @@ public class QueryBuilder implements ComposedSQL {
 				clauses.add(u.query.sql());
 			});
 
-			addClause(clauses, orderClause.toString(joined));
+			addClause(clauses, listClauses.toOrderByString(joined));
 			query = String.join(" ", clauses).trim();
 		}
 
@@ -246,19 +266,43 @@ public class QueryBuilder implements ComposedSQL {
 		list.add(clause);
 	}
 
+	private void prepareFrom() {
+		fromClause.clearRelationships();
+
+		Relationship root = fromClause.getRoot();
+
+		selectClause.adjustColumns(root);
+		whereClause.adjustColumns(root);
+		groupClause.adjustColumns(root);
+		havingClause.adjustColumns(root);
+		orderClause.adjustColumns(root);
+
+		selectClause.join(fromClause);
+		whereClause.join(fromClause);
+		groupClause.join(fromClause);
+		havingClause.join(fromClause);
+		orderClause.join(fromClause);
+	}
+
+	private void merge(ListClauses clauses) {
+		joins.forEach(c -> {
+			c.another.prepareFrom();
+			c.another.merge(clauses);
+
+			clauses.addSelect(c.another.selectClause);
+			fromClause.join(c.joinType, c.another.fromClause, c.onCriteria);
+			whereClause.and(c.another.whereClause);
+			clauses.addGroupBy(c.another.groupClause);
+			havingClause.and(c.another.havingClause);
+			clauses.addOrderBy(c.another.orderClause);
+		});
+	}
+
 	private class SelectAllColumnClause extends SelectClause {
 
 		@Override
 		public String toString(boolean joining) {
-			List<Relationship> relationships = new LinkedList<>();
-			fromClause.addUsingRelationshipsTo(relationships);
-			for (Relationship relationship : relationships) {
-				for (Column column : relationship.getColumns()) {
-					add(column);
-				}
-			}
-
-			return super.toString(joining);
+			return "SELECT *";
 		}
 	}
 
@@ -271,6 +315,21 @@ public class QueryBuilder implements ComposedSQL {
 		private UnionContainer(UnionOperator unionOperator, ComposedSQL query) {
 			this.unionOperator = unionOperator;
 			this.query = query;
+		}
+	}
+
+	private static class JoinContainer {
+
+		private final JoinType joinType;
+
+		private final QueryBuilder another;
+
+		private final Criteria onCriteria;
+
+		private JoinContainer(JoinType joinType, QueryBuilder another, Criteria onCriteria) {
+			this.joinType = joinType;
+			this.another = another;
+			this.onCriteria = onCriteria;
 		}
 	}
 }

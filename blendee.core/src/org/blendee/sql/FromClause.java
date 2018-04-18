@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -24,7 +24,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	/**
 	 * テーブルの結合方式を表す列挙型です。
 	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
 	 */
 	public enum JoinType {
 
@@ -130,50 +129,16 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @param another 結合するテーブル
 	 * @param onCriteria この FROM 句のテーブルと another の ON に使用する条件句
 	 */
-	public void join(JoinType type, TablePath another, Criteria onCriteria) {
+	public void join(JoinType type, FromClause another, Criteria onCriteria) {
 		cache = null;
 		joints.add(
-			new JointContainer(
-				type,
-				ContextManager.get(RelationshipFactory.class).getInstance(another),
-				onCriteria));
-	}
+			new JointContainer(type, another, onCriteria));
 
-	/**
-	 * 他の FROM 句と結合するためのジョイントを生成します。
-	 * @param base このインスタンスとルートが同じで、結合する {@link Relationship}
-	 * @param columnNames base に属する結合するカラム
-	 * @return ジョイント
-	 * @throws IllegalArgumentException columnNames が空の場合
-	 * @throws IllegalStateException 結合できないテーブルを使用している場合
-	 */
-	public Joint getJoint(Relationship base, String[] columnNames) {
-		if (columnNames.length < 1) throw new IllegalArgumentException("columnNames が空です");
-		if (!root.equals(base.getRoot())) throw new IllegalStateException("同一ルートではないので、結合できません");
-		Column[] columns = new Column[columnNames.length];
-		for (int i = 0; i < columnNames.length; i++) {
-			columns[i] = base.getColumn(columnNames[i]);
-		}
-		return new Joint(base, columns);
-	}
-
-	/**
-	 * 他の FROM 句と結合するためのジョイントを生成します。
-	 * @param path このインスタンスのルートのツリーに含まれていて、結合する {@link Relationship}
-	 * @param columnNames base に属する結合するカラム
-	 * @return ジョイント
-	 * @throws IllegalArgumentException columnNames が空の場合
-	 * @throws IllegalStateException 結合できないテーブルを使用している場合
-	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
-	 */
-	public Joint getJoint(TablePath path, String[] columnNames) {
-		if (columnNames.length < 1) throw new IllegalArgumentException("columnNames が空です");
-		Relationship base = RelationshipFactory.convert(root, path);
-		Column[] columns = new Column[columnNames.length];
-		for (int i = 0; i < columnNames.length; i++) {
-			columns[i] = base.getColumn(columnNames[i]);
-		}
-		return new Joint(base, columns);
+		onCriteria.getColumnsInternal().forEach(c -> {
+			Relationship target = c.getRelationship();
+			if (target.getRoot().equals(root))
+				localRelationships.add(new RelationshipContainer(JoinType.LEFT_OUTER_JOIN, target));
+		});
 	}
 
 	@Override
@@ -184,6 +149,16 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		});
 
 		return result[0];
+	}
+
+	/**
+	 * 条件内にもつ {@link Binder} を返します。
+	 * @return {@link Binder} の配列
+	 */
+	public Binder[] getBinders() {
+		List<Binder> binders = new LinkedList<>();
+		joints.forEach(j -> j.addBindersTo(binders));
+		return binders.toArray(new Binder[binders.size()]);
 	}
 
 	/**
@@ -214,17 +189,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	}
 
 	boolean isJoined() {
-		return localRelationships.size() > 1 || joints.size() > 1;
-	}
-
-	void addUsingRelationshipsTo(Collection<Relationship> collection) {
-		for (RelationshipContainer element : localRelationships) {
-			collection.add(element.relationship);
-		}
-
-		for (JointContainer element : joints) {
-			element.addUsingRelationships(collection);
-		}
+		return localRelationships.size() > 1 || joints.size() > 0;
 	}
 
 	FromClause replicate() {
@@ -286,45 +251,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			+ " ON ("
 			+ onCriteria.toString(true).trim()
 			+ ")";
-	}
-
-	/**
-	 * FROM 句同士の結合を表すクラスです。
-	 * @author 千葉 哲嗣
-	 * @version $Name: v0_4_20090119a $
-	 */
-	public class Joint {
-
-		private final Relationship base;
-
-		private final Column[] columns;
-
-		private Joint(Relationship base, Column[] columns) {
-			this.base = base;
-			this.columns = columns;
-		}
-
-		/**
-		 * 他の FROM 句で生成したジョイントと、このジョイントを結合します。
-		 * @param type 結合方式
-		 * @param another 他の FROM 句で生成したジョイント
-		 * @throws IllegalArgumentException another を生成した FROM 句とこの FROM 句のルートとなるテーブルが同じ場合
-		 * @throws IllegalArgumentException another のカラム数とこのインスタンスの持つカラム数が違う場合
-		 */
-		public void join(JoinType type, Joint another) {
-			if (base.getRoot().equals(another.base.getRoot()))
-				throw new IllegalArgumentException("同一ルート同士は結合できません");
-
-			if (columns.length != another.columns.length)
-				throw new IllegalArgumentException("カラム数が一致しません");
-
-			cache = null;
-			joints.add(new JointContainer(type, columns, another));
-		}
-
-		private FromClause getFromClause() {
-			return FromClause.this;
-		}
 	}
 
 	/**
@@ -391,46 +317,29 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 		private final JoinType type;
 
-		private final Column[] selfColumns;
+		private final FromClause another;
 
 		private final Criteria onCriteria;
 
-		private final Joint another;
-
-		private final Relationship anotherRelationship;
-
-		private JointContainer(JoinType type, Column[] selfColumns, Joint another) {
+		private JointContainer(JoinType type, FromClause another, Criteria onCriteria) {
 			this.type = type;
-			this.selfColumns = selfColumns.clone();
-			onCriteria = null;
 			this.another = another;
-			anotherRelationship = another.base;
-		}
-
-		private JointContainer(JoinType type, Relationship anotherRelationship, Criteria onCriteria) {
-			this.type = type;
-			selfColumns = null;
-			this.anotherRelationship = anotherRelationship;
 			this.onCriteria = onCriteria;
-			another = null;
-		}
-
-		private void addUsingRelationships(Collection<Relationship> collection) {
-			another.getFromClause().addUsingRelationshipsTo(collection);
 		}
 
 		private void append(List<String> list) {
-			if (selfColumns != null) {
-				list.add(processPart(type, anotherRelationship, selfColumns, another.columns));
-				list.addAll(another.getFromClause().process());
-			} else {
-				list.add(processPart(type, anotherRelationship, onCriteria));
-			}
+			list.add(processPart(type, another.root, onCriteria));
+			list.addAll(another.process());
 		}
 
 		private int complement(int done, BlenPreparedStatement statement) {
 			if (onCriteria == null) return done;
 			return onCriteria.complement(done, statement);
+		}
+
+		private void addBindersTo(List<Binder> binders) {
+			if (onCriteria == null) return;
+			Arrays.asList(onCriteria.getBinders()).forEach(b -> binders.add(b));
 		}
 	}
 }

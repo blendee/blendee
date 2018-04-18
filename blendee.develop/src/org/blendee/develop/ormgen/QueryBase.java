@@ -19,8 +19,10 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.FromClause.JoinType;
 import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.SelectQueryColumn;
@@ -35,6 +37,7 @@ import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
+import org.blendee.support.QueryOnClause;
 import org.blendee.support.Effectors;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectQueryRelationship;
@@ -42,7 +45,8 @@ import org.blendee.support.WhereQueryRelationship;
 import org.blendee.support.GroupByQueryRelationship;
 import org.blendee.support.HavingQueryRelationship;
 import org.blendee.support.OrderByQueryRelationship;
-import org.blendee.support.OnQueryRelationship;
+import org.blendee.support.OnLeftQueryRelationship;
+import org.blendee.support.OnRightQueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
@@ -68,7 +72,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<HavingQueryColumn<HavingLogicalOperators>> havingContext =  QueryContext.newHavingBuilder();
 
-	private static final QueryContext<OnQueryColumn<OnLogicalOperators>> onContext =  QueryContext.newOnBuilder();
+	private static final QueryContext<OnQueryColumn<OnLeftLogicalOperators>> onLeftContext =  QueryContext.newOnLeftBuilder();
+
+	private static final QueryContext<OnQueryColumn<OnRightLogicalOperators>> onRightContext =  QueryContext.newOnRightBuilder();
 
 	private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -132,31 +138,64 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * ON 句 で使用する AND, OR です。
+	 * ON 句 (LEFT) で使用する AND, OR です。
 	 */
-	public class OnLogicalOperators implements LogicalOperators<OnQRel> /*++'++*/{/*++'++*/
+	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftQRel> /*++'++*/{/*++'++*/
 
-		private OnLogicalOperators() /*++'++*/{}/*++'++*/
+		private OnLeftLogicalOperators() /*++'++*/{}/*++'++*/
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final OnQRel AND =
-			new OnQRel(
+		public final OnLeftQRel AND =
+			new OnLeftQRel(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
-				onContext,
+				onLeftContext,
 				QueryCriteriaContext.AND);
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
 		 */
-		public final OnQRel OR = new OnQRel(
+		public final OnLeftQRel OR =
+			new OnLeftQRel(
 				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
-				onContext,
+				onLeftContext,
 				QueryCriteriaContext.OR);
 
 		@Override
-		public OnQRel defaultOperator() /*++'++*/{/*++'++*/
+		public OnLeftQRel defaultOperator() /*++'++*/{/*++'++*/
+			return AND;
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+
+	/**
+	 * ON 句 (RIGHT) で使用する AND, OR です。
+	 */
+	public class OnRightLogicalOperators implements LogicalOperators<OnRightQRel> /*++'++*/{/*++'++*/
+
+		private OnRightLogicalOperators() /*++'++*/{}/*++'++*/
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final OnRightQRel AND =
+			new OnRightQRel(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				onRightContext,
+				QueryCriteriaContext.AND);
+
+		/**
+		 * ON 句に OR 結合する条件用のカラムを選択するための '{'@link QueryRelationship'}' です。
+		 */
+		public final OnRightQRel OR =
+			new OnRightQRel(
+				/*++{1}Query++*//*--*/QueryBase/*--*/.this,
+				onRightContext,
+				QueryCriteriaContext.OR);
+
+		@Override
+		public OnRightQRel defaultOperator() /*++'++*/{/*++'++*/
 			return AND;
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
@@ -165,7 +204,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private final HavingLogicalOperators havingOperators = new HavingLogicalOperators();
 
-	private final OnLogicalOperators onOperators = new OnLogicalOperators();
+	private final OnLeftLogicalOperators onLeftOperators = new OnLeftLogicalOperators();
+
+	private final OnRightLogicalOperators onRightOperators = new OnRightLogicalOperators();
 
 	/**
 	 * この '{'@link Query'}' のテーブルを表す '{'@link QueryRelationship'}' を参照するためのインスタンスです。
@@ -178,10 +219,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * 他の '{'@link Query'}' に JOIN するための接続ポイントです。
 	 */
-	public final QRel<QueryColumn, Void> joint = new QRel<>(
-			this,
-			QueryContext.OTHER,
-			QueryCriteriaContext.NULL);
+	public final OnRightQRel joint =  onRightOperators.AND;
 
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -207,14 +245,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			orderByContext,
 			QueryCriteriaContext.NULL);
 
-	private final QueryHelper<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnQRel> helper = new QueryHelper<>(
+	private final QueryHelper<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnLeftQRel> helper = new QueryHelper<>(
 		/*++{0}.row.{1}++*//*--*/RowBase/*--*/.$TABLE,
 		select,
 		groupBy,
 		orderBy,
 		whereOperators,
 		havingOperators,
-		onOperators);
+		onLeftOperators);
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
@@ -296,12 +334,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * WHERE 句を記述します。
-	 * @param consumer
+	 * @param consumers
 	 * @return この '{'@link Query'}'
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
-		Consumer<WhereQRel> consumer) /*++'++*/{/*++'++*/
-		helper.WHERE(consumer);
+	@SafeVarargs
+	public final /*++{1}Query++*//*--*/QueryBase/*--*/ WHERE(
+		Consumer<WhereQRel>... consumers) /*++'++*/{/*++'++*/
+		helper.WHERE(consumers);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -317,12 +356,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * HAVING 句を記述します。
-	 * @param consumer
+	 * @param consumers
 	 * @return この '{'@link Query'}'
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
-		Consumer<HavingQRel> consumer) /*++'++*/{/*++'++*/
-		helper.HAVING(consumer);
+	@SafeVarargs
+	public final /*++{1}Query++*//*--*/QueryBase/*--*/ HAVING(
+		Consumer<HavingQRel>... consumers) /*++'++*/{/*++'++*/
+		helper.HAVING(consumers);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -341,7 +381,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
 	 * @return ON
 	 */
-	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
 		return helper.INNER_JOIN(rightJoint, this);
 	/*++'++*/}/*++'++*/
 
@@ -350,7 +390,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
 	 * @return ON
 	 */
-	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
 		return helper.LEFT_OUTER_JOIN(rightJoint, this);
 	/*++'++*/}/*++'++*/
 
@@ -359,7 +399,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
 	 * @return ON
 	 */
-	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
 		return helper.RIGHT_OUTER_JOIN(rightJoint, this);
 	/*++'++*/}/*++'++*/
 
@@ -368,7 +408,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param rightJoint 別クエリの '{'@link OnQueryRelationship'}'
 	 * @return ON
 	 */
-	public <R extends QueryRelationship> QueryHelper<?, ?, ?, ?, ?, OnQRel>.Joint<R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
 		return helper.FULL_OUTER_JOIN(rightJoint, this);
 	/*++'++*/}/*++'++*/
 
@@ -492,8 +532,13 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public LogicalOperators<?> getOnLogicalOperators() /*++'++*/{/*++'++*/
-		return onOperators;
+	public LogicalOperators<?> getOnLeftLogicalOperators() /*++'++*/{/*++'++*/
+		return onLeftOperators;
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public LogicalOperators<?> getOnRightLogicalOperators() /*++'++*/{/*++'++*/
+		return onRightOperators;
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -588,6 +633,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
 		return helper.composeSQL(options);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public void joinTo(QueryBuilder builder, JoinType joinType, Criteria onCriteria) /*++'++*/{/*++'++*/
+		builder.join(joinType, helper.buildBuilder(), onCriteria);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -965,13 +1015,26 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * ON 句用
+	 * ON 句 (LEFT) 用
 	 */
-	public static class OnQRel extends QRel<OnQueryColumn<OnLogicalOperators>, Void> implements OnQueryRelationship /*++'++*/{/*++'++*/
+	public static class OnLeftQRel extends ExtQRel<OnQueryColumn<OnLeftLogicalOperators>, Void> implements OnLeftQueryRelationship /*++'++*/{/*++'++*/
 
-		private OnQRel(
+		private OnLeftQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
-			QueryContext<OnQueryColumn<OnLogicalOperators>> builder$,
+			QueryContext<OnQueryColumn<OnLeftLogicalOperators>> builder$,
+			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
+			super(query$, builder$, context$);
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * ON 句 (RIGHT) 用
+	 */
+	public static class OnRightQRel extends QRel<OnQueryColumn<OnRightLogicalOperators>, Void> implements OnRightQueryRelationship /*++'++*/{/*++'++*/
+
+		private OnRightQRel(
+			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
+			QueryContext<OnQueryColumn<OnRightLogicalOperators>> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			super(query$, builder$, context$);
 		/*++'++*/}/*++'++*/

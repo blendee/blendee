@@ -7,7 +7,10 @@ import java.util.function.Function;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.Effector;
+import org.blendee.sql.FromClause.JoinType;
+import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 
 /**
@@ -42,10 +45,16 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	LogicalOperators<?> getHavingLogicalOperators();
 
 	/**
-	 * この Query の ON 句用 {@link LogicalOperators} を返します。
+	 * この Query の ON 句 (LEFT) 用 {@link LogicalOperators} を返します。
 	 * @return {@link LogicalOperators}
 	 */
-	LogicalOperators<?> getOnLogicalOperators();
+	LogicalOperators<?> getOnLeftLogicalOperators();
+
+	/**
+	 * この Query の ON 句 (RIGHT) 用 {@link LogicalOperators} を返します。
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators<?> getOnRightLogicalOperators();
 
 	/**
 	 * {@link Row} で検索結果を受け取ることができなくなります。<br>
@@ -100,6 +109,14 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link ComposedSQL}
 	 */
 	ComposedSQL composeSQL(Effector... options);
+
+	/**
+	 * 引数の {@link QueryBuilder} に自身のクエリ内容を JOIN させます。
+	 * @param mainBuilder メイン側のクエリ
+	 * @param joinType 結合タイプ
+	 * @param onCriteria 結合条件
+	 */
+	void joinTo(QueryBuilder mainBuilder, JoinType joinType, Criteria onCriteria);
 
 	/**
 	 * {@link Subquery} を生成します。

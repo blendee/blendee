@@ -10,23 +10,14 @@ import org.blendee.sql.CriteriaFactory;
  * @author 千葉 哲嗣
  * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public class OnQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryColumn<O> {
-
-	private final Query root;
+public abstract class OnQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryColumn<O> {
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 */
 	@SuppressWarnings("javadoc")
-	public OnQueryColumn(Query root, QueryCriteriaContext context, Column column) {
+	protected OnQueryColumn(QueryCriteriaContext context, Column column) {
 		super(context, column);
-		this.root = root;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	O logocalOperators() {
-		return (O) root.getOnLogicalOperators();
 	}
 
 	/**
@@ -34,11 +25,86 @@ public class OnQueryColumn<O extends LogicalOperators<?>> extends CriteriaQueryC
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link Query}
 	 */
-	public O eq(QueryColumn another) {
+	public O eq(OnQueryColumn<?> another) {
 		getContext().addCriteria(
 			CriteriaFactory.createCriteria(
 				"{0} = {1}",
-				new Column[] { column(), another.getColumn() },
+				new Column[] { column(), another.column() },
+				Bindable.EMPTY_ARRAY));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの <> 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ne(OnQueryColumn<?> another) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				"{0} <> {1}",
+				new Column[] { column(), another.column() },
+				Bindable.EMPTY_ARRAY));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの < 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O lt(OnQueryColumn<?> another) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				"{0} < {1}",
+				new Column[] { column(), another.column() },
+				Bindable.EMPTY_ARRAY));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの > 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O gt(OnQueryColumn<?> another) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				"{0} > {1}",
+				new Column[] { column(), another.column() },
+				Bindable.EMPTY_ARRAY));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの <= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O le(OnQueryColumn<?> another) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				"{0} <= {1}",
+				new Column[] { column(), another.column() },
+				Bindable.EMPTY_ARRAY));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの >= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ge(OnQueryColumn<?> another) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				"{0} >= {1}",
+				new Column[] { column(), another.column() },
 				Bindable.EMPTY_ARRAY));
 
 		return logocalOperators();

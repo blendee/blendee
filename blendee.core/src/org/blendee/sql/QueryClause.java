@@ -35,6 +35,11 @@ public abstract class QueryClause {
 		return cache;
 	}
 
+	String toStringWithoutKeyword(boolean joining) {
+		String[] columnNames = toString(joining, getColumns());
+		return SQLFragmentFormat.execute(getTemplate(), columnNames);
+	}
+
 	/**
 	 * この句が含むカラムを返します。
 	 * @return この句が含むカラム
@@ -98,6 +103,7 @@ public abstract class QueryClause {
 				columnNames[i] = columns[i].getName();
 			}
 		}
+
 		return columnNames;
 	}
 }
