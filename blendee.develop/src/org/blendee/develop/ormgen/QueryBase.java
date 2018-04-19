@@ -51,7 +51,8 @@ import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.HavingQueryColumn;
-import org.blendee.support.OnQueryColumn;
+import org.blendee.support.OnLeftQueryColumn;
+import org.blendee.support.OnRightQueryColumn;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -72,9 +73,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	private static final QueryContext<HavingQueryColumn<HavingLogicalOperators>> havingContext =  QueryContext.newHavingBuilder();
 
-	private static final QueryContext<OnQueryColumn<OnLeftLogicalOperators>> onLeftContext =  QueryContext.newOnLeftBuilder();
+	private static final QueryContext<OnLeftQueryColumn<OnLeftLogicalOperators>> onLeftContext =  QueryContext.newOnLeftBuilder();
 
-	private static final QueryContext<OnQueryColumn<OnRightLogicalOperators>> onRightContext =  QueryContext.newOnRightBuilder();
+	private static final QueryContext<OnRightQueryColumn<OnRightLogicalOperators>> onRightContext =  QueryContext.newOnRightBuilder();
 
 	private final /*++{0}.manager.{1}Manager++*//*--*/ManagerBase/*--*/ manager = new /*++{0}.manager.{1}Manager()++*//*--*/ManagerBase()/*--*/;
 
@@ -1017,11 +1018,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ON 句 (LEFT) 用
 	 */
-	public static class OnLeftQRel extends ExtQRel<OnQueryColumn<OnLeftLogicalOperators>, Void> implements OnLeftQueryRelationship /*++'++*/{/*++'++*/
+	public static class OnLeftQRel extends ExtQRel<OnLeftQueryColumn<OnLeftLogicalOperators>, Void> implements OnLeftQueryRelationship /*++'++*/{/*++'++*/
 
 		private OnLeftQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
-			QueryContext<OnQueryColumn<OnLeftLogicalOperators>> builder$,
+			QueryContext<OnLeftQueryColumn<OnLeftLogicalOperators>> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			super(query$, builder$, context$);
 		/*++'++*/}/*++'++*/
@@ -1030,11 +1031,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * ON 句 (RIGHT) 用
 	 */
-	public static class OnRightQRel extends QRel<OnQueryColumn<OnRightLogicalOperators>, Void> implements OnRightQueryRelationship /*++'++*/{/*++'++*/
+	public static class OnRightQRel extends QRel<OnRightQueryColumn<OnRightLogicalOperators>, Void> implements OnRightQueryRelationship /*++'++*/{/*++'++*/
 
 		private OnRightQRel(
 			/*++{1}Query++*//*--*/QueryBase/*--*/ query$,
-			QueryContext<OnQueryColumn<OnRightLogicalOperators>> builder$,
+			QueryContext<OnRightQueryColumn<OnRightLogicalOperators>> builder$,
 			QueryCriteriaContext context$) /*++'++*/{/*++'++*/
 			super(query$, builder$, context$);
 		/*++'++*/}/*++'++*/

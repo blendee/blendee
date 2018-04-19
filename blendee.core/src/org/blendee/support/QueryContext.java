@@ -45,7 +45,7 @@ public interface QueryContext<T> {
 	 * @param <O> {@link Query} 実装
 	 * @return ON 句用 QueryContext
 	 */
-	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnLeftBuilder() {
+	static <O extends LogicalOperators<?>> QueryContext<OnLeftQueryColumn<O>> newOnLeftBuilder() {
 		return (relationship, name) -> new OnLeftQueryColumn<>(
 			relationship.getRoot(),
 			relationship.getContext(),
@@ -57,7 +57,7 @@ public interface QueryContext<T> {
 	 * @param <O> {@link Query} 実装
 	 * @return ON 句用 QueryContext
 	 */
-	static <O extends LogicalOperators<?>> QueryContext<OnQueryColumn<O>> newOnRightBuilder() {
+	static <O extends LogicalOperators<?>> QueryContext<OnRightQueryColumn<O>> newOnRightBuilder() {
 		return (relationship, name) -> new OnRightQueryColumn<>(
 			relationship.getRoot(),
 			relationship.getContext(),
