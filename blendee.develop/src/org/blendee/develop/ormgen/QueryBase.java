@@ -517,6 +517,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return this;
 	/*++'++*/}/*++'++*/
 
+	/**
+	 * 生成された SQL 文を加工する '{'Effector'}' を設定します。
+	 * @param effectors '{'@link Effector'}'
+	 * @return '{'@link Query'}' 自身
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ apply(Effector... effectors) /*++'++*/{/*++'++*/
+		helper.apply(effectors);
+		return this;
+	/*++'++*/}/*++'++*/
+
 	@Override
 	public Relationship getRootRealtionship() /*++'++*/{/*++'++*/
 		return ContextManager.get(RelationshipFactory.class).getInstance(manager.getTablePath());
@@ -545,13 +555,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), helper.getWhereClause(), helper.getOrderByClause());
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute(Effector... options) /*++'++*/{/*++'++*/
-		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), helper.getWhereClause(), helper.getOrderByClause(), options);
+		return manager.select(
+			helper.getOptimizer(),
+			helper.getWhereClause(),
+			helper.getOrderByClause(),
+			helper.effectors());
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -560,44 +568,21 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique(Effector... options) /*++'++*/{/*++'++*/
-		return getUnique(execute(options));
-	/*++'++*/}/*++'++*/
-
-	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), primaryKeyMembers);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, String... primaryKeyMembers) /*++'++*/{/*++'++*/
-		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Effectors options, Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), options, primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -611,18 +596,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
-		helper.aggregate(options, consumer);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public <T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function) /*++'++*/{/*++'++*/
-		return helper.aggregateAndGet(options, function);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public ResultSetIterator aggregate(Effector... options) /*++'++*/{/*++'++*/
-		return helper.aggregate(options);
+	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
+		return helper.aggregate();
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -632,8 +607,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public ComposedSQL composeSQL(Effector... options) /*++'++*/{/*++'++*/
-		return helper.composeSQL(options);
+	public ComposedSQL composeSQL() /*++'++*/{/*++'++*/
+		return helper.composeSQL();
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -642,8 +617,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Subquery toSubquery(Effector... options) /*++'++*/{/*++'++*/
-		return helper.toSubquery(options);
+	public Subquery toSubquery() /*++'++*/{/*++'++*/
+		return helper.toSubquery();
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -717,8 +692,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static class O2MExecutor<M>
 		extends OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
-		private O2MExecutor(QueryRelationship self) /*++'++*/{/*++'++*/
-			super(self);
+		private O2MExecutor(QueryRelationship self, Effector[] effectors) /*++'++*/{/*++'++*/
+			super(self, effectors);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
@@ -814,7 +789,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
 			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
-			return new O2MExecutor<>(this);
+			return new O2MExecutor<>(this, query$.helper.effectors());
 		/*++'++*/}/*++'++*/
 
 		@Override

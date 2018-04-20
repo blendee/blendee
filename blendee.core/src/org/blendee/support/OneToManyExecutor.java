@@ -52,11 +52,14 @@ public class OneToManyExecutor<O extends Row, M>
 
 	private final LinkedList<QueryRelationship> route;
 
+	private final Effector[] options;
+
 	/**
 	 * 自動生成されたサブクラス用のコンストラクタです。
 	 * @param relation 中心となるテーブルを表す
+	 * @param options {@link Effector}
 	 */
-	protected OneToManyExecutor(QueryRelationship relation) {
+	protected OneToManyExecutor(QueryRelationship relation, Effector[] options) {
 		self = relation;
 		route = new LinkedList<>();
 		QueryRelationship root = getRoot(relation, route);
@@ -67,21 +70,14 @@ public class OneToManyExecutor<O extends Row, M>
 
 		criteria = root.getWhereClause();
 
+		this.options = options;
+
 		//1->n順をn->1順に変える
 		Collections.reverse(route);
 	}
 
 	@Override
 	public Many<O, M> execute() {
-		return new Many<>(
-			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order), route),
-			null,
-			self,
-			route);
-	}
-
-	@Override
-	public Many<O, M> execute(Effector... options) {
 		return new Many<>(
 			new DataObjectManager(helper.getDataObjects(optimizer, criteria, order, options), route),
 			null,
@@ -92,11 +88,6 @@ public class OneToManyExecutor<O extends Row, M>
 	@Override
 	public Optional<One<O, M>> willUnique() {
 		return getUnique(execute());
-	}
-
-	@Override
-	public Optional<One<O, M>> willUnique(Effector... options) {
-		return getUnique(execute(options));
 	}
 
 	@Override
@@ -111,21 +102,6 @@ public class OneToManyExecutor<O extends Row, M>
 
 	@Override
 	public Optional<One<O, M>> fetch(Bindable... primaryKeyMembers) {
-		return fetch(Effectors.EMPTY_OPTIONS, primaryKeyMembers);
-	}
-
-	@Override
-	public Optional<One<O, M>> fetch(Effectors options, String... primaryKeyMembers) {
-		return fetch(options, BindableConverter.convert(primaryKeyMembers));
-	}
-
-	@Override
-	public Optional<One<O, M>> fetch(Effectors options, Number... primaryKeyMembers) {
-		return fetch(options, BindableConverter.convert(primaryKeyMembers));
-	}
-
-	@Override
-	public Optional<One<O, M>> fetch(Effectors options, Bindable... primaryKeyMembers) {
 		Column[] columns = self.getRelationship().getPrimaryKeyColumns();
 
 		if (columns.length != primaryKeyMembers.length)
@@ -143,7 +119,7 @@ public class OneToManyExecutor<O extends Row, M>
 						optimizer,
 						criteria,
 						order,
-						options.get()),
+						options),
 					route),
 				null,
 				self,

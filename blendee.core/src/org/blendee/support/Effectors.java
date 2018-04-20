@@ -22,6 +22,7 @@ public class Effectors {
 	 * @return instance
 	 */
 	public static Effectors of(Effector... effectors) {
+		if (effectors.length == 0) return EMPTY_OPTIONS;
 		return new Effectors(effectors);
 	}
 

@@ -8,7 +8,6 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
@@ -83,32 +82,15 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param options 検索オプション
-	 * @param consumer {@link Consumer}
-	 */
-	void aggregate(Effectors options, Consumer<BlenResultSet> consumer);
-
-	/**
-	 * 集合関数を含む検索を実行します。
-	 * @param options 検索オプション
-	 * @param function {@link Function}
-	 * @return 任意の型の戻り値
-	 */
-	<T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function);
-
-	/**
-	 * 集合関数を含む検索を実行します。
-	 * @param options 検索オプション
 	 * @return {@link ResultSetIterator}
 	 */
-	ResultSetIterator aggregate(Effector... options);
+	ResultSetIterator aggregate();
 
 	/**
 	 * {@link ComposedSQL} を取得します。
-	 * @param options 検索オプション
 	 * @return {@link ComposedSQL}
 	 */
-	ComposedSQL composeSQL(Effector... options);
+	ComposedSQL composeSQL();
 
 	/**
 	 * 引数の {@link QueryBuilder} に自身のクエリ内容を JOIN させます。
@@ -120,8 +102,7 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * {@link Subquery} を生成します。
-	 * @param options 検索オプション
 	 * @return {@link Subquery}
 	 */
-	Subquery toSubquery(Effector... options);
+	Subquery toSubquery();
 }

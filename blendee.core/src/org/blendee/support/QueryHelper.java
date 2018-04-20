@@ -1,6 +1,6 @@
 package org.blendee.support;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -64,13 +64,15 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Criteria havingClause;
 
-	private final List<UnionContainer> unions = new LinkedList<>();;
+	private final List<UnionContainer> unions = new ArrayList<>();;
 
 	private OrderByClause orderByClause;
 
 	private FromClause fromClause;
 
-	private List<JoinResource> joinResources = new LinkedList<>();
+	private List<JoinResource> joinResources = new ArrayList<>();
+
+	private List<Effector> effectors = new ArrayList<>();
 
 	public QueryHelper(
 		TablePath table,
@@ -266,6 +268,17 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 	}
 
+	public void apply(Effector[] effectors) {
+		for (Effector effector : effectors) {
+			this.effectors.add(effector);
+		}
+	}
+
+	public Effector[] effectors() {
+		if (effectors.size() == 0) return Effector.EMPTY_ARRAY;
+		return effectors.toArray(new Effector[effectors.size()]);
+	}
+
 	public void quitRowMode() {
 		rowMode = false;
 	}
@@ -412,23 +425,23 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 * @param options 検索オプション
 	 * @return {@link ComposedSQL}
 	 */
-	public ComposedSQL composeSQL(Effector[] options) {
+	public ComposedSQL composeSQL() {
 		if (rowMode) {
 			return new DataAccessHelper().getSelector(
 				getOptimizer(),
 				whereClause,
 				orderByClause,
-				options).composeSQL();
+				effectors()).composeSQL();
 		}
 
-		return buildBuilder(options);
+		return buildBuilder();
 	}
 
 	/**
 	 * @return {@link QueryBuilder}
 	 */
-	public Subquery toSubquery(Effector[] options) {
-		return new Subquery(buildBuilder(options));
+	public Subquery toSubquery() {
+		return new Subquery(buildBuilder());
 	}
 
 	/**
@@ -459,42 +472,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	/**
 	 * @param options 検索オプション
-	 * @param consumer {@link Consumer}
-	 */
-	public void aggregate(Effectors options, Consumer<BlenResultSet> consumer) {
-		ComposedSQL sql = buildBuilder(options.get());
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				consumer.accept(result);
-			}
-		}
-	}
-
-	/**
-	 * @param options 検索オプション
-	 * @param function {@link Function}
-	 */
-	public <T> T aggregateAndGet(Effectors options, Function<BlenResultSet, T> function) {
-		ComposedSQL sql = buildBuilder(options.get());
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				return function.apply(result);
-			}
-		}
-	}
-
-	/**
-	 * @param options 検索オプション
 	 * @return {@link ResultSetIterator}
 	 */
-	public ResultSetIterator aggregate(Effector... options) {
-		ComposedSQL sql = buildBuilder(options);
+	public ResultSetIterator aggregate() {
+		ComposedSQL sql = buildBuilder();
 		return new ResultSetIterator(sql);
 	}
 
-	public QueryBuilder buildBuilder(Effector... effectors) {
+	public QueryBuilder buildBuilder() {
 		QueryBuilder builder = new QueryBuilder(getFromClause());
 
 		if (selectClause != null) {
@@ -511,7 +496,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
-		builder.addEffector(effectors);
+		builder.addEffector(effectors());
 
 		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
 
