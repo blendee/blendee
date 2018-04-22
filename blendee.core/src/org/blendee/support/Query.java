@@ -1,12 +1,8 @@
 package org.blendee.support;
 
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
-import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.QueryBuilder;
@@ -17,7 +13,7 @@ import org.blendee.sql.Relationship;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>> {
+public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, AggregateFunctionExecutor {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -66,25 +62,6 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link Row} を使用するモードかどうか
 	 */
 	boolean rowMode();
-
-	/**
-	 * 集合関数を含む検索を実行します。
-	 * @param consumer {@link Consumer}
-	 */
-	void aggregate(Consumer<BlenResultSet> consumer);
-
-	/**
-	 * 集合関数を含む検索を実行します。
-	 * @param function {@link Function}
-	 * @return 任意の型の戻り値
-	 */
-	<T> T aggregateAndGet(Function<BlenResultSet, T> function);
-
-	/**
-	 * 集合関数を含む検索を実行します。
-	 * @return {@link ResultSetIterator}
-	 */
-	ResultSetIterator aggregate();
 
 	/**
 	 * {@link ComposedSQL} を取得します。

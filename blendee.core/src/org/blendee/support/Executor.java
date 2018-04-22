@@ -8,6 +8,7 @@ import org.blendee.sql.Bindable;
  * 一処理内で、同じ条件で複数回検索を実行したい場合を考慮し、検索実行時状態を保存しておくのが、このクラスのインスタンスの役割です。
  * @param <I> Iterator
  * @param <R> Row
+ * @author 千葉 哲嗣
  */
 public interface Executor<I, R> {
 
