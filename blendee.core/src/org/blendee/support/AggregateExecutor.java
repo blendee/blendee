@@ -30,4 +30,6 @@ public interface AggregateExecutor {
 	 * @return {@link ResultSetIterator}
 	 */
 	ResultSetIterator aggregate();
+
+	AggregateExecutor yield();
 }
