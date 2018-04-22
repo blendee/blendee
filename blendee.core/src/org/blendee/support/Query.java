@@ -13,7 +13,7 @@ import org.blendee.sql.Relationship;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, AggregateFunctionExecutor {
+public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, AggregateExecutor {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
