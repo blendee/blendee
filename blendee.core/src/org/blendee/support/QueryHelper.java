@@ -1,7 +1,10 @@
 package org.blendee.support;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -10,6 +13,7 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
@@ -73,6 +77,25 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private List<JoinResource> joinResources = new ArrayList<>();
 
 	private List<Effector> effectors = new ArrayList<>();
+
+	private static final Map<Class<?>, Playbackable<?>> cache = new HashMap<>();
+
+	private Playbackable<?> playbackable;
+
+	public static void regist(Class<?> lambdaClass, Playbackable<?> playbackable) {
+		Objects.requireNonNull(lambdaClass);
+		Objects.requireNonNull(playbackable);
+		synchronized (cache) {
+			cache.put(lambdaClass, playbackable);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Playbackable<T> get(Class<?> lambdaClass) {
+		synchronized (cache) {
+			return (Playbackable<T>) cache.get(lambdaClass);
+		}
+	};
 
 	public QueryHelper(
 		TablePath table,
@@ -444,39 +467,83 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new Subquery(buildBuilder());
 	}
 
-	/**
-	 * @param consumer {@link Consumer}
-	 */
-	public void aggregate(Consumer<BlenResultSet> consumer) {
-		ComposedSQL sql = buildBuilder();
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				consumer.accept(result);
+	private static class HelperAggregateExecutor implements AggregateExecutor {
+
+		private final String sql;
+
+		private final PreparedStatementComplementer complementer;
+
+		private HelperAggregateExecutor(String sql, PreparedStatementComplementer complementer) {
+			this.sql = sql;
+			this.complementer = complementer;
+		}
+
+		/**
+		 * @param consumer {@link Consumer}
+		 */
+		@Override
+		public void aggregate(Consumer<BlenResultSet> consumer) {
+			BlenConnection connection = BlendeeManager.getConnection();
+			try (BlenStatement statement = connection.getStatement(sql, complementer)) {
+				try (BlenResultSet result = statement.executeQuery()) {
+					consumer.accept(result);
+				}
 			}
+		}
+
+		/**
+		 * @param function {@link Function}
+		 */
+		@Override
+		public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
+			BlenConnection connection = BlendeeManager.getConnection();
+			try (BlenStatement statement = connection.getStatement(sql, complementer)) {
+				try (BlenResultSet result = statement.executeQuery()) {
+					return function.apply(result);
+				}
+			}
+		}
+
+		/**
+		 * @param options 検索オプション
+		 * @return {@link ResultSetIterator}
+		 */
+		@Override
+		public ResultSetIterator aggregate() {
+			return new ResultSetIterator(sql, complementer);
+		}
+
+		@Override
+		public AggregateExecutor yield() {
+			return this;
 		}
 	}
 
-	/**
-	 * @param function {@link Function}
-	 */
-	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
+	public AggregateExecutor registAndGetAggregateExecutor() {
 		ComposedSQL sql = buildBuilder();
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(sql)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				return function.apply(result);
-			}
-		}
+
+		String sqlString = sql.sql();
+
+		Playbackable<AggregateExecutor> myPlaybackable = complementer -> {
+			return new HelperAggregateExecutor(sqlString, complementer);
+		};
+
+		playbackable = myPlaybackable;
+
+		return myPlaybackable.play(sql);
 	}
 
-	/**
-	 * @param options 検索オプション
-	 * @return {@link ResultSetIterator}
-	 */
-	public ResultSetIterator aggregate() {
+	public AggregateExecutor getAggregateExecutor() {
 		ComposedSQL sql = buildBuilder();
-		return new ResultSetIterator(sql);
+		return new HelperAggregateExecutor(sql.sql(), sql);
+	}
+
+	public Playbackable<?> getPlaybackable() {
+		return playbackable;
+	}
+
+	public void setPlaybackable(Playbackable<?> playbackable) {
+		this.playbackable = playbackable;
 	}
 
 	public QueryBuilder buildBuilder() {

@@ -9,6 +9,7 @@ import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormge
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.orm.DataObject;
@@ -33,6 +34,8 @@ import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
+import org.blendee.support.AggregateExecutor;
+import org.blendee.support.Playbackable;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
@@ -267,6 +270,50 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			throw new IllegalArgumentException("id が空です");
 
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の実行結果
+	 */
+	public static <T> T accelerate(
+		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		return accelerate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
+	 * 引数の id で生成された Query が使用されます。
+	 * @see #of(String)
+	 * @param id Query 生成用の ID
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の実行結果
+	 */
+	public static <T> T accelerateOf(
+		String id,
+		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		return accelerate(of(id), function, complementer);
+	/*++'++*/}/*++'++*/
+
+	private static <T> T accelerate(
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query,
+		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		Class<?> lambdaClass= function.getClass();
+		Playbackable<T> playbackable = QueryHelper.get(lambdaClass);
+
+		if (playbackable != null) return playbackable.play(complementer);
+
+		T result = function.apply(query);
+
+		QueryHelper.regist(lambdaClass, query.helper.getPlaybackable());
+
+		return result;
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -587,17 +634,22 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
-		helper.aggregate(consumer);
+		helper.getAggregateExecutor().aggregate(consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) /*++'++*/{/*++'++*/
-		return helper.aggregateAndGet(function);
+		return helper.getAggregateExecutor().aggregateAndGet(function);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
-		return helper.aggregate();
+		return helper.registAndGetAggregateExecutor().aggregate();
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public AggregateExecutor yield() /*++'++*/{/*++'++*/
+		return helper.registAndGetAggregateExecutor();
 	/*++'++*/}/*++'++*/
 
 	@Override

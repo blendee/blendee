@@ -31,5 +31,9 @@ public interface AggregateExecutor {
 	 */
 	ResultSetIterator aggregate();
 
+	/**
+	 * 自信と同等の機能を持つ {@link AggregateExecutor} を生成し、返します。
+	 * @return {@link AggregateExecutor}
+	 */
 	AggregateExecutor yield();
 }

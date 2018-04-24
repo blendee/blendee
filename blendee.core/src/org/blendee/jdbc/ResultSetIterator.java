@@ -29,6 +29,17 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 		result = statement.executeQuery();
 	}
 
+	/**
+	 * ベースとなる結果セットを使用し、インスタンスを生成します。
+	 * @param sql SQL 文
+	 * @param complementer {@link PreparedStatementComplementer}
+	 */
+	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
+		BlenConnection connection = BlendeeManager.getConnection();
+		statement = connection.getStatement(sql, complementer);
+		result = statement.executeQuery();
+	}
+
 	@Override
 	public Iterator<Result> iterator() {
 		return this;
