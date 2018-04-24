@@ -39,7 +39,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void insert(Row row, Consumer<Result> consumer, String... columnNames) {
-		insert(row.getTablePath(), row, consumer, columnNames);
+		insert(row.tablePath(), row, consumer, columnNames);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(Row row, Consumer<Result> consumer, String... columnNames) {
-		update(row.getTablePath(), row, row.getPrimaryKey().getCriteria(), consumer, columnNames);
+		update(row.tablePath(), row, row.primaryKey().getCriteria(), consumer, columnNames);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(Row row, Consumer<Result> consumer, String... columnNames) {
-		delete(row.getTablePath(), row.getPrimaryKey().getCriteria(), consumer, columnNames);
+		delete(row.tablePath(), row.primaryKey().getCriteria(), consumer, columnNames);
 	}
 
 	/**

@@ -18,20 +18,20 @@ public interface Row extends Updatable {
 	 * この Row が内部で使用している {@link DataObject} を返します。
 	 * @return 内部で使用している {@link DataObject}
 	 */
-	DataObject getDataObject();
+	DataObject dataObject();
 
 	/**
 	 * サブクラスで固有の {@link TablePath} を返します。
 	 * @return 固有の {@link TablePath}
 	 */
-	TablePath getTablePath();
+	TablePath tablePath();
 
 	/**
 	 * この {@link Row} の更新用メソッドです。
 	 * @return 更新が成功したかどうか
 	 */
 	default boolean update() {
-		return getDataObject().update();
+		return dataObject().update();
 	}
 
 	/**
@@ -39,7 +39,7 @@ public interface Row extends Updatable {
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 */
 	default void update(BatchStatement statement) {
-		getDataObject().update(statement);
+		dataObject().update(statement);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public interface Row extends Updatable {
 	 */
 	default void insert() {
 		new DataAccessHelper().insert(
-			getTablePath(),
+			tablePath(),
 			this);
 	}
 
@@ -58,7 +58,7 @@ public interface Row extends Updatable {
 	default void insert(BatchStatement statement) {
 		new DataAccessHelper().insert(
 			statement,
-			getTablePath(),
+			tablePath(),
 			this);
 	}
 
@@ -68,8 +68,8 @@ public interface Row extends Updatable {
 	 */
 	default boolean delete() {
 		int result = new DataAccessHelper().delete(
-			getTablePath(),
-			getPrimaryKey().getCriteria());
+			tablePath(),
+			primaryKey().getCriteria());
 		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
 		return result == 1;
 	}
@@ -81,21 +81,21 @@ public interface Row extends Updatable {
 	default void delete(BatchStatement statement) {
 		new DataAccessHelper().delete(
 			statement,
-			getTablePath(),
-			getPrimaryKey().getCriteria());
+			tablePath(),
+			primaryKey().getCriteria());
 	}
 
 	/**
 	 * この {@link Row} の主キーを返します。
 	 * @return 主キー
 	 */
-	default PrimaryKey getPrimaryKey() {
-		return getDataObject().getPrimaryKey();
+	default PrimaryKey primaryKey() {
+		return dataObject().getPrimaryKey();
 	}
 
 	@Override
 	default void setValuesTo(Updater updater) {
-		getDataObject().setValuesTo(updater);
+		dataObject().setValuesTo(updater);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public interface Row extends Updatable {
 	 * @return SELECT されたかどうか
 	 */
 	default boolean isSelected(String columnName) {
-		DataObject data = getDataObject();
+		DataObject data = dataObject();
 		return data.getSelectedValues().isSelected(data.getRelationship().getColumn(columnName));
 	}
 }
