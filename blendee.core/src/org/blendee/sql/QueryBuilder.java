@@ -91,6 +91,14 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	/**
+	 * 現在設定されている SELECT 句にカラムが設定されているかどうかを判定します。
+	 * @return SELECT 句にカラムが設定されているかどうか
+	 */
+	public synchronized boolean hasSelectColumns() {
+		return selectClause.getColumnsSize() > 0;
+	}
+
+	/**
 	 * WHERE 句を設定します。
 	 * @param clause WHERE 句
 	 */
