@@ -11,6 +11,7 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.sql.Binder;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
@@ -23,7 +24,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
  * インターフェイスに定義するメソッドは、戻り値に<br>
  * {@link BlenResultSet}, int, boolean, void<br>
  * を使用することができます。<br>
- * メソッドのパラメータには、 SQL 文に記述したプレースホルダにセットする値を渡せるように定義してください。
+ * メソッドのパラメータには、 SQL 文に記述したプレースホルダにセットする値複数か、 {@link PreparedStatementComplementer} を実装したオブジェクトのみを渡すように定義してください。
  * @author 千葉 哲嗣
  */
 public class SQLProxyBuilder {
@@ -92,21 +93,32 @@ public class SQLProxyBuilder {
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
 
-			ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 			Class<?>[] parameterTypes = method.getParameterTypes();
-			final Binder[] binders = new Binder[parameterTypes.length];
-			for (int i = 0; i < parameterTypes.length; i++) {
-				Class<?> parameterType = parameterTypes[i];
-				binders[i] = extractors.selectValueExtractor(parameterType).extractAsBinder(args[i]);
+
+			PreparedStatementComplementer complementer;
+
+			if (parameterTypes.length == 1 && PreparedStatementComplementer.class.isAssignableFrom(parameterTypes[0])) {
+				//パラメータ数が1でそのクラスがPreparedStatementComplementerの場合、そのまま使用する
+				complementer = (PreparedStatementComplementer) args[0];
+			} else {
+				//そうでなければ実際の引数であると判断しPreparedStatementComplementerを作成
+				ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+				final Binder[] binders = new Binder[parameterTypes.length];
+				for (int i = 0; i < parameterTypes.length; i++) {
+					Class<?> parameterType = parameterTypes[i];
+					binders[i] = extractors.selectValueExtractor(parameterType).extractAsBinder(args[i]);
+				}
+
+				complementer = s -> {
+					for (int i = 0; i < binders.length; i++) {
+						binders[i].bind(i + 1, s);
+					}
+				};
 			}
 
-			Class<?> returnType = method.getReturnType();
+			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
 
-			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, s -> {
-				for (int i = 0; i < binders.length; i++) {
-					binders[i].bind(i + 1, s);
-				}
-			});
+			Class<?> returnType = method.getReturnType();
 
 			if (returnType.equals(BlenResultSet.class)) {
 				return statement.executeQuery();

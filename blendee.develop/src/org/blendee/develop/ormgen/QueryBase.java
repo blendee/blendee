@@ -613,7 +613,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void joinTo(QueryBuilder builder, JoinType joinType, Criteria onCriteria) /*++'++*/{/*++'++*/
-		builder.join(joinType, helper.buildBuilder(), onCriteria);
+		helper.joinTo(builder, joinType, onCriteria);
 	/*++'++*/}/*++'++*/
 
 	@Override

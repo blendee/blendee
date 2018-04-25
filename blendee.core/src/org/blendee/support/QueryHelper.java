@@ -480,7 +480,21 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	public QueryBuilder buildBuilder() {
-		QueryBuilder builder = new QueryBuilder(getFromClause());
+		QueryBuilder builder = buildBuilderWithoutSelectColumnsSupply();
+
+		//builder同士JOINしてもなおSELECT句が空の場合
+		if (!builder.hasSelectColumns())
+			builder.setSelectClause(getOptimizer().getOptimizedSelectClause());
+
+		return builder;
+	}
+
+	public void joinTo(QueryBuilder builder, JoinType joinType, Criteria onCriteria) {
+		builder.join(joinType, buildBuilderWithoutSelectColumnsSupply(), onCriteria);
+	}
+
+	private QueryBuilder buildBuilderWithoutSelectColumnsSupply() {
+		QueryBuilder builder = new QueryBuilder(false, getFromClause());
 
 		if (selectClause != null)
 			builder.setSelectClause(selectClause);
@@ -496,10 +510,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		builder.addEffector(effectors());
 
 		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
-
-		//builder同士JOINしてもなおSELECT句が空の場合
-		if (!builder.hasSelectColumns())
-			builder.setSelectClause(getOptimizer().getOptimizedSelectClause());
 
 		return builder;
 	}

@@ -179,6 +179,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			result.addFirst(root.getTablePath() + " " + root.getID());
 			cache = " FROM " + String.join(" ", result);
 		}
+
 		return cache;
 	}
 

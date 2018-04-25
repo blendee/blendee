@@ -18,11 +18,11 @@ public class QueryBuilder implements ComposedSQL {
 
 	private final List<Effector> effectors = new LinkedList<>();
 
-	private final List<UnionContainer> unions = new LinkedList<>();;
+	private final List<UnionContainer> unions = new LinkedList<>();
 
-	private final List<JoinContainer> joins = new LinkedList<>();;
+	private final List<JoinContainer> joins = new LinkedList<>();
 
-	private SelectClause selectClause = new SelectAllColumnClause();
+	private SelectClause selectClause;
 
 	private Criteria whereClause = CriteriaFactory.create();
 
@@ -61,7 +61,17 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param fromClause FROM 句
 	 */
 	public QueryBuilder(FromClause fromClause) {
+		this(true, fromClause);
+	}
+
+	/**
+	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
+	 * @param useSelectAsterisk デフォルトで SELCT * とするか
+	 * @param fromClause FROM 句
+	 */
+	public QueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
+		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause();
 	}
 
 	/**
@@ -306,7 +316,7 @@ public class QueryBuilder implements ComposedSQL {
 		});
 	}
 
-	private class SelectAllColumnClause extends SelectClause {
+	private class SelectAsteriskClause extends SelectClause {
 
 		@Override
 		public String toString(boolean joining) {
