@@ -1,7 +1,10 @@
 package org.blendee.support;
 
+import java.util.function.Consumer;
+
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.Relationship;
 
 /**
@@ -17,6 +20,28 @@ public interface CriteriaQueryRelationship {
 	 */
 	default void with(Criteria criteria) {
 		getContext().addCriteria(criteria);
+	}
+
+	/**
+	 * WHERE 句に任意の条件を追加します。
+	 * @param template カラムのテンプレート
+	 * @param consumer {@link Consumer}
+	 */
+	default void with(
+		String template,
+		Consumer<WithValues> consumer) {
+		WithValues values = new WithValues();
+		consumer.accept(values);
+
+		getContext().addCriteria(values.createCriteria(template));
+	}
+
+	/**
+	 * WHERE 句に任意の条件を追加します。
+	 * @param template カラムのテンプレート
+	 */
+	default void with(String template) {
+		getContext().addCriteria(CriteriaFactory.createCriteria(template));
 	}
 
 	/**

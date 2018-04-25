@@ -496,28 +496,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 現時点の WHERE 句に新たなサブクエリ条件を AND 結合します。<br>
-	 * AND 結合する対象がなければ、新条件としてセットされます。
-	 * @param subquery AND 結合するサブクエリ条件
-	 * @return '{'@link Query'}' 自身
-	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
-		helper.and(subquery.createCriteria(this));
-		return this;
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 現時点の WHERE 句に新たなサブクエリ条件を OR 結合します。<br>
-	 * OR 結合する対象がなければ、新条件としてセットされます。
-	 * @param subquery OR 結合するサブクエリ条件
-	 * @return '{'@link Query'}' 自身
-	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
-		helper.or(subquery.createCriteria(this));
-		return this;
-	/*++'++*/}/*++'++*/
-
-	/**
 	 * 生成された SQL 文を加工する '{'Effector'}' を設定します。
 	 * @param effectors '{'@link Effector'}'
 	 * @return '{'@link Query'}' 自身
