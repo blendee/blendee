@@ -388,12 +388,12 @@ public class GenericRow extends java.lang.Object implements Row {
 	}
 
 	@Override
-	public DataObject getDataObject() {
+	public DataObject dataObject() {
 		return data;
 	}
 
 	@Override
-	public TablePath getTablePath() {
+	public TablePath tablePath() {
 		return tablePath;
 	}
 

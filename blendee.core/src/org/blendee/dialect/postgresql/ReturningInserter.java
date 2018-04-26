@@ -79,7 +79,7 @@ public class ReturningInserter<T> {
 	public T insertAndGetSequencePK(Row row) {
 		Objects.requireNonNull(row);
 
-		TablePath myPath = row.getTablePath();
+		TablePath myPath = row.tablePath();
 		if (!myPath.equals(path))
 			throw new IllegalStateException("row のテーブルが不正です table=[" + myPath + "]");
 

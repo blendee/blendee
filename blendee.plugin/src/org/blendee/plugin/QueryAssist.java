@@ -39,6 +39,19 @@ public class QueryAssist implements IJavaCompletionProposalComputer {
 	public List<ICompletionProposal> computeCompletionProposals(
 		ContentAssistInvocationContext context,
 		IProgressMonitor monitor) {
+		try {
+			return computeCompletionProposalsInternal(context, monitor);
+		} catch (Throwable t) {
+			//エラーが発生する原因が特定できるまでは例外を握りつぶす
+			t.printStackTrace();
+		}
+
+		return Collections.emptyList();
+	}
+
+	private List<ICompletionProposal> computeCompletionProposalsInternal(
+		ContentAssistInvocationContext context,
+		IProgressMonitor monitor) {
 		if (!(context instanceof JavaContentAssistInvocationContext)) {
 			return Collections.emptyList();
 		}

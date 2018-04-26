@@ -61,12 +61,12 @@ extends /*++{3}++*//*--*/Object/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public DataObject getDataObject() /*++'++*/{/*++'++*/
+	public DataObject dataObject() /*++'++*/{/*++'++*/
 		return $data;
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public TablePath getTablePath() /*++'++*/{/*++'++*/
+	public TablePath tablePath() /*++'++*/{/*++'++*/
 		return $TABLE;
 	/*++'++*/}/*++'++*/
 

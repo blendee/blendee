@@ -20,7 +20,7 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
@@ -83,7 +83,7 @@ public class DataAccessHelper {
 	public DataObject getDataObject(
 		Optimizer optimizer,
 		PrimaryKey primaryKey,
-		Effector... options) {
+		SQLDecorator... options) {
 		checkArgument(optimizer, primaryKey);
 		DataObjectIterator iterator = select(
 			optimizer,
@@ -106,7 +106,7 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) {
+		SQLDecorator... options) {
 		adjustArgument(optimizer, criteria, order);
 		return select(optimizer, criteria, order, options, false);
 	}
@@ -120,7 +120,7 @@ public class DataAccessHelper {
 	public void study(
 		Optimizer optimizer,
 		PrimaryKey primaryKey,
-		Effector... options) {
+		SQLDecorator... options) {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
 		checkArgument(optimizer, primaryKey);
@@ -138,7 +138,7 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) {
+		SQLDecorator... options) {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
 		adjustArgument(optimizer, criteria, order);
@@ -221,12 +221,12 @@ public class DataAccessHelper {
 	 * パラメータのテーブルに対して INSERT を行います。
 	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
-	 * @param options INSERT 文を調整する {@link Effector}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
 	public void insert(
 		TablePath path,
 		Updatable updatable,
-		Effector... options) {
+		SQLDecorator... options) {
 		insertInternal(getThreadStatement(), path, updatable, options);
 	}
 
@@ -235,13 +235,13 @@ public class DataAccessHelper {
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
-	 * @param options INSERT 文を調整する {@link Effector}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
 	public void insert(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
-		Effector... options) {
+		SQLDecorator... options) {
 		insertInternal(new BatchStatementFacade(statement), path, updatable, options);
 	}
 
@@ -251,7 +251,7 @@ public class DataAccessHelper {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
@@ -259,7 +259,7 @@ public class DataAccessHelper {
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		return insertInternal(
 			getThreadStatement(),
 			path,
@@ -277,7 +277,7 @@ public class DataAccessHelper {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
@@ -286,7 +286,7 @@ public class DataAccessHelper {
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		return insertInternal(
 			new BatchStatementFacade(statement),
 			path,
@@ -301,14 +301,14 @@ public class DataAccessHelper {
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
 	public int update(
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		return updateInternal(
 			getThreadStatement(),
 			path,
@@ -323,14 +323,14 @@ public class DataAccessHelper {
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		updateInternal(
 			new BatchStatementFacade(statement),
 			path,
@@ -343,13 +343,13 @@ public class DataAccessHelper {
 	 * 対象となるテーブルの、全レコードに対して UPDATE を実行します。
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
 	public int update(
 		TablePath path,
 		Updatable updatable,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		StatementFacade statement = getThreadStatement();
 		return updateInternalFinally(
 			statement,
@@ -364,13 +364,13 @@ public class DataAccessHelper {
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		updateInternalFinally(
 			new BatchStatementFacade(statement),
 			path,
@@ -454,7 +454,7 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) {
+		SQLDecorator... options) {
 		if (optimizer == null) throw new NullPointerException("optimizer は必須です");
 
 		Selector selector;
@@ -473,7 +473,7 @@ public class DataAccessHelper {
 		if (criteria != null) selector.setCriteria(criteria);
 		if (order != null) selector.setOrder(order);
 
-		if (options != null) selector.addEffector(options);
+		if (options != null) selector.addDecorator(options);
 
 		return selector;
 	}
@@ -504,7 +504,7 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector[] options,
+		SQLDecorator[] options,
 		boolean readonly) {
 		return select(getSelector(optimizer, criteria, order, options), readonly);
 	}
@@ -549,11 +549,11 @@ public class DataAccessHelper {
 		StatementFacade statement,
 		TablePath path,
 		Updatable updatable,
-		Effector[] options) {
+		SQLDecorator[] options) {
 		InsertDMLBuilder builder = new InsertDMLBuilder(path);
 
-		for (Effector option : options) {
-			builder.addEffector(option);
+		for (SQLDecorator option : options) {
+			builder.addDecorator(option);
 		}
 
 		builder.add(updatable);
@@ -567,7 +567,7 @@ public class DataAccessHelper {
 		SequenceGenerator sequencer,
 		Updatable updatable,
 		int retry,
-		Effector... options) {
+		SQLDecorator... options) {
 		final Map<String, Bindable> map = new HashMap<>();
 		InsertDMLBuilder builder = new InsertDMLBuilder(path) {
 
@@ -579,8 +579,8 @@ public class DataAccessHelper {
 			}
 		};
 
-		for (Effector option : options) {
-			builder.addEffector(option);
+		for (SQLDecorator option : options) {
+			builder.addDecorator(option);
 		}
 
 		builder.add(updatable);
@@ -613,7 +613,7 @@ public class DataAccessHelper {
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
 		return updateInternalFinally(statement, path, updatable, criteria, adjuster);
 	}
@@ -623,11 +623,11 @@ public class DataAccessHelper {
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		Effector... options) {
+		SQLDecorator... options) {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 
-		for (Effector option : options) {
-			builder.addEffector(option);
+		for (SQLDecorator option : options) {
+			builder.addDecorator(option);
 		}
 
 		builder.add(updatable);

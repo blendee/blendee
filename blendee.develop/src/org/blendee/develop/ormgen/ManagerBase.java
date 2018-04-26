@@ -7,7 +7,7 @@ import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
@@ -31,7 +31,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) /*++'++*/{/*++'++*/
+		SQLDecorator... options) /*++'++*/{/*++'++*/
 		return select(
 			new SimpleOptimizer(getTablePath()),
 			criteria,
@@ -51,7 +51,7 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) /*++'++*/{/*++'++*/
+		SQLDecorator... options) /*++'++*/{/*++'++*/
 		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(new DataAccessHelper().getDataObjects(
 			optimizer,
 			criteria,

@@ -1,5 +1,6 @@
 package org.blendee.support;
 
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.QueryBuilder;
@@ -23,9 +24,22 @@ public class Subquery {
 	 */
 	public Criteria createCriteria(Query mainquery) {
 		return CriteriaFactory
-			//EffectorでSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
+			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
 			.createSubqueryWithoutCheck(
 				mainquery.getRootRealtionship().getPrimaryKeyColumns(),
+				builder);
+	}
+
+	/**
+	 * このサブクエリから、メインクエリで使用できる {@link Criteria} を生成します。
+	 * @param mainQueryColumn メインクエリ側のカラム
+	 * @return {@link Criteria} となったサブクエリ
+	 */
+	public Criteria createCriteria(Column[] mainQueryColumn) {
+		return CriteriaFactory
+			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
+			.createSubqueryWithoutCheck(
+				mainQueryColumn,
 				builder);
 	}
 }

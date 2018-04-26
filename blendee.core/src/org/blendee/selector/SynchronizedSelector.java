@@ -2,7 +2,7 @@ package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.SelectClause;
 
@@ -45,8 +45,8 @@ public class SynchronizedSelector extends Selector {
 	}
 
 	@Override
-	public synchronized void addEffector(Effector... effectors) {
-		super.addEffector(effectors);
+	public synchronized void addDecorator(SQLDecorator... decorators) {
+		super.addDecorator(decorators);
 	}
 
 	@Override

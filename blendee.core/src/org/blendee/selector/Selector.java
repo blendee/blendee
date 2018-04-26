@@ -10,7 +10,7 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -85,11 +85,11 @@ public class Selector {
 	}
 
 	/**
-	 * {@link Effector} を設定します。
-	 * @param effectors {@link Effector}
+	 * {@link SQLDecorator} を設定します。
+	 * @param decorators {@link SQLDecorator}
 	 */
-	public void addEffector(Effector... effectors) {
-		builder.addEffector(effectors);
+	public void addDecorator(SQLDecorator... decorators) {
+		builder.addDecorator(decorators);
 	}
 
 	/**

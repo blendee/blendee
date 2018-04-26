@@ -17,7 +17,7 @@ import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -41,7 +41,7 @@ import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
 import org.blendee.support.QueryOnClause;
-import org.blendee.support.Effectors;
+import org.blendee.support.SQLDecorators;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.WhereQueryRelationship;
@@ -543,34 +543,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
-	 * 現時点の WHERE 句に新たなサブクエリ条件を AND 結合します。<br>
-	 * AND 結合する対象がなければ、新条件としてセットされます。
-	 * @param subquery AND 結合するサブクエリ条件
+	 * 生成された SQL 文を加工する '{'SQLDecorator'}' を設定します。
+	 * @param decorators '{'@link SQLDecorator'}'
 	 * @return '{'@link Query'}' 自身
 	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ and(Subquery subquery) /*++'++*/{/*++'++*/
-		helper.and(subquery.createCriteria(this));
-		return this;
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 現時点の WHERE 句に新たなサブクエリ条件を OR 結合します。<br>
-	 * OR 結合する対象がなければ、新条件としてセットされます。
-	 * @param subquery OR 結合するサブクエリ条件
-	 * @return '{'@link Query'}' 自身
-	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ or(Subquery subquery) /*++'++*/{/*++'++*/
-		helper.or(subquery.createCriteria(this));
-		return this;
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 生成された SQL 文を加工する '{'Effector'}' を設定します。
-	 * @param effectors '{'@link Effector'}'
-	 * @return '{'@link Query'}' 自身
-	 */
-	public /*++{1}Query++*//*--*/QueryBase/*--*/ apply(Effector... effectors) /*++'++*/{/*++'++*/
-		helper.apply(effectors);
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ apply(SQLDecorator... decorators) /*++'++*/{/*++'++*/
+		helper.apply(decorators);
 		return this;
 	/*++'++*/}/*++'++*/
 
@@ -606,7 +584,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			helper.getOptimizer(),
 			helper.getWhereClause(),
 			helper.getOrderByClause(),
-			helper.effectors());
+			helper.decorators());
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -617,19 +595,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Effectors.of(helper.effectors()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -665,7 +643,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void joinTo(QueryBuilder builder, JoinType joinType, Criteria onCriteria) /*++'++*/{/*++'++*/
-		builder.join(joinType, helper.buildBuilder(), onCriteria);
+		helper.joinTo(builder, joinType, onCriteria);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -744,8 +722,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static class O2MExecutor<M>
 		extends OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
-		private O2MExecutor(QueryRelationship self, Effector[] effectors) /*++'++*/{/*++'++*/
-			super(self, effectors);
+		private O2MExecutor(QueryRelationship self, SQLDecorator[] decorators) /*++'++*/{/*++'++*/
+			super(self, decorators);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
@@ -841,7 +819,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
 			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
-			return new O2MExecutor<>(this, query$.helper.effectors());
+			return new O2MExecutor<>(this, query$.helper.decorators());
 		/*++'++*/}/*++'++*/
 
 		@Override

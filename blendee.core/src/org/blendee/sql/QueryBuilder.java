@@ -16,13 +16,13 @@ public class QueryBuilder implements ComposedSQL {
 
 	private final FromClause fromClause;
 
-	private final List<Effector> effectors = new LinkedList<>();
+	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private final List<UnionContainer> unions = new LinkedList<>();;
+	private final List<UnionContainer> unions = new LinkedList<>();
 
-	private final List<JoinContainer> joins = new LinkedList<>();;
+	private final List<JoinContainer> joins = new LinkedList<>();
 
-	private SelectClause selectClause = new SelectAllColumnClause();
+	private SelectClause selectClause;
 
 	private Criteria whereClause = CriteriaFactory.create();
 
@@ -61,7 +61,17 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param fromClause FROM 句
 	 */
 	public QueryBuilder(FromClause fromClause) {
+		this(true, fromClause);
+	}
+
+	/**
+	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
+	 * @param useSelectAsterisk デフォルトで SELCT * とするか
+	 * @param fromClause FROM 句
+	 */
+	public QueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
+		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause();
 	}
 
 	/**
@@ -88,6 +98,14 @@ public class QueryBuilder implements ComposedSQL {
 	 */
 	public synchronized SelectClause getSelectClause() {
 		return selectClause.replicate();
+	}
+
+	/**
+	 * 現在設定されている SELECT 句にカラムが設定されているかどうかを判定します。
+	 * @return SELECT 句にカラムが設定されているかどうか
+	 */
+	public synchronized boolean hasSelectColumns() {
+		return selectClause.getColumnsSize() > 0;
 	}
 
 	/**
@@ -173,12 +191,12 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	/**
-	 * {@link Effector} を設定します。
-	 * @param effectors {@link Effector}
+	 * {@link SQLDecorator} を設定します。
+	 * @param decorators {@link SQLDecorator}
 	 */
-	public synchronized void addEffector(Effector... effectors) {
-		for (Effector effector : effectors) {
-			this.effectors.add(effector);
+	public synchronized void addDecorator(SQLDecorator... decorators) {
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
 		}
 	}
 
@@ -235,8 +253,8 @@ public class QueryBuilder implements ComposedSQL {
 		}
 
 		String currentQuery = query;
-		for (Effector effector : effectors) {
-			currentQuery = effector.effect(currentQuery);
+		for (SQLDecorator decorator : decorators) {
+			currentQuery = decorator.decorate(currentQuery);
 		}
 
 		return currentQuery;
@@ -298,7 +316,7 @@ public class QueryBuilder implements ComposedSQL {
 		});
 	}
 
-	private class SelectAllColumnClause extends SelectClause {
+	private class SelectAsteriskClause extends SelectClause {
 
 		@Override
 		public String toString(boolean joining) {

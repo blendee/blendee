@@ -1122,12 +1122,13 @@ public class CriteriaFactory {
 			columnPartList.add("{" + i + "}");
 		}
 
+		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
+		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.sql() + ")";
+
 		List<Binder> binders = new LinkedList<>();
 		binders.addAll(Arrays.asList(subquery.getFromClause().getBinders()));
 		binders.addAll(Arrays.asList(subquery.getWhereClause().getBinders()));
 		binders.addAll(Arrays.asList(subquery.getHavingClause().getBinders()));
-
-		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.toString() + ")";
 
 		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
 	}
