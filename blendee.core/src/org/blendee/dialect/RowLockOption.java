@@ -1,12 +1,12 @@
 package org.blendee.dialect;
 
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 
 /**
  * SELECT 時に行う行ロックのオプションです。
  * @author 千葉 哲嗣
  */
-public enum RowLockOption implements Effector {
+public enum RowLockOption implements SQLDecorator {
 
 	/**
 	 * 行ロックを行いません。
@@ -14,7 +14,7 @@ public enum RowLockOption implements Effector {
 	NONE {
 
 		@Override
-		public String effect(String sql) {
+		public String decorate(String sql) {
 			return sql;
 		}
 	},
@@ -25,7 +25,7 @@ public enum RowLockOption implements Effector {
 	FOR_UPDATE {
 
 		@Override
-		public String effect(String sql) {
+		public String decorate(String sql) {
 			return sql.trim() + " FOR UPDATE";
 		}
 	},
@@ -36,7 +36,7 @@ public enum RowLockOption implements Effector {
 	FOR_UPDATE_WAIT {
 
 		@Override
-		public String effect(String sql) {
+		public String decorate(String sql) {
 			return sql.trim() + " FOR UPDATE WAIT";
 		}
 	},
@@ -47,7 +47,7 @@ public enum RowLockOption implements Effector {
 	FOR_UPDATE_NOWAIT {
 
 		@Override
-		public String effect(String sql) {
+		public String decorate(String sql) {
 			return sql.trim() + " FOR UPDATE NOWAIT";
 		}
 	};

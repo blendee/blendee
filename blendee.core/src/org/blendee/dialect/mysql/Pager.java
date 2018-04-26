@@ -1,9 +1,9 @@
 package org.blendee.dialect.mysql;
 
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 
 /**
- * 検索結果をページ単位で取得するように SQL を加工する {@link Effector} です。<br>
+ * 検索結果をページ単位で取得するように SQL を加工する {@link SQLDecorator} です。<br>
  * @author 千葉 哲嗣
  */
 public class Pager extends LimitClause {

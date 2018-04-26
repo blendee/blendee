@@ -22,7 +22,7 @@ import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
@@ -52,14 +52,14 @@ public class OneToManyExecutor<O extends Row, M>
 
 	private final LinkedList<QueryRelationship> route;
 
-	private final Effector[] options;
+	private final SQLDecorator[] options;
 
 	/**
 	 * 自動生成されたサブクラス用のコンストラクタです。
 	 * @param relation 中心となるテーブルを表す
-	 * @param options {@link Effector}
+	 * @param options {@link SQLDecorator}
 	 */
-	protected OneToManyExecutor(QueryRelationship relation, Effector[] options) {
+	protected OneToManyExecutor(QueryRelationship relation, SQLDecorator[] options) {
 		self = relation;
 		route = new LinkedList<>();
 		QueryRelationship root = getRoot(relation, route);

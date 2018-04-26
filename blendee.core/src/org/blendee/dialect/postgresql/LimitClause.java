@@ -1,12 +1,12 @@
 package org.blendee.dialect.postgresql;
 
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 
 /**
- * 検索結果を制限する SQL に加工する {@link Effector} です。
+ * 検索結果を制限する SQL に加工する {@link SQLDecorator} です。
  * @author 千葉 哲嗣
  */
-public class LimitClause implements Effector {
+public class LimitClause implements SQLDecorator {
 
 	private final String clause;
 
@@ -20,7 +20,7 @@ public class LimitClause implements Effector {
 	}
 
 	@Override
-	public String effect(String sql) {
+	public String decorate(String sql) {
 		return sql + clause;
 	}
 }

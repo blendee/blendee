@@ -16,7 +16,7 @@ public class QueryBuilder implements ComposedSQL {
 
 	private final FromClause fromClause;
 
-	private final List<Effector> effectors = new LinkedList<>();
+	private final List<SQLDecorator> decorators = new LinkedList<>();
 
 	private final List<UnionContainer> unions = new LinkedList<>();
 
@@ -191,12 +191,12 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	/**
-	 * {@link Effector} を設定します。
-	 * @param effectors {@link Effector}
+	 * {@link SQLDecorator} を設定します。
+	 * @param decorators {@link SQLDecorator}
 	 */
-	public synchronized void addEffector(Effector... effectors) {
-		for (Effector effector : effectors) {
-			this.effectors.add(effector);
+	public synchronized void addDecorator(SQLDecorator... decorators) {
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
 		}
 	}
 
@@ -253,8 +253,8 @@ public class QueryBuilder implements ComposedSQL {
 		}
 
 		String currentQuery = query;
-		for (Effector effector : effectors) {
-			currentQuery = effector.effect(currentQuery);
+		for (SQLDecorator decorator : decorators) {
+			currentQuery = decorator.decorate(currentQuery);
 		}
 
 		return currentQuery;

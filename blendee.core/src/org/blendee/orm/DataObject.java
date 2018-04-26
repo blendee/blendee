@@ -27,7 +27,7 @@ import org.blendee.selector.SelectedValues;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.NotFoundException;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -53,7 +53,7 @@ import org.blendee.sql.binder.UUIDBinder;
  * データベースの一行を表すクラスです。<br>
  * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
  * @author 千葉 哲嗣
- * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, Effector...)
+ * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, SQLDecorator...)
  * @see DataAccessHelper#regetDataObject(Optimizer)
  * @see DataObjectIterator#next()
  */

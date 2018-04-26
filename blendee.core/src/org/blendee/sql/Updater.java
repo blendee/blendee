@@ -27,7 +27,7 @@ public abstract class Updater implements ComposedSQL {
 
 	private final Map<String, String> fragmentMap = new HashMap<>();
 
-	private final List<Effector> adjusters = new LinkedList<>();
+	private final List<SQLDecorator> decorators = new LinkedList<>();
 
 	/**
 	 * パラメータの表すテーブルに対する更新を行うインスタンスを生成します。
@@ -84,11 +84,11 @@ public abstract class Updater implements ComposedSQL {
 	}
 
 	/**
-	 * DML に対する微調整をするための {@link Effector} をセットします。
-	 * @param effector SQL 文を調整する {@link Effector}
+	 * DML に対する微調整をするための {@link SQLDecorator} をセットします。
+	 * @param decorator SQL 文を調整する {@link SQLDecorator}
 	 */
-	public void addEffector(Effector effector) {
-		adjusters.add(effector);
+	public void addDecorator(SQLDecorator decorator) {
+		decorators.add(decorator);
 	}
 
 	@Override
@@ -96,8 +96,8 @@ public abstract class Updater implements ComposedSQL {
 		if (columns.size() == 0) throw new IllegalStateException("保存対象が設定されていません");
 
 		String sql = build();
-		for (Effector adjuster : adjusters) {
-			sql = adjuster.effect(sql);
+		for (SQLDecorator decorator : decorators) {
+			sql = decorator.decorate(sql);
 		}
 
 		return sql;

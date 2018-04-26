@@ -14,7 +14,7 @@ import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 
 /**
@@ -66,7 +66,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Effectors options, String... primaryKeyMembers) {
+	default Optional<T> select(SQLDecorators options, String... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -77,7 +77,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Effectors options, Number... primaryKeyMembers) {
+	default Optional<T> select(SQLDecorators options, Number... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -88,7 +88,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(String... primaryKeyMembers) {
-		return select(Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Number... primaryKeyMembers) {
-		return select(Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Effectors options, Bindable... primaryKeyMembers) {
+	default Optional<T> select(SQLDecorators options, Bindable... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -119,7 +119,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Bindable... primaryKeyMembers) {
-		return select(Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, Effectors options, String... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, SQLDecorators options, String... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -150,7 +150,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, Effectors options, Number... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, SQLDecorators options, Number... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -171,7 +171,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, String... primaryKeyMembers) {
-		return select(optimizer, Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Number... primaryKeyMembers) {
-		return select(optimizer, Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, Effectors options, Bindable... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, SQLDecorators options, Bindable... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -211,7 +211,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Bindable... primaryKeyMembers) {
-		return select(optimizer, Effectors.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
 	}
 
 	/**
@@ -226,9 +226,9 @@ public interface RowManager<T extends Row> {
 	/**
 	 * パラメータの {@link Row} の INSERT を行います。
 	 * @param row INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 */
-	default void insert(T row, Effector adjuster) {
+	default void insert(T row, SQLDecorator adjuster) {
 		new DataAccessHelper().insert(getTablePath(), row, adjuster);
 	}
 
@@ -236,9 +236,9 @@ public interface RowManager<T extends Row> {
 	 * パラメータの {@link Row} の INSERT をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param row INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 */
-	default void insert(BatchStatement statement, T row, Effector adjuster) {
+	default void insert(BatchStatement statement, T row, SQLDecorator adjuster) {
 		new DataAccessHelper().insert(statement, getTablePath(), row, adjuster);
 	}
 
@@ -270,10 +270,10 @@ public interface RowManager<T extends Row> {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
-	default Bindable insert(SequenceGenerator generator, T row, int retry, Effector adjuster) {
+	default Bindable insert(SequenceGenerator generator, T row, int retry, SQLDecorator adjuster) {
 		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, adjuster);
 	}
 
@@ -283,7 +283,7 @@ public interface RowManager<T extends Row> {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link Effector}
+	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(
@@ -291,7 +291,7 @@ public interface RowManager<T extends Row> {
 		SequenceGenerator generator,
 		T row,
 		int retry,
-		Effector adjuster) {
+		SQLDecorator adjuster) {
 		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, adjuster);
 	}
 
@@ -319,10 +319,10 @@ public interface RowManager<T extends Row> {
 	 * パラメータの条件に該当する行を更新します。
 	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
-	default int update(Criteria criteria, Updatable updatable, Effector adjuster) {
+	default int update(Criteria criteria, Updatable updatable, SQLDecorator adjuster) {
 		return new DataAccessHelper().update(getTablePath(), updatable, criteria, adjuster);
 	}
 
@@ -330,10 +330,10 @@ public interface RowManager<T extends Row> {
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link Effector}
+	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
-	default void update(BatchStatement statement, Criteria criteria, Updatable updatable, Effector adjuster) {
+	default void update(BatchStatement statement, Criteria criteria, Updatable updatable, SQLDecorator adjuster) {
 		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, adjuster);
 	}
 

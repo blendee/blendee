@@ -8,7 +8,7 @@ import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
@@ -38,7 +38,7 @@ public class GenericManager extends java.lang.Object implements RowManager<Gener
 	public GenericRowIterator select(
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) {
+		SQLDecorator... options) {
 		return select(
 			new SimpleOptimizer(getTablePath()),
 			criteria,
@@ -58,7 +58,7 @@ public class GenericManager extends java.lang.Object implements RowManager<Gener
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order,
-		Effector... options) {
+		SQLDecorator... options) {
 		return new GenericRowIterator(
 			new DataAccessHelper().getDataObjects(
 				optimizer,

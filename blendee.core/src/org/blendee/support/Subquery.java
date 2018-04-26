@@ -24,7 +24,7 @@ public class Subquery {
 	 */
 	public Criteria createCriteria(Query mainquery) {
 		return CriteriaFactory
-			//EffectorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
+			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
 			.createSubqueryWithoutCheck(
 				mainquery.getRootRealtionship().getPrimaryKeyColumns(),
 				builder);
@@ -37,7 +37,7 @@ public class Subquery {
 	 */
 	public Criteria createCriteria(Column[] mainQueryColumn) {
 		return CriteriaFactory
-			//EffectorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
+			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
 			.createSubqueryWithoutCheck(
 				mainQueryColumn,
 				builder);

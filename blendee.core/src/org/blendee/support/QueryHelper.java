@@ -18,7 +18,7 @@ import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.Effector;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
@@ -72,7 +72,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private List<JoinResource> joinResources = new ArrayList<>();
 
-	private List<Effector> effectors = new ArrayList<>();
+	private List<SQLDecorator> decorators = new ArrayList<>();
 
 	public QueryHelper(
 		TablePath table,
@@ -268,15 +268,15 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 	}
 
-	public void apply(Effector[] effectors) {
-		for (Effector effector : effectors) {
-			this.effectors.add(effector);
+	public void apply(SQLDecorator[] decorators) {
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
 		}
 	}
 
-	public Effector[] effectors() {
-		if (effectors.size() == 0) return Effector.EMPTY_ARRAY;
-		return effectors.toArray(new Effector[effectors.size()]);
+	public SQLDecorator[] decorators() {
+		if (decorators.size() == 0) return SQLDecorator.EMPTY_ARRAY;
+		return decorators.toArray(new SQLDecorator[decorators.size()]);
 	}
 
 	public void quitRowMode() {
@@ -431,7 +431,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 				getOptimizer(),
 				whereClause,
 				orderByClause,
-				effectors()).composeSQL();
+				decorators()).composeSQL();
 		}
 
 		return buildBuilder();
@@ -507,7 +507,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
-		builder.addEffector(effectors());
+		builder.addDecorator(decorators());
 
 		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
 
