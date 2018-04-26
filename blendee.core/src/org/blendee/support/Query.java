@@ -7,6 +7,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.SQLDecorator;
 
 /**
  * 自動生成される検索ツールの振る舞いを定義したインターフェイスです。<br>
@@ -82,4 +83,10 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link Subquery}
 	 */
 	Subquery toSubquery();
+
+	/**
+	 * 内部で保持している {@link SQLDecorator} を返します。
+	 * @return {@link SQLDecorator}
+	 */
+	SQLDecorator[] decorators();
 }
