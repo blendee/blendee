@@ -64,7 +64,7 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
-	default AliasOffer AVG(SelectQueryColumn<?> column) {
+	default AliasOffer AVG(SelectQueryColumn column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -73,7 +73,7 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
-	default AliasOffer SUM(SelectQueryColumn<?> column) {
+	default AliasOffer SUM(SelectQueryColumn column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -82,7 +82,7 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
-	default AliasOffer MAX(SelectQueryColumn<?> column) {
+	default AliasOffer MAX(SelectQueryColumn column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -91,7 +91,7 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
-	default AliasOffer MIN(SelectQueryColumn<?> column) {
+	default AliasOffer MIN(SelectQueryColumn column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -100,7 +100,7 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
 	 */
-	default AliasOffer COUNT(SelectQueryColumn<?> column) {
+	default AliasOffer COUNT(SelectQueryColumn column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -110,7 +110,7 @@ public interface SelectQueryRelationship {
 	 * @param selectColumns 使用するカラム
 	 * @return {@link AliasOffer} AS
 	 */
-	default AliasOffer any(String template, SelectQueryColumn<?>... selectColumns) {
+	default AliasOffer any(String template, SelectQueryColumn... selectColumns) {
 		getRoot().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];

@@ -1003,7 +1003,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * SELECT 句用
 	 */
 	public static class SelectQCol
-		extends SelectQueryColumn<SelectQRel> /*++'++*/{/*++'++*/
+		extends SelectQueryColumn /*++'++*/{/*++'++*/
 
 		private SelectQCol(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
@@ -1014,9 +1014,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * GROUP BY 句用
 	 */
 	public static class GroupByQCol
-		extends GroupByQueryColumn<QRel<
-			GroupByQCol,
-			Void>> /*++'++*/{/*++'++*/
+		extends GroupByQueryColumn<GroupByQCol> /*++'++*/{/*++'++*/
 
 		private GroupByQCol(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
@@ -1027,9 +1025,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQCol
-		extends OrderByQueryColumn<QRel<
-			OrderByQCol,
-			Void>> /*++'++*/{/*++'++*/
+		extends OrderByQueryColumn<OrderByQCol> /*++'++*/{/*++'++*/
 
 		private OrderByQCol(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
