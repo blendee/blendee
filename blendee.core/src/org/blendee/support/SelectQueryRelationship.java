@@ -172,6 +172,22 @@ public interface SelectQueryRelationship {
 	}
 
 	/**
+	 * 他のクエリと JOIN した際などの、最終的な順位を指定します。
+	 * @param order 最終的な GROUP BY 句内での順序
+	 * @param offer 対象カラム
+	 * @return {@link GroupByQueryColumn}
+	 */
+	default SelectOffer order(int order, SelectOffer offer) {
+		SelectOffers offers = new SelectOffers();
+		offer.get().forEach(c -> {
+			c.order(order);
+			offers.add(c);
+		});
+
+		return offers;
+	}
+
+	/**
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスが表す {@link Relationship}
 	 */

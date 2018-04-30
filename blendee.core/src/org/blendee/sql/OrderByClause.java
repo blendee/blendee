@@ -114,6 +114,16 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 
 	/**
 	 * この ORDER 句にカラムを追加します。
+	 * @param order JOIN したときの順序
+	 * @param column 追加するカラム
+	 * @param direction 方向
+	 */
+	public void add(int order, Column column, Direction direction) {
+		add(order, new DirectionalColumn(column, direction));
+	}
+
+	/**
+	 * この ORDER 句にカラムを追加します。
 	 * @param columnName 追加するカラム
 	 * @param direction 方向
 	 */
@@ -130,16 +140,38 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 	 */
 	public void add(String template, Direction direction, Column... columns) {
 		clearCache();
-		List<String> localTemplates = new LinkedList<>();
+
+		ListQueryBlock block = new ListQueryBlock();
 		for (int i = 0; i < columns.length; i++) {
-			localTemplates.add("{" + getColumnsSize() + "}");
-			addColumn(columns[i]);
+			block.addColumn(columns[i]);
 		}
 
-		addTemplate(
-			SQLFragmentFormat.execute(
-				template.trim(),
-				localTemplates.toArray(new String[localTemplates.size()])) + direction);
+		block.addTemplate(template);
+
+		addBlock(block);
+
+		canGetDirectionalColumns = false;
+	}
+
+	/**
+	 * この ORDER BY 句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param template SQL 文のテンプレート
+	 * @param direction 方向
+	 * @param columns SQL 文に含まれるカラム
+	 * @see SQLFragmentFormat
+	 */
+	public void add(int order, String template, Direction direction, Column... columns) {
+		clearCache();
+
+		ListQueryBlock block = new ListQueryBlock(order);
+		for (int i = 0; i < columns.length; i++) {
+			block.addColumn(columns[i]);
+		}
+
+		block.addTemplate(template);
+
+		addBlock(block);
 
 		canGetDirectionalColumns = false;
 	}
@@ -149,9 +181,17 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 	 * @param column 追加するカラム
 	 */
 	public void add(DirectionalColumn column) {
+		add(DEFAULT_ORDER, column);
+	}
+
+	/**
+	 * この ORDER 句にカラムを追加します。
+	 * @param order JOIN したときの順序
+	 * @param column 追加するカラム
+	 */
+	public void add(int order, DirectionalColumn column) {
 		clearCache();
-		addColumn(column.column);
-		addTemplate("{" + getTemplatesSize() + "}" + column.direction);
+		addInternal(order, column.column, "{0}" + column.direction);
 		added.add(column);
 	}
 
@@ -226,6 +266,6 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 
 	@Override
 	String getKeyword() {
-		return getColumnsSize() == 0 && getTemplatesSize() == 0 ? "" : "ORDER BY";
+		return hasElements() ? "ORDER BY" : "";
 	}
 }

@@ -44,12 +44,7 @@ public class SelectCountClause extends SelectClause {
 	}
 
 	@Override
-	void addColumn(Column column) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	void addTemplate(String template) {
+	protected void addBlock(ListQueryBlock block) {
 		throw new UnsupportedOperationException();
 	}
 

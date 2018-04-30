@@ -38,7 +38,7 @@ import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
 import org.blendee.support.QueryOnClause;
-import org.blendee.support.SQLDecorators;
+import org.blendee.support.Vargs;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.WhereQueryRelationship;
@@ -553,19 +553,19 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), SQLDecorators.of(helper.decorators()), primaryKeyMembers);
+		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -1014,7 +1014,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * GROUP BY 句用
 	 */
 	public static class GroupByQCol
-		extends GroupByQueryColumn<GroupByQCol> /*++'++*/{/*++'++*/
+		extends GroupByQueryColumn /*++'++*/{/*++'++*/
 
 		private GroupByQCol(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
@@ -1025,7 +1025,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * ORDER BY 句用
 	 */
 	public static class OrderByQCol
-		extends OrderByQueryColumn<OrderByQCol> /*++'++*/{/*++'++*/
+		extends OrderByQueryColumn /*++'++*/{/*++'++*/
 
 		private OrderByQCol(QueryRelationship relationship, String name) /*++'++*/{/*++'++*/
 			super(relationship, name);
