@@ -15,6 +15,19 @@ public interface OnLeftQueryRelationship extends CriteriaQueryRelationship {
 	 * ON 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> OnLeftQueryColumn<O> any(String template) {
+		return new OnLeftQueryColumn<>(
+			getRoot(),
+			getContext(),
+			new MultiColumn(getRelationship(), template, Column.EMPTY_ARRAY));
+	}
+
+	/**
+	 * ON 句に任意のカラムを追加します。
+	 * @param <O> operator
+	 * @param template カラムのテンプレート
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
 	 */

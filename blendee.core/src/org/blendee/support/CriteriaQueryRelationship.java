@@ -38,10 +38,10 @@ public interface CriteriaQueryRelationship {
 
 	/**
 	 * WHERE 句に任意の条件を追加します。
-	 * @param template カラムのテンプレート
+	 * @param expression カラムの文字列表現
 	 */
-	default void with(String template) {
-		getContext().addCriteria(CriteriaFactory.createCriteria(template));
+	default void with(String expression) {
+		getContext().addCriteria(CriteriaFactory.createCriteria(expression));
 	}
 
 	/**
