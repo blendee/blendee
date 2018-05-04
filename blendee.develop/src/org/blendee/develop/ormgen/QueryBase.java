@@ -304,7 +304,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query,
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		Class<?> lambdaClass= function.getClass();
+		Class<?> lambdaClass = function.getClass();
 		Playbackable<T> playbackable = QueryHelper.get(lambdaClass);
 
 		if (playbackable != null) return playbackable.play(complementer);
