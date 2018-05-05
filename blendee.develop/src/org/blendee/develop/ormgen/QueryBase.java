@@ -278,10 +278,10 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
 	 * @return function の実行結果
 	 */
-	public static <T> T accelerate(
+	public static <T> T evaluate(
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return accelerate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
+		return evaluate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -293,14 +293,14 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
 	 * @return function の実行結果
 	 */
-	public static <T> T accelerateOf(
+	public static <T> T evaluateOf(
 		String id,
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return accelerate(of(id), function, complementer);
+		return evaluate(of(id), function, complementer);
 	/*++'++*/}/*++'++*/
 
-	private static <T> T accelerate(
+	private static <T> T evaluate(
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query,
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
