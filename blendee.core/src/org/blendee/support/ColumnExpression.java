@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
+import org.blendee.sql.ListQueryClause;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -14,6 +15,8 @@ public class ColumnExpression {
 	private final StringBuilder expression = new StringBuilder();
 
 	private final Column[] columns;
+
+	private int order = ListQueryClause.DEFAULT_ORDER;
 
 	/**
 	 * @param columns {@link Column}
@@ -45,9 +48,9 @@ public class ColumnExpression {
 	 */
 	public void accept(SelectClause selectClause) {
 		if (expression.length() == 0) {
-			selectClause.add(columns);
+			selectClause.add(order, columns);
 		} else {
-			selectClause.add(expression.toString(), columns);
+			selectClause.add(order, expression.toString(), columns);
 		}
 	}
 
@@ -57,5 +60,9 @@ public class ColumnExpression {
 		} else {
 			expression.append(" AS " + alias);
 		}
+	}
+
+	void order(int order) {
+		this.order = order;
 	}
 }

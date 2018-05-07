@@ -1,8 +1,5 @@
 package org.blendee.sql;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * SELECT 句を表すクラスです。
  * @author 千葉 哲嗣
@@ -11,28 +8,23 @@ import java.util.List;
 public class SelectClause extends ListQueryClause<SelectClause> {
 
 	/**
-	 * この SELECT 句に新しいカラムを追加します。
+	 * この SELECT 句に新しいカラムをエイリアス付きで追加します。
 	 * @param columns 追加するカラム
 	 */
+	@Override
 	public void add(Column... columns) {
-		clearCache();
-		for (Column column : columns) {
-			addColumn(column);
-			addTemplate("{" + getTemplatesSize() + "} AS " + column.getID());
-		}
+		add(DEFAULT_ORDER, columns);
 	}
 
 	/**
-	 * この SELECT 句に新しいカラムを追加します。<br>
-	 * ただし項目名のエイリアスは、生成される SQL 文には追加されません。
-	 * @param columnNames 追加するカラム
+	 * この SELECT 句に新しいカラムをエイリアス付きで追加します。
+	 * @param order JOIN したときの順序
+	 * @param columns 追加するカラム
 	 */
-	public void add(String... columnNames) {
+	public void add(int order, Column... columns) {
 		clearCache();
-		for (String columnName : columnNames) {
-			PhantomColumn column = new PhantomColumn(columnName);
-			addColumn(column);
-			addTemplate("{" + getTemplatesSize() + "}");
+		for (Column column : columns) {
+			addInternal(order, column, "{0} AS " + column.getID());
 		}
 	}
 
@@ -51,17 +43,27 @@ public class SelectClause extends ListQueryClause<SelectClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(String template, Column... columns) {
-		clearCache();
-		List<String> localTemplates = new LinkedList<>();
-		for (int i = 0; i < columns.length; i++) {
-			localTemplates.add("{" + getColumnsSize() + "}");
-			addColumn(columns[i]);
-		}
+		add(DEFAULT_ORDER, template, columns);
+	}
 
-		addTemplate(
-			SQLFragmentFormat.execute(
-				template.trim(),
-				localTemplates.toArray(new String[localTemplates.size()])));
+	/**
+	 * この SELECT 句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param template SQL 文のテンプレート
+	 * @param columns SQL 文に含まれるカラム
+	 * @see SQLFragmentFormat
+	 */
+	public void add(int order, String template, Column... columns) {
+		clearCache();
+
+		ListQueryBlock block = new ListQueryBlock(order);
+
+		for (Column column : columns)
+			block.addColumn(column);
+
+		block.addTemplate(template.trim());
+
+		addBlock(block);
 	}
 
 	/**

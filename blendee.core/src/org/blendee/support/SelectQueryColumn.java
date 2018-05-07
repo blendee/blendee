@@ -10,9 +10,8 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  * ORDER BY 句に新しい要素を追加するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
- * @param <T> 連続呼び出し用 {@link Query}
  */
-public class SelectQueryColumn<T> extends AbstractQueryColumn<T> implements SelectOffer, Offers<ColumnExpression> {
+public class SelectQueryColumn extends AbstractQueryColumn implements SelectOffer, Offers<ColumnExpression> {
 
 	private ColumnExpression expression;
 

@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -12,14 +13,11 @@ import java.util.Objects;
 public abstract class ListQueryClause<T extends ListQueryClause<?>> extends QueryClause {
 
 	/**
-	 * テンプレート
+	 * JOIN した場合に採用されるデフォルトの順序値
 	 */
-	protected final List<String> templates = new LinkedList<>();
+	public static final int DEFAULT_ORDER = Integer.MAX_VALUE;
 
-	/**
-	 * {@link Column}
-	 */
-	protected final List<Column> columns = new LinkedList<>();
+	final List<ListQueryBlock> blocks = new LinkedList<>();
 
 	@Override
 	public boolean equals(Object o) {
@@ -27,27 +25,51 @@ public abstract class ListQueryClause<T extends ListQueryClause<?>> extends Quer
 		if (!(o instanceof ListQueryClause<?>)) return false;
 		if (!getClass().equals(o.getClass())) return false;
 		ListQueryClause<?> target = (ListQueryClause<?>) o;
-		return templates.equals(target.templates)
-			&& columns.equals(target.columns);
+		return blocks.equals(target.blocks);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(templates, columns);
+		return Objects.hash(blocks);
 	}
 
 	@Override
 	public int getColumnsSize() {
-		return columns.size();
+		int[] size = { 0 };
+		blocks.forEach(b -> {
+			size[0] += b.getColumnsSize();
+		});
+
+		return size[0];
 	}
 
 	@Override
 	public T replicate() {
 		T clone = createNewInstance();
-		clone.templates.addAll(templates);
-		columns.forEach(c -> clone.columns.add(c.replicate()));
-
+		blocks.forEach(b -> clone.blocks.add(b.replicate()));
 		return clone;
+	}
+
+	/**
+	 * GROUP BY 句に新しいカラムを追加します。
+	 * @param columns 新しいカラム
+	 */
+	public void add(Column... columns) {
+		clearCache();
+		for (Column column : columns) {
+			add(column);
+		}
+	}
+
+	/**
+	 * GROUP BY 句に新しいカラムを追加します。
+	 * @param columnNames 新しいカラム
+	 */
+	public void add(String... columnNames) {
+		clearCache();
+		for (String columnName : columnNames) {
+			add(new PhantomColumn(columnName));
+		}
 	}
 
 	/**
@@ -55,25 +77,83 @@ public abstract class ListQueryClause<T extends ListQueryClause<?>> extends Quer
 	 */
 	protected abstract T createNewInstance();
 
-	void addColumn(Column column) {
-		columns.add(column);
+	/**
+	 * この句にカラムとテンプレートのブロックを追加します。
+	 * @param block カラムとテンプレート
+	 */
+	protected void addBlock(ListQueryBlock block) {
+		blocks.add(block);
+
+		//常に順序付けしておく
+		Collections.sort(blocks);
 	}
 
-	int getTemplatesSize() {
-		return templates.size();
+	/**
+	 * この句にカラムとテンプレート {0} を追加します。
+	 * @param column カラム
+	 */
+	protected void addInternal(Column column) {
+		addInternal(column, "{0}");
 	}
 
-	void addTemplate(String template) {
-		templates.add(template);
+	/**
+	 * この句にカラムとテンプレートを追加します。
+	 * @param column カラム
+	 * @param template テンプレート
+	 */
+	protected void addInternal(Column column, String template) {
+		addInternal(DEFAULT_ORDER, column, template);
+	}
+
+	/**
+	 * この句にカラムとテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param column カラム
+	 * @param template テンプレート
+	 */
+	protected void addInternal(int order, Column column, String template) {
+		ListQueryBlock block = new ListQueryBlock(order);
+		block.addColumn(column);
+		block.addTemplate(template);
+		addBlock(block);
+	}
+
+	/**
+	 * 要素を持っているかどうかを返します。
+	 * @return 要素を持っているかどうか
+	 */
+	protected boolean hasElements() {
+		return blocks.size() > 0;
 	}
 
 	@Override
 	String getTemplate() {
+		List<String> templates = new LinkedList<>();
+
+		WholeCounter counter = new WholeCounter();
+		blocks.forEach(b -> {
+			templates.add(b.getTemplate(counter));
+		});
+
 		return String.join(", ", templates);
 	}
 
 	@Override
 	List<Column> getColumnsInternal() {
+		List<Column> columns = new LinkedList<>();
+
+		blocks.forEach(b -> columns.addAll(b.getColumns()));
+
 		return columns;
+	}
+
+	void merge(ListQueryClause<?> another) {
+		blocks.addAll(another.blocks);
+		Collections.sort(blocks);
+	}
+
+	static class WholeCounter {
+
+		int i = 0;
 	}
 }

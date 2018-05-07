@@ -26,5 +26,4 @@ public class AscDesc {
 		ASC = asc;
 		DESC = desc;
 	}
-
 }

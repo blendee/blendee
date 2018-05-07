@@ -6,9 +6,8 @@ import org.blendee.sql.Column;
 /**
  * {@link Query} 操作に使用する項目クラスの抽象基底クラスです。
  * @author 千葉 哲嗣
- * @param <T> 連続呼び出し用 {@link Query}
  */
-public abstract class AbstractQueryColumn<T> {
+public abstract class AbstractQueryColumn {
 
 	final QueryRelationship relationship;
 
@@ -22,15 +21,6 @@ public abstract class AbstractQueryColumn<T> {
 	public AbstractQueryColumn(QueryRelationship helper, String name) {
 		relationship = helper;
 		column = helper.getRelationship().getColumn(name);
-	}
-
-	/**
-	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param column コピー対象
-	 */
-	public AbstractQueryColumn(AbstractQueryColumn<T> column) {
-		relationship = column.relationship;
-		this.column = column.column;
 	}
 
 	@Override

@@ -6,37 +6,25 @@ package org.blendee.sql;
  */
 public class GroupByClause extends ListQueryClause<GroupByClause> {
 
-	/**
-	 * GROUP BY 句に新しいカラムを追加します。
-	 * @param columns 新しいカラム
-	 */
-	public void add(Column... columns) {
-		clearCache();
-		for (Column column : columns) {
-			addColumn(column);
-			addTemplate("{" + getTemplatesSize() + "}");
-		}
-	}
-
-	/**
-	 * GROUP BY 句に新しいカラムを追加します。
-	 * @param columnNames 新しいカラム
-	 */
-	public void add(String... columnNames) {
-		clearCache();
-		for (String columnName : columnNames) {
-			addColumn(new PhantomColumn(columnName));
-			addTemplate("{" + getTemplatesSize() + "}");
-		}
-	}
-
 	@Override
 	protected GroupByClause createNewInstance() {
 		return new GroupByClause();
 	}
 
+	/**
+	 * この GROUP BY 句にカラムを追加します。
+	 * @param order JOIN したときの順序
+	 * @param column カラム
+	 */
+	public void add(int order, Column column) {
+		ListQueryBlock block = new ListQueryBlock(order);
+		block.addColumn(column);
+		block.addTemplate("{0}");
+		addBlock(block);
+	}
+
 	@Override
 	String getKeyword() {
-		return getColumnsSize() == 0 ? "" : "GROUP BY";
+		return hasElements() ? "GROUP BY" : "";
 	}
 }

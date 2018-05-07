@@ -179,13 +179,13 @@ public class Blendee {
 
 			throw e;
 		} finally {
-			if (!top) return;
-
-			doFinally(
-				() -> manager.getAutoCloseableFinalizer().closeAll(),
-				() -> doFinally(
-					() -> transaction.close(),
-					ContextManager::releaseContext));
+			if (top) {
+				doFinally(
+					() -> manager.getAutoCloseableFinalizer().closeAll(),
+					() -> doFinally(
+						() -> transaction.close(),
+						ContextManager::releaseContext));
+			}
 		}
 	}
 

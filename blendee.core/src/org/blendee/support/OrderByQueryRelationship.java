@@ -34,7 +34,7 @@ public interface OrderByQueryRelationship {
 	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default AscDesc AVG(OrderByQueryColumn<?> column) {
+	default AscDesc AVG(OrderByQueryColumn column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -43,7 +43,7 @@ public interface OrderByQueryRelationship {
 	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default AscDesc SUM(OrderByQueryColumn<?> column) {
+	default AscDesc SUM(OrderByQueryColumn column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -52,7 +52,7 @@ public interface OrderByQueryRelationship {
 	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default AscDesc MAX(OrderByQueryColumn<?> column) {
+	default AscDesc MAX(OrderByQueryColumn column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -61,7 +61,7 @@ public interface OrderByQueryRelationship {
 	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default AscDesc MIN(OrderByQueryColumn<?> column) {
+	default AscDesc MIN(OrderByQueryColumn column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -70,7 +70,7 @@ public interface OrderByQueryRelationship {
 	 * @param column {@link OrderByQueryColumn}
 	 * @return {@link OrderByQueryColumn}
 	 */
-	default AscDesc COUNT(OrderByQueryColumn<?> column) {
+	default AscDesc COUNT(OrderByQueryColumn column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -80,7 +80,7 @@ public interface OrderByQueryRelationship {
 	 * @param orderByColumns 使用するカラム
 	 * @return {@link AscDesc} ASC か DESC
 	 */
-	default AscDesc any(String template, OrderByQueryColumn<?>... orderByColumns) {
+	default AscDesc any(String template, OrderByQueryColumn... orderByColumns) {
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
 			columns[i] = orderByColumns[i].column;
@@ -88,8 +88,18 @@ public interface OrderByQueryRelationship {
 
 		OrderByClause clause = getOrderByClause();
 		return new AscDesc(
-			new OrderByOffer(() -> clause.add(template, Direction.ASC, columns)),
-			new OrderByOffer(() -> clause.add(template, Direction.DESC, columns)));
+			new OrderByOffer(order -> clause.add(order, template, Direction.ASC, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.DESC, columns)));
+	}
+
+	/**
+	 * 他のクエリと JOIN した際などの、最終的な順位を指定します。
+	 * @param order 最終的な GROUP BY 句内での順序
+	 * @param offer 対象カラム
+	 * @return {@link GroupByQueryColumn}
+	 */
+	default OrderByOffer order(int order, OrderByOffer offer) {
+		return new OrderByOffer(offer, order);
 	}
 
 	/**

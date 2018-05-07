@@ -1,9 +1,6 @@
 package org.blendee.sql;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 class ListClauses {
 
@@ -38,17 +35,9 @@ class ListClauses {
 	}
 
 	private String toString(LinkedList<? extends ListQueryClause<?>> list, boolean joined) {
-		List<String> result = new ArrayList<>();
-
 		ListQueryClause<?> clause = list.pop();
-		result.add(clause.toString(joined));
+		list.forEach(e -> clause.merge(e));
 
-		for (ListQueryClause<?> element : list) {
-			result.add(element.toStringWithoutKeyword(joined));
-		}
-
-		return String.join(
-			", ",
-			result.stream().filter(e -> e.trim().length() > 0).collect(Collectors.toList()));
+		return clause.toString(joined);
 	}
 }

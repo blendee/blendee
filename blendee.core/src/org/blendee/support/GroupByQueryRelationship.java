@@ -18,4 +18,16 @@ public interface GroupByQueryRelationship {
 	default Offers<GroupByOffer> list(GroupByOffer... offers) {
 		return () -> Arrays.asList(offers);
 	}
+
+	/**
+	 * 他のクエリと JOIN した際などの、最終的な順位を指定します。
+	 * @param order 最終的な GROUP BY 句内での順序
+	 * @param column 対象カラム
+	 * @return {@link GroupByQueryColumn}
+	 */
+	@SuppressWarnings("unchecked")
+	default <T extends GroupByQueryColumn> T order(int order, GroupByQueryColumn column) {
+		column.order(order);
+		return (T) column;
+	}
 }

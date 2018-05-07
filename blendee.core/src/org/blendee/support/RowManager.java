@@ -66,7 +66,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(SQLDecorators options, String... primaryKeyMembers) {
+	default Optional<T> select(Vargs<SQLDecorator> options, String... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -77,7 +77,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(SQLDecorators options, Number... primaryKeyMembers) {
+	default Optional<T> select(Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -88,7 +88,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(String... primaryKeyMembers) {
-		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Number... primaryKeyMembers) {
-		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(SQLDecorators options, Bindable... primaryKeyMembers) {
+	default Optional<T> select(Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
 		return select(new SimpleOptimizer(getTablePath()), options, primaryKeyMembers);
 	}
 
@@ -119,7 +119,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Bindable... primaryKeyMembers) {
-		return select(SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, SQLDecorators options, String... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, String... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -150,7 +150,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, SQLDecorators options, Number... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -171,7 +171,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, String... primaryKeyMembers) {
-		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Number... primaryKeyMembers) {
-		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public interface RowManager<T extends Row> {
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	default Optional<T> select(Optimizer optimizer, SQLDecorators options, Bindable... primaryKeyMembers) {
+	default Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
 		DataObject object;
 		try {
 			object = new DataAccessHelper().getDataObject(
@@ -211,7 +211,7 @@ public interface RowManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	default Optional<T> select(Optimizer optimizer, Bindable... primaryKeyMembers) {
-		return select(optimizer, SQLDecorators.EMPTY_OPTIONS, primaryKeyMembers);
+		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 
 	/**

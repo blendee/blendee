@@ -2,6 +2,9 @@ package org.blendee.support;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+
+import org.blendee.sql.ListQueryClause;
 
 /**
  * ORDER BY 句の検索候補を表すインターフェイスです。
@@ -9,20 +12,28 @@ import java.util.List;
  */
 public class OrderByOffer implements Offers<OrderByOffer> {
 
-	private final Runnable offerFunction;
+	private final Consumer<Integer> offerFunction;
+
+	private final int order;
 
 	/**
 	 * @param offerFunction {@link Runnable}
 	 */
-	public OrderByOffer(Runnable offerFunction) {
+	OrderByOffer(Consumer<Integer> offerFunction) {
 		this.offerFunction = offerFunction;
+		order = ListQueryClause.DEFAULT_ORDER;
+	}
+
+	OrderByOffer(OrderByOffer offer, int order) {
+		this.offerFunction = offer.offerFunction;
+		this.order = order;
 	}
 
 	/**
 	 * ORDER BY 句に追加されます。
 	 */
 	public void offer() {
-		offerFunction.run();
+		offerFunction.accept(order);
 	}
 
 	@Override

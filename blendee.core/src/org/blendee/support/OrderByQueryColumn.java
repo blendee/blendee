@@ -1,22 +1,25 @@
 package org.blendee.support;
 
+import org.blendee.sql.OrderByClause.Direction;
+
 /**
  * ORDER BY 句に新しい要素を追加するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
- * @param <T> 連続呼び出し用 {@link Query}
  */
-public class OrderByQueryColumn<T> extends AbstractQueryColumn<T> {
+public class OrderByQueryColumn extends AbstractQueryColumn {
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
 	 */
-	public final OrderByOffer ASC = new OrderByOffer(() -> relationship.getOrderByClause().asc(column));
+	public final OrderByOffer ASC = new OrderByOffer(
+		order -> relationship.getOrderByClause().add(order, column, Direction.ASC));
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC として追加します。
 	 */
-	public final OrderByOffer DESC = new OrderByOffer(() -> relationship.getOrderByClause().desc(column));
+	public final OrderByOffer DESC = new OrderByOffer(
+		order -> relationship.getOrderByClause().add(order, column, Direction.DESC));
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。

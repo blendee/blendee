@@ -128,11 +128,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			offers.get().forEach(c -> c.accept(optimizerForSelect));
 
 			optimizer = optimizerForSelect;
-		} else {
-			if (selectClause == null)
-				selectClause = new SelectClause();
-			offers.get().forEach(c -> c.accept(selectClause));
 		}
+
+		if (selectClause == null)
+			selectClause = new SelectClause();
+
+		offers.get().forEach(c -> c.accept(selectClause));
 	}
 
 	/**
