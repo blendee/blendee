@@ -34,7 +34,7 @@ import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.Query;
-import org.blendee.support.AggregateExecutor;
+import org.blendee.support.Aggregator;
 import org.blendee.support.Playbackable;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
@@ -278,7 +278,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
 	 * @return function の実行結果
 	 */
-	public static <T> T evaluate(
+	public static <T> T yieldExecutor(
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		return evaluate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
@@ -293,7 +293,35 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
 	 * @return function の実行結果
 	 */
-	public static <T> T evaluateOf(
+	public static <T> T yieldExecutorOf(
+		String id,
+		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		return evaluate(of(id), function, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の実行結果
+	 */
+	public static <T> T yieldAggregator(
+		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		return evaluate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
+	 * 引数の id で生成された Query が使用されます。
+	 * @see #of(String)
+	 * @param id Query 生成用の ID
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の実行結果
+	 */
+	public static <T> T yieldAggregatorOf(
 		String id,
 		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
@@ -628,11 +656,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
 		return helper.registAndGetAggregateExecutor().aggregate();
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public AggregateExecutor yield() /*++'++*/{/*++'++*/
-		return helper.registAndGetAggregateExecutor();
 	/*++'++*/}/*++'++*/
 
 	@Override

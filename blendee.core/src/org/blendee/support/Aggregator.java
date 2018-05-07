@@ -10,7 +10,7 @@ import org.blendee.jdbc.ResultSetIterator;
  * 集約関数を使用した検索の実行メソッドを定義したインターフェイスです。
  * @author 千葉 哲嗣
  */
-public interface AggregateExecutor {
+public interface Aggregator {
 
 	/**
 	 * 集合関数を含む検索を実行します。
@@ -30,10 +30,4 @@ public interface AggregateExecutor {
 	 * @return {@link ResultSetIterator}
 	 */
 	ResultSetIterator aggregate();
-
-	/**
-	 * 自信と同等の機能を持つ {@link AggregateExecutor} を生成し、返します。
-	 * @return {@link AggregateExecutor}
-	 */
-	AggregateExecutor yield();
 }

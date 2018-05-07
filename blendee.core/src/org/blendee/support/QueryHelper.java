@@ -467,13 +467,13 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new Subquery(buildBuilder());
 	}
 
-	private static class HelperAggregateExecutor implements AggregateExecutor {
+	private static class HelperAggregator implements Aggregator {
 
 		private final String sql;
 
 		private final PreparedStatementComplementer complementer;
 
-		private HelperAggregateExecutor(String sql, PreparedStatementComplementer complementer) {
+		private HelperAggregator(String sql, PreparedStatementComplementer complementer) {
 			this.sql = sql;
 			this.complementer = complementer;
 		}
@@ -512,20 +512,15 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		public ResultSetIterator aggregate() {
 			return new ResultSetIterator(sql, complementer);
 		}
-
-		@Override
-		public AggregateExecutor yield() {
-			return this;
-		}
 	}
 
-	public AggregateExecutor registAndGetAggregateExecutor() {
+	public Aggregator registAndGetAggregateExecutor() {
 		ComposedSQL sql = buildBuilder();
 
 		String sqlString = sql.sql();
 
-		Playbackable<AggregateExecutor> myPlaybackable = complementer -> {
-			return new HelperAggregateExecutor(sqlString, complementer);
+		Playbackable<Aggregator> myPlaybackable = complementer -> {
+			return new HelperAggregator(sqlString, complementer);
 		};
 
 		playbackable = myPlaybackable;
@@ -533,9 +528,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return myPlaybackable.play(sql);
 	}
 
-	public AggregateExecutor getAggregateExecutor() {
+	public Aggregator getAggregateExecutor() {
 		ComposedSQL sql = buildBuilder();
-		return new HelperAggregateExecutor(sql.sql(), sql);
+		return new HelperAggregator(sql.sql(), sql);
 	}
 
 	public Playbackable<?> getPlaybackable() {

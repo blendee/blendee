@@ -14,7 +14,7 @@ import org.blendee.sql.SQLDecorator;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, AggregateExecutor {
+public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, Aggregator {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -89,4 +89,8 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link SQLDecorator}
 	 */
 	SQLDecorator[] decorators();
+
+	Executor<RowIterator<? extends Row>, Optional<? extends Row>> executor();
+
+	Aggregator aggregator();
 }
