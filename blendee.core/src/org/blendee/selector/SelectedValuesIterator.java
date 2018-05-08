@@ -34,7 +34,8 @@ public class SelectedValuesIterator
 
 	private boolean hasNext = false;
 
-	SelectedValuesIterator(
+	@SuppressWarnings("javadoc")
+	public SelectedValuesIterator(
 		BlenStatement statement,
 		BlenResultSet result,
 		Column[] columns,

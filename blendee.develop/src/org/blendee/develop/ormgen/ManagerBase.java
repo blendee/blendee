@@ -59,6 +59,15 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 			options));
 	/*++'++*/}/*++'++*/
 
+	/**
+	 * '{'@link DataObjectIterator'}' を、 '{'@link {1}Iterator'}' として返します。
+	 * @param dataObjectIterator '{'@link DataObjectIterator'}'
+	 * @return '{'@link RowIterator'}'
+	 */
+	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ wrap(DataObjectIterator dataObjectIterator) /*++'++*/{/*++'++*/
+		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(dataObjectIterator);
+	/*++'++*/}/*++'++*/
+
 	@Override
 	public /*++{0}.row.{1}++*//*--*/RowBase/*--*/ createRow(DataObject data) /*++'++*/{/*++'++*/
 		return new /*++{0}.row.{1}++*//*--*/RowBase/*--*/(data);

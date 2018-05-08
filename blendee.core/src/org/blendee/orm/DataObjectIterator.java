@@ -29,7 +29,8 @@ public class DataObjectIterator
 
 	private final boolean readonly;
 
-	DataObjectIterator(
+	@SuppressWarnings("javadoc")
+	public DataObjectIterator(
 		Relationship relationship,
 		SelectedValuesIterator iterator,
 		boolean readonly) {

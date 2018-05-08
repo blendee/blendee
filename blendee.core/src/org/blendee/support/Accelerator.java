@@ -20,12 +20,12 @@ public class Accelerator {
 	@FunctionalInterface
 	public interface ExecutorFunction<E extends Executor<?, ?>> {
 
-		E execute();
+		E apply();
 	}
 
 	@FunctionalInterface
 	public interface AggregatorFunction {
 
-		Aggregator execute();
+		Aggregator apply();
 	}
 }

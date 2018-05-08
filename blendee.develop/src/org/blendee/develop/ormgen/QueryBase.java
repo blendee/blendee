@@ -9,15 +9,24 @@ import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormge
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.orm.DataObject;
+import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
+import org.blendee.selector.SimpleOptimizer;
+import org.blendee.selector.SelectedValues;
+import org.blendee.selector.SelectedValuesIterator;
+import org.blendee.sql.Column;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SelectClause;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
@@ -43,6 +52,8 @@ import org.blendee.support.QueryHelper;
 import org.blendee.support.QueryOnClause;
 import org.blendee.support.Vargs;
 import org.blendee.support.QueryRelationship;
+import org.blendee.support.Row;
+import org.blendee.support.RowIterator;
 import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.WhereQueryRelationship;
 import org.blendee.support.GroupByQueryRelationship;
@@ -270,78 +281,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			throw new IllegalArgumentException("id が空です");
 
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の実行結果
-	 */
-	public static <T> T yieldExecutor(
-		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return evaluate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
-	 * 引数の id で生成された Query が使用されます。
-	 * @see #of(String)
-	 * @param id Query 生成用の ID
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の実行結果
-	 */
-	public static <T> T yieldExecutorOf(
-		String id,
-		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return evaluate(of(id), function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の実行結果
-	 */
-	public static <T> T yieldAggregator(
-		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return evaluate(new /*++{1}Query++*//*--*/QueryBase/*--*/(), function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
-	 * 引数の id で生成された Query が使用されます。
-	 * @see #of(String)
-	 * @param id Query 生成用の ID
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の実行結果
-	 */
-	public static <T> T yieldAggregatorOf(
-		String id,
-		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return evaluate(of(id), function, complementer);
-	/*++'++*/}/*++'++*/
-
-	private static <T> T evaluate(
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query,
-		Function</*++{1}Query++*//*--*/QueryBase/*--*/, T> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		Class<?> lambdaClass = function.getClass();
-		Playbackable<T> playbackable = QueryHelper.get(lambdaClass);
-
-		if (playbackable != null) return playbackable.play(complementer);
-
-		T result = function.apply(query);
-
-		QueryHelper.regist(lambdaClass, query.helper.getPlaybackable());
-
-		return result;
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -1106,4 +1045,70 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			super(relationship, name);
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
+
+	public class Executor implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> {
+
+		private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+
+		private final String sql;
+
+		private final PreparedStatementComplementer complementer;
+
+		private final TablePath path;
+		
+		private final Column[] columns;
+
+		private final SimpleOptimizer optimizer;
+	
+		private Executor(String sql, PreparedStatementComplementer complementer, TablePath path, Column[] columns) {
+			this.sql = sql;
+			this.complementer =complementer;
+			this.path = path;
+			this.columns = columns;
+			optimizer = new SimpleOptimizer(path);
+			for (Column column : columns) {
+				optimizer.add(column);
+			}
+		}
+
+		@Override
+		public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() {
+			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+			SelectedValuesIterator selected = new SelectedValuesIterator(
+				statement,
+				statement.executeQuery(),
+				columns,
+				optimizer);
+
+			return manager.wrap(new DataObjectIterator(
+				factory.getInstance(path),
+				selected,
+				false));
+		}
+
+		@Override
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() {
+			return null;
+		}
+
+		@Override
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) {
+			return null;
+		}
+
+		@Override
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) {
+			return null;
+		}
+
+		@Override
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) {
+			return null;
+		}
+
+		@Override
+		public int count() {
+			return 0;
+		}
+	}
 /*++'++*/}/*++'++*/
