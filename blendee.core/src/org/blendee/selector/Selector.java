@@ -8,14 +8,16 @@ import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.WindowFunction;
 
@@ -111,13 +113,7 @@ public class Selector {
 		SelectClause clause = getSelectClause();
 		prepareBuilder(clause);
 
-		BlenStatement statement = BlendeeManager.getConnection().getStatement(builder);
-
-		return new SelectedValuesIterator(
-			statement,
-			statement.executeQuery(),
-			clause.getColumns(),
-			optimizer);
+		return select(builder.sql(), builder, clause.getColumns(), optimizer);
 	}
 
 	/**
@@ -132,6 +128,23 @@ public class Selector {
 	@Override
 	public String toString() {
 		return U.toString(this);
+	}
+
+	/**
+	 * 検索を実行します。
+	 * @return 検索結果
+	 */
+	public static SelectedValuesIterator select(
+		String sql,
+		PreparedStatementComplementer complementer,
+		Column[] selectColumns,
+		SelectedValuesConverter converter) {
+		BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		return new SelectedValuesIterator(
+			statement,
+			statement.executeQuery(),
+			selectColumns,
+			converter);
 	}
 
 	/**

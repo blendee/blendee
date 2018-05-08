@@ -3,23 +3,17 @@ package org.blendee.selector;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SelectClause;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * @author 千葉 哲嗣
  */
-public class RuntimeOptimizer implements Optimizer {
+public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements Optimizer {
 
 	private final TablePath path;
-
-	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	private final SelectClause select = new SelectClause();
 
@@ -60,11 +54,6 @@ public class RuntimeOptimizer implements Optimizer {
 	@Override
 	public SelectClause getOptimizedSelectClause() {
 		return select;
-	}
-
-	@Override
-	public SelectedValues convert(Result result, Column[] columns) {
-		return new ConcreteSelectedValues(result, columns, extractors);
 	}
 
 	@Override

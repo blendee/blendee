@@ -6,67 +6,58 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
-import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
-import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ComposedSQL;
+import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
+import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
-import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.SimpleOptimizer;
-import org.blendee.selector.SelectedValues;
-import org.blendee.selector.SelectedValuesIterator;
-import org.blendee.sql.Column;
+import org.blendee.selector.SelectedValuesConverter;
+import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Bindable;
+import org.blendee.sql.BindableConverter;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
-import org.blendee.sql.SelectClause;
+import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.FromClause.JoinType;
-import org.blendee.support.OrderByQueryColumn;
+import org.blendee.sql.SQLDecorator;
+import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
-import org.blendee.support.SelectQueryColumn;
+import org.blendee.support.GroupByQueryRelationship;
+import org.blendee.support.HavingQueryColumn;
+import org.blendee.support.HavingQueryRelationship;
 /*++{6}++*/
 import org.blendee.support.LogicalOperators;
 import org.blendee.support.NotUniqueException;
+import org.blendee.support.OnLeftQueryColumn;
+import org.blendee.support.OnLeftQueryRelationship;
+import org.blendee.support.OnRightQueryColumn;
+import org.blendee.support.OnRightQueryRelationship;
 import org.blendee.support.OneToManyExecutor;
-import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.OrderByOfferFunction;
+import org.blendee.support.OrderByQueryColumn;
+import org.blendee.support.OrderByQueryRelationship;
 import org.blendee.support.Query;
-import org.blendee.support.Aggregator;
-import org.blendee.support.Playbackable;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
 import org.blendee.support.QueryOnClause;
-import org.blendee.support.Vargs;
 import org.blendee.support.QueryRelationship;
-import org.blendee.support.Row;
-import org.blendee.support.RowIterator;
-import org.blendee.support.SelectQueryRelationship;
-import org.blendee.support.WhereQueryRelationship;
-import org.blendee.support.GroupByQueryRelationship;
-import org.blendee.support.HavingQueryRelationship;
-import org.blendee.support.OrderByQueryRelationship;
-import org.blendee.support.OnLeftQueryRelationship;
-import org.blendee.support.OnRightQueryRelationship;
 import org.blendee.support.SelectOfferFunction;
+import org.blendee.support.SelectQueryColumn;
+import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.Subquery;
+import org.blendee.support.Vargs;
 import org.blendee.support.WhereQueryColumn;
-import org.blendee.support.HavingQueryColumn;
-import org.blendee.support.OnLeftQueryColumn;
-import org.blendee.support.OnRightQueryColumn;
+import org.blendee.support.WhereQueryRelationship;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -1052,58 +1043,52 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		private final String sql;
 
+		private final String countSql;
+
 		private final PreparedStatementComplementer complementer;
 
-		private final TablePath path;
+		private final Relationship relationship;
 		
-		private final Column[] columns;
+		private final Column[] selectedColumns;
 
-		private final SimpleOptimizer optimizer;
+		private final  SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
 	
-		private Executor(String sql, PreparedStatementComplementer complementer, TablePath path, Column[] columns) {
+		private Executor(
+			String sql,
+			String countSql,
+			PreparedStatementComplementer complementer,
+			Relationship relationship,
+			Column[] selectedColumns) {
 			this.sql = sql;
+			this.countSql = countSql;
 			this.complementer =complementer;
-			this.path = path;
-			this.columns = columns;
-			optimizer = new SimpleOptimizer(path);
-			for (Column column : columns) {
-				optimizer.add(column);
-			}
+			this.relationship = relationship;
+			this.selectedColumns = selectedColumns;
 		}
 
 		@Override
 		public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() {
-			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
-			SelectedValuesIterator selected = new SelectedValuesIterator(
-				statement,
-				statement.executeQuery(),
-				columns,
-				optimizer);
-
-			return manager.wrap(new DataObjectIterator(
-				factory.getInstance(path),
-				selected,
-				false));
+			return manager.select(sql, complementer, relationship, selectedColumns, converter);
 		}
 
 		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() {
-			return null;
+			return getUnique(execute());
 		}
 
 		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) {
-			return null;
+			return fetch(BindableConverter.convert(primaryKeyMembers));
 		}
 
 		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) {
-			return null;
+			return fetch(BindableConverter.convert(primaryKeyMembers));
 		}
 
 		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) {
-			return null;
+			return manager.select(sql, relationship, selectedColumns, primaryKeyMembers, converter);
 		}
 
 		@Override

@@ -1,8 +1,6 @@
 package org.blendee.selector;
 
-import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -10,7 +8,7 @@ import org.blendee.sql.SelectClause;
  * @author 千葉 哲嗣
  * @see Selector#Selector(Optimizer)
  */
-public interface Optimizer {
+public interface Optimizer extends SelectedValuesConverter {
 
 	/**
 	 * このクラスのインスタンスが持つ対象となるテーブルです。
@@ -23,12 +21,4 @@ public interface Optimizer {
 	 * @return SELECT 句
 	 */
 	SelectClause getOptimizedSelectClause();
-
-	/**
-	 * 検索結果と検索時に指定したカラムから {@link SelectedValues} を生成します。
-	 * @param result 検索結果
-	 * @param columns 検索時に指定したカラム
-	 * @return {@link SelectedValues}
-	 */
-	SelectedValues convert(Result result, Column[] columns);
 }

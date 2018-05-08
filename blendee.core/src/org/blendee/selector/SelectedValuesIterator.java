@@ -26,7 +26,7 @@ public class SelectedValuesIterator
 
 	private final Column[] columns;
 
-	private final Optimizer optimizer;
+	private final SelectedValuesConverter converter;
 
 	private int counter = 0;
 
@@ -34,16 +34,15 @@ public class SelectedValuesIterator
 
 	private boolean hasNext = false;
 
-	@SuppressWarnings("javadoc")
-	public SelectedValuesIterator(
+	SelectedValuesIterator(
 		BlenStatement statement,
 		BlenResultSet result,
 		Column[] columns,
-		Optimizer optimizer) {
+		SelectedValuesConverter converter) {
 		this.statement = statement;
 		this.result = result;
 		this.columns = columns;
-		this.optimizer = optimizer;
+		this.converter = converter;
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class SelectedValuesIterator
 	public SelectedValues next() {
 		if (!called) hasNext();
 		if (!hasNext) throw new NoSuchElementException();
-		SelectedValues values = optimizer.convert(result, columns);
+		SelectedValues values = converter.convert(result, columns);
 		called = false;
 		counter++;
 		return values;

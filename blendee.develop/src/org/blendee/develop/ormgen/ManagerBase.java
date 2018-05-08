@@ -1,14 +1,18 @@
 /*--*//*@formatter:off*//*--*/package /*++{0}.manager++*//*--*/org.blendee.develop.ormgen/*--*/;
 
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
+import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.SimpleOptimizer;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.Relationship;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
 
@@ -59,13 +63,27 @@ public class /*++{1}Manager++*//*--*/ManagerBase/*--*/
 			options));
 	/*++'++*/}/*++'++*/
 
-	/**
-	 * '{'@link DataObjectIterator'}' を、 '{'@link {1}Iterator'}' として返します。
-	 * @param dataObjectIterator '{'@link DataObjectIterator'}'
-	 * @return '{'@link RowIterator'}'
-	 */
-	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ wrap(DataObjectIterator dataObjectIterator) /*++'++*/{/*++'++*/
-		return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(dataObjectIterator);
+		/**
+		 * パラメータの条件にマッチするレコードを検索し、 '{'@link {1}Iterator'}' として返します。
+		 * @param optimizer SELECT 句を制御する '{'@link Optimizer'}'
+		 * @param criteria WHERE 句となる条件
+		 * @param order  ORDER 句
+		 * @param options 検索オプション
+		 * @return '{'@link RowIterator'}'
+		 */
+		public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ select(
+			String sql,
+			PreparedStatementComplementer complementer,
+			Relationship relationship,
+			Column[] selectedColumns,
+			SelectedValuesConverter converter) /*++'++*/{/*++'++*/
+			return new /*++{1}Iterator++*//*--*/IteratorBase/*--*/(DataAccessHelper.select(
+				sql,
+				complementer,
+				relationship,
+				selectedColumns,
+				converter,
+				false));
 	/*++'++*/}/*++'++*/
 
 	@Override

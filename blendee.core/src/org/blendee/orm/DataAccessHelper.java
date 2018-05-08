@@ -12,21 +12,24 @@ import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;
 import org.blendee.selector.Optimizer;
+import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.Selector;
 import org.blendee.sql.Bindable;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
@@ -518,20 +521,25 @@ public class DataAccessHelper {
 			readonly);
 	}
 
-	private static void checkArgument(Optimizer optimizer, PrimaryKey primaryKey) {
-		if (!optimizer.getTablePath().equals(primaryKey.getTablePath()))
-			throw new IllegalArgumentException("optimizer と primaryKey のテーブルが違います");
+	public static DataObjectIterator select(
+		String sql,
+		PreparedStatementComplementer complementer,
+		Relationship relationship,
+		Column[] selectColumns,
+		SelectedValuesConverter converter,
+		boolean readonly) {
+		return new DataObjectIterator(
+			relationship,
+			Selector.select(sql, complementer, selectColumns, converter),
+			readonly);
 	}
 
-	private void adjustArgument(
-		Optimizer optimizer,
-		Criteria criteria,
-		OrderByClause order) {
-		if (criteria != null) criteria.adjustColumns(factory.getInstance(optimizer.getTablePath()));
-		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getTablePath()));
-	}
-
-	private static DataObject getFirst(
+	/**
+	 * 検索結果の一件目を取得します。
+	 * @param iterator 検索結果
+	 * @return 一件目の {@link DataObject}
+	 */
+	public static DataObject getFirst(
 		DataObjectIterator iterator) {
 		DataObject dataObject;
 		try {
@@ -543,6 +551,19 @@ public class DataAccessHelper {
 		}
 
 		return dataObject;
+	}
+
+	private static void checkArgument(Optimizer optimizer, PrimaryKey primaryKey) {
+		if (!optimizer.getTablePath().equals(primaryKey.getTablePath()))
+			throw new IllegalArgumentException("optimizer と primaryKey のテーブルが違います");
+	}
+
+	private void adjustArgument(
+		Optimizer optimizer,
+		Criteria criteria,
+		OrderByClause order) {
+		if (criteria != null) criteria.adjustColumns(factory.getInstance(optimizer.getTablePath()));
+		if (order != null) order.adjustColumns(factory.getInstance(optimizer.getTablePath()));
 	}
 
 	private static void insertInternal(
