@@ -19,24 +19,34 @@ public class ForeignKeySource {
 
 	private final String name;
 
-	private final String[] columns;
+	private final String[] fkColumns;
+
+	private final String[] pkColumns;
 
 	private final TablePath imported;
 
 	/**
 	 * このクラスのインスタンスを生成します。
 	 * @param name 外部キー名
-	 * @param columns 構成カラム
+	 * @param fkColumns FK 構成カラム
+	 * @param pkColumns PK 構成カラム
 	 * @param imported 参照先
 	 */
-	public ForeignKeySource(String name, String[] columns, TablePath imported) {
+	public ForeignKeySource(String name, String[] fkColumns, String[] pkColumns, TablePath imported) {
 		this.name = name;
-		this.columns = columns.clone();
+		this.fkColumns = fkColumns.clone();
+
+		if (pkColumns == null) {
+			this.pkColumns = U.STRING_EMPTY_ARRAY;
+		} else {
+			this.pkColumns = pkColumns.clone();
+		}
+
 		this.imported = imported;
 	}
 
 	/**
-	 * コンストラクタで渡された外部キー名を返します。
+	 * 外部キー名を返します。
 	 * @return 外部キー名
 	 */
 	public String getName() {
@@ -44,15 +54,23 @@ public class ForeignKeySource {
 	}
 
 	/**
-	 * コンストラクタで渡された構成カラムを返します
+	 * FK 構成カラムを返します
 	 * @return 構成カラム
 	 */
-	public String[] getColumns() {
-		return columns.clone();
+	public String[] getFKColumns() {
+		return fkColumns.clone();
 	}
 
 	/**
-	 * コンストラクタで渡された参照先を返します。
+	 * PK 構成カラムを返します
+	 * @return 構成カラム
+	 */
+	public String[] getPKColumns() {
+		return pkColumns.clone();
+	}
+
+	/**
+	 * 参照先を返します。
 	 * @return 参照先
 	 */
 	public TablePath getImportedTable() {

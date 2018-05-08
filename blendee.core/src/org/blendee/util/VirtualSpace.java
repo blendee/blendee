@@ -191,6 +191,9 @@ public class VirtualSpace implements Metadata {
 				pkTable = pkTableBase;
 			}
 
+			String[] pkColumns = fk.getPKColumns();
+			if (pkColumns.length == 0) pkColumns = pkTable.getPrimaryKeySource().getColumnNames();
+
 			crossReferences.get(table.getTablePath()).put(
 				pkTable.getTablePath(),
 				new SimpleCrossReference(
@@ -198,8 +201,8 @@ public class VirtualSpace implements Metadata {
 					fk.getName(),
 					pkTable.getTablePath(),
 					table.getTablePath(),
-					pkTable.getPrimaryKeySource().getColumnNames(),
-					fk.getColumns(),
+					pkColumns,
+					fk.getFKColumns(),
 					true));
 		}
 	}

@@ -120,7 +120,6 @@ public class ConcreteConnection implements BlenConnection {
 			regularize(schemaName),
 			null,
 			tableTypes)) {
-
 			List<String> tables = new ArrayList<>();
 			while (result.next()) {
 				String tableName = result.getString("TABLE_NAME");
@@ -128,10 +127,12 @@ public class ConcreteConnection implements BlenConnection {
 				if (!TablePath.checkObjectName(tableName)) continue;
 				tables.add(tableName);
 			}
+
 			TablePath[] paths = new TablePath[tables.size()];
 			for (int i = 0; i < paths.length; i++) {
 				paths[i] = new TablePath(schemaName, tables.get(i));
 			}
+
 			return paths;
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
@@ -254,9 +255,11 @@ public class ConcreteConnection implements BlenConnection {
 				builder = new CrossReferenceBuilder(result);
 				builders.add(builder);
 			}
+
 			if (builder == null) throw new IllegalStateException("KEY_SEQ に 1 がありません");
 			builder.add(result);
 		}
+
 		CrossReference[] references = new CrossReference[builders.size()];
 		int index = 0;
 		for (Iterator<CrossReferenceBuilder> i = builders.iterator(); i.hasNext(); index++)

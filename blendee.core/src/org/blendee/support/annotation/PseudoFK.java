@@ -27,8 +27,15 @@ public @interface PseudoFK {
 	String references();
 
 	/**
-	 * 外部キーを構成するカラム
+	 * 外部キー（参照側）を構成するカラム
 	 * @return 外部キーを構成するカラム
 	 */
 	String[] columns();
+
+	/**
+	 * 主キー（参照される側）を構成するカラム<br>
+	 * 省略された場合、 PK を構成するカラムが使用されます。
+	 * @return 主キーを構成するカラム
+	 */
+	String[] referredColumns() default {};
 }
