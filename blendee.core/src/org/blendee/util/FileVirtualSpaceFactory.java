@@ -116,7 +116,8 @@ class FileVirtualSpaceFactory {
 
 			fks[i] = new ForeignKeySource(
 				foreignKeyName,
-				processColumnNames(xpath, (NodeList) xpath.evaluate("column", node, XPathConstants.NODESET)),
+				processColumnNames(xpath, (NodeList) xpath.evaluate("fk-column", node, XPathConstants.NODESET)),
+				processColumnNames(xpath, (NodeList) xpath.evaluate("pk-column", node, XPathConstants.NODESET)),
 				TablePath.parse(xpath.evaluate("@references", node)));
 		}
 
