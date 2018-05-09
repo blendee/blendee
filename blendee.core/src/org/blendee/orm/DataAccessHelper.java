@@ -521,17 +521,25 @@ public class DataAccessHelper {
 			readonly);
 	}
 
+	/**
+	 * 検索を実行します。
+	 * @param sql SQL
+	 * @param complementer {@link PreparedStatementComplementer}
+	 * @param relationship {@link Relationship}
+	 * @param selectColumns SELECT 句で選択されたカラム
+	 * @param converter {@link SelectedValuesConverter}
+	 * @return 検索結果
+	 */
 	public static DataObjectIterator select(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Relationship relationship,
 		Column[] selectColumns,
-		SelectedValuesConverter converter,
-		boolean readonly) {
+		SelectedValuesConverter converter) {
 		return new DataObjectIterator(
 			relationship,
 			Selector.select(sql, complementer, selectColumns, converter),
-			readonly);
+			false);
 	}
 
 	/**

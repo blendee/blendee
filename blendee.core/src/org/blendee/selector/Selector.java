@@ -132,6 +132,10 @@ public class Selector {
 
 	/**
 	 * 検索を実行します。
+	 * @param sql SQL
+	 * @param complementer {@link PreparedStatementComplementer}
+	 * @param selectColumns SELECT 句で選択されたカラム
+	 * @param converter {@link SelectedValuesConverter}
 	 * @return 検索結果
 	 */
 	public static SelectedValuesIterator select(
@@ -151,7 +155,7 @@ public class Selector {
 	 * このインスタンスが使用する SELECT 句を返します。
 	 * @return このインスタンスが使用する SELECT 句
 	 */
-	protected SelectClause getSelectClause() {
+	public SelectClause getSelectClause() {
 		return optimizer.getOptimizedSelectClause();
 	}
 

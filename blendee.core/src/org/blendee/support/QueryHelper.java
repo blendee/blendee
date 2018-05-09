@@ -13,22 +13,33 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
+import org.blendee.orm.DataObject;
+import org.blendee.orm.DataObjectIterator;
+import org.blendee.orm.DataObjectNotFoundException;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
+import org.blendee.selector.SelectedValuesConverter;
+import org.blendee.selector.Selector;
 import org.blendee.selector.SimpleOptimizer;
+import org.blendee.selector.SimpleSelectedValuesConverter;
+import org.blendee.sql.Bindable;
+import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.QueryBuilder.UnionOperator;
+import org.blendee.sql.Relationship;
+import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
@@ -468,6 +479,92 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new Subquery(buildBuilder());
 	}
 
+	public static class HelperExecutor implements Executor<DataObjectIterator, DataObject> {
+
+		private final String sql;
+
+		private final String countSQL;
+
+		private final PreparedStatementComplementer complementer;
+
+		private final Relationship relationship;
+
+		private final Column[] selectedColumns;
+
+		private final SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
+
+		private HelperExecutor(
+			String sql,
+			String countSQL,
+			PreparedStatementComplementer complementer,
+			Relationship relationship,
+			Column[] selectedColumns) {
+			this.sql = sql;
+			this.countSQL = countSQL;
+			this.complementer = complementer;
+			this.relationship = relationship;
+			this.selectedColumns = selectedColumns;
+		}
+
+		@Override
+		public DataObjectIterator execute() {
+			return DataAccessHelper.select(
+				sql,
+				complementer,
+				relationship,
+				selectedColumns,
+				converter);
+		}
+
+		@Override
+		public DataObject willUnique() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public DataObject fetch(String... primaryKeyMembers) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public DataObject fetch(Number... primaryKeyMembers) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public DataObject fetch(Bindable... primaryKeyMembers) {
+			DataObject object;
+			try {
+				object = DataAccessHelper.getFirst(
+					DataAccessHelper.select(
+						sql,
+						s -> {
+							for (int i = 0; i < primaryKeyMembers.length; i++) {
+								primaryKeyMembers[i].toBinder().bind(i + 1, s);
+							}
+						},
+						relationship,
+						selectedColumns,
+						converter));
+			} catch (DataObjectNotFoundException e) {
+				return null;
+			}
+
+			return object;
+		}
+
+		@Override
+		public int count() {
+			BlenConnection connection = BlendeeManager.getConnection();
+			try (BlenStatement statement = connection.getStatement(countSQL, complementer)) {
+				try (BlenResultSet result = statement.executeQuery()) {
+					result.next();
+					return result.getInt(1);
+				}
+			}
+		}
+	}
+
 	private static class HelperAggregator implements Aggregator {
 
 		private final String sql;
@@ -515,7 +612,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 	}
 
-	public Aggregator registAndGetAggregateExecutor() {
+	public Aggregator registAndGetAggregator() {
 		ComposedSQL sql = buildBuilder();
 
 		String sqlString = sql.sql();
@@ -529,7 +626,31 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return myPlaybackable.play(sql);
 	}
 
-	public Aggregator getAggregateExecutor() {
+	public HelperExecutor registAndGetExecutor() {
+		Selector selector = new DataAccessHelper().getSelector(
+			getOptimizer(),
+			whereClause,
+			orderByClause,
+			decorators());
+		ComposedSQL composedSQL = selector.composeSQL();
+
+		String sql = composedSQL.sql();
+		String coutSql = toCountSQL(sql);
+
+		Column[] selectedColumns = selector.getSelectClause().getColumns();
+
+		Relationship relationship = ContextManager.get(RelationshipFactory.class).getInstance(table);
+
+		Playbackable<HelperExecutor> myPlaybackable = complementer -> {
+			return new HelperExecutor(sql, coutSql, complementer, relationship, selectedColumns);
+		};
+
+		playbackable = myPlaybackable;
+
+		return myPlaybackable.play(composedSQL);
+	}
+
+	public Aggregator getAggregator() {
 		ComposedSQL sql = buildBuilder();
 		return new HelperAggregator(sql.sql(), sql);
 	}
@@ -604,6 +725,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private Criteria havingClause() {
 		if (havingClause == null) havingClause = CriteriaFactory.create();
 		return havingClause;
+	}
+
+	private static String toCountSQL(String sql) {
+		int fromPosition = sql.indexOf("FROM");
+		return "SELECT COUNT(*) " + sql.substring(fromPosition);
 	}
 
 	private static class UnionContainer {

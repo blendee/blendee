@@ -11,12 +11,9 @@ import org.blendee.orm.DataObjectNotFoundException;
 import org.blendee.orm.PrimaryKey;
 import org.blendee.orm.SequenceGenerator;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 
@@ -204,40 +201,6 @@ public interface RowManager<T extends Row> {
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}
-		return Optional.of(createRow(object));
-	}
-
-	/**
-	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param options 行ロックオプション {@link RowLockOption} 等
-	 * @param primaryKeyMembers 主キーを構成する値
-	 * @return {@link Row} 存在しなければ null
-	 */
-	default Optional<T> select(
-		String sql,
-		Relationship relationship,
-		Column[] selectedColumns,
-		Bindable[] primaryKeyMembers,
-		SelectedValuesConverter converter) {
-		DataObject object;
-		try {
-			object = DataAccessHelper.getFirst(
-				DataAccessHelper.select(
-					sql,
-					s -> {
-						for (int i = 0; i < primaryKeyMembers.length; i++) {
-							primaryKeyMembers[i].toBinder().bind(i + 1, s);
-						}
-					},
-					relationship,
-					selectedColumns,
-					converter,
-					false));
-		} catch (DataObjectNotFoundException e) {
-			return Optional.empty();
-		}
-
 		return Optional.of(createRow(object));
 	}
 

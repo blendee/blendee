@@ -60,7 +60,7 @@ public class SynchronizedSelector extends Selector {
 	}
 
 	@Override
-	protected synchronized SelectClause getSelectClause() {
+	public synchronized SelectClause getSelectClause() {
 		return super.getSelectClause();
 	}
 }

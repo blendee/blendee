@@ -9,17 +9,13 @@ import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormge
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValuesConverter;
-import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
-import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
@@ -28,6 +24,7 @@ import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.support.Aggregator;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.GroupByQueryRelationship;
@@ -49,6 +46,7 @@ import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
+import org.blendee.support.QueryHelper.HelperExecutor;
 import org.blendee.support.QueryOnClause;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
@@ -575,17 +573,17 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
-		helper.getAggregateExecutor().aggregate(consumer);
+		helper.getAggregator().aggregate(consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) /*++'++*/{/*++'++*/
-		return helper.getAggregateExecutor().aggregateAndGet(function);
+		return helper.getAggregator().aggregateAndGet(function);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
-		return helper.registAndGetAggregateExecutor().aggregate();
+		return helper.getAggregator().aggregate();
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -608,6 +606,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public Subquery toSubquery() /*++'++*/{/*++'++*/
 		return helper.toSubquery();
 	/*++'++*/}/*++'++*/
+
+	@Override
+	public Executor executor() {
+		return new Executor(helper.registAndGetExecutor());
+	}
+
+	@Override
+	public Aggregator aggregator() {
+		return helper.registAndGetAggregator();
+	}
 
 	/**
 	 * 現在保持している WHERE 句をリセットします。
@@ -1037,63 +1045,47 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 
-	public class Executor implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> {
+	/**
+	 * Executor
+	 */
+	public  class Executor
+		implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> /*++'++*/{/*++'++*/
 
-		private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+		private final HelperExecutor inner;
 
-		private final String sql;
-
-		private final String countSql;
-
-		private final PreparedStatementComplementer complementer;
-
-		private final Relationship relationship;
-		
-		private final Column[] selectedColumns;
-
-		private final  SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
-	
-		private Executor(
-			String sql,
-			String countSql,
-			PreparedStatementComplementer complementer,
-			Relationship relationship,
-			Column[] selectedColumns) {
-			this.sql = sql;
-			this.countSql = countSql;
-			this.complementer =complementer;
-			this.relationship = relationship;
-			this.selectedColumns = selectedColumns;
-		}
+		private Executor(HelperExecutor inner) /*++'++*/{/*++'++*/
+			this.inner = inner;
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() {
-			return manager.select(sql, complementer, relationship, selectedColumns, converter);
-		}
+		public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
+			return manager.wrap(inner.execute());
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() {
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
 			return getUnique(execute());
-		}
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) {
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 			return fetch(BindableConverter.convert(primaryKeyMembers));
-		}
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) {
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 			return fetch(BindableConverter.convert(primaryKeyMembers));
-		}
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) {
-			return manager.select(sql, relationship, selectedColumns, primaryKeyMembers, converter);
-		}
+		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
+			DataObject object = inner.fetch(primaryKeyMembers);
+			return  object == null ? Optional.empty() : Optional.of(manager.createRow(object));
+		/*++'++*/}/*++'++*/
 
 		@Override
-		public int count() {
-			return 0;
-		}
-	}
+		public int count() /*++'++*/{/*++'++*/
+			return inner.count();
+		/*++'++*/}/*++'++*/
+	/*++'++*/}/*++'++*/
 /*++'++*/}/*++'++*/
