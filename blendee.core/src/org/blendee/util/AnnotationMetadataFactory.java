@@ -115,7 +115,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		return new ForeignKeySource(
 			annotation.name(),
 			annotation.columns(),
-			annotation.referredColumns(),
+			annotation.refColumns(),
 			TablePath.parse(annotation.references()));
 	}
 

@@ -53,6 +53,7 @@ public class FileMetadataFactory implements MetadataFactory {
 		if (!virtualSpace.isStarted()) {
 			virtualSpace.start(depends);
 		}
+
 		return new Metadata[] { virtualSpace };
 	}
 

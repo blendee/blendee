@@ -37,5 +37,5 @@ public @interface PseudoFK {
 	 * 省略された場合、 PK を構成するカラムが使用されます。
 	 * @return 主キーを構成するカラム
 	 */
-	String[] referredColumns() default {};
+	String[] refColumns() default {};
 }
