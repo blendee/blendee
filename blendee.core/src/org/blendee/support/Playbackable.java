@@ -8,6 +8,7 @@ import org.blendee.jdbc.PreparedStatementComplementer;
  * @author 千葉 哲嗣
  * @param <T> 検索実行結果の型
  */
+@FunctionalInterface
 public interface Playbackable<T> {
 
 	/**

@@ -11,6 +11,7 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
+import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
@@ -270,6 +271,56 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			throw new IllegalArgumentException("id が空です");
 
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
+	 * @param consumer Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return consumer の Query から生成された '{'@link Executor'}'
+	 */
+	public static Executor executor(Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
+		return query.helper.executor(query, consumer, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
+	 * 引数の id で生成された Query が使用されます。
+	 * @see #of(String)
+	 * @param id Query 生成用の ID
+	 * @param consumer Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return consumer の Query から生成された '{'@link Executor'}'
+	 */
+	public static Executor executorOf(String id, Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
+		return query.helper.executor(query, consumer, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
+	 * @param consumer Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return consumer の Query から生成された '{'@link Aggregator'}'
+	 */
+	public static Aggregator aggregator(Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
+		return query.helper.aggregator(query, consumer, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
+	 * 引数の id で生成された Query が使用されます。
+	 * @see #of(String)
+	 * @param id Query 生成用の ID
+	 * @param consumer Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return consumer の Query から生成された '{'@link Aggregator'}'
+	 */
+	public static Aggregator aggregatorOf(String id, Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
+		return query.helper.aggregator(query, consumer, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**

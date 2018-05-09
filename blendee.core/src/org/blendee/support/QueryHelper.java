@@ -93,7 +93,42 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Playbackable<?> playbackable;
 
-	public static void regist(Class<?> lambdaClass, Playbackable<?> playbackable) {
+	public <T extends Executor<?, ?>, Q extends Query> T executor(
+		Q query,
+		Consumer<Q> consumer,
+		PreparedStatementComplementer complementer) {
+		Class<?> lambdaClass = consumer.getClass();
+		Playbackable<T> cached = getPlaybackable(lambdaClass);
+		if (cached != null) return cached.play(complementer);
+
+		consumer.accept(query);
+
+		@SuppressWarnings("unchecked")
+		T result = (T) query.executor();
+
+		QueryHelper.registPlaybackable(lambdaClass, playbackable);
+
+		return result;
+	}
+
+	public <Q extends Query> Aggregator aggregator(
+		Q query,
+		Consumer<Q> consumer,
+		PreparedStatementComplementer complementer) {
+		Class<?> lambdaClass = consumer.getClass();
+		Playbackable<Aggregator> playbackable = getPlaybackable(lambdaClass);
+		if (playbackable != null) return playbackable.play(complementer);
+
+		consumer.accept(query);
+
+		Aggregator result = query.aggregator();
+
+		QueryHelper.registPlaybackable(lambdaClass, playbackable);
+
+		return result;
+	}
+
+	private static void registPlaybackable(Class<?> lambdaClass, Playbackable<?> playbackable) {
 		Objects.requireNonNull(lambdaClass);
 		Objects.requireNonNull(playbackable);
 		synchronized (cache) {
@@ -102,7 +137,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Playbackable<T> get(Class<?> lambdaClass) {
+	private static <T> Playbackable<T> getPlaybackable(Class<?> lambdaClass) {
 		synchronized (cache) {
 			return (Playbackable<T>) cache.get(lambdaClass);
 		}
@@ -632,6 +667,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			whereClause,
 			orderByClause,
 			decorators());
+
 		ComposedSQL composedSQL = selector.composeSQL();
 
 		String sql = composedSQL.sql();
@@ -653,14 +689,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	public Aggregator getAggregator() {
 		ComposedSQL sql = buildBuilder();
 		return new HelperAggregator(sql.sql(), sql);
-	}
-
-	public Playbackable<?> getPlaybackable() {
-		return playbackable;
-	}
-
-	public void setPlaybackable(Playbackable<?> playbackable) {
-		this.playbackable = playbackable;
 	}
 
 	public QueryBuilder buildBuilder() {

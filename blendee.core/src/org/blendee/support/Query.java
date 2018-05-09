@@ -94,7 +94,7 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * 検索条件等を保持した {@link Executor} を返します。
 	 * @return {@link Executor}
 	 */
-	Executor<? extends RowIterator<? extends Row>, ? extends Optional<? extends Row>> executor();
+	Executor<?, ?> executor();
 
 	/**
 	 * 検索条件等を保持した {@link Aggregator} を返します。
