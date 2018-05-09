@@ -61,14 +61,14 @@
 			<column name="sample2_column2" />
 		</primary-key>
 		<foreign-key name="sample2_fk1" references="sample1">
-			<fk-column name="sample2_column1" />
-			<fk-column name="sample2_column2" />
+			<column name="sample2_column1" />
+			<column name="sample2_column2" />
 		</foreign-key>
 		<foreign-key name="sample2_fk2" references="sample1">
-			<fk-column name="sample2_column3" />
-			<fk-column name="sample2_column4" />
-			<pk-column name="sample1_column1" />
-			<pk-column name="sample1_column2" />
+			<column name="sample2_column3" />
+			<column name="sample2_column4" />
+			<refcolumn name="sample1_column1" />
+			<refcolumn name="sample1_column2" />
 		</foreign-key>
 	</table>
 </blendee-metadata-extension>
