@@ -43,6 +43,7 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.support.ReuseFunctions.ReuseFunction;
 
 /**
  * {@link Query} の内部処理を定義したヘルパークラスです。
@@ -93,35 +94,15 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Playbackable<?> playbackable;
 
-	public <T extends Executor<?, ?>, Q extends Query> T executor(
+	public <T, Q extends Query> T reuse(
 		Q query,
-		Consumer<Q> consumer,
+		ReuseFunction<Q, T> consumer,
 		PreparedStatementComplementer complementer) {
 		Class<?> lambdaClass = consumer.getClass();
 		Playbackable<T> cached = getPlaybackable(lambdaClass);
 		if (cached != null) return cached.play(complementer);
 
-		consumer.accept(query);
-
-		@SuppressWarnings("unchecked")
-		T result = (T) query.executor();
-
-		QueryHelper.registPlaybackable(lambdaClass, playbackable);
-
-		return result;
-	}
-
-	public <Q extends Query> Aggregator aggregator(
-		Q query,
-		Consumer<Q> consumer,
-		PreparedStatementComplementer complementer) {
-		Class<?> lambdaClass = consumer.getClass();
-		Playbackable<Aggregator> playbackable = getPlaybackable(lambdaClass);
-		if (playbackable != null) return playbackable.play(complementer);
-
-		consumer.accept(query);
-
-		Aggregator result = query.aggregator();
+		T result = consumer.apply(query);
 
 		QueryHelper.registPlaybackable(lambdaClass, playbackable);
 

@@ -57,6 +57,7 @@ import org.blendee.support.Subquery;
 import org.blendee.support.Vargs;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.WhereQueryRelationship;
+import org.blendee.support.ReuseFunctions.*;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -275,13 +276,15 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param consumer Query を使用した SQL 組立処理
+	 * @param function Query を使用した SQL 組立処理
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return consumer の Query から生成された '{'@link Executor'}'
+	 * @return function の Query から生成された '{'@link Executor'}'
 	 */
-	public static Executor executor(Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+	public static Executor reuse(
+		ExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Executor> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
-		return query.helper.executor(query, consumer, complementer);
+		return query.helper.reuse(query, function, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -289,24 +292,29 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 引数の id で生成された Query が使用されます。
 	 * @see #of(String)
 	 * @param id Query 生成用の ID
-	 * @param consumer Query を使用した SQL 組立処理
+	 * @param function Query を使用した SQL 組立処理
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return consumer の Query から生成された '{'@link Executor'}'
+	 * @return function の Query から生成された '{'@link Executor'}'
 	 */
-	public static Executor executorOf(String id, Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+	public static Executor reuse(
+		String id,
+		ExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Executor> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
-		return query.helper.executor(query, consumer, complementer);
+		return query.helper.reuse(query, function, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param consumer Query を使用した SQL 組立処理
+	 * @param function Query を使用した SQL 組立処理
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return consumer の Query から生成された '{'@link Aggregator'}'
+	 * @return function の Query から生成された '{'@link Executor'}'
 	 */
-	public static Aggregator aggregator(Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+	public static <M> O2MExecutor<M> reuse(
+		O2MExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, O2MExecutor<M>> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
-		return query.helper.aggregator(query, consumer, complementer);
+		return query.helper.reuse(query, function, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -314,13 +322,46 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * 引数の id で生成された Query が使用されます。
 	 * @see #of(String)
 	 * @param id Query 生成用の ID
-	 * @param consumer Query を使用した SQL 組立処理
+	 * @param function Query を使用した SQL 組立処理
 	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return consumer の Query から生成された '{'@link Aggregator'}'
+	 * @return function の Query から生成された '{'@link Executor'}'
 	 */
-	public static Aggregator aggregatorOf(String id, Consumer</*++{1}Query++*//*--*/QueryBase/*--*/> consumer, PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+	public static <M> O2MExecutor<M> reuse(
+		String id,
+		O2MExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, O2MExecutor<M>> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
-		return query.helper.aggregator(query, consumer, complementer);
+		return query.helper.reuse(query, function, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の Query から生成された '{'@link Aggregator'}'
+	 */
+	public static Aggregator reuse(
+		AggregatorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Aggregator> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
+		return query.helper.reuse(query, function, complementer);
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
+	 * 引数の id で生成された Query が使用されます。
+	 * @see #of(String)
+	 * @param id Query 生成用の ID
+	 * @param function Query を使用した SQL 組立処理
+	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
+	 * @return function の Query から生成された '{'@link Aggregator'}'
+	 */
+	public static Aggregator reuse(
+		String id,
+		AggregatorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Aggregator> function,
+		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
+		return query.helper.reuse(query, function, complementer);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -1099,7 +1140,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/**
 	 * Executor
 	 */
-	public  class Executor
+	public class Executor
 		implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> /*++'++*/{/*++'++*/
 
 		private final HelperExecutor inner;
