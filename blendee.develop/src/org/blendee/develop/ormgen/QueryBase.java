@@ -3,14 +3,11 @@
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.orm.DataObject;
@@ -635,21 +632,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public void aggregate(Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
-		helper.executor().aggregate(consumer);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) /*++'++*/{/*++'++*/
-		return helper.executor().aggregateAndGet(function);
-	/*++'++*/}/*++'++*/
-
-	@Override
-	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
-		return helper.executor().aggregate();
-	/*++'++*/}/*++'++*/
-
-	@Override
 	public int count() /*++'++*/{/*++'++*/
 		helper.checkRowMode();
 		return manager.count(helper.getWhereClause());
@@ -1150,21 +1132,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public int count() /*++'++*/{/*++'++*/
 			return inner.count();
 		/*++'++*/}/*++'++*/
-
-		@Override
-		public void aggregate(Consumer<BlenResultSet> consumer) {
-			inner.aggregate(consumer);
-		}
-
-		@Override
-		public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
-			return inner.aggregateAndGet(function);
-		}
-
-		@Override
-		public ResultSetIterator aggregate() {
-			return inner.aggregate();
-		}
 
 		@Override
 		public String sql() /*++'++*/{/*++'++*/

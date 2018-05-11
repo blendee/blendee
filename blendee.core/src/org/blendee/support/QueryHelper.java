@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenPreparedStatement;
@@ -16,7 +15,6 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -596,41 +594,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 					return result.getInt(1);
 				}
 			}
-		}
-
-		/**
-		 * @param consumer {@link Consumer}
-		 */
-		@Override
-		public void aggregate(Consumer<BlenResultSet> consumer) {
-			BlenConnection connection = BlendeeManager.getConnection();
-			try (BlenStatement statement = connection.getStatement(sql, complementer)) {
-				try (BlenResultSet result = statement.executeQuery()) {
-					consumer.accept(result);
-				}
-			}
-		}
-
-		/**
-		 * @param function {@link Function}
-		 */
-		@Override
-		public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
-			BlenConnection connection = BlendeeManager.getConnection();
-			try (BlenStatement statement = connection.getStatement(sql, complementer)) {
-				try (BlenResultSet result = statement.executeQuery()) {
-					return function.apply(result);
-				}
-			}
-		}
-
-		/**
-		 * @param options 検索オプション
-		 * @return {@link ResultSetIterator}
-		 */
-		@Override
-		public ResultSetIterator aggregate() {
-			return new ResultSetIterator(sql, complementer);
 		}
 
 		@Override
