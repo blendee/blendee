@@ -14,7 +14,6 @@ import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
@@ -1110,16 +1109,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
 			return getUnique(execute());
-		/*++'++*/}/*++'++*/
-
-		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
-			return fetch(BindableConverter.convert(primaryKeyMembers));
-		/*++'++*/}/*++'++*/
-
-		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
-			return fetch(BindableConverter.convert(primaryKeyMembers));
 		/*++'++*/}/*++'++*/
 
 		@Override

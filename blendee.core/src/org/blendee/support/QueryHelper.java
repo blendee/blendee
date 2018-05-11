@@ -552,16 +552,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 
 		@Override
-		public DataObject fetch(String... primaryKeyMembers) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public DataObject fetch(Number... primaryKeyMembers) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public DataObject fetch(Bindable... primaryKeyMembers) {
 			checkRowMode(rowMode);
 			DataObject object;

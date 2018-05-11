@@ -20,7 +20,6 @@ import org.blendee.orm.DataAccessHelper;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
@@ -90,16 +89,6 @@ public class OneToManyExecutor<O extends Row, M>
 	@Override
 	public Optional<One<O, M>> willUnique() {
 		return getUnique(execute());
-	}
-
-	@Override
-	public Optional<One<O, M>> fetch(String... primaryKeyMembers) {
-		return fetch(BindableConverter.convert(primaryKeyMembers));
-	}
-
-	@Override
-	public Optional<One<O, M>> fetch(Number... primaryKeyMembers) {
-		return fetch(BindableConverter.convert(primaryKeyMembers));
 	}
 
 	@Override

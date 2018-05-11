@@ -11,6 +11,7 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Bindable;
+import org.blendee.sql.BindableConverter;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
@@ -43,7 +44,9 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(String... primaryKeyMembers);
+	default R fetch(String... primaryKeyMembers) {
+		return fetch(BindableConverter.convert(primaryKeyMembers));
+	}
 
 	/**
 	 * 主キーから Row 一件を選択するメソッドです。<br>
@@ -51,7 +54,9 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(Number... primaryKeyMembers);
+	default R fetch(Number... primaryKeyMembers) {
+		return fetch(BindableConverter.convert(primaryKeyMembers));
+	}
 
 	/**
 	 * 主キーから Row 一件を選択するメソッドです。<br>
