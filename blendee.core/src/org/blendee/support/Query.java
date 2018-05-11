@@ -1,8 +1,5 @@
 package org.blendee.support;
 
-import java.util.Optional;
-
-import org.blendee.jdbc.ComposedSQL;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.QueryBuilder;
@@ -14,7 +11,7 @@ import org.blendee.sql.SQLDecorator;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface Query extends Executor<RowIterator<? extends Row>, Optional<? extends Row>>, Aggregator {
+public interface Query {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -54,7 +51,7 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 
 	/**
 	 * {@link Row} で検索結果を受け取ることができなくなります。<br>
-	 * 代わりに{@link #aggregate} で結果を取得することになります。
+	 * 代わりに{@link Executor#aggregate} で結果を取得することになります。
 	 */
 	void quitRowMode();
 
@@ -63,12 +60,6 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link Row} を使用するモードかどうか
 	 */
 	boolean rowMode();
-
-	/**
-	 * {@link ComposedSQL} を取得します。
-	 * @return {@link ComposedSQL}
-	 */
-	ComposedSQL composeSQL();
 
 	/**
 	 * 引数の {@link QueryBuilder} に自身のクエリ内容を JOIN させます。
@@ -89,16 +80,4 @@ public interface Query extends Executor<RowIterator<? extends Row>, Optional<? e
 	 * @return {@link SQLDecorator}
 	 */
 	SQLDecorator[] decorators();
-
-	/**
-	 * 検索条件等を保持した {@link Executor} を返します。
-	 * @return {@link Executor}
-	 */
-	Executor<?, ?> executor();
-
-	/**
-	 * 検索条件等を保持した {@link Aggregator} を返します。
-	 * @return {@link Aggregator}
-	 */
-	Aggregator aggregator();
 }

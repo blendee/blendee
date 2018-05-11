@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
@@ -25,7 +26,7 @@ import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
-import org.blendee.support.Aggregator;
+import org.blendee.support.Executor;
 import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByQueryColumn;
 import org.blendee.support.GroupByQueryRelationship;
@@ -66,7 +67,7 @@ import org.blendee.support.ReuseFunctions.*;
  */
 public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements Query /*++'++*/{/*++'++*/
+	implements Query, Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> /*++'++*/{/*++'++*/
 
 	private static final QueryContext<SelectQCol> selectContext = (relationship, name) -> new SelectQCol(relationship, name);
 
@@ -329,36 +330,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public static <M> O2MExecutor<M> reuse(
 		String id,
 		O2MExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, O2MExecutor<M>> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Aggregator'}'
-	 */
-	public static Aggregator reuse(
-		AggregatorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Aggregator> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
-	 * 引数の id で生成された Query が使用されます。
-	 * @see #of(String)
-	 * @param id Query 生成用の ID
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Aggregator'}'
-	 */
-	public static Aggregator reuse(
-		String id,
-		AggregatorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Aggregator> function,
 		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
 		return query.helper.reuse(query, function, complementer);
@@ -665,17 +636,17 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	@Override
 	public void aggregate(Consumer<BlenResultSet> consumer) /*++'++*/{/*++'++*/
-		helper.getAggregator().aggregate(consumer);
+		helper.executor().aggregate(consumer);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) /*++'++*/{/*++'++*/
-		return helper.getAggregator().aggregateAndGet(function);
+		return helper.executor().aggregateAndGet(function);
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
-		return helper.getAggregator().aggregate();
+		return helper.executor().aggregate();
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -685,8 +656,18 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public ComposedSQL composeSQL() /*++'++*/{/*++'++*/
-		return helper.composeSQL();
+	public String sql() /*++'++*/{/*++'++*/
+		return helper.composeSQL().sql();
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) /*++'++*/{/*++'++*/
+		return helper.composeSQL().complement(done, statement);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public Executor reproduce(PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+		return new Executor(helper.executor().reproduce(complementer));
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -698,16 +679,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public Subquery toSubquery() /*++'++*/{/*++'++*/
 		return helper.toSubquery();
 	/*++'++*/}/*++'++*/
-
-	@Override
-	public Executor executor() {
-		return new Executor(helper.registAndGetExecutor());
-	}
-
-	@Override
-	public Aggregator aggregator() {
-		return helper.registAndGetAggregator();
-	}
 
 	/**
 	 * 現在保持している WHERE 句をリセットします。
@@ -1179,5 +1150,35 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		public int count() /*++'++*/{/*++'++*/
 			return inner.count();
 		/*++'++*/}/*++'++*/
+
+		@Override
+		public void aggregate(Consumer<BlenResultSet> consumer) {
+			inner.aggregate(consumer);
+		}
+
+		@Override
+		public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
+			return inner.aggregateAndGet(function);
+		}
+
+		@Override
+		public ResultSetIterator aggregate() {
+			return inner.aggregate();
+		}
+
+		@Override
+		public String sql() /*++'++*/{/*++'++*/
+			return inner.sql();
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public int complement(int done, BlenPreparedStatement statement) /*++'++*/{/*++'++*/
+			return inner.complement(done, statement);
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public Executor reproduce(PreparedStatementComplementer complementer) {
+			return new Executor(inner.reproduce(complementer));
+		}
 	/*++'++*/}/*++'++*/
 /*++'++*/}/*++'++*/

@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
@@ -80,7 +81,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Criteria havingClause;
 
-	private final List<UnionContainer> unions = new ArrayList<>();;
+	private final List<UnionContainer> unions = new ArrayList<>();
 
 	private OrderByClause orderByClause;
 
@@ -90,37 +91,38 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private List<SQLDecorator> decorators = new ArrayList<>();
 
-	private static final Map<Class<?>, Playbackable<?>> cache = new HashMap<>();
+	private ComposedSQL sql;
 
-	private Playbackable<?> playbackable;
+	private static final Map<Class<?>, Executor<?, ?>> executorCache = new HashMap<>();
 
-	public <T, Q extends Query> T reuse(
+	@SuppressWarnings("unchecked")
+	public <T extends Executor<?, ?>, Q extends Query> T reuse(
 		Q query,
 		ReuseFunction<Q, T> consumer,
 		PreparedStatementComplementer complementer) {
 		Class<?> lambdaClass = consumer.getClass();
-		Playbackable<T> cached = getPlaybackable(lambdaClass);
-		if (cached != null) return cached.play(complementer);
+		Executor<?, ?> cached = getExecutor(lambdaClass);
 
-		T result = consumer.apply(query);
+		if (cached != null) return (T) cached.reproduce(complementer);
 
-		QueryHelper.registPlaybackable(lambdaClass, playbackable);
+		Executor<?, ?> result = consumer.apply(query);
 
-		return result;
+		registExecutor(lambdaClass, result);
+
+		return (T) result;
 	}
 
-	private static void registPlaybackable(Class<?> lambdaClass, Playbackable<?> playbackable) {
+	private static void registExecutor(Class<?> lambdaClass, Executor<?, ?> playbackable) {
 		Objects.requireNonNull(lambdaClass);
 		Objects.requireNonNull(playbackable);
-		synchronized (cache) {
-			cache.put(lambdaClass, playbackable);
+		synchronized (executorCache) {
+			executorCache.put(lambdaClass, playbackable);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static <T> Playbackable<T> getPlaybackable(Class<?> lambdaClass) {
-		synchronized (cache) {
-			return (Playbackable<T>) cache.get(lambdaClass);
+	private static Executor<?, ?> getExecutor(Class<?> lambdaClass) {
+		synchronized (executorCache) {
+			return executorCache.get(lambdaClass);
 		}
 	};
 
@@ -339,7 +341,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	public void checkRowMode() {
-		if (!rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+		checkRowMode(rowMode);
+	}
+
+	public static void checkRowMode(boolean rowMode) {
+		if (!rowMode) throw new IllegalStateException("集計モードでは実行できない処理です");
 	}
 
 	public Optimizer getOptimizer() {
@@ -470,6 +476,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		unions.clear();
 		orderByClause = null;
 		rowMode = true;
+		sql = null;
 	}
 
 	/**
@@ -477,15 +484,19 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 * @return {@link ComposedSQL}
 	 */
 	public ComposedSQL composeSQL() {
-		if (rowMode) {
-			return new DataAccessHelper().getSelector(
-				getOptimizer(),
-				whereClause,
-				orderByClause,
-				decorators()).composeSQL();
+		if (sql == null) {
+			if (rowMode) {
+				sql = new DataAccessHelper().getSelector(
+					getOptimizer(),
+					whereClause,
+					orderByClause,
+					decorators()).composeSQL();
+			}
+
+			sql = buildBuilder();
 		}
 
-		return buildBuilder();
+		return sql;
 	}
 
 	/**
@@ -509,21 +520,26 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		private final SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
 
+		private final boolean rowMode;
+
 		private HelperExecutor(
 			String sql,
 			String countSQL,
 			PreparedStatementComplementer complementer,
 			Relationship relationship,
-			Column[] selectedColumns) {
+			Column[] selectedColumns,
+			boolean rowMode) {
 			this.sql = sql;
 			this.countSQL = countSQL;
 			this.complementer = complementer;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
+			this.rowMode = rowMode;
 		}
 
 		@Override
 		public DataObjectIterator execute() {
+			checkRowMode(rowMode);
 			return DataAccessHelper.select(
 				sql,
 				complementer,
@@ -549,6 +565,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		@Override
 		public DataObject fetch(Bindable... primaryKeyMembers) {
+			checkRowMode(rowMode);
 			DataObject object;
 			try {
 				object = DataAccessHelper.getFirst(
@@ -571,6 +588,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		@Override
 		public int count() {
+			checkRowMode(rowMode);
 			BlenConnection connection = BlendeeManager.getConnection();
 			try (BlenStatement statement = connection.getStatement(countSQL, complementer)) {
 				try (BlenResultSet result = statement.executeQuery()) {
@@ -578,18 +596,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 					return result.getInt(1);
 				}
 			}
-		}
-	}
-
-	private static class HelperAggregator implements Aggregator {
-
-		private final String sql;
-
-		private final PreparedStatementComplementer complementer;
-
-		private HelperAggregator(String sql, PreparedStatementComplementer complementer) {
-			this.sql = sql;
-			this.complementer = complementer;
 		}
 
 		/**
@@ -626,23 +632,25 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		public ResultSetIterator aggregate() {
 			return new ResultSetIterator(sql, complementer);
 		}
+
+		@Override
+		public String sql() {
+			return sql;
+		}
+
+		@Override
+		public int complement(int done, BlenPreparedStatement statement) {
+			complementer.complement(statement);
+			return Integer.MIN_VALUE;
+		}
+
+		@Override
+		public HelperExecutor reproduce(PreparedStatementComplementer complementer) {
+			return new HelperExecutor(sql, countSQL, complementer, relationship, selectedColumns, rowMode);
+		}
 	}
 
-	public Aggregator registAndGetAggregator() {
-		ComposedSQL sql = buildBuilder();
-
-		String sqlString = sql.sql();
-
-		Playbackable<Aggregator> myPlaybackable = complementer -> {
-			return new HelperAggregator(sqlString, complementer);
-		};
-
-		playbackable = myPlaybackable;
-
-		return myPlaybackable.play(sql);
-	}
-
-	public HelperExecutor registAndGetExecutor() {
+	public HelperExecutor executor() {
 		Selector selector = new DataAccessHelper().getSelector(
 			getOptimizer(),
 			whereClause,
@@ -652,24 +660,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		ComposedSQL composedSQL = selector.composeSQL();
 
 		String sql = composedSQL.sql();
-		String coutSql = toCountSQL(sql);
 
-		Column[] selectedColumns = selector.getSelectClause().getColumns();
-
-		Relationship relationship = ContextManager.get(RelationshipFactory.class).getInstance(table);
-
-		Playbackable<HelperExecutor> myPlaybackable = complementer -> {
-			return new HelperExecutor(sql, coutSql, complementer, relationship, selectedColumns);
-		};
-
-		playbackable = myPlaybackable;
-
-		return myPlaybackable.play(composedSQL);
-	}
-
-	public Aggregator getAggregator() {
-		ComposedSQL sql = buildBuilder();
-		return new HelperAggregator(sql.sql(), sql);
+		return new HelperExecutor(
+			sql,
+			toCountSQL(sql),
+			composedSQL,
+			ContextManager.get(RelationshipFactory.class).getInstance(table),
+			selector.getSelectClause().getColumns(),
+			rowMode);
 	}
 
 	public QueryBuilder buildBuilder() {

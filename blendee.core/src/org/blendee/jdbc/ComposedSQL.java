@@ -11,4 +11,47 @@ public interface ComposedSQL extends ChainPreparedStatementComplementer {
 	 * @return SQL 文
 	 */
 	String sql();
+
+	/**
+	 * {@link PreparedStatementComplementer} を入れ替えた新しい {@link ComposedSQL} を生成します。
+	 * @param complementer 入れ替える {@link PreparedStatementComplementer}
+	 * @return 同じ SQL を持つ、別のインスタンス
+	 */
+	default ComposedSQL reproduce(PreparedStatementComplementer complementer) {
+		String sql = sql();
+		return new ComposedSQL() {
+
+			@Override
+			public String sql() {
+				return sql;
+			}
+
+			@Override
+			public int complement(int done, BlenPreparedStatement statement) {
+				complementer.complement(statement);
+				return Integer.MIN_VALUE;
+			}
+		};
+	}
+
+	/**
+	 * {@link ChainPreparedStatementComplementer} を入れ替えた新しい {@link ComposedSQL} を生成します。
+	 * @param complementer 入れ替える {@link ChainPreparedStatementComplementer}
+	 * @return 同じ SQL を持つ、別のインスタンス
+	 */
+	default ComposedSQL reproduce(ChainPreparedStatementComplementer complementer) {
+		String sql = sql();
+		return new ComposedSQL() {
+
+			@Override
+			public String sql() {
+				return sql;
+			}
+
+			@Override
+			public int complement(int done, BlenPreparedStatement statement) {
+				return complementer.complement(done, statement);
+			}
+		};
+	}
 }

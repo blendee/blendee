@@ -26,12 +26,4 @@ public class ReuseFunctions {
 	 */
 	@FunctionalInterface
 	public interface O2MExecutorFunction<Q extends Query, R extends Executor<?, ?>> extends ReuseFunction<Q, R> {}
-
-	/**
-	 * intercept された {@link Aggregator} 用
-	 * @param <Q> {@link Query}
-	 * @param <R> {@link Aggregator}
-	 */
-	@FunctionalInterface
-	public interface AggregatorFunction<Q extends Query, R extends Aggregator> extends ReuseFunction<Q, R> {}
 }

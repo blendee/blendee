@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
@@ -226,5 +231,41 @@ public class OneToManyExecutor<O extends Row, M>
 		select.add("COUNT(DISTINCT(" + String.join(", ", parts) + "))", columns);
 
 		return select;
+	}
+
+	@Override
+	public void aggregate(Consumer<BlenResultSet> consumer) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public ResultSetIterator aggregate() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public Executor<Many<O, M>, Optional<One<O, M>>> reproduce(PreparedStatementComplementer complementer) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public String sql() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) {
+		// TODO 自動生成されたメソッド・スタブ
+		return 0;
 	}
 }

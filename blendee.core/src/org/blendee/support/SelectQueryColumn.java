@@ -47,7 +47,7 @@ public class SelectQueryColumn extends AbstractQueryColumn implements SelectOffe
 
 	/**
 	 * カラムに別名を付けます。<br>
-	 * 別名をつけてしまうと {@link Query#aggregate(Consumer)} しか使用できなくなります。
+	 * 別名をつけてしまうと {@link Executor#aggregate(Consumer)} しか使用できなくなります。
 	 * @param alias 別名
 	 * @return {@link SelectOffer}
 	 */

@@ -1,5 +1,12 @@
 package org.blendee.support;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.ComposedSQL;
+import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Bindable;
 
 /**
@@ -10,7 +17,7 @@ import org.blendee.sql.Bindable;
  * @param <R> Row
  * @author 千葉 哲嗣
  */
-public interface Executor<I, R> {
+public interface Executor<I, R> extends ComposedSQL {
 
 	/**
 	 * このインスタンスが持つ検索条件と並び替え条件を使用して、検索を実行します。<br>
@@ -56,4 +63,26 @@ public interface Executor<I, R> {
 	 * @return 件数
 	 */
 	int count();
+
+	/**
+	 * 集合関数を含む検索を実行します。
+	 * @param consumer {@link Consumer}
+	 */
+	void aggregate(Consumer<BlenResultSet> consumer);
+
+	/**
+	 * 集合関数を含む検索を実行します。
+	 * @param function {@link Function}
+	 * @return 任意の型の戻り値
+	 */
+	<T> T aggregateAndGet(Function<BlenResultSet, T> function);
+
+	/**
+	 * 集合関数を含む検索を実行します。
+	 * @return {@link ResultSetIterator}
+	 */
+	ResultSetIterator aggregate();
+
+	@Override
+	Executor<I, R> reproduce(PreparedStatementComplementer complementer);
 }
