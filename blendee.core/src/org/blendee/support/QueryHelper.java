@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.BlenConnection;
@@ -547,12 +548,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 
 		@Override
-		public DataObject willUnique() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public DataObject fetch(Bindable... primaryKeyMembers) {
+		public Optional<DataObject> fetch(Bindable... primaryKeyMembers) {
 			checkRowMode(rowMode);
 			DataObject object;
 			try {
@@ -571,7 +567,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 				return null;
 			}
 
-			return object;
+			return Optional.ofNullable(object);
 		}
 
 		@Override

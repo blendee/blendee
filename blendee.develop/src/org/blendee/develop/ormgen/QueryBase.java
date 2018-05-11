@@ -30,12 +30,11 @@ import org.blendee.support.HavingQueryColumn;
 import org.blendee.support.HavingQueryRelationship;
 /*++{6}++*/
 import org.blendee.support.LogicalOperators;
-import org.blendee.support.NotUniqueException;
 import org.blendee.support.OnLeftQueryColumn;
 import org.blendee.support.OnLeftQueryRelationship;
 import org.blendee.support.OnRightQueryColumn;
 import org.blendee.support.OnRightQueryRelationship;
-import org.blendee.support.OneToManyExecutor;
+import org.blendee.support.InstantOneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.OrderByQueryRelationship;
@@ -63,7 +62,7 @@ import org.blendee.support.ReuseFunctions.*;
  */
 public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements Query, Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> /*++'++*/{/*++'++*/
+	implements Query, Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, /*++{0}.row.{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
 	private static final QueryContext<SelectQCol> selectContext = (relationship, name) -> new SelectQCol(relationship, name);
 
@@ -608,11 +607,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
-		return getUnique(execute());
-	/*++'++*/}/*++'++*/
-
-	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
 		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
@@ -730,7 +724,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
 	public static class O2MExecutor<M>
-		extends OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
+		extends InstantOneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
 
 		private O2MExecutor(QueryRelationship self, SQLDecorator[] decorators) /*++'++*/{/*++'++*/
 			super(self, decorators);
@@ -743,16 +737,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/ catch (Exception e) /*++'++*/{/*++'++*/
 			throw new IllegalStateException(e.toString());
 		/*++'++*/}/*++'++*/
-	/*++'++*/}/*++'++*/
-
-	private static Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> getUnique(/*++{1}Iterator++*//*--*/IteratorBase/*--*/ iterator) /*++'++*/{/*++'++*/
-		if (!iterator.hasNext()) return Optional.empty();
-
-		/*++{0}.row.{1}++*//*--*/RowBase/*--*/ row = iterator.next();
-
-		if (iterator.hasNext()) throw new NotUniqueException();
-
-		return Optional.of(row);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -1093,7 +1077,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	 * Executor
 	 */
 	public class Executor
-		implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/>> /*++'++*/{/*++'++*/
+		implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, /*++{0}.row.{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
 		private final HelperExecutor inner;
 
@@ -1107,14 +1091,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> willUnique() /*++'++*/{/*++'++*/
-			return getUnique(execute());
-		/*++'++*/}/*++'++*/
-
-		@Override
 		public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
-			DataObject object = inner.fetch(primaryKeyMembers);
-			return  object == null ? Optional.empty() : Optional.of(manager.createRow(object));
+			return inner.fetch(primaryKeyMembers).map(object -> manager.createRow(object));
 		/*++'++*/}/*++'++*/
 
 		@Override

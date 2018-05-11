@@ -1,5 +1,7 @@
 package org.blendee.support;
 
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -21,7 +23,7 @@ import org.blendee.sql.BindableConverter;
  * @param <R> Row
  * @author 千葉 哲嗣
  */
-public interface Executor<I, R> extends ComposedSQL {
+public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 
 	/**
 	 * このインスタンスが持つ検索条件と並び替え条件を使用して、検索を実行します。<br>
@@ -36,7 +38,9 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @return {@link Row}
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
-	R willUnique();
+	default Optional<R> willUnique() {
+		return Unique.get(execute());
+	}
 
 	/**
 	 * 主キーから Row 一件を選択するメソッドです。<br>
@@ -44,7 +48,7 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	default R fetch(String... primaryKeyMembers) {
+	default Optional<R> fetch(String... primaryKeyMembers) {
 		return fetch(BindableConverter.convert(primaryKeyMembers));
 	}
 
@@ -54,7 +58,7 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	default R fetch(Number... primaryKeyMembers) {
+	default Optional<R> fetch(Number... primaryKeyMembers) {
 		return fetch(BindableConverter.convert(primaryKeyMembers));
 	}
 
@@ -64,7 +68,7 @@ public interface Executor<I, R> extends ComposedSQL {
 	 * @param primaryKeyMembers 主キーの検索値
 	 * @return {@link Row}
 	 */
-	R fetch(Bindable... primaryKeyMembers);
+	Optional<R> fetch(Bindable... primaryKeyMembers);
 
 	/**
 	 * このインスタンスが持つ検索条件に合致するレコード件数を取得します。
