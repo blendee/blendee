@@ -583,6 +583,23 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 
 		@Override
+		public ComposedSQL toCountSQL() {
+			return new ComposedSQL() {
+
+				@Override
+				public String sql() {
+					return countSQL;
+				}
+
+				@Override
+				public int complement(int done, BlenPreparedStatement statement) {
+					complementer.complement(statement);
+					return Integer.MIN_VALUE;
+				}
+			};
+		}
+
+		@Override
 		public String sql() {
 			return sql;
 		}

@@ -77,6 +77,12 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 	int count();
 
 	/**
+	 * {@link #count()} で使用する SQL を返します。
+	 * @return カウント用 {@link ComposedSQL}
+	 */
+	ComposedSQL toCountSQL();
+
+	/**
 	 * 集合関数を含む検索を実行します。
 	 * @param consumer {@link Consumer}
 	 */
