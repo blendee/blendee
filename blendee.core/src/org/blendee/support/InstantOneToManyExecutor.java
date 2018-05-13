@@ -33,13 +33,15 @@ import org.blendee.sql.SelectClause;
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
  * {@link Executor} との違いは、参照する側のテーブルの {@link Query} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
  * @author 千葉 哲嗣
- * @param <O> One　一対多の一側の型
- * @param <M> Many　一対多の多側の型連鎖
+ * @param <O> One 一対多の一側の型
+ * @param <M> Many 一対多の多側の型連鎖
  */
 public class InstantOneToManyExecutor<O extends Row, M>
 	extends OneToManyExecutor<O, M> {
 
 	private final QueryRelationship self;
+
+	private final QueryRelationship root;
 
 	private final Optimizer optimizer;
 
@@ -49,7 +51,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 	private final DataAccessHelper helper = new DataAccessHelper();
 
-	private final LinkedList<QueryRelationship> route;
+	private final List<QueryRelationship> route;
 
 	private final SQLDecorator[] options;
 
@@ -60,8 +62,12 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	 */
 	protected InstantOneToManyExecutor(QueryRelationship relation, SQLDecorator[] options) {
 		super(relation);
+
 		self = relation;
-		route = new LinkedList<>();
+
+		List<QueryRelationship> route = new LinkedList<>();
+
+		root = getRoot(relation, route);
 
 		QueryRelationship root = root();
 		order = convertOrderByClause(route, root.getOrderByClause());
@@ -72,6 +78,8 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 		//1->n順をn->1順に変える
 		Collections.reverse(route);
+
+		this.route = Collections.unmodifiableList(route);
 	}
 
 	@Override
@@ -97,12 +105,29 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	DataObjectIterator getIterator() {
+	List<QueryRelationship> route() {
+		return route;
+	}
+
+	@Override
+	QueryRelationship root() {
+		return root;
+	};
+
+	@Override
+	DataObjectIterator iterator() {
 		return helper.getDataObjects(
 			optimizer,
 			criteria,
 			order,
 			options);
+	}
+
+	private static QueryRelationship getRoot(QueryRelationship relation, List<QueryRelationship> relations) {
+		relations.add(relation);
+		QueryRelationship parent = relation.getParent();
+		if (parent == null) return relation;
+		return getRoot(parent, relations);
 	}
 
 	private static Optimizer convertOptimizer(List<QueryRelationship> route, QueryRelationship root) {

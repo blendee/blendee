@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.blendee.orm.DataObject;
@@ -16,7 +17,7 @@ class DataObjectManager {
 
 	Map<Relationship, DataObject> current;
 
-	DataObjectManager(DataObjectIterator iterator, LinkedList<QueryRelationship> relations) {
+	DataObjectManager(DataObjectIterator iterator, List<QueryRelationship> relations) {
 		this.iterator = iterator;
 		route = new LinkedList<>(relations);
 		route.pop();

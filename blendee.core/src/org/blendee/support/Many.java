@@ -1,7 +1,7 @@
 package org.blendee.support;
 
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -27,7 +27,7 @@ public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>
 
 	private final QueryRelationship nextMany;
 
-	private final LinkedList<QueryRelationship> route;
+	private final List<QueryRelationship> route;
 
 	private DataObject prev;
 
@@ -35,7 +35,7 @@ public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>
 		DataObjectManager manager,
 		DataObject one,
 		QueryRelationship selfAsMany,
-		LinkedList<QueryRelationship> route) {
+		List<QueryRelationship> route) {
 		this.manager = manager;
 		this.one = one;
 		this.selfAsMany = selfAsMany;

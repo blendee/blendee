@@ -43,7 +43,7 @@ import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
 import org.blendee.support.QueryHelper;
-import org.blendee.support.QueryHelper.HelperExecutor;
+import org.blendee.support.QueryHelper.PlaybackExecutor;
 import org.blendee.support.QueryOnClause;
 import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
@@ -1079,9 +1079,9 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public class Executor
 		implements org.blendee.support.Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, /*++{0}.row.{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
 
-		private final HelperExecutor inner;
+		private final PlaybackExecutor inner;
 
-		private Executor(HelperExecutor inner) /*++'++*/{/*++'++*/
+		private Executor(PlaybackExecutor inner) /*++'++*/{/*++'++*/
 			this.inner = inner;
 		/*++'++*/}/*++'++*/
 

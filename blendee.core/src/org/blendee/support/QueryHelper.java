@@ -505,7 +505,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new Subquery(buildBuilder());
 	}
 
-	public static class HelperExecutor implements Executor<DataObjectIterator, DataObject> {
+	public static class PlaybackExecutor implements Executor<DataObjectIterator, DataObject> {
 
 		private final String sql;
 
@@ -521,7 +521,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		private final boolean rowMode;
 
-		private HelperExecutor(
+		private PlaybackExecutor(
 			String sql,
 			String countSQL,
 			PreparedStatementComplementer complementer,
@@ -594,12 +594,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 
 		@Override
-		public HelperExecutor reproduce(PreparedStatementComplementer complementer) {
-			return new HelperExecutor(sql, countSQL, complementer, relationship, selectedColumns, rowMode);
+		public PlaybackExecutor reproduce(PreparedStatementComplementer complementer) {
+			return new PlaybackExecutor(sql, countSQL, complementer, relationship, selectedColumns, rowMode);
 		}
 	}
 
-	public HelperExecutor executor() {
+	public PlaybackExecutor executor() {
 		Selector selector = new DataAccessHelper().getSelector(
 			getOptimizer(),
 			whereClause,
@@ -610,7 +610,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		String sql = composedSQL.sql();
 
-		return new HelperExecutor(
+		return new PlaybackExecutor(
 			sql,
 			toCountSQL(sql),
 			composedSQL,
