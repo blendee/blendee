@@ -99,6 +99,22 @@ public interface Row extends Updatable {
 	}
 
 	/**
+	 * このインスタンスが持つ値が更新されているかどうかを判定します。
+	 * @return 更新されている場合、 true
+	 */
+	default boolean isValueUpdated() {
+		return dataObject().isValueUpdated();
+	}
+
+	/**
+	 * このインスタンスの持つPKの値が、NULLかどうかを検査します。
+	 * @return このインスタンスが外部結合によるもので、 NULL であれば true
+	 */
+	default boolean isNullPrimaryKey() {
+		return dataObject().isNullPrimaryKey();
+	}
+
+	/**
 	 * 引数のカラムが今回の検索に使用されたかを検査します。
 	 * @param columnName 検査対象
 	 * @return SELECT されたかどうか
