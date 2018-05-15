@@ -342,22 +342,6 @@ public class GenericRow extends java.lang.Object implements Row {
 	}
 
 	/**
-	 * このインスタンスが持つ値が更新されているかどうかを判定します。
-	 * @return 更新されている場合、 true
-	 */
-	public boolean isValueUpdated() {
-		return data.isValueUpdated();
-	}
-
-	/**
-	 * このインスタンスの持つPKの値が、NULLかどうかを検査します。
-	 * @return このインスタンスが外部結合によるものであれば、true
-	 */
-	public boolean isNullPrimaryKey() {
-		return data.isNullPrimaryKey();
-	}
-
-	/**
 	 * 内部に保持している {@link Relationship} を返します。
 	 * @return このインスタンスが内部にもつ {@link Relationship}
 	 */
