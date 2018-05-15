@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.SelectedValuesConverter;
@@ -15,13 +15,12 @@ import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Column;
 
 /**
- * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
- * {@link Executor} との違いは、参照する側のテーブルの {@link Query} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
+ * 再実行可能な {@link OneToManyExecutor} クラスです。<br>
  * @author 千葉 哲嗣
  * @param <O> One 一対多の一側の型
  * @param <M> Many 一対多の多側の型連鎖
  */
-public class PlaybackOneToManyExecutor<O extends Row, M>
+class PlaybackOneToManyExecutor<O extends Row, M>
 	extends OneToManyExecutor<O, M> {
 
 	private final QueryRelationship root;
@@ -32,23 +31,19 @@ public class PlaybackOneToManyExecutor<O extends Row, M>
 
 	private final String countSQL;
 
-	private final PreparedStatementComplementer complementer;
+	private final ChainPreparedStatementComplementer complementer;
 
 	private final Column[] selectedColumns;
 
 	private final SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
 
-	/**
-	 * 自動生成されたサブクラス用のコンストラクタです。
-	 * @param self 中心となるテーブルを表す
-	 */
-	protected PlaybackOneToManyExecutor(
+	PlaybackOneToManyExecutor(
 		QueryRelationship self,
 		QueryRelationship root,
 		List<QueryRelationship> route,
 		String sql,
 		String countSQL,
-		PreparedStatementComplementer complementer,
+		ChainPreparedStatementComplementer complementer,
 		Column[] selectedColumns) {
 		super(self);
 		this.root = root;
@@ -60,15 +55,10 @@ public class PlaybackOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public int count() {
-		try (BlenStatement statement = BlendeeManager
+	BlenStatement createStatementForCount() {
+		return BlendeeManager
 			.getConnection()
-			.getStatement(countSQL, complementer)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				result.next();
-				return result.getInt(1);
-			}
-		}
+			.getStatement(countSQL, complementer);
 	}
 
 	@Override
@@ -89,7 +79,7 @@ public class PlaybackOneToManyExecutor<O extends Row, M>
 	@Override
 	DataObjectIterator iterator() {
 		return DataAccessHelper.select(
-			countSQL,
+			sql,
 			complementer,
 			self().getRelationship(),
 			selectedColumns,
@@ -102,13 +92,28 @@ public class PlaybackOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
-		complementer.complement(statement);
-		return Integer.MIN_VALUE;
+	public ComposedSQL toCountSQL() {
+		return new ComposedSQL() {
+
+			@Override
+			public String sql() {
+				return countSQL;
+			}
+
+			@Override
+			public int complement(int done, BlenPreparedStatement statement) {
+				return complementer.complement(done, statement);
+			}
+		};
 	}
 
 	@Override
-	public OneToManyExecutor<O, M> reproduce(PreparedStatementComplementer complementer) {
+	public int complement(int done, BlenPreparedStatement statement) {
+		return complementer.complement(done, statement);
+	}
+
+	@Override
+	public OneToManyExecutor<O, M> reproduce(ChainPreparedStatementComplementer complementer) {
 		return new PlaybackOneToManyExecutor<>(
 			self(),
 			root,

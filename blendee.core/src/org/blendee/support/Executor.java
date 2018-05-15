@@ -9,8 +9,8 @@ import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
@@ -83,6 +83,12 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 	ComposedSQL toCountSQL();
 
 	/**
+	 * 検索結果として {@link Row} を使用するモードかどうかを判定します。
+	 * @return {@link Row} を使用するモードかどうか
+	 */
+	boolean rowMode();
+
+	/**
 	 * 集合関数を含む検索を実行します。
 	 * @param consumer {@link Consumer}
 	 */
@@ -118,5 +124,5 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 	}
 
 	@Override
-	Executor<I, R> reproduce(PreparedStatementComplementer complementer);
+	Executor<I, R> reproduce(ChainPreparedStatementComplementer complementer);
 }

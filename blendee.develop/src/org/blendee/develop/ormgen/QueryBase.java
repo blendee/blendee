@@ -10,6 +10,7 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
@@ -631,6 +632,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
+	public ComposedSQL toCountSQL() /*++'++*/{/*++'++*/
+		helper.checkRowMode();
+		return helper.executor().toCountSQL();
+	/*++'++*/}/*++'++*/
+
+	@Override
 	public String sql() /*++'++*/{/*++'++*/
 		return helper.composeSQL().sql();
 	/*++'++*/}/*++'++*/
@@ -641,7 +648,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Executor reproduce(PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
+	public Executor reproduce(ChainPreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
 		return new Executor(helper.executor().reproduce(complementer));
 	/*++'++*/}/*++'++*/
 
@@ -1101,6 +1108,16 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
+		public ComposedSQL toCountSQL() /*++'++*/{/*++'++*/
+			return inner.toCountSQL();
+		/*++'++*/}/*++'++*/
+
+		@Override
+		public boolean rowMode() /*++'++*/{/*++'++*/
+			return inner.rowMode();
+		/*++'++*/}/*++'++*/
+
+		@Override
 		public String sql() /*++'++*/{/*++'++*/
 			return inner.sql();
 		/*++'++*/}/*++'++*/
@@ -1111,7 +1128,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public Executor reproduce(PreparedStatementComplementer complementer) {
+		public Executor reproduce(ChainPreparedStatementComplementer complementer) {
 			return new Executor(inner.reproduce(complementer));
 		}
 	/*++'++*/}/*++'++*/

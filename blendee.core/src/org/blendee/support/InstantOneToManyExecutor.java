@@ -11,14 +11,15 @@ import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
+import org.blendee.selector.Selector;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
@@ -55,6 +56,8 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 	private final SQLDecorator[] options;
 
+	private ComposedSQL composedSQL;
+
 	/**
 	 * 自動生成されたサブクラス用のコンストラクタです。
 	 * @param relation 中心となるテーブルを表す
@@ -80,23 +83,27 @@ public class InstantOneToManyExecutor<O extends Row, M>
 		Collections.reverse(route);
 
 		this.route = Collections.unmodifiableList(route);
+
+		Selector selector = new DataAccessHelper().getSelector(
+			optimizer,
+			criteria,
+			order,
+			options);
+
+		composedSQL = selector.composeSQL();
 	}
 
 	@Override
-	public int count() {
+	BlenStatement createStatementForCount() {
 		QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getTablePath()));
 
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 
 		if (criteria != null) builder.setWhereClause(criteria);
-		try (BlenStatement statement = BlendeeManager
+
+		return BlendeeManager
 			.getConnection()
-			.getStatement(builder)) {
-			try (BlenResultSet result = statement.executeQuery()) {
-				result.next();
-				return result.getInt(1);
-			}
-		}
+			.getStatement(builder);
 	}
 
 	@Override
@@ -194,20 +201,38 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public OneToManyExecutor<O, M> reproduce(PreparedStatementComplementer complementer) {
+	public ComposedSQL toCountSQL() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public OneToManyExecutor<O, M> reproduce(ChainPreparedStatementComplementer complementer) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	@Override
 	public String sql() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return composedSQL().sql();
 	}
 
 	@Override
 	public int complement(int done, BlenPreparedStatement statement) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return composedSQL().complement(done, statement);
+	}
+
+	private ComposedSQL composedSQL() {
+		if (composedSQL == null) {
+			Selector selector = new DataAccessHelper().getSelector(
+				optimizer,
+				criteria,
+				order,
+				options);
+
+			composedSQL = selector.composeSQL();
+		}
+
+		return composedSQL;
 	}
 }

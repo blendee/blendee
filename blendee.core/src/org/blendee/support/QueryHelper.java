@@ -13,6 +13,7 @@ import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
@@ -511,7 +512,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		private final String countSQL;
 
-		private final PreparedStatementComplementer complementer;
+		private final ChainPreparedStatementComplementer complementer;
 
 		private final Relationship relationship;
 
@@ -524,7 +525,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		private PlaybackExecutor(
 			String sql,
 			String countSQL,
-			PreparedStatementComplementer complementer,
+			ChainPreparedStatementComplementer complementer,
 			Relationship relationship,
 			Column[] selectedColumns,
 			boolean rowMode) {
@@ -593,10 +594,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 				@Override
 				public int complement(int done, BlenPreparedStatement statement) {
-					complementer.complement(statement);
-					return Integer.MIN_VALUE;
+					return complementer.complement(done, statement);
 				}
 			};
+		}
+
+		@Override
+		public boolean rowMode() {
+			return rowMode;
 		}
 
 		@Override
@@ -606,12 +611,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		@Override
 		public int complement(int done, BlenPreparedStatement statement) {
-			complementer.complement(statement);
-			return Integer.MIN_VALUE;
+			return complementer.complement(done, statement);
 		}
 
 		@Override
-		public PlaybackExecutor reproduce(PreparedStatementComplementer complementer) {
+		public PlaybackExecutor reproduce(ChainPreparedStatementComplementer complementer) {
 			return new PlaybackExecutor(sql, countSQL, complementer, relationship, selectedColumns, rowMode);
 		}
 	}
