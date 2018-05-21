@@ -107,6 +107,14 @@ public interface Row extends Updatable {
 	}
 
 	/**
+	 * 全てのカラムの更新された値を除去します。<br>
+	 * {@link #isValueUpdated()} の戻り値は false に戻ります。
+	 */
+	default void clearUpdateValues() {
+		dataObject().clearUpdateValues();
+	}
+
+	/**
 	 * このインスタンスの持つPKの値が、NULLかどうかを検査します。
 	 * @return このインスタンスが外部結合によるもので、 NULL であれば true
 	 */
