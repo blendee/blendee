@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
@@ -71,6 +72,24 @@ public class SQLProxyBuilder {
 		return buildProxyObject(sourceInterface, Charset.forName(sqlCharset));
 	}
 
+	private static final ThreadLocal<BatchStatement> batchStatement = new ThreadLocal<>();
+
+	/**
+	 * 現在実行中のスレッドに、引数の {@link BatchStatement} を紐づけます。<br>
+	 * {@link BatchStatement} は、戻り値が int の、更新を指定された場合のみ使用されます。
+	 * @param batch {@link BatchStatement}
+	 */
+	public static void setBatchStatement(BatchStatement batch) {
+		batchStatement.set(batch);
+	}
+
+	/**
+	 * 現在実行中のスレッドに紐づけられた {@link BatchStatement} を開放します。
+	 */
+	public static void removeBatchStatement() {
+		batchStatement.remove();
+	}
+
 	private static class SQLProxyInvocationHandler implements InvocationHandler {
 
 		private final Charset charset;
@@ -116,21 +135,27 @@ public class SQLProxyBuilder {
 				};
 			}
 
-			BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
-
 			Class<?> returnType = method.getReturnType();
 
 			if (returnType.equals(BlenResultSet.class)) {
-				return statement.executeQuery();
+				return statement(sql, complementer).executeQuery();
 			} else if (returnType.equals(int.class)) {
-				return statement.executeUpdate();
+				BatchStatement batch = batchStatement.get();
+				if (batch == null) return statement(sql, complementer).executeUpdate();
+
+				batch.addBatch(sql, complementer);
+				return 0;
 			} else if (returnType.equals(boolean.class)) {
-				return statement.execute();
+				return statement(sql, complementer).execute();
 			} else if (returnType.equals(void.class)) {
-				return statement.execute();
+				return statement(sql, complementer).execute();
 			} else {
 				throw new IllegalStateException("戻り値の型が不正です");
 			}
 		}
+	}
+
+	private static BlenStatement statement(String sql, PreparedStatementComplementer complementer) {
+		return BlendeeManager.getConnection().getStatement(sql, complementer);
 	}
 }

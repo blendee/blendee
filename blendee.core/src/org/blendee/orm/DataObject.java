@@ -27,10 +27,10 @@ import org.blendee.selector.SelectedValues;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.NotFoundException;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
 import org.blendee.sql.Updater;
@@ -73,11 +73,6 @@ public class DataObject
 	private final SelectedValues values;
 
 	private Map<String, UpdateValue> updateValues;
-
-	/**
-	 * このインスタンスが持つ値が更新された場合、ずっと true
-	 */
-	private boolean changed = false;
 
 	/**
 	 * {@link DataObject} からこのクラスのインスタンスを生成するコピーコンストラクタです。
@@ -457,7 +452,6 @@ public class DataObject
 	public void setValue(String columnName, Bindable value) {
 		Binder binder = value.toBinder();
 		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
-		changed = true;
 	}
 
 	/**
@@ -469,7 +463,6 @@ public class DataObject
 	public void setValueForcibly(String columnName, Bindable value) {
 		Binder binder = value.toBinder();
 		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
-		changed = true;
 	}
 
 	/**
@@ -484,7 +477,6 @@ public class DataObject
 			if (updateValues.containsKey(name)) continue;
 			setValueForcibly(name, getBinder(name));
 		}
-		changed = true;
 	}
 
 	/**
@@ -495,10 +487,8 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Binder getUpdateValue(String columnName) {
-		if (!changed) return null;
-		Binder value;
-		value = getUpdateValueInternal(updateValues, columnName);
-		return value;
+		if (!isValueUpdated()) return null;
+		return getUpdateValueInternal(updateValues, columnName);
 	}
 
 	/**
@@ -507,7 +497,15 @@ public class DataObject
 	 */
 	public void removeUpdateValue(String columnName) {
 		getUpdateValues().remove(columnName);
-		changed = true;
+	}
+
+	/**
+	 * 全てのカラムの更新された値を除去します。<br>
+	 * {@link #isValueUpdated()} の戻り値は false に戻ります。
+	 */
+	public void clearUpdateValues() {
+		if (!isValueUpdated()) return;
+		updateValues.clear();
 	}
 
 	/**
@@ -517,7 +515,6 @@ public class DataObject
 	 */
 	public void setSQLFragment(String columnName, String sqlFragment) {
 		getUpdateValues().put(columnName, new SQLFragmentUpdateValue(sqlFragment));
-		changed = true;
 	}
 
 	/**
@@ -533,7 +530,6 @@ public class DataObject
 		getUpdateValues().put(
 			columnName,
 			new SQLFragmentAndBinderUpdateValue(sqlFragment, value.toBinder()));
-		changed = true;
 	}
 
 	/**
@@ -541,7 +537,8 @@ public class DataObject
 	 * @return 更新されている場合、 true
 	 */
 	public boolean isValueUpdated() {
-		return changed;
+		if (updateValues == null) return false;
+		return updateValues.size() > 0;
 	}
 
 	/**
@@ -646,7 +643,7 @@ public class DataObject
 
 	@Override
 	public void setValuesTo(Updater updater) {
-		if (updateValues == null) return;
+		if (!isValueUpdated()) return;
 
 		for (Entry<String, UpdateValue> entry : updateValues.entrySet()) {
 			UpdateValue updateValue = entry.getValue();
@@ -667,7 +664,7 @@ public class DataObject
 	 * @throws NullPrimaryKeyException
 	 */
 	private boolean updateInternal(StatementFacade statement) {
-		if (updateValues == null || updateValues.size() == 0) return false;
+		if (!isValueUpdated()) return false;
 
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(relationship.getTablePath());
 		setValuesTo(builder);
