@@ -10,6 +10,7 @@ import org.blendee.plugin.views.element.EditorRootElement;
 import org.blendee.plugin.views.element.Element;
 import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.selector.CommandColumnRepository;
+import org.blendee.util.Blendee;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -36,7 +37,18 @@ public class QueryEditorView extends AbstractView {
 		@Override
 		public String isValid(String path) {
 			if (path.length() == 0) return "未入力です";
-			if (TablePath.parse(path).exists()) return null;
+
+			boolean[] exists = { false };
+			try {
+				Blendee.execute(t -> {
+					exists[0] = TablePath.parse(path).exists();
+				});
+			} catch (Throwable t) {
+				throw new IllegalStateException(t);
+			}
+
+			if (exists[0]) return null;
+
 			return path + " は存在しません";
 		}
 	};

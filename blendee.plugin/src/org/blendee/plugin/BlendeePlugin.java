@@ -20,11 +20,8 @@ import java.util.regex.Pattern;
 import org.blendee.develop.ormgen.CodeFormatter;
 import org.blendee.internal.HomeStorage;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
-import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.plugin.views.ClassBuilderView;
 import org.blendee.plugin.views.QueryEditorView;
@@ -68,8 +65,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	private ClassBuilderView classBuilderView;
 
 	private String[] schemaNames = {};
-
-	private Transaction transaction;
 
 	private final Map<String, String> outputPackages = new HashMap<>();
 
@@ -174,7 +169,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 				currentProject.getElementName());
 		}
 
-		closeTransaction();
 		super.stop(context);
 	}
 
@@ -347,8 +341,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	}
 
 	private void refresh() throws JavaProjectException {
-		closeTransaction();
-
 		outputPackages.clear();
 
 		Map<OptionKey<?>, Object> init = new HashMap<>();
@@ -442,8 +434,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			columnRepositoryFactoryMap.put(
 				currentProject,
 				columnRepositoryFactoryClass.getDeclaredConstructor().newInstance());
-
-			transaction = ContextManager.get(BlendeeManager.class).startTransaction();
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
 		}
@@ -496,12 +486,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
 		}
-	}
-
-	private void closeTransaction() {
-		if (transaction == null) return;
-		transaction.close();
-		transaction = null;
 	}
 
 	private static void checkProject(IJavaProject project) throws JavaProjectException {
