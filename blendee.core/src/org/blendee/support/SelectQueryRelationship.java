@@ -96,6 +96,15 @@ public interface SelectQueryRelationship {
 	}
 
 	/**
+	 * SELECT 句用 COUNT(*)
+	 * @return {@link AliasOffer}
+	 */
+	default AliasOffer COUNT() {
+		return new AliasOffer(
+			new ColumnExpression(COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false)));
+	}
+
+	/**
 	 * SELECT 句用 COUNT(column)
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link AliasOffer}
