@@ -56,14 +56,6 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 		return result;
 	}
 
-	/**
-	 * @throws UnsupportedOperationException 使用不可
-	 */
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public void close() {
 		try {

@@ -7,6 +7,7 @@ import java.util.List;
  * @author 千葉 哲嗣
  * @param <T> 対象
  */
+@FunctionalInterface
 public interface Offers<T> {
 
 	/**

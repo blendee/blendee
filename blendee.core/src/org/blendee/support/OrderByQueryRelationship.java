@@ -25,7 +25,7 @@ public interface OrderByQueryRelationship {
 	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<OrderByOffer> list(OrderByOffer... offers) {
+	default Offers<Offerable> list(Offerable... offers) {
 		return () -> Arrays.asList(offers);
 	}
 
@@ -89,7 +89,8 @@ public interface OrderByQueryRelationship {
 		OrderByClause clause = getOrderByClause();
 		return new AscDesc(
 			new OrderByOffer(order -> clause.add(order, template, Direction.ASC, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.DESC, columns)));
+			new OrderByOffer(order -> clause.add(order, template, Direction.DESC, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.NONE, columns)));
 	}
 
 	/**
@@ -98,7 +99,7 @@ public interface OrderByQueryRelationship {
 	 * @param offer 対象カラム
 	 * @return {@link GroupByQueryColumn}
 	 */
-	default OrderByOffer order(int order, OrderByOffer offer) {
+	default OrderByOffer order(int order, Offerable offer) {
 		return new OrderByOffer(offer, order);
 	}
 

@@ -62,11 +62,6 @@ public abstract class RowIterator<R extends Row>
 		return iterator;
 	}
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
 	/**
 	 * {@link #next()} を行った回数を返します。
 	 * @return {@link #next()} を行った回数

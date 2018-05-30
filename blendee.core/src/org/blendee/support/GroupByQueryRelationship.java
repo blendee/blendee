@@ -15,7 +15,7 @@ public interface GroupByQueryRelationship {
 	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<GroupByOffer> list(GroupByOffer... offers) {
+	default Offers<Offerable> list(Offerable... offers) {
 		return () -> Arrays.asList(offers);
 	}
 
@@ -25,9 +25,7 @@ public interface GroupByQueryRelationship {
 	 * @param column 対象カラム
 	 * @return {@link GroupByQueryColumn}
 	 */
-	@SuppressWarnings("unchecked")
-	default <T extends GroupByQueryColumn> T order(int order, GroupByQueryColumn column) {
-		column.order(order);
-		return (T) column;
+	default Offerable order(int order, GroupByQueryColumn column) {
+		return defaultValue -> column.offer(order);
 	}
 }
