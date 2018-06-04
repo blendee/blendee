@@ -1,10 +1,7 @@
 package org.blendee.support;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -13,10 +10,8 @@ import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -44,7 +39,6 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
-import org.blendee.support.ReuseFunctions.ReuseFunction;
 
 /**
  * {@link Query} の内部処理を定義したヘルパークラスです。
@@ -92,39 +86,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private List<SQLDecorator> decorators = new ArrayList<>();
 
 	private ComposedSQL sql;
-
-	private static final Map<Class<?>, Executor<?, ?>> executorCache = new HashMap<>();
-
-	@SuppressWarnings("unchecked")
-	public <T extends Executor<?, ?>, Q extends Query> T reuse(
-		Q query,
-		ReuseFunction<Q, T> consumer,
-		PreparedStatementComplementer complementer) {
-		Class<?> lambdaClass = consumer.getClass();
-		Executor<?, ?> cached = getExecutor(lambdaClass);
-
-		if (cached != null) return (T) cached.reproduce(complementer);
-
-		Executor<?, ?> result = consumer.apply(query);
-
-		registExecutor(lambdaClass, result);
-
-		return (T) result;
-	}
-
-	private static void registExecutor(Class<?> lambdaClass, Executor<?, ?> playbackable) {
-		Objects.requireNonNull(lambdaClass);
-		Objects.requireNonNull(playbackable);
-		synchronized (executorCache) {
-			executorCache.put(lambdaClass, playbackable);
-		}
-	}
-
-	private static Executor<?, ?> getExecutor(Class<?> lambdaClass) {
-		synchronized (executorCache) {
-			return executorCache.get(lambdaClass);
-		}
-	};
 
 	public QueryHelper(
 		TablePath table,
@@ -491,9 +452,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 					whereClause,
 					orderByClause,
 					decorators()).composeSQL();
+			} else {
+				sql = buildBuilder();
 			}
-
-			sql = buildBuilder();
 		}
 
 		return sql;
@@ -512,7 +473,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		private final String countSQL;
 
-		private final ChainPreparedStatementComplementer complementer;
+		private final ComplementerValues values;
 
 		private final Relationship relationship;
 
@@ -525,13 +486,13 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		private PlaybackExecutor(
 			String sql,
 			String countSQL,
-			ChainPreparedStatementComplementer complementer,
+			ComplementerValues values,
 			Relationship relationship,
 			Column[] selectedColumns,
 			boolean rowMode) {
 			this.sql = sql;
 			this.countSQL = countSQL;
-			this.complementer = complementer;
+			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
 			this.rowMode = rowMode;
@@ -542,7 +503,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			checkRowMode(rowMode);
 			return DataAccessHelper.select(
 				sql,
-				complementer,
+				values,
 				relationship,
 				selectedColumns,
 				converter);
@@ -575,7 +536,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		public int count() {
 			checkRowMode(rowMode);
 			BlenConnection connection = BlendeeManager.getConnection();
-			try (BlenStatement statement = connection.getStatement(countSQL, complementer)) {
+			try (BlenStatement statement = connection.getStatement(countSQL, values)) {
 				try (BlenResultSet result = statement.executeQuery()) {
 					result.next();
 					return result.getInt(1);
@@ -585,6 +546,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		@Override
 		public ComposedSQL toCountSQL() {
+			checkRowMode(rowMode);
 			return new ComposedSQL() {
 
 				@Override
@@ -594,7 +556,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 				@Override
 				public int complement(int done, BlenPreparedStatement statement) {
-					return complementer.complement(done, statement);
+					return values.complement(done, statement);
 				}
 			};
 		}
@@ -611,32 +573,52 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		@Override
 		public int complement(int done, BlenPreparedStatement statement) {
-			return complementer.complement(done, statement);
+			return values.complement(done, statement);
 		}
 
 		@Override
-		public PlaybackExecutor reproduce(ChainPreparedStatementComplementer complementer) {
-			return new PlaybackExecutor(sql, countSQL, complementer, relationship, selectedColumns, rowMode);
+		public PlaybackExecutor reproduce(Object... placeHolderValues) {
+			return new PlaybackExecutor(
+				sql,
+				countSQL,
+				values.reproduce(placeHolderValues),
+				relationship,
+				selectedColumns,
+				rowMode);
 		}
 	}
 
 	public PlaybackExecutor executor() {
-		Selector selector = new DataAccessHelper().getSelector(
-			getOptimizer(),
-			whereClause,
-			orderByClause,
-			decorators());
+		if (rowMode) {
+			Selector selector = new DataAccessHelper().getSelector(
+				getOptimizer(),
+				whereClause,
+				orderByClause,
+				decorators());
 
-		ComposedSQL composedSQL = selector.composeSQL();
+			ComposedSQL composedSQL = selector.composeSQL();
 
-		String sql = composedSQL.sql();
+			String sql = composedSQL.sql();
+
+			return new PlaybackExecutor(
+				sql,
+				toCountSQL(sql),
+				new ComplementerValues(composedSQL),
+				ContextManager.get(RelationshipFactory.class).getInstance(table),
+				selector.getSelectClause().getColumns(),
+				rowMode);
+		}
+
+		QueryBuilder builder = buildBuilder();
+
+		String sql = builder.sql();
 
 		return new PlaybackExecutor(
 			sql,
-			toCountSQL(sql),
-			composedSQL,
+			null,
+			new ComplementerValues(builder),
 			ContextManager.get(RelationshipFactory.class).getInstance(table),
-			selector.getSelectClause().getColumns(),
+			Column.EMPTY_ARRAY,
 			rowMode);
 	}
 

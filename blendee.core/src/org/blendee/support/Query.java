@@ -80,4 +80,10 @@ public interface Query {
 	 * @return {@link SQLDecorator}
 	 */
 	SQLDecorator[] decorators();
+
+	/**
+	 * {@link Executor} を生成し、返します。
+	 * @return {@link Executor}
+	 */
+	Executor<?, ?> executor();
 }

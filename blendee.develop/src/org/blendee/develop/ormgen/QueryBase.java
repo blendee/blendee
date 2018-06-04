@@ -9,8 +9,6 @@ import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
@@ -54,7 +52,6 @@ import org.blendee.support.Subquery;
 import org.blendee.support.Vargs;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.WhereQueryRelationship;
-import org.blendee.support.ReuseFunctions.*;
 
 /**
  * 自動生成された '{'@link Query'}' の実装クラスです。
@@ -271,65 +268,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return new /*++{1}Query++*//*--*/QueryBase/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
 	/*++'++*/}/*++'++*/
 
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Executor'}'
-	 */
-	public static Executor reuse(
-		ExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Executor> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
-	 * 引数の id で生成された Query が使用されます。
-	 * @see #of(String)
-	 * @param id Query 生成用の ID
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Executor'}'
-	 */
-	public static Executor reuse(
-		String id,
-		ExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, Executor> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Executor'}'
-	 */
-	public static <M> O2MExecutor<M> reuse(
-		O2MExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, O2MExecutor<M>> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = new /*++{1}Query++*//*--*/QueryBase/*--*/();
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
-
-	/**
-	 * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化します。<br>
-	 * 引数の id で生成された Query が使用されます。
-	 * @see #of(String)
-	 * @param id Query 生成用の ID
-	 * @param function Query を使用した SQL 組立処理
-	 * @param complementer 次回以降実行時に使用する '{'@link PreparedStatementComplementer'}'
-	 * @return function の Query から生成された '{'@link Executor'}'
-	 */
-	public static <M> O2MExecutor<M> reuse(
-		String id,
-		O2MExecutorFunction</*++{1}Query++*//*--*/QueryBase/*--*/, O2MExecutor<M>> function,
-		PreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		/*++{1}Query++*//*--*/QueryBase/*--*/ query = of(id);
-		return query.helper.reuse(query, function, complementer);
-	/*++'++*/}/*++'++*/
 
 	/**
 	 * 空のインスタンスを生成します。
@@ -648,8 +586,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Executor reproduce(ChainPreparedStatementComplementer complementer) /*++'++*/{/*++'++*/
-		return new Executor(helper.executor().reproduce(complementer));
+	public Executor reproduce(Object... placeHolderValues) /*++'++*/{/*++'++*/
+		return new Executor(helper.executor().reproduce(placeHolderValues));
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -724,6 +662,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public boolean rowMode() /*++'++*/{/*++'++*/
 		return helper.rowMode();
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public Executor executor() /*++'++*/{/*++'++*/
+		return  new Executor(helper.executor());
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -1128,8 +1071,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public Executor reproduce(ChainPreparedStatementComplementer complementer) {
-			return new Executor(inner.reproduce(complementer));
-		}
+		public Executor reproduce(Object... placeHolderValues) /*++'++*/{/*++'++*/
+			return new Executor(inner.reproduce(placeHolderValues));
+		/*++'++*/}/*++'++*/
 	/*++'++*/}/*++'++*/
 /*++'++*/}/*++'++*/

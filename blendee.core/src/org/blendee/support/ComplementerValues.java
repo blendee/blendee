@@ -23,12 +23,20 @@ import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
+/**
+ * {@link BlenPreparedStatement} にセットする値を持つ入れ物クラスです。
+ * @author 千葉 哲嗣
+ */
 public class ComplementerValues implements ChainPreparedStatementComplementer {
 
 	private final List<ValueExtractor> extractors;
 
 	private final List<Binder> binders;
 
+	/**
+	 * {@link PreparedStatementComplementer} からプレースホルダ値を抽出するコンストラクタです。
+	 * @param complementer 抽出対象
+	 */
 	public ComplementerValues(PreparedStatementComplementer complementer) {
 		Map<Integer, Object> map = new TreeMap<>();
 
@@ -171,9 +179,21 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 		this.binders = Collections.unmodifiableList(binders);
 	}
 
-	private ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
-		this.extractors = extractors;
-		this.binders = binders;
+	/**
+	 * 新しいプレースホルダ値で複製を生成します。
+	 * @param placeHolderValues 新しいプレースホルダ値
+	 * @return 複製
+	 */
+	public ComplementerValues reproduce(Object... placeHolderValues) {
+		List<Binder> binders = new LinkedList<>();
+
+		int index = 0;
+		for (ValueExtractor extractor : extractors) {
+			binders.add(extractor.extractAsBinder(placeHolderValues[index]));
+			index++;
+		}
+
+		return new ComplementerValues(extractors, Collections.unmodifiableList(binders));
 	}
 
 	@Override
@@ -183,15 +203,8 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 		return index[0];
 	}
 
-	public ComplementerValues reproduce(Object... values) {
-		List<Binder> binders = new LinkedList<>();
-
-		int index = 0;
-		for (ValueExtractor extractor : extractors) {
-			binders.add(extractor.extractAsBinder(values[index]));
-			index++;
-		}
-
-		return new ComplementerValues(extractors, Collections.unmodifiableList(binders));
+	private ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
+		this.extractors = extractors;
+		this.binders = binders;
 	}
 }

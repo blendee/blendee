@@ -13,7 +13,6 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
@@ -95,15 +94,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 	@Override
 	BlenStatement createStatementForCount() {
-		QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getTablePath()));
-
-		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
-
-		if (criteria != null) builder.setWhereClause(criteria);
-
-		return BlendeeManager
-			.getConnection()
-			.getStatement(builder);
+		return BlendeeManager.getConnection().getStatement(toCountSQL());
 	}
 
 	@Override
@@ -202,14 +193,25 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getTablePath()));
+
+		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
+
+		if (criteria != null) builder.setWhereClause(criteria);
+
+		return builder;
 	}
 
 	@Override
-	public OneToManyExecutor<O, M> reproduce(ChainPreparedStatementComplementer complementer) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	public OneToManyExecutor<O, M> reproduce(Object... placeHolderValues) {
+		return new PlaybackOneToManyExecutor<>(
+			self,
+			root,
+			route,
+			sql(),
+			toCountSQL().sql(),
+			new ComplementerValues(composedSQL()).reproduce(placeHolderValues),
+			optimizer.getOptimizedSelectClause().getColumns());
 	}
 
 	@Override

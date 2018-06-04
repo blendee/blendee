@@ -6,7 +6,6 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BlenPreparedStatement;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
@@ -31,7 +30,7 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 
 	private final String countSQL;
 
-	private final ChainPreparedStatementComplementer complementer;
+	private final ComplementerValues values;
 
 	private final Column[] selectedColumns;
 
@@ -43,14 +42,14 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 		List<QueryRelationship> route,
 		String sql,
 		String countSQL,
-		ChainPreparedStatementComplementer complementer,
+		ComplementerValues values,
 		Column[] selectedColumns) {
 		super(self);
 		this.root = root;
 		this.route = route;
 		this.sql = sql;
 		this.countSQL = countSQL;
-		this.complementer = complementer;
+		this.values = values;
 		this.selectedColumns = selectedColumns;
 	}
 
@@ -58,7 +57,7 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 	BlenStatement createStatementForCount() {
 		return BlendeeManager
 			.getConnection()
-			.getStatement(countSQL, complementer);
+			.getStatement(countSQL, values);
 	}
 
 	@Override
@@ -80,7 +79,7 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 	DataObjectIterator iterator() {
 		return DataAccessHelper.select(
 			sql,
-			complementer,
+			values,
 			self().getRelationship(),
 			selectedColumns,
 			converter);
@@ -102,25 +101,25 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 
 			@Override
 			public int complement(int done, BlenPreparedStatement statement) {
-				return complementer.complement(done, statement);
+				return values.complement(done, statement);
 			}
 		};
 	}
 
 	@Override
 	public int complement(int done, BlenPreparedStatement statement) {
-		return complementer.complement(done, statement);
+		return values.complement(done, statement);
 	}
 
 	@Override
-	public OneToManyExecutor<O, M> reproduce(ChainPreparedStatementComplementer complementer) {
+	public OneToManyExecutor<O, M> reproduce(Object... placeHolderValues) {
 		return new PlaybackOneToManyExecutor<>(
 			self(),
 			root,
 			route,
 			sql,
 			countSQL,
-			complementer,
+			values.reproduce(placeHolderValues),
 			selectedColumns);
 	}
 }

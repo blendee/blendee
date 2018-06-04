@@ -9,7 +9,6 @@ import org.blendee.jdbc.BlenConnection;
 import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.BlenStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Bindable;
@@ -123,6 +122,10 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 		return new ResultSetIterator(this);
 	}
 
-	@Override
-	Executor<I, R> reproduce(ChainPreparedStatementComplementer complementer);
+	/**
+	 * 新しいプレースホルダの値を持つ複製を作成します。
+	 * @param placeHolderValues 新しいプレースホルダの値
+	 * @return 複製
+	 */
+	Executor<I, R> reproduce(Object... placeHolderValues);
 }
