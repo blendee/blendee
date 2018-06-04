@@ -12,5 +12,5 @@ public interface GroupByOfferFunction<R extends GroupByQueryRelationship> {
 	 * @param relation 使用する {@link Query} のルートテーブル
 	 * @return {@link Offers}
 	 */
-	Offers<GroupByOffer> apply(R relation);
+	Offers<Offerable> apply(R relation);
 }

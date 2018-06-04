@@ -73,14 +73,6 @@ public class DataObjectIterator
 	}
 
 	/**
-	 * @throws UnsupportedOperationException 使用不可
-	 */
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
 	 * {@link #next()} を行った回数を返します。
 	 * @return {@link #next()} を行った回数
 	 */

@@ -24,17 +24,22 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 		/**
 		 * 順方向
 		 */
-		ASC("ASC"),
+		ASC(" ASC"),
 
 		/**
 		 * 逆方向
 		 */
-		DESC("DESC");
+		DESC(" DESC"),
+
+		/**
+		 * 指定なし
+		 */
+		NONE("");
 
 		private final String value;
 
 		private Direction(String value) {
-			this.value = " " + value;
+			this.value = value;
 		}
 
 		@Override
@@ -146,7 +151,7 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 			block.addColumn(columns[i]);
 		}
 
-		block.addTemplate(template);
+		block.addTemplate(template + direction);
 
 		addBlock(block);
 
@@ -169,7 +174,7 @@ public class OrderByClause extends ListQueryClause<OrderByClause> {
 			block.addColumn(columns[i]);
 		}
 
-		block.addTemplate(template);
+		block.addTemplate(template + direction.value);
 
 		addBlock(block);
 

@@ -8,6 +8,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.blendee.plugin.views.ClassBuilderView;
+import org.blendee.util.Blendee;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -113,8 +114,14 @@ public class SchemaElement extends PropertySourceElement {
 
 		@Override
 		public void run() {
-			for (TableElement element : elements) {
-				element.build();
+			try {
+				Blendee.execute(t -> {
+					for (TableElement element : elements) {
+						element.build();
+					}
+				});
+			} catch (Throwable t) {
+				throw new IllegalStateException(t);
 			}
 		}
 	}
@@ -132,8 +139,14 @@ public class SchemaElement extends PropertySourceElement {
 
 		@Override
 		public void run() {
-			for (TableElement element : elements) {
-				if (element.isAvailable()) element.build();
+			try {
+				Blendee.execute(t -> {
+					for (TableElement element : elements) {
+						if (element.isAvailable()) element.build();
+					}
+				});
+			} catch (Throwable t) {
+				throw new IllegalStateException(t);
 			}
 		}
 	}

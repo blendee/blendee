@@ -172,26 +172,38 @@ public class RelationshipElement extends PropertySourceElement {
 				remain.remove(pkColumnElements[i]);
 			}
 
-			elements.add(
-				new PrimaryKeyElement(
-					this,
-					MetadataUtilities.getPrimaryKeyName(
-						relationship.getTablePath()),
-					pkColumnElements));
+			try {
+				Blendee.execute(t -> {
+					elements.add(
+						new PrimaryKeyElement(
+							this,
+							MetadataUtilities.getPrimaryKeyName(
+								relationship.getTablePath()),
+							pkColumnElements));
+				});
+			} catch (Throwable t) {
+				throw new IllegalStateException(t);
+			}
 		}
 
-		Relationship[] relations = relationship.getRelationships();
-		for (Relationship element : relations) {
-			RelationshipElement relationshipElement = new RelationshipElement(repository, id, element);
-			relationshipMap.put(element, relationshipElement);
-			elements.add(
-				createForeignKeyElement(
-					repository,
-					relationship,
-					element,
-					relationshipElement,
-					columnMap,
-					remain));
+		try {
+			Blendee.execute(t -> {
+				Relationship[] relations = relationship.getRelationships();
+				for (Relationship element : relations) {
+					RelationshipElement relationshipElement = new RelationshipElement(repository, id, element);
+					relationshipMap.put(element, relationshipElement);
+					elements.add(
+						createForeignKeyElement(
+							repository,
+							relationship,
+							element,
+							relationshipElement,
+							columnMap,
+							remain));
+				}
+			});
+		} catch (Throwable t) {
+			throw new IllegalStateException(t);
 		}
 
 		elements.addAll(remain);
@@ -209,16 +221,24 @@ public class RelationshipElement extends PropertySourceElement {
 		String[] fks = reference.getForeignKeyColumnNames();
 		String[] pks = reference.getPrimaryKeyColumnNames();
 		ForeignKeyColumnElement[] columns = new ForeignKeyColumnElement[fks.length];
-		for (int i = 0; i < fks.length; i++) {
-			Column key = parent.getColumn(fks[i]);
-			ColumnElement base = myColumns.get(key);
+		try {
+			Blendee.execute(t -> {
+				for (int i = 0; i < fks.length; i++) {
 
-			ForeignKeyColumnElement fkColumnElement = new ForeignKeyColumnElement(base, pks[i]);
+					Column key = parent.getColumn(fks[i]);
 
-			columns[i] = fkColumnElement;
+					ColumnElement base = myColumns.get(key);
 
-			fkColumnMap.put(key, fkColumnElement);
-			remain.remove(base);
+					ForeignKeyColumnElement fkColumnElement = new ForeignKeyColumnElement(base, pks[i]);
+
+					columns[i] = fkColumnElement;
+
+					fkColumnMap.put(key, fkColumnElement);
+					remain.remove(base);
+				}
+			});
+		} catch (Throwable t) {
+			throw new IllegalStateException(t);
 		}
 
 		return new ForeignKeyElement(

@@ -31,13 +31,19 @@ public class FileIOStream implements IOStream {
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		if (input == null) input = new FileInputStream(file);
+		if (input != null)
+			input.close();
+
+		input = new FileInputStream(file);
 		return input;
 	}
 
 	@Override
 	public OutputStream getOutputStream() throws IOException {
-		if (output == null) output = new FileOutputStream(file);
+		if (output != null)
+			output.close();
+
+		output = new FileOutputStream(file);
 		return output;
 	}
 
@@ -49,6 +55,7 @@ public class FileIOStream implements IOStream {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+
 		input = null;
 		output = null;
 	}
