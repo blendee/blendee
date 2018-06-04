@@ -62,7 +62,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	 * @param relation 中心となるテーブルを表す
 	 * @param options {@link SQLDecorator}
 	 */
-	protected InstantOneToManyExecutor(QueryRelationship relation, SQLDecorator[] options) {
+	public InstantOneToManyExecutor(QueryRelationship relation, SQLDecorator[] options) {
 		super(relation);
 
 		self = relation;

@@ -33,6 +33,7 @@ import org.blendee.support.OnLeftQueryColumn;
 import org.blendee.support.OnLeftQueryRelationship;
 import org.blendee.support.OnRightQueryColumn;
 import org.blendee.support.OnRightQueryRelationship;
+import org.blendee.support.OneToManyExecutor;
 import org.blendee.support.InstantOneToManyExecutor;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByQueryColumn;
@@ -669,18 +670,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return  new Executor(helper.executor());
 	/*++'++*/}/*++'++*/
 
-	/**
-	 * 自動生成された '{'@link OneToManyExecutor'}' の実装クラスです。
-	 * @param <M> Many 一対多の多側の型連鎖
-	 */
-	public static class O2MExecutor<M>
-		extends InstantOneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> /*++'++*/{/*++'++*/
-
-		private O2MExecutor(QueryRelationship self, SQLDecorator[] decorators) /*++'++*/{/*++'++*/
-			super(self, decorators);
-		/*++'++*/}/*++'++*/
-	/*++'++*/}/*++'++*/
-
 	private static Class<?> getUsing(StackTraceElement element) /*++'++*/{/*++'++*/
 		try /*++'++*/{/*++'++*/
 			return Class.forName(element.getClassName());
@@ -758,12 +747,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 		/**
 		 * この '{'@link QueryRelationship'}' が表すテーブルの Row を一とし、多をもつ検索結果を生成する '{'@link OneToManyExecutor'}' を返します。
-		 * @return 自動生成された '{'@link OneToManyExecutor'}' のサブクラス
+		 * @return '{'@link OneToManyExecutor'}'
 		 */
-		public O2MExecutor<M> intercept() /*++'++*/{/*++'++*/
+		public OneToManyExecutor</*++{0}.row.{1}++*//*--*/RowBase/*--*/, M> intercept() /*++'++*/{/*++'++*/
 			if (query$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
 			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
-			return new O2MExecutor<>(this, getRoot().decorators());
+			return new InstantOneToManyExecutor<>(this, getRoot().decorators());
 		/*++'++*/}/*++'++*/
 
 		@Override

@@ -19,7 +19,7 @@ import org.blendee.sql.CriteriaFactory;
  * @param <O> One 一対多の一側の型
  * @param <M> Many 一対多の多側の型連鎖
  */
-abstract class OneToManyExecutor<O extends Row, M>
+public abstract class OneToManyExecutor<O extends Row, M>
 	implements Executor<Many<O, M>, One<O, M>> {
 
 	private final QueryRelationship self;
