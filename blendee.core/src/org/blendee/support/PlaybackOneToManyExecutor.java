@@ -80,7 +80,7 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 		return DataAccessHelper.select(
 			sql,
 			values,
-			self().getRelationship(),
+			root.getRelationship(),
 			selectedColumns,
 			converter);
 	}

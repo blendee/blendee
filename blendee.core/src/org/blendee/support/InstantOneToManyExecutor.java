@@ -83,7 +83,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 		this.route = Collections.unmodifiableList(route);
 
-		Selector selector = new DataAccessHelper().getSelector(
+		Selector selector = helper.getSelector(
 			optimizer,
 			criteria,
 			order,
