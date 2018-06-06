@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenPreparedStatement;
@@ -151,16 +150,17 @@ public class InstantOneToManyExecutor<O extends Row, M>
 
 		OrderByClause newOrder = new OrderByClause();
 
-		Stream<DirectionalColumn> stream = Arrays.stream(order.getDirectionalColumns());
+		List<DirectionalColumn> list = Arrays.asList(order.getDirectionalColumns());
 
 		Map<Column, DirectionalColumn> map = new LinkedHashMap<>();
-		stream.forEach(column -> map.put(column.getColumn(), column));
+		list.forEach(column -> map.put(column.getColumn(), column));
 
 		for (QueryRelationship queryRelation : relations) {
 			Relationship relation = queryRelation.getRelationship();
 			Set<Column> pks = new LinkedHashSet<>(Arrays.asList(relation.getPrimaryKeyColumns()));
 
-			stream
+			list
+				.stream()
 				.filter(column -> column.getColumn().getRelationship().equals(relation))
 				.map(column -> {
 					newOrder.add(column);
