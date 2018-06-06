@@ -3,12 +3,18 @@ package org.blendee.support;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.blendee.sql.Column;
+
 /**
  * GROUP BY 句に新しい要素を追加するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class GroupByQueryColumn extends AbstractQueryColumn implements Offerable, Offers<Offerable> {
+public class GroupByQueryColumn implements Offerable, Offers<Offerable> {
+
+	private final QueryRelationship relationship;
+
+	private final Column column;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -16,7 +22,8 @@ public class GroupByQueryColumn extends AbstractQueryColumn implements Offerable
 	 * @param name カラム名
 	 */
 	public GroupByQueryColumn(QueryRelationship helper, String name) {
-		super(helper, name);
+		relationship = helper;
+		column = helper.getRelationship().getColumn(name);
 	}
 
 	@Override

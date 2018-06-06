@@ -28,7 +28,7 @@ public class WithValues {
 	 * @return self
 	 */
 	public WithValues columns(CriteriaQueryColumn<?>... columns) {
-		Arrays.asList(columns).stream().map(c -> c.column()).forEach(this.columns::add);
+		Arrays.stream(columns).map(c -> c.column()).forEach(this.columns::add);
 		return this;
 	}
 

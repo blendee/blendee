@@ -55,8 +55,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 				TablePathSource source = new TablePathSource(
 					tableMatcher.group(1),
 					TablePath.parse(tableMatcher.group(2)),
-					Arrays.asList(tableMatcher.group(3).split(","))
-						.stream()
+					Arrays.stream(tableMatcher.group(3).split(","))
 						.filter(e -> e.length() > 0)
 						.collect(Collectors.toList()),
 					Long.parseLong(tableMatcher.group(4)));

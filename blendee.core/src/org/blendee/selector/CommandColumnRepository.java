@@ -480,7 +480,7 @@ public class CommandColumnRepository implements ColumnRepository {
 			if (getTablePath(id) == null) {
 				addID = new AddIDCommand(
 					id,
-					column.getRelationship().getRoot().getTablePath(),
+					column.getRootRelationship().getTablePath(),
 					usings);
 			} else {
 				addID = null;

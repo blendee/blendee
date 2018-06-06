@@ -465,8 +465,7 @@ public class ORMGenerator {
 
 		String fkPart = String.join(
 			", ",
-			Arrays.asList(relation.getRelationships())
-				.stream()
+			Arrays.stream(relation.getRelationships())
 				.map(r -> r.getCrossReference())
 				.map(ORMGenerator::buildFKAnnotation)
 				.filter(part -> part.length() > 0)
@@ -534,8 +533,7 @@ public class ORMGenerator {
 	private static String buildColumnsPart(String[] columnNames) {
 		return String.join(
 			", ",
-			Arrays.asList(columnNames)
-				.stream()
+			Arrays.stream(columnNames)
 				.map(name -> "\"" + name + "\"")
 				.collect(Collectors.toList()));
 	}

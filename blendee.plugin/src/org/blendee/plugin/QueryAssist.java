@@ -151,7 +151,7 @@ public class QueryAssist implements IJavaCompletionProposalComputer {
 	}
 
 	private static <T> Stream<T> stream(T[] array) {
-		return Arrays.asList(array).stream();
+		return Arrays.stream(array);
 	}
 
 	private static String[][] resolve(IType type, String name) {

@@ -28,10 +28,10 @@ public interface SelectQueryRelationship {
 	 * @param offers SELECT 句に含めるテーブルおよびカラム
 	 * @return SELECT 句
 	 */
-	default Offers<ColumnExpression> list(SelectOffer... offers) {
+	default SelectOffer list(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		for (SelectOffer offer : offers) {
-			offer.accept(visitor);
+			offer.get().forEach(c -> visitor.add(c));
 		}
 
 		return visitor;
@@ -46,8 +46,7 @@ public interface SelectQueryRelationship {
 
 			@Override
 			public List<ColumnExpression> get() {
-				return Arrays.asList(getRelationship().getColumns())
-					.stream()
+				return Arrays.stream(getRelationship().getColumns())
 					.map(c -> new ColumnExpression(c))
 					.collect(Collectors.toList());
 			}
@@ -62,54 +61,53 @@ public interface SelectQueryRelationship {
 	/**
 	 * SELECT 句用 AVG(column)
 	 * @param column {@link SelectQueryColumn}
-	 * @return {@link AliasOffer}
+	 * @return {@link ColumnExpression}
 	 */
-	default AliasOffer AVG(SelectQueryColumn column) {
+	default AliasableOffer AVG(AliasableOffer column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 SUM(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link AliasOffer}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasOffer SUM(SelectQueryColumn column) {
+	default AliasableOffer SUM(AliasableOffer column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 MAX(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link AliasOffer}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasOffer MAX(SelectQueryColumn column) {
+	default AliasableOffer MAX(AliasableOffer column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 MIN(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link AliasOffer}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasOffer MIN(SelectQueryColumn column) {
+	default AliasableOffer MIN(AliasableOffer column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 COUNT(*)
-	 * @return {@link AliasOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasOffer COUNT() {
-		return new AliasOffer(
-			new ColumnExpression(COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false)));
+	default AliasableOffer COUNT() {
+		return new ColumnExpression(COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false));
 	}
 
 	/**
 	 * SELECT 句用 COUNT(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link AliasOffer}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasOffer COUNT(SelectQueryColumn column) {
+	default AliasableOffer COUNT(AliasableOffer column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -117,46 +115,46 @@ public interface SelectQueryRelationship {
 	 * SELECT 句に任意のカラムを追加します。
 	 * @param template カラムのテンプレート
 	 * @param selectColumns 使用するカラム
-	 * @return {@link AliasOffer} AS
+	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasOffer any(String template, SelectQueryColumn... selectColumns) {
+	default AliasableOffer any(String template, AliasableOffer... selectColumns) {
 		getRoot().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
 		for (int i = 0; i < selectColumns.length; i++) {
-			columns[i] = selectColumns[i].column;
+			columns[i] = selectColumns[i].column();
 		}
 
-		return new AliasOffer(new ColumnExpression(template, columns));
+		return new ColumnExpression(template, columns);
 	}
 
 	/**
 	 * SELECT 句に任意の文字列を追加します。
 	 * @param expression 文字列表現
-	 * @return {@link AliasOffer} AS
+	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasOffer any(String expression) {
+	default AliasableOffer any(String expression) {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), expression, false) };
-		return new AliasOffer(new ColumnExpression("{0}", columns));
+		return new ColumnExpression("{0}", columns);
 	}
 
 	/**
 	 * SELECT 句に任意の数値を追加します。
 	 * @param number 文字列表現
-	 * @return {@link AliasOffer} AS
+	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasOffer any(Number number) {
+	default AliasableOffer any(Number number) {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
-		return new AliasOffer(new ColumnExpression("{0}", columns));
+		return new ColumnExpression("{0}", columns);
 	}
 
 	/**
 	 * SELECT 句に * を追加します。
-	 * @return {@link AliasOffer} AS
+	 * @return {@link SelectOffer}
 	 */
-	default SelectOffers asterisk() {
+	default SelectOffer asterisk() {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
 
@@ -168,9 +166,9 @@ public interface SelectQueryRelationship {
 
 	/**
 	 * SELECT 句に * を追加します。
-	 * @return {@link AliasOffer} AS
+	 * @return {@link SelectOffer}
 	 */
-	default SelectOffers asteriskAll() {
+	default SelectOffer asteriskAll() {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
 

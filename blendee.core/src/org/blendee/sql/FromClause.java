@@ -135,9 +135,11 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			new JointContainer(type, another, onCriteria));
 
 		onCriteria.getColumnsInternal().forEach(c -> {
-			Relationship target = c.getRelationship();
-			if (target.getRoot().equals(root))
-				localRelationships.add(new RelationshipContainer(JoinType.LEFT_OUTER_JOIN, target));
+			Relationship targetRoot = c.getRootRelationship();
+			c.consumeRelationship(target -> {
+				if (targetRoot.equals(root))
+					localRelationships.add(new RelationshipContainer(JoinType.LEFT_OUTER_JOIN, target));
+			});
 		});
 	}
 
@@ -340,7 +342,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 		private void addBindersTo(List<Binder> binders) {
 			if (onCriteria == null) return;
-			Arrays.asList(onCriteria.getBinders()).forEach(b -> binders.add(b));
+			Arrays.stream(onCriteria.getBinders()).forEach(b -> binders.add(b));
 		}
 	}
 }

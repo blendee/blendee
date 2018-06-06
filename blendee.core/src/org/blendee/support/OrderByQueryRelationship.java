@@ -83,7 +83,7 @@ public interface OrderByQueryRelationship {
 	default AscDesc any(String template, OrderByQueryColumn... orderByColumns) {
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
-			columns[i] = orderByColumns[i].column;
+			columns[i] = orderByColumns[i].column();
 		}
 
 		OrderByClause clause = getOrderByClause();

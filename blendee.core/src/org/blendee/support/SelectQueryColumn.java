@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.blendee.sql.Column;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
@@ -11,9 +12,11 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class SelectQueryColumn extends AbstractQueryColumn implements SelectOffer, Offers<ColumnExpression> {
+public class SelectQueryColumn extends AliasableOffer {
 
-	private ColumnExpression expression;
+	private final QueryRelationship relationship;
+
+	private final Column column;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -21,26 +24,19 @@ public class SelectQueryColumn extends AbstractQueryColumn implements SelectOffe
 	 * @param name カラム名
 	 */
 	public SelectQueryColumn(QueryRelationship helper, String name) {
-		super(helper, name);
+		relationship = helper;
+		column = helper.getRelationship().getColumn(name);
 	}
 
 	@Override
 	public void accept(SelectOffers offers) {
-		if (expression != null) {
-			offers.add(expression);
-		} else {
-			offers.add(column);
-		}
+		offers.add(column);
 	}
 
 	@Override
 	public List<ColumnExpression> get() {
 		List<ColumnExpression> list = new LinkedList<>();
-		if (expression != null) {
-			list.add(expression);
-		} else {
-			list.add(new ColumnExpression(column));
-		}
+		list.add(new ColumnExpression(column));
 
 		return list;
 	}
@@ -51,10 +47,16 @@ public class SelectQueryColumn extends AbstractQueryColumn implements SelectOffe
 	 * @param alias 別名
 	 * @return {@link SelectOffer}
 	 */
+	@Override
 	public SelectOffer AS(String alias) {
 		relationship.getRoot().quitRowMode();
-		expression = new ColumnExpression(column);
-		expression.appendAlias(alias);
-		return this;
+		ColumnExpression expression = new ColumnExpression(column);
+		expression.AS(alias);
+		return expression;
+	}
+
+	@Override
+	public Column column() {
+		return column;
 	}
 }
