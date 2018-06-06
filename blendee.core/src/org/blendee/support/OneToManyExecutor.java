@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlenResultSet;
@@ -22,12 +23,12 @@ import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
 import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -158,7 +159,7 @@ public class OneToManyExecutor<O extends Row, M>
 	private static Optimizer convertOptimizer(List<QueryRelationship> route, QueryRelationship root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
 		SelectClause select = root.getOptimizer().getOptimizedSelectClause();
-		Arrays.asList(select.getColumns()).forEach(c -> selectColumns.add(c));
+		Arrays.stream(select.getColumns()).forEach(c -> selectColumns.add(c));
 		route.forEach(r -> {
 			for (Column column : r.getRelationship().getPrimaryKeyColumns()) {
 				selectColumns.add(column);
@@ -177,17 +178,16 @@ public class OneToManyExecutor<O extends Row, M>
 
 		OrderByClause newOrder = new OrderByClause();
 
-		List<DirectionalColumn> list = Arrays.asList(order.getDirectionalColumns());
+		Stream<DirectionalColumn> stream = Arrays.stream(order.getDirectionalColumns());
 
 		Map<Column, DirectionalColumn> map = new LinkedHashMap<>();
-		list.forEach(column -> map.put(column.getColumn(), column));
+		stream.forEach(column -> map.put(column.getColumn(), column));
 
 		for (QueryRelationship queryRelation : relations) {
 			Relationship relation = queryRelation.getRelationship();
 			Set<Column> pks = new LinkedHashSet<>(Arrays.asList(relation.getPrimaryKeyColumns()));
 
-			list.stream()
-				.filter(column -> column.getColumn().getRelationship().equals(relation))
+			stream.filter(column -> column.getColumn().getRelationship().equals(relation))
 				.map(column -> {
 					newOrder.add(column);
 					Column include = column.getColumn();

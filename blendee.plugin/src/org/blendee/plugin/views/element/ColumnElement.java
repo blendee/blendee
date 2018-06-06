@@ -138,7 +138,7 @@ public class ColumnElement extends AbstractColumnElement {
 	}
 
 	private void add() {
-		Arrays.asList(repository.getUsingClassNames(id)).forEach(c -> {
+		Arrays.stream(repository.getUsingClassNames(id)).forEach(c -> {
 			try {
 				repository.addColumn(id, column, c);
 			} catch (Exception e) {

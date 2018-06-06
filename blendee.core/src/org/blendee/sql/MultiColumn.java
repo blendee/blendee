@@ -40,8 +40,7 @@ public class MultiColumn extends Column {
 
 	@Override
 	public String getName() {
-		List<String> strings = Arrays.asList(columns)
-			.stream()
+		List<String> strings = Arrays.stream(columns)
 			.map(c -> c.getName())
 			.collect(Collectors.toList());
 
@@ -50,8 +49,7 @@ public class MultiColumn extends Column {
 
 	@Override
 	public String getComplementedName() {
-		List<String> strings = Arrays.asList(columns)
-			.stream()
+		List<String> strings = Arrays.stream(columns)
 			.map(c -> c.getComplementedName())
 			.collect(Collectors.toList());
 

@@ -33,7 +33,7 @@ public class EditorRootElement implements Element {
 
 	public EditorRootElement(CommandColumnRepository repository) {
 		this.repository = repository;
-		Arrays.asList(repository.getIDs()).forEach(this::buildTree);
+		Arrays.stream(repository.getIDs()).forEach(this::buildTree);
 	}
 
 	public EditorRootElement() {
@@ -101,7 +101,7 @@ public class EditorRootElement implements Element {
 		children.clear();
 		anchors.clear();
 
-		Arrays.asList(repository.getIDs()).forEach(this::buildTree);
+		Arrays.stream(repository.getIDs()).forEach(this::buildTree);
 
 		List<String> removeTargets = new LinkedList<>();
 		for (Entry<String, JavaElement> entry : javaMap.entrySet()) {
@@ -163,7 +163,7 @@ public class EditorRootElement implements Element {
 			return;
 		}
 
-		Arrays.asList(names).forEach(name -> buildAnchor(names, name, id));
+		Arrays.stream(names).forEach(name -> buildAnchor(names, name, id));
 	}
 
 	private void buildAnchor(String[] names, String name, String id) {

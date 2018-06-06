@@ -1150,7 +1150,9 @@ public class CriteriaFactory {
 	}
 
 	private static Bindable[] toBindables(String[] values) {
-		List<StringBinder> bindables = Arrays.asList(values).stream().map(v -> new StringBinder(v)).collect(Collectors.toList());
+		List<StringBinder> bindables = Arrays.stream(values)
+			.map(v -> new StringBinder(v))
+			.collect(Collectors.toList());
 		return bindables.toArray(new Bindable[bindables.size()]);
 	}
 }

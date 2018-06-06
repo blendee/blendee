@@ -91,8 +91,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		FKs fks = clazz.getAnnotation(FKs.class);
 
 		List<ForeignKeySource> fkSources = new LinkedList<>();
-		if (fks != null) fkSources = Arrays.asList(fks.value())
-			.stream()
+		if (fks != null) fkSources = Arrays.stream(fks.value())
 			.map(AnnotationMetadataFactory::createSource)
 			.collect(Collectors.toList());
 
@@ -137,8 +136,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	private List<Class<?>> forFile(String packageName, ClassLoader loader, URL url) {
 		File[] files = new File(url.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
 
-		return Arrays.asList(files)
-			.stream()
+		return Arrays.stream(files)
 			.map(file -> packageName + "." + file.getName().replaceAll(".class$", ""))
 			.map(name -> U.call(() -> loader.loadClass(name)))
 			.filter(this::matches)
