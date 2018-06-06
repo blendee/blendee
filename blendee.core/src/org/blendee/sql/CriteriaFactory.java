@@ -1053,7 +1053,7 @@ public class CriteriaFactory {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
 		QueryBuilder builder = new QueryBuilder(
-			new FromClause(subqueryColumns[0].getRelationship().getRoot().getTablePath()));
+			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath()));
 		builder.setWhereClause(subquery);
 		SelectClause selectClause = new SelectClause();
 		for (Column column : subqueryColumns) {

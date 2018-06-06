@@ -21,7 +21,7 @@ public interface OnLeftQueryRelationship extends CriteriaQueryRelationship {
 		return new OnLeftQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, Column.EMPTY_ARRAY));
+			new MultiColumn(getRelationship(), template));
 	}
 
 	/**
@@ -59,6 +59,6 @@ public interface OnLeftQueryRelationship extends CriteriaQueryRelationship {
 		return new OnLeftQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, columns));
+			new MultiColumn(template, columns));
 	}
 }

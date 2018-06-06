@@ -83,8 +83,7 @@ public abstract class QueryClause {
 	void join(FromClause fromClause) {
 		Column[] columns = getColumns();
 		for (int i = 0; i < columns.length; i++) {
-			Relationship relationship = columns[i].getRelationship();
-			fromClause.join(LEFT_OUTER_JOIN, relationship);
+			columns[i].consumeRelationship(r -> fromClause.join(LEFT_OUTER_JOIN, r));
 		}
 	}
 

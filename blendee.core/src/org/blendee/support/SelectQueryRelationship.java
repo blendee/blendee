@@ -63,40 +63,40 @@ public interface SelectQueryRelationship {
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link ColumnExpression}
 	 */
-	default AliasableOffer AVG(SelectQueryColumn column) {
+	default AliasableOffer AVG(AliasableOffer column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 SUM(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link ColumnExpression}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer SUM(SelectQueryColumn column) {
+	default AliasableOffer SUM(AliasableOffer column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 MAX(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link ColumnExpression}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer MAX(SelectQueryColumn column) {
+	default AliasableOffer MAX(AliasableOffer column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 MIN(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link ColumnExpression}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer MIN(SelectQueryColumn column) {
+	default AliasableOffer MIN(AliasableOffer column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
 	/**
 	 * SELECT 句用 COUNT(*)
-	 * @return {@link ColumnExpression}
+	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COUNT() {
 		return new ColumnExpression(COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false));
@@ -104,10 +104,10 @@ public interface SelectQueryRelationship {
 
 	/**
 	 * SELECT 句用 COUNT(column)
-	 * @param column {@link SelectQueryColumn}
-	 * @return {@link ColumnExpression}
+	 * @param column {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer COUNT(SelectQueryColumn column) {
+	default AliasableOffer COUNT(AliasableOffer column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -115,9 +115,9 @@ public interface SelectQueryRelationship {
 	 * SELECT 句に任意のカラムを追加します。
 	 * @param template カラムのテンプレート
 	 * @param selectColumns 使用するカラム
-	 * @return {@link ColumnExpression} AS
+	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasableOffer any(String template, SelectQueryColumn... selectColumns) {
+	default AliasableOffer any(String template, AliasableOffer... selectColumns) {
 		getRoot().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
@@ -131,7 +131,7 @@ public interface SelectQueryRelationship {
 	/**
 	 * SELECT 句に任意の文字列を追加します。
 	 * @param expression 文字列表現
-	 * @return {@link ColumnExpression} AS
+	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(String expression) {
 		getRoot().quitRowMode();
@@ -142,7 +142,7 @@ public interface SelectQueryRelationship {
 	/**
 	 * SELECT 句に任意の数値を追加します。
 	 * @param number 文字列表現
-	 * @return {@link ColumnExpression} AS
+	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(Number number) {
 		getRoot().quitRowMode();
@@ -152,7 +152,7 @@ public interface SelectQueryRelationship {
 
 	/**
 	 * SELECT 句に * を追加します。
-	 * @return {@link ColumnExpression} AS
+	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asterisk() {
 		getRoot().quitRowMode();
@@ -166,7 +166,7 @@ public interface SelectQueryRelationship {
 
 	/**
 	 * SELECT 句に * を追加します。
-	 * @return {@link ColumnExpression} AS
+	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asteriskAll() {
 		getRoot().quitRowMode();

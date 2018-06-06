@@ -12,7 +12,7 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class SelectQueryColumn implements AliasableOffer {
+public class SelectQueryColumn extends AliasableOffer {
 
 	private final QueryRelationship relationship;
 
@@ -55,7 +55,8 @@ public class SelectQueryColumn implements AliasableOffer {
 		return expression;
 	}
 
-	Column column() {
+	@Override
+	public Column column() {
 		return column;
 	}
 }

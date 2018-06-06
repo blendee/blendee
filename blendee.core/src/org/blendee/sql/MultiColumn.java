@@ -3,6 +3,7 @@ package org.blendee.sql;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.blendee.jdbc.ColumnMetadata;
@@ -13,7 +14,7 @@ import org.blendee.jdbc.ColumnMetadata;
  */
 public class MultiColumn extends Column {
 
-	private final Relationship relationship;
+	private final Relationship root;
 
 	private final String template;
 
@@ -21,21 +22,56 @@ public class MultiColumn extends Column {
 
 	/**
 	 * コンストラクタです。
-	 * @param relationship 属する {@link Relationship}
 	 * @param template カラムの代わりに使用する文字列表現のテンプレート
 	 * @param columns テンプレートに埋め込まれるカラム
 	 */
-	public MultiColumn(Relationship relationship, String template, Column[] columns) {
-		Objects.requireNonNull(relationship);
+	public MultiColumn(String template, Column[] columns) {
 		Objects.requireNonNull(template);
-		this.relationship = relationship;
+
+		Relationship root = null;
+		for (Column column : columns) {
+			Relationship myRoot = column.getRootRelationship();
+			if (root != null && !root.equals(myRoot)) {
+				throw new IllegalArgumentException("columns のルート Relationship は同一である必要があります");
+			}
+
+			root = myRoot;
+		}
+
+		this.root = root;
 		this.template = template;
 		this.columns = columns;
 	}
 
+	/**
+	 * コンストラクタです。
+	 * @param rootRelationship ルート Relatihonship
+	 * @param template カラムの代わりに使用する文字列表現のテンプレート
+	 */
+	public MultiColumn(Relationship rootRelationship, String template) {
+		Objects.requireNonNull(rootRelationship);
+		Objects.requireNonNull(template);
+
+		root = rootRelationship;
+		this.template = template;
+		this.columns = Column.EMPTY_ARRAY;
+	}
+
 	@Override
 	public Relationship getRelationship() {
-		return relationship;
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Relationship getRootRelationship() {
+		return root;
+	}
+
+	@Override
+	public void consumeRelationship(Consumer<Relationship> consumer) {
+		for (Column column : columns) {
+			consumer.accept(column.getRelationship());
+		}
 	}
 
 	@Override
@@ -88,14 +124,14 @@ public class MultiColumn extends Column {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(relationship, template, Arrays.hashCode(columns));
+		return Objects.hash(root, template, Arrays.hashCode(columns));
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof MultiColumn)) return false;
 		MultiColumn another = (MultiColumn) o;
-		return relationship.equals(another.relationship)
+		return root.equals(another.root)
 			&& template.equals(another.template)
 			&& Arrays.equals(columns, another.columns);
 	}

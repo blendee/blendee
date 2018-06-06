@@ -2,6 +2,7 @@ package org.blendee.sql;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
@@ -121,6 +122,22 @@ public class Column implements Comparable<Column> {
 	}
 
 	/**
+	 * このインスタンスが含まれる {@link Relationship} のルートを返します。
+	 * @return このインスタンスが含まれる {@link Relationship} のルート
+	 */
+	public Relationship getRootRelationship() {
+		return relationship.getRoot();
+	}
+
+	/**
+	 * このインスタンスが含まれる {@link Relationship} を {@link Consumer} に渡します。
+	 * @param consumer
+	 */
+	public void consumeRelationship(Consumer<Relationship> consumer) {
+		consumer.accept(relationship);
+	}
+
+	/**
 	 * このカラムの名称を返します。
 	 * @return このカラムの名称
 	 */
@@ -196,7 +213,7 @@ public class Column implements Comparable<Column> {
 
 	void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
-		if (!getRelationship().getRoot().equals(sqlRoot))
+		if (!getRootRelationship().equals(sqlRoot))
 			throw new IllegalStateException(getComplementedName() + " は SQL 文の Relationship のツリーに含まれないカラムです");
 	}
 }

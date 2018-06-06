@@ -57,7 +57,7 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	public synchronized void addColumn(String id, Column column, String... usingClassNames) {
 		TablePathSource source = setTablePathInternal(
 			id,
-			column.getRelationship().getRoot().getTablePath(),
+			column.getRootRelationship().getTablePath(),
 			Arrays.asList(usingClassNames));
 		if (!source.add(column)) return;
 		changed = true;

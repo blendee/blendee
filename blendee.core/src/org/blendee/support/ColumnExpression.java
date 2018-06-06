@@ -6,6 +6,7 @@ import java.util.List;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.ListQueryClause;
+import org.blendee.sql.MultiColumn;
 import org.blendee.sql.SelectClause;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
@@ -14,7 +15,7 @@ import org.blendee.support.SelectOfferFunction.SelectOffers;
  * 内部使用のためのクラスですので直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public class ColumnExpression implements AliasableOffer {
+public class ColumnExpression extends AliasableOffer {
 
 	private final StringBuilder expression = new StringBuilder();
 
@@ -60,6 +61,11 @@ public class ColumnExpression implements AliasableOffer {
 		list.add(this);
 		return list;
 	};
+
+	@Override
+	public Column column() {
+		return new MultiColumn(expression.toString(), columns);
+	}
 
 	void accept(RuntimeOptimizer optimizer) {
 		for (Column column : columns) {

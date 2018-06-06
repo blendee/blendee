@@ -37,7 +37,7 @@ public class RuntimeOptimizer implements Optimizer {
 	 */
 	public void add(Column column) {
 		Objects.requireNonNull(column);
-		check(column.getRelationship().getRoot());
+		check(column.getRootRelationship());
 		select.add(column);
 	}
 

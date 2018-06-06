@@ -77,7 +77,7 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 		return new HavingQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, Column.EMPTY_ARRAY));
+			new MultiColumn(getRelationship(), template));
 	}
 
 	/**
@@ -115,6 +115,6 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 		return new HavingQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, columns));
+			new MultiColumn(template, columns));
 	}
 }

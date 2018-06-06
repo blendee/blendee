@@ -153,7 +153,7 @@ public class PhantomColumn extends Column {
 	void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		synchronized (lock) {
-			if (substance != null && !substance.getRelationship().getRoot().equals(sqlRoot))
+			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))
 				throw new IllegalStateException("このインスタンスは既に " + substance + " として使われています");
 
 			Relationship relation;

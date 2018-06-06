@@ -21,7 +21,7 @@ public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 		return new WhereQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, Column.EMPTY_ARRAY));
+			new MultiColumn(getRelationship(), template));
 	}
 
 	/**
@@ -59,6 +59,6 @@ public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 		return new WhereQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new MultiColumn(getRelationship(), template, columns));
+			new MultiColumn(template, columns));
 	}
 }
