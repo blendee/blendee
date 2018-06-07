@@ -1,6 +1,7 @@
 package org.blendee.sql;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.TablePath;
@@ -10,7 +11,7 @@ import org.blendee.jdbc.TablePath;
  * ただし、このクラスのインスタンスは一旦 {@link QueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #prepareForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
  * @author 千葉 哲嗣
  */
-public class PhantomColumn extends Column {
+public class PhantomColumn implements Column {
 
 	private final Object lock = new Object();
 
@@ -109,6 +110,16 @@ public class PhantomColumn extends Column {
 	}
 
 	@Override
+	public Relationship getRootRelationship() {
+		return getRelationship().getRoot();
+	}
+
+	@Override
+	public void consumeRelationship(Consumer<Relationship> consumer) {
+		consumer.accept(getRelationship());
+	}
+
+	@Override
 	public String getName() {
 		return getSubstanceWithCheck().getName();
 	}
@@ -139,7 +150,7 @@ public class PhantomColumn extends Column {
 	}
 
 	@Override
-	Column replicate() {
+	public Column replicate() {
 		return new PhantomColumn(path, name);
 	}
 
@@ -150,7 +161,7 @@ public class PhantomColumn extends Column {
 	 * @throws IllegalStateException このインスタンスに既に別のルートが決定しているとき
 	 */
 	@Override
-	void prepareForSQL(Relationship sqlRoot) {
+	public void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		synchronized (lock) {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))

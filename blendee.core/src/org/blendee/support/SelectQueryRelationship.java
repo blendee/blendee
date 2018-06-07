@@ -1,12 +1,15 @@
 package org.blendee.support;
 
 import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
+import static org.blendee.support.QueryRelationshipConstants.COALESCE_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,6 +112,20 @@ public interface SelectQueryRelationship {
 	 */
 	default AliasableOffer COUNT(AliasableOffer column) {
 		return any(COUNT_TEMPLATE, column);
+	}
+
+	/**
+	 * SELECT 句用 COALESCE
+	 * @param columns {@link AliasableOffer}
+	 * @return {@link AliasableOffer}
+	 */
+	default AliasableOffer COALESCE(AliasableOffer... columns) {
+		List<String> list = new LinkedList<>();
+		for (int i = 0; i < columns.length; i++) {
+			list.add("{" + i + "}");
+		}
+
+		return any(MessageFormat.format(COALESCE_TEMPLATE, String.join(", ", list)), columns);
 	}
 
 	/**

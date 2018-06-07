@@ -12,7 +12,7 @@ import org.blendee.jdbc.ColumnMetadata;
  * カラムの代わりに SQL に組み込むための、複数カラムを使用した疑似カラムクラスです。
  * @author 千葉 哲嗣
  */
-public class MultiColumn extends Column {
+public class MultiColumn implements Column {
 
 	private final Relationship root;
 
@@ -144,5 +144,10 @@ public class MultiColumn extends Column {
 	@Override
 	public String toString() {
 		return getComplementedName();
+	}
+
+	@Override
+	public Column replicate() {
+		return this;
 	}
 }

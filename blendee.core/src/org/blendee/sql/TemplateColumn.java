@@ -6,7 +6,7 @@ import java.text.MessageFormat;
  * テンプレートによりカラム表現を拡張したクラスです。
  * @author 千葉 哲嗣
  */
-public class TemplateColumn extends Column {
+public class TemplateColumn extends RelationshipColumn {
 
 	private final String template;
 

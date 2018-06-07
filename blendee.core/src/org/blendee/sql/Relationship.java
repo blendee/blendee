@@ -89,7 +89,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 		DecimalFormat columnFormat = RelationshipFactory.createDigitFormat(metadatas.length);
 		for (int i = 0; i < metadatas.length; i++) {
 			ColumnMetadata metadata = metadatas[i];
-			Column column = new Column(this, metadata, converter, columnFormat.format(i));
+			Column column = new RelationshipColumn(this, metadata, converter, columnFormat.format(i));
 			columns[i] = column;
 			columnMap.put(metadata.getName(), column);
 		}

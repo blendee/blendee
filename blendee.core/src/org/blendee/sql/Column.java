@@ -6,110 +6,35 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
-import org.blendee.jdbc.DataTypeConverter;
 
 /**
- * {@link Relationship} に含まれるカラムを表すクラスです。<br>
- * データベース上では同じカラムでも、カラムが属する {@link Relationship} が違う場合、それらは別物として扱われます。
+ * データベースのカラムを表すインターフェイスです。
  * @author 千葉 哲嗣
  * @see Relationship#getColumn(String)
  * @see Relationship#getColumns()
  */
-public class Column implements Comparable<Column> {
-
-	//!! このクラスに新たにメソッドを追加する場合は、サブクラスにも追加すること !!
+public interface Column extends Comparable<Column> {
 
 	/**
 	 * 空配列
 	 */
-	public static final Column[] EMPTY_ARRAY = {};
-
-	private final Relationship relationship;
-
-	private final ColumnMetadata metadata;
-
-	private final String name;
-
-	private final Class<?> type;
-
-	private final String id;
-
-	private final String complementedName;
-
-	private final int hashCode;
-
-	Column(
-		Relationship relationship,
-		ColumnMetadata metadata,
-		DataTypeConverter converter,
-		String index) {
-		this.relationship = relationship;
-		this.metadata = metadata;
-		this.name = metadata.getName();
-		this.type = converter.convert(metadata.getType(), metadata.getTypeName());
-		id = relationship.getID() + "_c" + index;
-		complementedName = relationship.getID() + "." + metadata.getName();
-		hashCode = id.hashCode();
-	}
-
-	Column() {
-		this.relationship = null;
-		this.metadata = null;
-		this.name = null;
-		this.type = null;
-		id = null;
-		complementedName = null;
-		hashCode = 0;
-	}
-
-	/**
-	 * コピーコンストラクタ
-	 * @param copyFrom コピー元
-	 */
-	Column(Column copyFrom) {
-		this.relationship = copyFrom.relationship;
-		this.metadata = copyFrom.metadata;
-		this.name = copyFrom.name;
-		this.type = copyFrom.type;
-		id = copyFrom.id;
-		complementedName = copyFrom.complementedName;
-		hashCode = copyFrom.hashCode;
-	}
+	static final RelationshipColumn[] EMPTY_ARRAY = {};
 
 	@Override
-	public int hashCode() {
-		return hashCode;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return o instanceof Column && id.equals(((Column) o).id);
-	}
-
-	@Override
-	public int compareTo(Column target) {
-		return id.compareTo(target.id);
-	}
+	int compareTo(Column target);
 
 	/**
 	 * このカラムを Blendee 内で一意に特定する ID を返します。 ID はカラム別名として使用されます。
 	 * @return ID
 	 */
-	public String getID() {
-		return id;
-	}
-
-	@Override
-	public String toString() {
-		return complementedName;
-	}
+	public String getID();
 
 	/**
 	 * このインスタンスがさし示すカラムの値とパラメータの値が等しいものという条件句を生成します。
 	 * @param bindable 比較値
 	 * @return 生成された条件句
 	 */
-	public Criteria getCriteria(Bindable bindable) {
+	default Criteria getCriteria(Bindable bindable) {
 		return CriteriaFactory.create(this, bindable);
 	}
 
@@ -117,57 +42,43 @@ public class Column implements Comparable<Column> {
 	 * このインスタンスが含まれる {@link Relationship} を返します。
 	 * @return このインスタンスが含まれる {@link Relationship}
 	 */
-	public Relationship getRelationship() {
-		return relationship;
-	}
+	Relationship getRelationship();
 
 	/**
 	 * このインスタンスが含まれる {@link Relationship} のルートを返します。
 	 * @return このインスタンスが含まれる {@link Relationship} のルート
 	 */
-	public Relationship getRootRelationship() {
-		return relationship.getRoot();
-	}
+	Relationship getRootRelationship();
 
 	/**
 	 * このインスタンスが含まれる {@link Relationship} を {@link Consumer} に渡します。
 	 * @param consumer
 	 */
-	public void consumeRelationship(Consumer<Relationship> consumer) {
-		consumer.accept(relationship);
-	}
+	void consumeRelationship(Consumer<Relationship> consumer);
 
 	/**
 	 * このカラムの名称を返します。
 	 * @return このカラムの名称
 	 */
-	public String getName() {
-		return name;
-	}
+	String getName();
 
 	/**
 	 * このカラムのデータ型を返します。
 	 * @return このカラムのデータ型
 	 */
-	public Class<?> getType() {
-		return type;
-	}
+	Class<?> getType();
 
 	/**
 	 * このカラムの定義情報を返します。
 	 * @return このカラムの定義情報
 	 */
-	public ColumnMetadata getColumnMetadata() {
-		return metadata;
-	}
+	ColumnMetadata getColumnMetadata();
 
 	/**
 	 * テーブル別名を含むカラム名を返します。
 	 * @return テーブル別名を含むカラム名
 	 */
-	public String getComplementedName() {
-		return complementedName;
-	}
+	String getComplementedName();
 
 	/**
 	 * このカラムと同じカラムを、他の {@link Relationship} のツリーから探します。
@@ -175,8 +86,8 @@ public class Column implements Comparable<Column> {
 	 * @return パラメータの {@link Relationship} に含まれるカラム
 	 * @throws NotFoundException このカラムの属する {@link Relationship} の参照先に another が含まれない場合
 	 */
-	public Column findAnotherRootColumn(Relationship another) {
-		Relationship myRelation = relationship;
+	default Column findAnotherRootColumn(Relationship another) {
+		Relationship myRelation = getRelationship();
 		List<String[]> fks = new LinkedList<>();
 		while (true) {
 			if (myRelation.getTablePath().equals(another.getTablePath())) {
@@ -186,7 +97,8 @@ public class Column implements Comparable<Column> {
 				for (String[] fk : fks) {
 					newRelation = newRelation.find(fk);
 				}
-				return newRelation.getColumn(name);
+
+				return newRelation.getColumn(getName());
 			}
 
 			if (myRelation.isRoot()) break;
@@ -203,15 +115,20 @@ public class Column implements Comparable<Column> {
 	 * このカラムが、主キーがどうか検査します。
 	 * @return このカラムが主キーの場合、 true
 	 */
-	public boolean isPrimaryKey() {
-		return relationship.belongsPrimaryKey(this);
+	default boolean isPrimaryKey() {
+		return getRelationship().belongsPrimaryKey(this);
 	}
 
-	Column replicate() {
-		return this;
-	}
+	/**
+	 * このインスタンスのコピーを返します。
+	 * @return このインスタンスのコピー
+	 */
+	Column replicate();
 
-	void prepareForSQL(Relationship sqlRoot) {
+	/**
+	 * @param sqlRoot
+	 */
+	default void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		if (!getRootRelationship().equals(sqlRoot))
 			throw new IllegalStateException(getComplementedName() + " は SQL 文の Relationship のツリーに含まれないカラムです");

@@ -1,6 +1,7 @@
 package org.blendee.sql;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
 
@@ -8,7 +9,7 @@ import org.blendee.jdbc.ColumnMetadata;
  * カラムの代わりに SQL に組み込むための、疑似カラムクラスです。
  * @author 千葉 哲嗣
  */
-public class PseudoColumn extends Column {
+public class PseudoColumn implements Column {
 
 	private final Relationship relationship;
 
@@ -33,6 +34,16 @@ public class PseudoColumn extends Column {
 	@Override
 	public Relationship getRelationship() {
 		return relationship;
+	}
+
+	@Override
+	public Relationship getRootRelationship() {
+		return relationship.getRoot();
+	}
+
+	@Override
+	public void consumeRelationship(Consumer<Relationship> consumer) {
+		consumer.accept(relationship);
 	}
 
 	@Override
@@ -96,5 +107,10 @@ public class PseudoColumn extends Column {
 	@Override
 	public String toString() {
 		return getComplementedName();
+	}
+
+	@Override
+	public Column replicate() {
+		return this;
 	}
 }
