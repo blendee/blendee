@@ -38,19 +38,6 @@
       </view>
    </extension>
    <extension
-         id="org.blendee.queryAssist"
-         point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
-      <javaCompletionProposalComputer
-            activate="true"
-            categoryId="org.eclipse.jdt.ui.defaultProposalCategory"
-            class="org.blendee.plugin.QueryAssist"
-            needsSortingAfterFiltering="false">
-         <partition
-               type="__dftl_partition_content_type">
-         </partition>
-      </javaCompletionProposalComputer>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <category
             id="org.blendee.plugin.commandCategory"

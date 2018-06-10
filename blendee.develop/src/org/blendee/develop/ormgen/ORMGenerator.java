@@ -21,6 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.lang.model.SourceVersion;
+
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
@@ -177,6 +179,15 @@ public class ORMGenerator {
 	}
 
 	/**
+	 * 自動生成可能なテーブル名かどうか判定します。
+	 * @param name テーブル名
+	 * @return 生成可能な場合 true
+	 */
+	public static boolean isGeneratableTableName(String name) {
+		return SourceVersion.isName(name);
+	}
+
+	/**
 	 * すべてのクラスファイルを生成します。
 	 * @param home 生成された Java ソースを保存するためのルートとなる場所
 	 * @param srcCharset 生成する Java ソースの文字コード
@@ -201,6 +212,10 @@ public class ORMGenerator {
 			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(table);
 
 			String tableName = relation.getTablePath().getTableName();
+
+			//使用できない名前の場合
+			if (!isGeneratableTableName(tableName)) return;
+			//TODO 警告出す方法を検討
 
 			write(
 				new File(rowPackageDir, createRowManagerCompilationUnitName(tableName)),
@@ -234,6 +249,7 @@ public class ORMGenerator {
 	 * @return コンパイル単位名
 	 */
 	public static String createRowCompilationUnitName(String tableName) {
+		checkName(tableName);
 		return tableName + ".java";
 	}
 
@@ -275,6 +291,8 @@ public class ORMGenerator {
 		TablePath target = relation.getTablePath();
 		String tableName = target.getTableName();
 
+		checkName(tableName);
+
 		Set<String> importPart = new LinkedHashSet<>();
 
 		String propertyAccessorPart;
@@ -308,11 +326,13 @@ public class ORMGenerator {
 					}
 				}
 
+				String columnName = safe(column.getName());
+
 				list.add(
 					codeFormatter.formatRowPropertyAccessorPart(
 						rowPropertyAccessorPartTemplate,
-						toUpperCaseFirstLetter(column.getName()),
-						column.getName(),
+						toUpperCaseFirstLetter(columnName),
+						columnName,
 						classNameString,
 						buildColumnComment(column),
 						nullCheck,
@@ -382,15 +402,17 @@ public class ORMGenerator {
 			List<String> list1 = new LinkedList<>();
 			List<String> list2 = new LinkedList<>();
 			for (Column column : relation.getColumns()) {
+				String columnName = safe(column.getName());
+
 				list1.add(
 					codeFormatter.formatQueryColumnPart1(
 						queryColumnPart1Template,
-						column.getName()));
+						columnName));
 
 				list2.add(
 					codeFormatter.formatQueryColumnPart2(
 						queryColumnPart2Template,
-						column.getName(),
+						columnName,
 						rootTableName,
 						rootPackageName));
 			}
@@ -659,5 +681,17 @@ public class ORMGenerator {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	/**
+	 * 使用できない名前の検査
+	 */
+	private static void checkName(String name) {
+		if (!isGeneratableTableName(name)) throw new IllegalStateException(name);;
+	}
+
+	private static String safe(String name) {
+		if (!SourceVersion.isName(name)) return "_" + name;
+		return name;
 	}
 }
