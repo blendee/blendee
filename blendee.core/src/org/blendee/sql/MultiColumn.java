@@ -70,7 +70,7 @@ public class MultiColumn implements Column {
 	@Override
 	public void consumeRelationship(Consumer<Relationship> consumer) {
 		for (Column column : columns) {
-			consumer.accept(column.getRelationship());
+			column.consumeRelationship(consumer);
 		}
 	}
 

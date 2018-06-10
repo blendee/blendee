@@ -116,7 +116,7 @@ public class PhantomColumn implements Column {
 
 	@Override
 	public void consumeRelationship(Consumer<Relationship> consumer) {
-		consumer.accept(getRelationship());
+		getSubstanceWithCheck().consumeRelationship(consumer);
 	}
 
 	@Override
