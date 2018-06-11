@@ -8,7 +8,6 @@ import org.blendee.sql.Column;
 import org.blendee.sql.ListQueryClause;
 import org.blendee.sql.MultiColumn;
 import org.blendee.sql.SelectClause;
-import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
  * SELECT 句のカラム表現を完成させるための補助クラスです。<br>
@@ -46,13 +45,13 @@ public class ColumnExpression extends AliasableOffer {
 	 */
 	@Override
 	public SelectOffer AS(String alias) {
-		appendAlias(alias);
-		return this;
-	}
+		if (expression.length() == 0) {
+			expression.append("{0} AS " + alias);
+		} else {
+			expression.append(" AS " + alias);
+		}
 
-	@Override
-	public void accept(SelectOffers offers) {
-		offers.add(this);
+		return this;
 	}
 
 	@Override
@@ -75,7 +74,13 @@ public class ColumnExpression extends AliasableOffer {
 
 	void accept(SelectClause selectClause) {
 		if (expression.length() == 0) {
-			selectClause.add(order, columns);
+			List<String> list = new LinkedList<>();
+			for (int i = 0; i < columns.length; i++) {
+				list.add("{" + i + "}");
+			}
+
+			//あえてテンプレートを作り、エイリアスを付けないようにする
+			selectClause.add(order, String.join(", ", list), columns);
 		} else {
 			selectClause.add(order, expression.toString(), columns);
 		}
@@ -83,13 +88,5 @@ public class ColumnExpression extends AliasableOffer {
 
 	void order(int order) {
 		this.order = order;
-	}
-
-	void appendAlias(String alias) {
-		if (expression.length() == 0) {
-			expression.append("{0} AS " + alias);
-		} else {
-			expression.append(" AS " + alias);
-		}
 	}
 }

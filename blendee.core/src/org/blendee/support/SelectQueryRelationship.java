@@ -53,11 +53,6 @@ public interface SelectQueryRelationship {
 					.map(c -> new ColumnExpression(c))
 					.collect(Collectors.toList());
 			}
-
-			@Override
-			public void accept(SelectOffers offers) {
-				offers.add(getRelationship().getColumns());
-			}
 		};
 	}
 

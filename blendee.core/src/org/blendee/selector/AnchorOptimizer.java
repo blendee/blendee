@@ -85,6 +85,7 @@ public class AnchorOptimizer implements Optimizer {
 		for (int i = 0; i < columns.length; i++) {
 			clause.add(columns[i]);
 		}
+
 		return clause;
 	}
 

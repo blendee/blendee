@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.blendee.sql.Column;
-import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
  * ORDER BY 句に新しい要素を追加するクラスです。<br>
@@ -26,11 +25,6 @@ public class SelectQueryColumn extends AliasableOffer {
 	public SelectQueryColumn(QueryRelationship helper, String name) {
 		relationship = helper;
 		column = helper.getRelationship().getColumn(name);
-	}
-
-	@Override
-	public void accept(SelectOffers offers) {
-		offers.add(column);
 	}
 
 	@Override

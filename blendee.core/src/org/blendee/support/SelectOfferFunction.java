@@ -55,10 +55,5 @@ public interface SelectOfferFunction<R extends SelectQueryRelationship> {
 		public List<ColumnExpression> get() {
 			return new LinkedList<>(expressions);
 		}
-
-		@Override
-		public void accept(SelectOffers offers) {
-			expressions.forEach(e -> offers.add(e));
-		}
 	}
 }
