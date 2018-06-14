@@ -115,6 +115,7 @@ public class SchemaElement extends PropertySourceElement {
 		@Override
 		public void run() {
 			try {
+				Blendee.clearCache();
 				Blendee.execute(t -> {
 					for (TableElement element : elements) {
 						element.build();
@@ -140,6 +141,7 @@ public class SchemaElement extends PropertySourceElement {
 		@Override
 		public void run() {
 			try {
+				Blendee.clearCache();
 				Blendee.execute(t -> {
 					for (TableElement element : elements) {
 						if (element.isAvailable()) element.build();

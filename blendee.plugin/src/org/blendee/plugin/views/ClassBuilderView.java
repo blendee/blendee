@@ -199,7 +199,7 @@ public class ClassBuilderView extends AbstractView {
 				if (!MessageDialog.openConfirm(
 					viewer.getControl().getShell(),
 					Constants.TITLE,
-					"全ての情報の再読込みを行います（保管していない変更は捨てられます）")) return;
+					"全ての情報の再読込みを行います")) return;
 				BlendeePlugin plugin = BlendeePlugin.getDefault();
 				try {
 					plugin.setProjectAndRefresh(plugin.getProject());
@@ -208,6 +208,7 @@ public class ClassBuilderView extends AbstractView {
 				}
 			}
 		};
+
 		String refreshActionText = "再読込み";
 		refreshAction.setText(refreshActionText);
 		refreshAction.setToolTipText(refreshActionText);
