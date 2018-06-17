@@ -20,7 +20,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
 /**
  * あらかじめ用意しておいた SQL 文を実行する Proxy クラスを生成するビルダクラスです。<br>
  * あらかじめ用意しておいた SQL 文とは、一つの SQL 文を一つのファイルに記述し、そのファイル名を<br>
- * interface-name#method-name.sql<br>
+ * interface-name.method-name.sql<br>
  * として、インターフェイスと同じ場所に配備したもののことです。<br>
  * インターフェイスに定義するメソッドは、戻り値に<br>
  * {@link BlenResultSet}, int, boolean, void<br>
@@ -103,7 +103,7 @@ public class SQLProxyBuilder {
 			Class<?> proxyClass = proxy.getClass().getInterfaces()[0];
 
 			String sqlFileName = proxyClass.getName().replaceAll(".+?([^\\.]+)$", "$1")
-				+ "#"
+				+ "."
 				+ method.getName()
 				+ ".sql";
 
