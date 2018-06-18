@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import org.blendee.sql.Criteria.ProxyCriteria;
 import org.blendee.sql.binder.StringBinder;
+import org.blendee.support.ComplementerValues;
 
 /**
  * 条件句インスタンスを生成するファクトリクラスです。
@@ -1061,13 +1062,14 @@ public class CriteriaFactory {
 		}
 
 		builder.setSelectClause(selectClause);
-		return createSubquery(columns, builder);
+		return createSubquery(columns, builder, false);
 	}
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
 	 * @param columns 主となるクエリ側のカラム
 	 * @param subquery サブクエリ
+	 * @param notIn NOT IN の場合 true
 	 * @return 生成されたインスタンス
 	 * @throws SubqueryException 主となるクエリ側のカラムが空の場合
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
@@ -1075,7 +1077,8 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubquery(
 		Column[] columns,
-		QueryBuilder subquery) {
+		QueryBuilder subquery,
+		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 
 		Column[] subQueryColumns = subquery.getSelectClause().getColumns();
@@ -1089,24 +1092,14 @@ public class CriteriaFactory {
 				throw new SubqueryException("IN を使用しているため、サブクエリの select 句のカラムは、すべて NOT NULL である必要があります。");
 		}
 
-		List<String> columnPartList = new LinkedList<>();
-		for (int i = 0; i < columns.length; i++) {
-			columnPartList.add("{" + i + "}");
-		}
-
-		List<Binder> binders = new LinkedList<>();
-		binders.addAll(Arrays.asList(subquery.getWhereClause().getBinders()));
-		binders.addAll(Arrays.asList(subquery.getHavingClause().getBinders()));
-
-		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.toString() + ")";
-
-		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
+		return createSubqueryWithoutCheck(columns, subquery, notIn);
 	}
 
 	/**
 	 * サブクエリを使用した条件句を生成します。
 	 * @param columns 主となるクエリ側のカラム
 	 * @param subquery サブクエリ
+	 * @param notIn NOT IN の場合 true
 	 * @return 生成されたインスタンス
 	 * @throws SubqueryException 主となるクエリ側のカラムが空の場合
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
@@ -1114,7 +1107,8 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubqueryWithoutCheck(
 		Column[] columns,
-		QueryBuilder subquery) {
+		QueryBuilder subquery,
+		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 
 		List<String> columnPartList = new LinkedList<>();
@@ -1123,13 +1117,9 @@ public class CriteriaFactory {
 		}
 
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
-		String subqueryString = "(" + String.join(", ", columnPartList) + ") IN (" + subquery.sql() + ")";
+		String subqueryString = "(" + String.join(", ", columnPartList) + ") " + (notIn ? "NOT IN" : "IN") + " (" + subquery.sql() + ")";
 
-		List<Binder> binders = new LinkedList<>();
-		binders.addAll(Arrays.asList(subquery.getFromClause().getBinders()));
-		binders.addAll(Arrays.asList(subquery.getWhereClause().getBinders()));
-		binders.addAll(Arrays.asList(subquery.getHavingClause().getBinders()));
-
+		List<Binder> binders = new ComplementerValues(subquery).binders();
 		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
 	}
 

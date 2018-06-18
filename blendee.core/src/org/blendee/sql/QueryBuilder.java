@@ -18,7 +18,7 @@ public class QueryBuilder implements ComposedSQL {
 
 	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private final List<UnionContainer> unions = new LinkedList<>();
+	private final List<Union> unions = new LinkedList<>();
 
 	private final List<JoinContainer> joins = new LinkedList<>();
 
@@ -169,7 +169,15 @@ public class QueryBuilder implements ComposedSQL {
 	 * @param query UNION 対象
 	 */
 	public synchronized void union(UnionOperator operator, ComposedSQL query) {
-		unions.add(new UnionContainer(operator, query));
+		unions.add(new Union(operator, query));
+	}
+
+	/**
+	 * 保持する {@link Union} を返します。
+	 * @return {@link Union}
+	 */
+	public synchronized Union[] getUnions() {
+		return unions.toArray(new Union[unions.size()]);
 	}
 
 	/**
@@ -244,8 +252,8 @@ public class QueryBuilder implements ComposedSQL {
 			addClause(clauses, havingClause.toString(joined));
 
 			unions.forEach(u -> {
-				clauses.add(u.unionOperator.expression);
-				clauses.add(u.query.sql());
+				clauses.add(u.getUnionOperator().expression);
+				clauses.add(u.getSQL().sql());
 			});
 
 			addClause(clauses, listClauses.toOrderByString(joined));
@@ -266,8 +274,8 @@ public class QueryBuilder implements ComposedSQL {
 		done = whereClause.complement(done, statement);
 		done = havingClause.complement(done, statement);
 
-		for (UnionContainer union : unions) {
-			done = union.query.complement(done, statement);
+		for (Union union : unions) {
+			done = union.getSQL().complement(done, statement);
 		}
 
 		return done;
@@ -321,18 +329,6 @@ public class QueryBuilder implements ComposedSQL {
 		@Override
 		public String toString(boolean joining) {
 			return "SELECT *";
-		}
-	}
-
-	private static class UnionContainer {
-
-		private final UnionOperator unionOperator;
-
-		private final ComposedSQL query;
-
-		private UnionContainer(UnionOperator unionOperator, ComposedSQL query) {
-			this.unionOperator = unionOperator;
-			this.query = query;
 		}
 	}
 

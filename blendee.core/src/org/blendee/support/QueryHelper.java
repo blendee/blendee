@@ -39,6 +39,7 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.sql.Union;
 
 /**
  * {@link Query} の内部処理を定義したヘルパークラスです。
@@ -75,7 +76,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private Criteria havingClause;
 
-	private final List<UnionContainer> unions = new ArrayList<>();
+	private final List<Union> unions = new ArrayList<>();
 
 	private OrderByClause orderByClause;
 
@@ -230,12 +231,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	public void UNION(ComposedSQL query) {
 		quitRowMode();
-		unions.add(new UnionContainer(UnionOperator.UNION, query));
+		unions.add(new Union(UnionOperator.UNION, query));
 	}
 
 	public void UNION_ALL(ComposedSQL query) {
 		quitRowMode();
-		unions.add(new UnionContainer(UnionOperator.UNION_ALL, query));
+		unions.add(new Union(UnionOperator.UNION_ALL, query));
 	}
 
 	public void and(Criteria whereClause) {
@@ -646,7 +647,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
 
-		unions.forEach(u -> builder.union(u.unionOperator, u.query));
+		unions.forEach(u -> builder.union(u.getUnionOperator(), u.getSQL()));
 
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
@@ -689,17 +690,5 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private static String toCountSQL(String sql) {
 		int fromPosition = sql.indexOf("FROM");
 		return "SELECT COUNT(*) " + sql.substring(fromPosition);
-	}
-
-	private static class UnionContainer {
-
-		private final UnionOperator unionOperator;
-
-		private final ComposedSQL query;
-
-		private UnionContainer(UnionOperator unionOperator, ComposedSQL query) {
-			this.unionOperator = unionOperator;
-			this.query = query;
-		}
 	}
 }

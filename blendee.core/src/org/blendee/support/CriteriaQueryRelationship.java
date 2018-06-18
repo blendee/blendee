@@ -49,7 +49,7 @@ public interface CriteriaQueryRelationship {
 	 * @param subquery 追加条件
 	 */
 	default void subquery(Query subquery) {
-		getContext().addCriteria(subquery.toSubquery().createCriteria(getRoot()));
+		subquery(false, subquery);
 	}
 
 	/**
@@ -58,13 +58,32 @@ public interface CriteriaQueryRelationship {
 	 * @param mainQueryColumns メイン側クエリの結合カラム
 	 */
 	default void subquery(Query subquery, CriteriaQueryColumn<?>... mainQueryColumns) {
+		subquery(false, subquery, mainQueryColumns);
+	}
+
+	/**
+	 * この句にサブクエリ条件を追加します。
+	 * @param notIn NOT IN の場合 true
+	 * @param subquery 追加条件
+	 */
+	default void subquery(boolean notIn, Query subquery) {
+		getContext().addCriteria(subquery.toSubquery().createCriteria(notIn, getRoot()));
+	}
+
+	/**
+	 * この句にサブクエリ条件を追加します。
+	 * @param notIn NOT IN の場合 true
+	 * @param subquery 追加条件
+	 * @param mainQueryColumns メイン側クエリの結合カラム
+	 */
+	default void subquery(boolean notIn, Query subquery, CriteriaQueryColumn<?>... mainQueryColumns) {
 		Column[] columns = new Column[mainQueryColumns.length];
 
 		for (int i = 0; i < mainQueryColumns.length; i++) {
 			columns[i] = mainQueryColumns[i].column();
 		}
 
-		getContext().addCriteria(subquery.toSubquery().createCriteria(columns));
+		getContext().addCriteria(subquery.toSubquery().createCriteria(notIn, columns));
 	}
 
 	/**

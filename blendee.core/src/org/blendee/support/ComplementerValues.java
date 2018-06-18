@@ -196,6 +196,14 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 		return new ComplementerValues(extractors, Collections.unmodifiableList(binders));
 	}
 
+	/**
+	 * 抽出した {@link Binder} を返します。
+	 * @return {@link Binder} のリスト
+	 */
+	public List<Binder> binders() {
+		return Collections.unmodifiableList(binders);
+	}
+
 	@Override
 	public int complement(int done, BlenPreparedStatement statement) {
 		int[] index = { done + 1 };

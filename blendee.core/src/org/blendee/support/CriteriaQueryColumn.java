@@ -789,6 +789,17 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの IN 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O IN(Query subquery) {
+		getContext().addCriteria(subquery.toSubquery().createCriteria(false, column()));
+
+		return logocalOperators();
+	}
+
+	/**
 	 * 条件句に、このカラムの NOT IN 条件を追加します。
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -832,6 +843,17 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O NOT_IN(Bindable... values) {
 		getContext().addCriteria(
 			CriteriaFactory.createNotInCriteria(column(), values));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの IN 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O NOT_IN(Query subquery) {
+		getContext().addCriteria(subquery.toSubquery().createCriteria(true, column()));
 
 		return logocalOperators();
 	}
