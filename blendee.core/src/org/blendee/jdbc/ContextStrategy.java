@@ -14,4 +14,10 @@ public interface ContextStrategy {
 	 * @return そのクラスのインスタンス
 	 */
 	<T> T getManagedInstance(String contextName, Class<T> clazz);
+
+	/**
+	 * contextName で管理しているインスタンスを解放します。
+	 * @param contextName コンテキスト名
+	 */
+	void release(String contextName);
 }

@@ -43,6 +43,13 @@ public class SimpleContextStrategy implements ContextStrategy {
 		return result;
 	}
 
+	@Override
+	public void release(String contextName) {
+		synchronized (lock) {
+			contextMap.remove(contextName);
+		}
+	}
+
 	private static Map<Class<?>, Object> getContextMap(Map<String, Map<Class<?>, Object>> map, String name) {
 		Map<Class<?>, Object> contextMap = map.get(name);
 		if (contextMap == null) {

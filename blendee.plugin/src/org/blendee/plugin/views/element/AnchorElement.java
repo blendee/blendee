@@ -148,7 +148,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 	public Element[] getChildren() {
 		Element[][] result = { null };
 		try {
-			Blendee.execute(t -> {
+			Blendee.DEFAULT.execute(t -> {
 				if (useColumnMode) {
 					result[0] = UseColumnElement.getElements(
 						this,
@@ -198,7 +198,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		changeModeAction.setToolTipText(changeModeActionText);
 
 		try {
-			Blendee.execute(t -> {
+			Blendee.DEFAULT.execute(t -> {
 				if (repository.getColumns(id).length > 0) {
 					viewSQLAction.element = this;
 					viewSQLAction.setEnabled(true);
@@ -243,7 +243,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		}
 
 		try {
-			Blendee.execute(t -> {
+			Blendee.DEFAULT.execute(t -> {
 				if (repository.getErrorMessages(id).length > 0) {
 					correctErrorAction.element = this;
 					correctErrorAction.setEnabled(true);
@@ -367,7 +367,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 	private boolean isValidAnchor() {
 		boolean[] result = { false };
 		try {
-			Blendee.execute(t -> {
+			Blendee.DEFAULT.execute(t -> {
 				result[0] = repository.getErrorMessages(id).length == 0;
 			});
 		} catch (Throwable t) {
@@ -573,7 +573,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			TablePath path = element.repository.getTablePath(element.id);
 
 			try {
-				Blendee.execute(t -> {
+				Blendee.DEFAULT.execute(t -> {
 					Column[] columns = element.repository.getColumns(element.id);
 
 					QueryBuilder builder = new QueryBuilder(new FromClause(path));

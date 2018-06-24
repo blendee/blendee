@@ -27,18 +27,26 @@ import org.blendee.sql.ValueExtractorsConfigure;
  */
 public class Blendee {
 
+	/**
+	 * DEFAULT isntance
+	 */
+	public static final Blendee DEFAULT = new Blendee();
+
 	private Class<? extends MetadataFactory> defaultMetadataFactoryClass = AnnotationMetadataFactory.class;
 
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
 
 	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
 
-	private Consumer<Initializer> consumer;
+	private final Consumer<Initializer> consumer;
+
+	private final String contextName;
 
 	/**
 	 */
 	public Blendee() {
 		this.consumer = null;
+		contextName = ContextManager.DEFAULT_CONTEXT_NAME;
 	}
 
 	/**
@@ -46,6 +54,24 @@ public class Blendee {
 	 */
 	public Blendee(Consumer<Initializer> consumer) {
 		this.consumer = consumer;
+		contextName = ContextManager.DEFAULT_CONTEXT_NAME;
+	}
+
+	/**
+	 * @param contextName my context name
+	 */
+	public Blendee(String contextName) {
+		this.consumer = null;
+		this.contextName = contextName;
+	}
+
+	/**
+	 * @param contextName my context name
+	 * @param consumer {@link Consumer}
+	 */
+	public Blendee(String contextName, Consumer<Initializer> consumer) {
+		this.consumer = consumer;
+		this.contextName = contextName;
 	}
 
 	/**
@@ -54,14 +80,20 @@ public class Blendee {
 	 * @return Blendee が既に使用可能な状態かどうか
 	 */
 	public boolean started() {
-		return ContextManager.get(BlendeeManager.class).initialized();
+		try {
+			ContextManager.setContext(contextName);
+			return ContextManager.get(BlendeeManager.class).initialized();
+		} finally {
+			ContextManager.releaseContext();
+		}
 	}
 
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
+	 * @return self
 	 */
-	public void start(Properties initValues) {
+	public Blendee start(Properties initValues) {
 		Map<OptionKey<?>, Object> param = new HashMap<>();
 
 		initValues.forEach((k, v) -> {
@@ -69,84 +101,101 @@ public class Blendee {
 			param.put(key, key.parse((String) v).get());
 		});
 
-		start(param);
+		return start(param);
 	}
 
 	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
+	 * @return self
 	 */
-	public void start(Map<OptionKey<?>, ?> initValues) {
-		Initializer init = new Initializer();
+	public Blendee start(Map<OptionKey<?>, ?> initValues) {
+		try {
+			ContextManager.setContext(contextName);
+			Initializer init = new Initializer();
 
-		init.setOptions(new HashMap<>(initValues));
+			init.setOptions(new HashMap<>(initValues));
 
-		BlendeeConstants.SCHEMA_NAMES.extract(initValues).ifPresent(names -> {
-			for (String name : names) {
-				init.addSchemaName(name);
-			}
-		});
+			BlendeeConstants.SCHEMA_NAMES.extract(initValues).ifPresent(names -> {
+				for (String name : names) {
+					init.addSchemaName(name);
+				}
+			});
 
-		BlendeeConstants.ENABLE_LOG.extract(initValues).ifPresent(flag -> init.enableLog(flag));
+			BlendeeConstants.ENABLE_LOG.extract(initValues).ifPresent(flag -> init.enableLog(flag));
 
-		BlendeeConstants.USE_AUTO_COMMIT.extract(initValues).ifPresent(flag -> init.setUseAutoCommit(flag));
+			BlendeeConstants.USE_AUTO_COMMIT.extract(initValues).ifPresent(flag -> init.setUseAutoCommit(flag));
 
-		BlendeeConstants.USE_LAZY_TRANSACTION.extract(initValues).ifPresent(flag -> init.setUseLazyTransaction(flag));
+			BlendeeConstants.USE_LAZY_TRANSACTION.extract(initValues).ifPresent(flag -> init.setUseLazyTransaction(flag));
 
-		BlendeeConstants.USE_METADATA_CACHE.extract(initValues).ifPresent(flag -> init.setUseMetadataCache(flag));
+			BlendeeConstants.USE_METADATA_CACHE.extract(initValues).ifPresent(flag -> init.setUseMetadataCache(flag));
 
-		BlendeeConstants.AUTO_CLOSE_INTERVAL_MILLIS.extract(initValues).ifPresent(millis -> init.setAutoCloseIntervalMillis(millis));
+			BlendeeConstants.AUTO_CLOSE_INTERVAL_MILLIS.extract(initValues).ifPresent(millis -> init.setAutoCloseIntervalMillis(millis));
 
-		BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));
+			BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));
 
-		BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
+			BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
 
-		Optional.ofNullable(
-			BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
-				() -> Optional.of(getDefaultMetadataFactoryClass())
-					.filter(c -> BlendeeConstants.ANNOTATED_ROW_PACKAGES.extract(initValues).isPresent())
-					.orElse(null)))
-			.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
+			Optional.ofNullable(
+				BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
+					() -> Optional.of(getDefaultMetadataFactoryClass())
+						.filter(c -> BlendeeConstants.ANNOTATED_ROW_PACKAGES.extract(initValues).isPresent())
+						.orElse(null)))
+				.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
 
-		Optional.ofNullable(
-			BlendeeConstants.TRANSACTION_FACTORY_CLASS.extract(initValues).orElseGet(
-				() -> Optional.of(getDefaultTransactionFactoryClass())
-					.filter(
-						c -> BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues)
-							.filter(name -> name.length() > 0)
-							.isPresent())
-					.orElse(null)))
-			.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
+			Optional.ofNullable(
+				BlendeeConstants.TRANSACTION_FACTORY_CLASS.extract(initValues).orElseGet(
+					() -> Optional.of(getDefaultTransactionFactoryClass())
+						.filter(
+							c -> BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues)
+								.filter(name -> name.length() > 0)
+								.isPresent())
+						.orElse(null)))
+				.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
-		if (consumer != null) consumer.accept(init);
+			if (consumer != null) consumer.accept(init);
 
-		ContextManager.get(BlendeeManager.class).initialize(init);
+			ContextManager.get(BlendeeManager.class).initialize(init);
 
-		BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
-			.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
+			BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
+				.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
 
-		AnchorOptimizerFactory anchorOptimizerFactory = ContextManager.get(AnchorOptimizerFactory.class);
+			AnchorOptimizerFactory anchorOptimizerFactory = ContextManager.get(AnchorOptimizerFactory.class);
 
-		BlendeeConstants.CAN_ADD_NEW_ENTRIES.extract(initValues)
-			.ifPresent(flag -> anchorOptimizerFactory.setCanAddNewEntries(flag));
+			BlendeeConstants.CAN_ADD_NEW_ENTRIES.extract(initValues)
+				.ifPresent(flag -> anchorOptimizerFactory.setCanAddNewEntries(flag));
 
-		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
-			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
-				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+			anchorOptimizerFactory.setColumnRepositoryFactoryClass(
+				BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
+					.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
 
-		anchorOptimizerFactory.setColumnRepositoryFactoryClass(
-			BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
-				.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+			anchorOptimizerFactory.setColumnRepositoryFactoryClass(
+				BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
+					.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
+
+			return this;
+		} finally {
+			ContextManager.releaseContext();
+		}
 	}
 
 	/**
 	 * 現在接続中の JDBC インスタンスをすべてクローズし、このコンテキストの Blendee を終了します。
 	 */
-	public static void stop() {
-		AutoCloseableFinalizer finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
-		finalizer.stop();
-		finalizer.closeAll();
-		clearCache();
+	public void stop() {
+		try {
+			ContextManager.setContext(contextName);
+			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+			if (manager.initialized()) {
+				AutoCloseableFinalizer finalizer = manager.getAutoCloseableFinalizer();
+				finalizer.stop();
+				finalizer.closeAll();
+			}
+
+			clearCache();
+		} finally {
+			ContextManager.releaseContext();
+		}
 	}
 
 	/**
@@ -154,38 +203,43 @@ public class Blendee {
 	 * @param function {@link Function} の実装
 	 * @throws Exception 処理内で起こった例外
 	 */
-	public static void execute(Function function) throws Exception {
-		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
-
-		boolean top;
-		Transaction transaction;
-		if (manager.startsTransaction()) {
-			transaction = manager.getCurrentTransaction();
-			top = false;
-		} else {
-			transaction = manager.startTransaction();
-			top = true;
-		}
-
+	public void execute(Function function) throws Exception {
 		try {
-			function.execute(transaction);
-			if (top) transaction.commit();
-		} catch (Exception e) {
-			try {
-				if (top) transaction.rollback();
-			} catch (Throwable t) {
-				t.printStackTrace(getPrintStream());
+			ContextManager.setContext(contextName);
+			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+
+			boolean top;
+			Transaction transaction;
+			if (manager.startsTransaction()) {
+				transaction = manager.getCurrentTransaction();
+				top = false;
+			} else {
+				transaction = manager.startTransaction();
+				top = true;
 			}
 
-			throw e;
-		} finally {
-			if (top) {
-				doFinally(
-					() -> manager.getAutoCloseableFinalizer().closeAll(),
-					() -> doFinally(
-						() -> transaction.close(),
-						ContextManager::releaseContext));
+			try {
+				function.execute(transaction);
+				if (top) transaction.commit();
+			} catch (Exception e) {
+				try {
+					if (top) transaction.rollback();
+				} catch (Throwable t) {
+					t.printStackTrace(getPrintStream());
+				}
+
+				throw e;
+			} finally {
+				if (top) {
+					doFinally(
+						() -> manager.getAutoCloseableFinalizer().closeAll(),
+						() -> doFinally(
+							() -> transaction.close(),
+							ContextManager::releaseContext));
+				}
 			}
+		} finally {
+			ContextManager.releaseContext();
 		}
 	}
 
@@ -267,9 +321,14 @@ public class Blendee {
 	/**
 	 * Blendee が持つ定義情報の各キャッシュをクリアします。
 	 */
-	public static void clearCache() {
-		ContextManager.get(BlendeeManager.class).clearMetadataCache();
-		ContextManager.get(RelationshipFactory.class).clearCache();
+	public void clearCache() {
+		try {
+			ContextManager.setContext(contextName);
+			ContextManager.get(BlendeeManager.class).clearMetadataCache();
+			ContextManager.get(RelationshipFactory.class).clearCache();
+		} finally {
+			ContextManager.releaseContext();
+		}
 	}
 
 	/**

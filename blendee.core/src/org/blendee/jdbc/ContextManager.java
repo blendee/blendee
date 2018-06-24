@@ -10,20 +10,23 @@ import org.blendee.jdbc.impl.SimpleContextStrategy;
  */
 public class ContextManager {
 
-	private static final String defaultContextName = ContextManager.class.getName() + ".defaultContext." + UUID.randomUUID();
+	/**
+	 * 何もコンテキストを使用しない際に使われるデフォルトコンテキスト名
+	 */
+	public static final String DEFAULT_CONTEXT_NAME = ContextManager.class.getName() + ".defaultContext." + UUID.randomUUID();
 
 	private static final Object lock = new Object();
 
 	private static ContextStrategy strategy;
 
-	private static final ThreadLocal<String> contextName = ThreadLocal.withInitial(() -> defaultContextName);
+	private static final ThreadLocal<String> contextNameThreadLocal = new ThreadLocal<>();
 
 	/**
 	 * 指定した名前のコンテキストに切り替えます。
 	 * @param name 新しいコンテキスト名
 	 */
 	public static void setContext(String name) {
-		contextName.set(name);
+		contextNameThreadLocal.set(name);
 	}
 
 	/**
@@ -32,7 +35,7 @@ public class ContextManager {
 	 * そうしないとメモリリークの原因となる可能性があります。
 	 */
 	public static void releaseContext() {
-		contextName.remove();
+		contextNameThreadLocal.remove();
 	}
 
 	/**
@@ -40,7 +43,8 @@ public class ContextManager {
 	 * @return 現在のコンテキスト名
 	 */
 	public static String getCurrentContextName() {
-		return contextName.get();
+		String contextName = contextNameThreadLocal.get();
+		return contextName == null ? DEFAULT_CONTEXT_NAME : contextName;
 	}
 
 	/**
@@ -53,9 +57,9 @@ public class ContextManager {
 	public static <T extends ManagementSubject> T get(Class<T> clazz) {
 		synchronized (lock) {
 			if (strategy == null) strategy = new SimpleContextStrategy();
-		}
 
-		return strategy.getManagedInstance(getCurrentContextName(), clazz);
+			return strategy.getManagedInstance(getCurrentContextName(), clazz);
+		}
 	}
 
 	/**

@@ -82,9 +82,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private FromClause fromClause;
 
-	private List<JoinResource> joinResources = new ArrayList<>();
+	private final List<JoinResource> joinResources = new ArrayList<>();
 
-	private List<SQLDecorator> decorators = new ArrayList<>();
+	private final List<SQLDecorator> decorators = new ArrayList<>();
 
 	private ComposedSQL sql;
 
@@ -416,15 +416,23 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		groupByClause = null;
 	}
 
-	public void resetUnion() {
-		unions.clear();
-	}
-
 	/**
 	 * 現在保持している ORDER BY 句をリセットします。
 	 */
 	public void resetOrderBy() {
 		orderByClause = null;
+	}
+
+	public void resetUnions() {
+		unions.clear();
+	}
+
+	public void resetJoins() {
+		joinResources.clear();
+	}
+
+	public void resetDecorators() {
+		decorators.clear();
 	}
 
 	/**
@@ -435,8 +443,10 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		whereClause = null;
 		havingClause = null;
 		groupByClause = null;
+		joinResources.clear();
 		unions.clear();
 		orderByClause = null;
+		decorators.clear();
 		rowMode = true;
 		sql = null;
 	}

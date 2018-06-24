@@ -16,7 +16,7 @@ public class ORMGeneratorRootElement implements Element {
 	public ORMGeneratorRootElement(final String[] schemas) {
 		final List<SchemaElement> list = new LinkedList<SchemaElement>();
 		try {
-			Blendee.execute(t -> {
+			Blendee.DEFAULT.execute(t -> {
 				BlenConnection connection = BlendeeManager.getConnection();
 				for (String schema : schemas) {
 					list.add(new SchemaElement(connection, schema));

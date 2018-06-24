@@ -647,6 +647,33 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	/**
+	 * 現在保持している UNION をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetUnions() /*++'++*/{/*++'++*/
+		helper.resetUnions();
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 現在保持している JOIN をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetJoins() /*++'++*/{/*++'++*/
+		helper.resetJoins();
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 現在保持している '{'@link SQLDecorator'}' をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++{1}Query++*//*--*/QueryBase/*--*/ resetDecorators() /*++'++*/{/*++'++*/
+		helper.resetDecorators();
+		return this;
+	/*++'++*/}/*++'++*/
+
+	/**
 	 * 現在保持している条件、並び順をリセットします。
 	 * @return このインスタンス
 	 */

@@ -25,16 +25,14 @@ public class BlendeeStarter {
 
 		ContextManager.newStrategy();
 
-		Blendee blendee = new Blendee();
-
-		blendee.setDefaultTransactionFactoryClass(
+		Blendee.DEFAULT.setDefaultTransactionFactoryClass(
 			PluginDriverTransactionFactory.class);
-		blendee.setDefaultMetadataFactoryClass(
+		Blendee.DEFAULT.setDefaultMetadataFactoryClass(
 			PluginAnnotationMetadataFactory.class);
 
 		//過去のキャッシュがあるかもしれないのでクリアしておく
-		Blendee.clearCache();
+		Blendee.DEFAULT.clearCache();
 
-		blendee.start(initValues);
+		Blendee.DEFAULT.start(initValues);
 	}
 }
