@@ -81,7 +81,7 @@ public class RelationshipElement extends PropertySourceElement {
 		if (children != null) return children.clone();
 
 		try {
-			Blendee.DEFAULT.execute(t -> {
+			Blendee.execute(t -> {
 				prepareChildren();
 			});
 		} catch (Exception e) {
@@ -173,7 +173,7 @@ public class RelationshipElement extends PropertySourceElement {
 			}
 
 			try {
-				Blendee.DEFAULT.execute(t -> {
+				Blendee.execute(t -> {
 					elements.add(
 						new PrimaryKeyElement(
 							this,
@@ -187,7 +187,7 @@ public class RelationshipElement extends PropertySourceElement {
 		}
 
 		try {
-			Blendee.DEFAULT.execute(t -> {
+			Blendee.execute(t -> {
 				Relationship[] relations = relationship.getRelationships();
 				for (Relationship element : relations) {
 					RelationshipElement relationshipElement = new RelationshipElement(repository, id, element);
@@ -222,7 +222,7 @@ public class RelationshipElement extends PropertySourceElement {
 		String[] pks = reference.getPrimaryKeyColumnNames();
 		ForeignKeyColumnElement[] columns = new ForeignKeyColumnElement[fks.length];
 		try {
-			Blendee.DEFAULT.execute(t -> {
+			Blendee.execute(t -> {
 				for (int i = 0; i < fks.length; i++) {
 
 					Column key = parent.getColumn(fks[i]);

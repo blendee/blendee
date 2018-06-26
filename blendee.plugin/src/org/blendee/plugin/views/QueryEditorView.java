@@ -40,7 +40,7 @@ public class QueryEditorView extends AbstractView {
 
 			boolean[] exists = { false };
 			try {
-				Blendee.DEFAULT.execute(t -> {
+				Blendee.execute(t -> {
 					exists[0] = TablePath.parse(path).exists();
 				});
 			} catch (Throwable t) {

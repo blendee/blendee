@@ -82,8 +82,8 @@ public class TableElement extends PropertySourceElement {
 	@Override
 	public void doubleClick() {
 		try {
-			Blendee.DEFAULT.clearCache();
-			Blendee.DEFAULT.execute(t -> {
+			Blendee.clearCache();
+			Blendee.execute(t -> {
 				build();
 			});
 		} catch (Throwable t) {
@@ -277,8 +277,8 @@ public class TableElement extends PropertySourceElement {
 		@Override
 		public void run() {
 			try {
-				Blendee.DEFAULT.clearCache();
-				Blendee.DEFAULT.execute(t -> {
+				Blendee.clearCache();
+				Blendee.execute(t -> {
 					element.build();
 				});
 			} catch (Throwable t) {
