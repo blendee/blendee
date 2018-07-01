@@ -25,6 +25,7 @@ import org.blendee.selector.SimpleOptimizer;
 import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
+import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.FromClause;
@@ -87,6 +88,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private final List<SQLDecorator> decorators = new ArrayList<>();
 
 	private ComposedSQL sql;
+
+	private boolean forSubquery;
 
 	public QueryHelper(
 		TablePath table,
@@ -167,6 +170,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	@SafeVarargs
 	public final void WHERE(
 		Consumer<W>... consumers) {
+		//二重に呼ばれた際の処置
+		Criteria current = QueryCriteriaContext.getContextCriteria();
 		try {
 			for (Consumer<W> consumer : consumers) {
 				Criteria contextCriteria = CriteriaFactory.create();
@@ -176,9 +181,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 				whereClause().and(contextCriteria);
 			}
-
 		} finally {
-			QueryCriteriaContext.removeContextCriteria();
+			if (current == null) {
+				QueryCriteriaContext.removeContextCriteria();
+			} else {
+				QueryCriteriaContext.setContextCriteria(current);
+			}
 		}
 	}
 
@@ -190,6 +198,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	public final void HAVING(
 		Consumer<H>... consumers) {
 		quitRowMode();
+
+		//二重に呼ばれた際の処置
+		Criteria current = QueryCriteriaContext.getContextCriteria();
 		try {
 			for (Consumer<H> consumer : consumers) {
 				Criteria contextCriteria = CriteriaFactory.create();
@@ -200,7 +211,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 				havingClause().and(contextCriteria);
 			}
 		} finally {
-			QueryCriteriaContext.removeContextCriteria();
+			if (current == null) {
+				QueryCriteriaContext.removeContextCriteria();
+			} else {
+				QueryCriteriaContext.setContextCriteria(current);
+			}
 		}
 	}
 
@@ -253,6 +268,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 */
 	public Criteria createWhereCriteria(
 		Consumer<W> consumer) {
+		//二重に呼ばれた際の処置
+		Criteria current = QueryCriteriaContext.getContextCriteria();
 		try {
 			Criteria criteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(criteria);
@@ -261,7 +278,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 			return criteria;
 		} finally {
-			QueryCriteriaContext.removeContextCriteria();
+			if (current == null) {
+				QueryCriteriaContext.removeContextCriteria();
+			} else {
+				QueryCriteriaContext.setContextCriteria(current);
+			}
 		}
 	}
 
@@ -271,6 +292,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 */
 	public Criteria createHavingCriteria(
 		Consumer<H> consumer) {
+		//二重に呼ばれた際の処置
+		Criteria current = QueryCriteriaContext.getContextCriteria();
 		try {
 			Criteria criteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(criteria);
@@ -279,7 +302,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 			return criteria;
 		} finally {
-			QueryCriteriaContext.removeContextCriteria();
+			if (current == null) {
+				QueryCriteriaContext.removeContextCriteria();
+			} else {
+				QueryCriteriaContext.setContextCriteria(current);
+			}
 		}
 	}
 
@@ -478,6 +505,10 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		return new Subquery(buildBuilder());
 	}
 
+	public void forSubquery(boolean forSubquery) {
+		this.forSubquery = forSubquery;
+	}
+
 	public static class PlaybackExecutor implements Executor<DataObjectIterator, DataObject> {
 
 		private final String sql;
@@ -649,6 +680,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private QueryBuilder buildBuilderWithoutSelectColumnsSupply() {
 		QueryBuilder builder = new QueryBuilder(false, getFromClause());
+
+		builder.forSubquery(forSubquery);
 
 		if (selectClause != null)
 			builder.setSelectClause(selectClause);

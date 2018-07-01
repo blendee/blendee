@@ -128,7 +128,7 @@ public interface Column extends Comparable<Column> {
 	/**
 	 * @param sqlRoot
 	 */
-	default void prepareForSQL(Relationship sqlRoot) {
+	default void checkForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		if (!getRootRelationship().equals(sqlRoot))
 			throw new IllegalStateException(getComplementedName() + " は SQL 文の Relationship のツリーに含まれないカラムです");

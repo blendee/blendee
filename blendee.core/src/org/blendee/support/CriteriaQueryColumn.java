@@ -173,6 +173,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの = 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O eq(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} = {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの = 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O eq(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} = {1}");
+	}
+
+	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -270,6 +288,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O ne(Bindable value) {
 		compare(ComparisonOperator.NE, value);
 		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの <> 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ne(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} <> {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの <> 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ne(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} <> {1}");
 	}
 
 	/**
@@ -373,6 +409,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの < 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O lt(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} < {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの < 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O lt(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} < {1}");
+	}
+
+	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -470,6 +524,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O gt(Bindable value) {
 		compare(ComparisonOperator.GT, value);
 		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの > 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O gt(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} > {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの > 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O gt(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} > {1}");
 	}
 
 	/**
@@ -573,6 +645,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの <= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O le(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} <= {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの <= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O le(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} <= {1}");
+	}
+
+	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link Query}
@@ -670,6 +760,24 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O ge(Bindable value) {
 		compare(ComparisonOperator.GE, value);
 		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの >= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ge(SelectQueryColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} >= {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの >= 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link Query}
+	 */
+	public O ge(CriteriaQueryColumn<?> another) {
+		return addAnotherColumnCriteria(another.column, "{0} >= {1}");
 	}
 
 	/**
@@ -994,6 +1102,16 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	public O add(String clause, Bindable value) {
 		getContext().addCriteria(
 			CriteriaFactory.createCriteria(clause, column(), value));
+
+		return logocalOperators();
+	}
+
+	private O addAnotherColumnCriteria(Column another, String template) {
+		getContext().addCriteria(
+			CriteriaFactory.createCriteria(
+				template,
+				new Column[] { column(), another },
+				Bindable.EMPTY_ARRAY));
 
 		return logocalOperators();
 	}

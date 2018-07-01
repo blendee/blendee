@@ -34,6 +34,8 @@ public class QueryOnClause<L extends OnLeftQueryRelationship, R extends OnRightQ
 	 */
 	@SafeVarargs
 	public final Q ON(BiConsumer<L, R>... consumers) {
+		//二重に呼ばれた際の処置
+		Criteria current = QueryCriteriaContext.getContextCriteria();
 		try {
 			Criteria contextCriteria = CriteriaFactory.create();
 			QueryCriteriaContext.setContextCriteria(contextCriteria);
@@ -44,7 +46,11 @@ public class QueryOnClause<L extends OnLeftQueryRelationship, R extends OnRightQ
 
 			resource.onCriteria = contextCriteria;
 		} finally {
-			QueryCriteriaContext.removeContextCriteria();
+			if (current == null) {
+				QueryCriteriaContext.removeContextCriteria();
+			} else {
+				QueryCriteriaContext.setContextCriteria(current);
+			}
 		}
 
 		return query;

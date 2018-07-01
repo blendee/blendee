@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.blendee.jdbc.BlenPreparedStatement;
+
 /**
  * 要素を並列に複数持つクエリの句を表す基底クラスです。
  * @author 千葉 哲嗣
@@ -70,6 +72,15 @@ public abstract class ListQueryClause<T extends ListQueryClause<?>> extends Quer
 		for (String columnName : columnNames) {
 			add(new PhantomColumn(columnName));
 		}
+	}
+
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) {
+		for (ListQueryBlock block : blocks) {
+			done = block.complement(done, statement);
+		}
+
+		return done;
 	}
 
 	/**
@@ -149,6 +160,9 @@ public abstract class ListQueryClause<T extends ListQueryClause<?>> extends Quer
 
 	void merge(ListQueryClause<?> another) {
 		blocks.addAll(another.blocks);
+	}
+
+	void sortBlocks() {
 		Collections.sort(blocks);
 	}
 

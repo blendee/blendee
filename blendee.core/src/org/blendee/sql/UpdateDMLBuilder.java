@@ -45,7 +45,7 @@ public class UpdateDMLBuilder extends Updater {
 	 */
 	public void setCriteria(Criteria criteria) {
 		this.criteria = criteria.replicate();
-		this.criteria.adjustColumns(factory.getInstance(getTablePath()));
+		this.criteria.checkColumns(factory.getInstance(getTablePath()));
 	}
 
 	@Override

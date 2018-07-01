@@ -601,6 +601,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		return helper.toSubquery();
 	/*++'++*/}/*++'++*/
 
+	@Override
+	public void forSubquery(boolean forSubquery) /*++'++*/{/*++'++*/
+		 helper.forSubquery(forSubquery);
+	/*++'++*/}/*++'++*/
+
 	/**
 	 * 現在保持している WHERE 句をリセットします。
 	 * @return このインスタンス

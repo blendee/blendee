@@ -38,6 +38,8 @@ class ListClauses {
 		ListQueryClause<?> clause = list.pop();
 		list.forEach(e -> clause.merge(e));
 
+		clause.sortBlocks();
+
 		return clause.toString(joined);
 	}
 }

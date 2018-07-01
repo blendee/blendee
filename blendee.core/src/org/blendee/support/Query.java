@@ -76,6 +76,11 @@ public interface Query {
 	Subquery toSubquery();
 
 	/**
+	 * @param forSubquery true の場合、カラムにテーブルIDが付与される
+	 */
+	void forSubquery(boolean forSubquery);
+
+	/**
 	 * 内部で保持している {@link SQLDecorator} を返します。
 	 * @return {@link SQLDecorator}
 	 */

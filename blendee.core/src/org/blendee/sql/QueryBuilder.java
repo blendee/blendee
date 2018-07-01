@@ -170,6 +170,7 @@ public class QueryBuilder implements ComposedSQL {
 	 */
 	public synchronized void union(UnionOperator operator, ComposedSQL query) {
 		unions.add(new Union(operator, query));
+		query = null;
 	}
 
 	/**
@@ -206,6 +207,8 @@ public class QueryBuilder implements ComposedSQL {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators.add(decorator);
 		}
+
+		query = null;
 	}
 
 	/**
@@ -219,8 +222,26 @@ public class QueryBuilder implements ComposedSQL {
 		if (unions.size() > 0 || another.unions.size() > 0)
 			throw new IllegalArgumentException("UNION されたクエリはマージできません");
 
-		query = null;
 		joins.add(new JoinContainer(joinType, another, onCriteria));
+
+		query = null;
+	}
+
+	/**
+	 * このインスタンスをサブクエリとして使用するかどうかを指定します。<br>
+	 * サブクエリで使用すると、すべてのカラムにテーブル ID が補完されます。
+	 * @param forSubquery true の場合、サブクエリとして使用
+	 */
+	public synchronized void forSubquery(boolean forSubquery) {
+		fromClause.forSubquery(forSubquery);
+		query = null;
+	}
+
+	/**
+	 * @return 現在の設定値
+	 */
+	public synchronized boolean forSubquery() {
+		return fromClause.forSubquery();
 	}
 
 	/**
@@ -229,6 +250,39 @@ public class QueryBuilder implements ComposedSQL {
 	 */
 	@Override
 	public synchronized String sql() {
+		prepareForComposedSQL();
+
+		String currentQuery = query;
+		for (SQLDecorator decorator : decorators) {
+			currentQuery = decorator.decorate(currentQuery);
+		}
+
+		return currentQuery;
+	}
+
+	@Override
+	public synchronized int complement(int done, BlenPreparedStatement statement) {
+		prepareForComposedSQL();
+
+		done = selectClause.complement(done, statement);
+		done = fromClause.complement(done, statement);
+		done = whereClause.complement(done, statement);
+		done = groupClause.complement(done, statement);
+		done = havingClause.complement(done, statement);
+
+		for (Union union : unions) {
+			done = union.getSQL().complement(done, statement);
+		}
+
+		return orderClause.complement(done, statement);
+	}
+
+	@Override
+	public String toString() {
+		return sql();
+	}
+
+	private void prepareForComposedSQL() {
 		if (query == null) {
 			prepareFrom();
 
@@ -259,31 +313,6 @@ public class QueryBuilder implements ComposedSQL {
 			addClause(clauses, listClauses.toOrderByString(joined));
 			query = String.join(" ", clauses).trim();
 		}
-
-		String currentQuery = query;
-		for (SQLDecorator decorator : decorators) {
-			currentQuery = decorator.decorate(currentQuery);
-		}
-
-		return currentQuery;
-	}
-
-	@Override
-	public synchronized int complement(int done, BlenPreparedStatement statement) {
-		done = fromClause.complement(done, statement);
-		done = whereClause.complement(done, statement);
-		done = havingClause.complement(done, statement);
-
-		for (Union union : unions) {
-			done = union.getSQL().complement(done, statement);
-		}
-
-		return done;
-	}
-
-	@Override
-	public String toString() {
-		return sql();
 	}
 
 	private static void addClause(List<String> list, String clause) {
@@ -295,13 +324,16 @@ public class QueryBuilder implements ComposedSQL {
 	private void prepareFrom() {
 		fromClause.clearRelationships();
 
-		Relationship root = fromClause.getRoot();
+		boolean forSubquery = fromClause.forSubquery();
 
-		selectClause.adjustColumns(root);
-		whereClause.adjustColumns(root);
-		groupClause.adjustColumns(root);
-		havingClause.adjustColumns(root);
-		orderClause.adjustColumns(root);
+		if (!forSubquery) {
+			Relationship root = fromClause.getRoot();
+			selectClause.checkColumns(root);
+			whereClause.checkColumns(root);
+			groupClause.checkColumns(root);
+			havingClause.checkColumns(root);
+			orderClause.checkColumns(root);
+		}
 
 		selectClause.join(fromClause);
 		whereClause.join(fromClause);

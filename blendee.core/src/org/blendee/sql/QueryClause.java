@@ -4,11 +4,13 @@ import static org.blendee.sql.FromClause.JoinType.LEFT_OUTER_JOIN;
 
 import java.util.List;
 
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
+
 /**
  * SELECT 文を構成する各句の抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class QueryClause {
+public abstract class QueryClause implements ChainPreparedStatementComplementer {
 
 	private String cache;
 
@@ -50,9 +52,9 @@ public abstract class QueryClause {
 	 * @throws IllegalStateException 結合できないテーブルのカラムを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいなカラム指定がされている場合
 	 */
-	public void adjustColumns(Relationship root) {
+	public void checkColumns(Relationship root) {
 		List<Column> columns = getColumnsInternal();
-		columns.forEach(c -> c.prepareForSQL(root));
+		columns.forEach(c -> c.checkForSQL(root));
 	}
 
 	/**

@@ -59,7 +59,7 @@ public enum QueryCriteriaContext {
 		criteriaThreadLocal.remove();
 	}
 
-	private static Criteria getContextCriteria() {
+	static Criteria getContextCriteria() {
 		return criteriaThreadLocal.get();
 	}
 }

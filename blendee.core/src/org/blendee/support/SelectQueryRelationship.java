@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
+import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
@@ -160,6 +161,24 @@ public interface SelectQueryRelationship {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
 		return new ColumnExpression("{0}", columns);
+	}
+
+	/**
+	 * SELECT 句に任意のサブクエリを追加します。
+	 * @param subquery サブクエリ
+	 * @return {@link AliasableOffer} AS
+	 */
+	default AliasableOffer any(Query subquery) {
+		Query root = getRoot();
+
+		root.quitRowMode();
+		root.forSubquery(true);
+
+		QueryBuilder builder = subquery.toSubquery().getQueryBuilder();
+		builder.forSubquery(true);
+
+		Column[] columns = { new PseudoColumn(getRelationship(), builder.sql(), false) };
+		return new ColumnExpression("({0})", columns, builder);
 	}
 
 	/**

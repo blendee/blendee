@@ -1,4 +1,4 @@
-package org.blendee.support;
+package org.blendee.sql;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,6 +28,8 @@ import org.blendee.sql.ValueExtractorsConfigure;
  * @author 千葉 哲嗣
  */
 public class ComplementerValues implements ChainPreparedStatementComplementer {
+
+	// 不変オブジェクトであること!!
 
 	private final List<ValueExtractor> extractors;
 

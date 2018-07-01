@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.sql.ListQueryClause.WholeCounter;
 
 /**
  * 要素を並列に複数持つクエリの句の一部分を表すクラスです。
  * @author 千葉 哲嗣
  */
-class ListQueryBlock implements Comparable<ListQueryBlock> {
+class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStatementComplementer {
 
 	private final int order;
 
@@ -24,6 +26,8 @@ class ListQueryBlock implements Comparable<ListQueryBlock> {
 	 * {@link Column}
 	 */
 	private final List<Column> columns = new LinkedList<>();
+
+	private ComplementerValues complementer;
 
 	ListQueryBlock(int order) {
 		this.order = order;
@@ -63,7 +67,15 @@ class ListQueryBlock implements Comparable<ListQueryBlock> {
 		clone.templates.addAll(templates);
 		columns.forEach(c -> clone.columns.add(c.replicate()));
 
+		//ComplementerValuesは不変なのでそのまま渡す
+		if (complementer != null) clone.setComplementer(complementer);
+
 		return clone;
+	}
+
+	@Override
+	public int complement(int done, BlenPreparedStatement statement) {
+		return complementer == null ? done : complementer.complement(done, statement);
 	}
 
 	void addColumn(Column column) {
@@ -76,6 +88,10 @@ class ListQueryBlock implements Comparable<ListQueryBlock> {
 
 	void addTemplate(String template) {
 		templates.add(template);
+	}
+
+	void setComplementer(ChainPreparedStatementComplementer complementer) {
+		this.complementer = new ComplementerValues(complementer);
 	}
 
 	List<Column> getColumns() {
@@ -94,5 +110,4 @@ class ListQueryBlock implements Comparable<ListQueryBlock> {
 			String.join(", ", templates).trim(),
 			localTemplates.toArray(new String[localTemplates.size()]));
 	}
-
 }

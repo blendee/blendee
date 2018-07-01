@@ -46,4 +46,8 @@ public class Subquery {
 				builder,
 				notIn);
 	}
+
+	QueryBuilder getQueryBuilder() {
+		return builder;
+	}
 }

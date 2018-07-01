@@ -15,20 +15,20 @@ public class PseudoColumn implements Column {
 
 	private final String expression;
 
-	private final boolean complementable;
+	private final boolean addsTableID;
 
 	/**
 	 * コンストラクタです。
 	 * @param relationship 属する {@link Relationship}
 	 * @param expression カラムの代わりに使用する文字列表現
-	 * @param complementable SQL 内でテーブル名保管可能かどうか
+	 * @param addsTableID SQL 内でテーブルID補完可能かどうか
 	 */
-	public PseudoColumn(Relationship relationship, String expression, boolean complementable) {
+	public PseudoColumn(Relationship relationship, String expression, boolean addsTableID) {
 		Objects.requireNonNull(relationship);
 		Objects.requireNonNull(expression);
 		this.relationship = relationship;
 		this.expression = expression;
-		this.complementable = complementable;
+		this.addsTableID = addsTableID;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class PseudoColumn implements Column {
 
 	@Override
 	public String getComplementedName() {
-		if (!complementable) return expression;
+		if (!addsTableID) return expression;
 		return relationship.getID() + "." + expression;
 	}
 

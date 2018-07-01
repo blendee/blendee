@@ -8,7 +8,7 @@ import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。<br>
- * ただし、このクラスのインスタンスは一旦 {@link QueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #prepareForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
+ * ただし、このクラスのインスタンスは一旦 {@link QueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #checkForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
  * @author 千葉 哲嗣
  */
 public class PhantomColumn implements Column {
@@ -161,7 +161,7 @@ public class PhantomColumn implements Column {
 	 * @throws IllegalStateException このインスタンスに既に別のルートが決定しているとき
 	 */
 	@Override
-	public void prepareForSQL(Relationship sqlRoot) {
+	public void checkForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		synchronized (lock) {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))

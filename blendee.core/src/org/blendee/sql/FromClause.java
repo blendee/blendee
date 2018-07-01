@@ -73,6 +73,8 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 	private final List<JointContainer> joints = new LinkedList<>();
 
+	private boolean forSubquery;
+
 	private String cache;
 
 	/**
@@ -93,7 +95,11 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	@SuppressWarnings("unlikely-arg-type")
 	public void join(JoinType type, Relationship relationship) {
 		if (localRelationships.contains(relationship)) return;
-		if (!root.equals(relationship.getRoot())) throw new IllegalStateException("同一ルートではないので、結合できません");
+		if (!root.equals(relationship.getRoot())) {
+			if (forSubquery) return;
+
+			throw new IllegalStateException("同一ルートではないので、結合できません");
+		}
 		cache = null;
 		Set<Relationship> set = new HashSet<>();
 		relationship.addParentTo(set);
@@ -191,8 +197,17 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		localRelationships.add(new RelationshipContainer(root));
 	}
 
+	void forSubquery(boolean forSubquery) {
+		clearRelationships();
+		this.forSubquery = forSubquery;
+	}
+
+	boolean forSubquery() {
+		return forSubquery;
+	}
+
 	boolean isJoined() {
-		return localRelationships.size() > 1 || joints.size() > 0;
+		return localRelationships.size() > 1 || joints.size() > 0 || forSubquery;
 	}
 
 	FromClause replicate() {

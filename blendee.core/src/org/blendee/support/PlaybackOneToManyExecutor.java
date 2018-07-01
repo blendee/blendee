@@ -12,6 +12,7 @@ import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Column;
+import org.blendee.sql.ComplementerValues;
 
 /**
  * 再実行可能な {@link OneToManyExecutor} クラスです。<br>

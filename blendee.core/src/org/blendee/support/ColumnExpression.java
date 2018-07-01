@@ -3,6 +3,7 @@ package org.blendee.support;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.ListQueryClause;
@@ -20,22 +21,32 @@ public class ColumnExpression extends AliasableOffer {
 
 	private final Column[] columns;
 
+	private final ChainPreparedStatementComplementer complementer;
+
 	private int order = ListQueryClause.DEFAULT_ORDER;
 
 	/**
 	 * @param column {@link Column}
 	 */
-	public ColumnExpression(Column column) {
+	ColumnExpression(Column column) {
 		this.columns = new Column[] { column };
+		complementer = null;
 	}
 
 	/**
 	 * @param expression テンプレート
 	 * @param columns {@link Column}
 	 */
-	public ColumnExpression(String expression, Column... columns) {
+	ColumnExpression(String expression, Column... columns) {
 		this.expression.append(expression);
 		this.columns = columns;
+		complementer = null;
+	}
+
+	ColumnExpression(String expression, Column[] columns, ChainPreparedStatementComplementer complementer) {
+		this.columns = columns;
+		this.expression.append(expression);
+		this.complementer = complementer;
 	}
 
 	/**
@@ -80,9 +91,9 @@ public class ColumnExpression extends AliasableOffer {
 			}
 
 			//あえてテンプレートを作り、エイリアスを付けないようにする
-			selectClause.add(order, String.join(", ", list), columns);
+			selectClause.add(order, String.join(", ", list), columns, complementer);
 		} else {
-			selectClause.add(order, expression.toString(), columns);
+			selectClause.add(order, expression.toString(), columns, complementer);
 		}
 	}
 

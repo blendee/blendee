@@ -1,5 +1,7 @@
 package org.blendee.sql;
 
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
+
 /**
  * SELECT 句を表すクラスです。
  * @author 千葉 哲嗣
@@ -54,12 +56,31 @@ public class SelectClause extends ListQueryClause<SelectClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(int order, String template, Column... columns) {
+		add(order, template, columns, null);
+	}
+
+	/**
+	 * この SELECT 句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param template SQL 文のテンプレート
+	 * @param columns SQL 文に含まれるカラム
+	 * @param complementer {@link ChainPreparedStatementComplementer}
+	 * @see SQLFragmentFormat
+	 */
+	public void add(
+		int order,
+		String template,
+		Column[] columns,
+		ChainPreparedStatementComplementer complementer) {
 		clearCache();
 
 		ListQueryBlock block = new ListQueryBlock(order);
 
 		for (Column column : columns)
 			block.addColumn(column);
+
+		if (complementer != null)
+			block.setComplementer(complementer);
 
 		block.addTemplate(template.trim());
 

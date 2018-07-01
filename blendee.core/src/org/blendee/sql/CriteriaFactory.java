@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import org.blendee.sql.Criteria.ProxyCriteria;
 import org.blendee.sql.binder.StringBinder;
-import org.blendee.support.ComplementerValues;
 
 /**
  * 条件句インスタンスを生成するファクトリクラスです。
