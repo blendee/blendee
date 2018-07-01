@@ -8,8 +8,8 @@ import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.support.RowIterator;
 import org.blendee.support.RowManager;
 

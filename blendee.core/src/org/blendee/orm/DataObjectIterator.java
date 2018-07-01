@@ -10,9 +10,9 @@ import org.blendee.internal.U;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SelectedValuesIterator;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.SQLDecorator;
 
 /**
  * 検索結果から {@link DataObject} を生成するクラスです。

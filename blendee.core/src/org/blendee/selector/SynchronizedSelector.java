@@ -2,8 +2,8 @@ package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 
 /**

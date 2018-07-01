@@ -18,10 +18,6 @@ import org.blendee.jdbc.BlenResultSet;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.sql.Binder;
-import org.blendee.sql.ValueExtractor;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * {@link BlenPreparedStatement} にセットする値を持つ入れ物クラスです。
