@@ -50,7 +50,6 @@ import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.SelectQueryRelationship;
 import org.blendee.support.Subquery;
-import org.blendee.support.Vargs;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.WhereQueryRelationship;
 
@@ -539,35 +538,31 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public /*++{1}Iterator++*//*--*/IteratorBase/*--*/ execute() /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(
-			helper.getOptimizer(),
-			helper.getWhereClause(),
-			helper.getOrderByClause(),
-			helper.decorators());
+		return manager.wrap(helper.executor().execute());
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(String... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
+		return helper.executor().fetch(primaryKeyMembers).map(o -> manager.createRow(o));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Number... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
+		return helper.executor().fetch(primaryKeyMembers).map(o -> manager.createRow(o));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public Optional</*++{0}.row.{1}++*//*--*/RowBase/*--*/> fetch(Bindable... primaryKeyMembers) /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.select(helper.getOptimizer(), Vargs.of(helper.decorators()), primaryKeyMembers);
+		return helper.executor().fetch(primaryKeyMembers).map(o -> manager.createRow(o));
 	/*++'++*/}/*++'++*/
 
 	@Override
 	public int count() /*++'++*/{/*++'++*/
 		helper.checkRowMode();
-		return manager.count(helper.getWhereClause());
+		return helper.executor().count();
 	/*++'++*/}/*++'++*/
 
 	@Override

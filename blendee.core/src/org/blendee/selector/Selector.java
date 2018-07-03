@@ -95,6 +95,15 @@ public class Selector {
 	}
 
 	/**
+	 * このインスタンスをサブクエリとして使用するかどうかを指定します。<br>
+	 * サブクエリで使用すると、すべてのカラムにテーブル ID が補完されます。
+	 * @param forSubquery true の場合、サブクエリとして使用
+	 */
+	public void forSubquery(boolean forSubquery) {
+		builder.forSubquery(forSubquery);
+	}
+
+	/**
 	 * SELECT 句にウィンドウ関数を追加します。
 	 * @param function {@link WindowFunction}
 	 * @param alias 別名

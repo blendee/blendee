@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
+import org.blendee.sql.MultiColumn;
 import org.blendee.sql.Relationship;
 
 /**
@@ -13,6 +14,41 @@ import org.blendee.sql.Relationship;
  * @author 千葉 哲嗣
  */
 public interface CriteriaQueryRelationship {
+
+	/**
+	 * この句に EXISTS 条件を追加します。
+	 * @param subquery サブクエリ
+	 */
+	default void EXISTS(Query subquery) {
+		Exists.setExists(this, subquery, "EXISTS");
+	}
+
+	/**
+	 * この句に NOT EXISTS 条件を追加します。
+	 * @param subquery サブクエリ
+	 */
+	default void NOT_EXISTS(Query subquery) {
+		Exists.setExists(this, subquery, "NOT EXISTS");
+	}
+
+	/**
+	 * この句に任意のカラムを追加します。
+	 * @param template カラムのテンプレート
+	 * @return AND/OR で継続できないカラム
+	 */
+	default CriteriaQueryColumn<?> any(String template) {
+		return new CriteriaQueryColumn<LogicalOperators<?>>(
+			getContext(),
+			new MultiColumn(getRelationship(), template)) {
+
+			@Override
+			LogicalOperators<?> logocalOperators() {
+				return () -> {
+					throw new UnsupportedOperationException();
+				};
+			}
+		};
+	}
 
 	/**
 	 * この句に条件を追加します。

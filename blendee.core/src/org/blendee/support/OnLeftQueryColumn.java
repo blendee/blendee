@@ -21,8 +21,8 @@ public class OnLeftQueryColumn<O extends LogicalOperators<?>> extends OnQueryCol
 		this.root = root;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
+	@Override
 	O logocalOperators() {
 		return (O) root.getOnLeftLogicalOperators();
 	}

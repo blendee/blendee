@@ -15,19 +15,6 @@ public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 	 * WHERE 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
-	 * @return {@link LogicalOperators} AND か OR
-	 */
-	default <O extends LogicalOperators<?>> WhereQueryColumn<O> any(String template) {
-		return new WhereQueryColumn<>(
-			getRoot(),
-			getContext(),
-			new MultiColumn(getRelationship(), template));
-	}
-
-	/**
-	 * WHERE 句に任意のカラムを追加します。
-	 * @param <O> operator
-	 * @param template カラムのテンプレート
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
 	 */

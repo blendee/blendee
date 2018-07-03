@@ -485,11 +485,15 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	public ComposedSQL composeSQL() {
 		if (sql == null) {
 			if (rowMode) {
-				sql = new DataAccessHelper().getSelector(
+				Selector selector = new DataAccessHelper().getSelector(
 					getOptimizer(),
 					whereClause,
 					orderByClause,
-					decorators()).composeSQL();
+					decorators());
+
+				selector.forSubquery(forSubquery);
+
+				sql = selector.composeSQL();
 			} else {
 				sql = buildBuilder();
 			}
@@ -637,6 +641,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 				whereClause,
 				orderByClause,
 				decorators());
+
+			selector.forSubquery(forSubquery);
 
 			ComposedSQL composedSQL = selector.composeSQL();
 
