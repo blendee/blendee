@@ -41,6 +41,7 @@ import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
 import org.blendee.sql.Union;
+import org.blendee.sql.binder.NullBinder;
 
 /**
  * {@link Query} の内部処理を定義したヘルパークラスです。
@@ -519,6 +520,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		private final String countSQL;
 
+		private final String fetchSQL;
+
 		private final ComplementerValues values;
 
 		private final Relationship relationship;
@@ -532,12 +535,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		private PlaybackExecutor(
 			String sql,
 			String countSQL,
+			String fetchSQL,
 			ComplementerValues values,
 			Relationship relationship,
 			Column[] selectedColumns,
 			boolean rowMode) {
 			this.sql = sql;
 			this.countSQL = countSQL;
+			this.fetchSQL = fetchSQL;
 			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
@@ -562,7 +567,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			try {
 				object = DataAccessHelper.getFirst(
 					DataAccessHelper.select(
-						sql,
+						fetchSQL,
 						s -> {
 							for (int i = 0; i < primaryKeyMembers.length; i++) {
 								primaryKeyMembers[i].toBinder().bind(i + 1, s);
@@ -572,7 +577,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 						selectedColumns,
 						converter));
 			} catch (DataObjectNotFoundException e) {
-				return null;
+				return Optional.empty();
 			}
 
 			return Optional.ofNullable(object);
@@ -627,6 +632,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			return new PlaybackExecutor(
 				sql,
 				countSQL,
+				fetchSQL,
 				values.reproduce(placeHolderValues),
 				relationship,
 				selectedColumns,
@@ -636,8 +642,10 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	public PlaybackExecutor executor() {
 		if (rowMode) {
+			Optimizer optimizer = getOptimizer();
+
 			Selector selector = new DataAccessHelper().getSelector(
-				getOptimizer(),
+				optimizer,
 				whereClause,
 				orderByClause,
 				decorators());
@@ -648,9 +656,18 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 			String sql = composedSQL.sql();
 
+			Selector fetchSelector = new DataAccessHelper().getSelector(
+				optimizer,
+				createFetchCriteria(table),
+				null,
+				decorators());
+
+			fetchSelector.forSubquery(forSubquery);
+
 			return new PlaybackExecutor(
 				sql,
 				toCountSQL(sql),
+				fetchSelector.composeSQL().sql(),
 				new ComplementerValues(composedSQL),
 				ContextManager.get(RelationshipFactory.class).getInstance(table),
 				selector.getSelectClause().getColumns(),
@@ -663,6 +680,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 		return new PlaybackExecutor(
 			sql,
+			null,
 			null,
 			new ComplementerValues(builder),
 			ContextManager.get(RelationshipFactory.class).getInstance(table),
@@ -737,7 +755,17 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	private static String toCountSQL(String sql) {
-		int fromPosition = sql.indexOf("FROM");
-		return "SELECT COUNT(*) " + sql.substring(fromPosition);
+		int fromPosition = sql.indexOf(" FROM ");
+		return "SELECT COUNT(*)" + sql.substring(fromPosition);
+	}
+
+	private static Criteria createFetchCriteria(TablePath tablePath) {
+		Criteria criteria = CriteriaFactory.create();
+
+		for (Column column : ContextManager.get(RelationshipFactory.class).getInstance(tablePath).getPrimaryKeyColumns()) {
+			criteria.and(CriteriaFactory.create(column, new NullBinder(column.getColumnMetadata().getType())));
+		}
+
+		return criteria;
 	}
 }
