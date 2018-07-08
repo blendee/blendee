@@ -68,6 +68,15 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 	}
 
 	/**
+	 * COALESCE を追加します。
+	 * @param columns 対象カラム
+	 * @return カラム
+	 */
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COALESCE(Vargs<HavingQueryColumn<O>> columns) {
+		return any(Coalesce.createTemplate(columns.length()), columns);
+	}
+
+	/**
 	 * HAVING 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート

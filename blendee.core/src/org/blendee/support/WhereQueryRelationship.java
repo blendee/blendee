@@ -12,6 +12,15 @@ import org.blendee.sql.TemplateColumn;
 public interface WhereQueryRelationship extends CriteriaQueryRelationship {
 
 	/**
+	 * COALESCE を追加します。
+	 * @param columns 対象カラム
+	 * @return カラム
+	 */
+	default <O extends LogicalOperators<?>> WhereQueryColumn<O> COALESCE(Vargs<WhereQueryColumn<O>> columns) {
+		return any(Coalesce.createTemplate(columns.length()), columns);
+	}
+
+	/**
 	 * WHERE 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート

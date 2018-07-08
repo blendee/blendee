@@ -12,6 +12,15 @@ import org.blendee.sql.TemplateColumn;
 public interface OnRightQueryRelationship extends CriteriaQueryRelationship {
 
 	/**
+	 * COALESCE を追加します。
+	 * @param columns 対象カラム
+	 * @return カラム
+	 */
+	default <O extends LogicalOperators<?>> OnRightQueryColumn<O> COALESCE(Vargs<? extends OnQueryColumn<O>> columns) {
+		return any(Coalesce.createTemplate(columns.length()), columns);
+	}
+
+	/**
 	 * ON 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
@@ -36,7 +45,7 @@ public interface OnRightQueryRelationship extends CriteriaQueryRelationship {
 	 */
 	default <O extends LogicalOperators<?>> OnRightQueryColumn<O> any(
 		String template,
-		Vargs<OnQueryColumn<O>> args) {
+		Vargs<? extends OnQueryColumn<O>> args) {
 		OnQueryColumn<O>[] values = args.get();
 		Column[] columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {

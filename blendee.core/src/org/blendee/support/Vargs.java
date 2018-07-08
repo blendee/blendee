@@ -23,7 +23,19 @@ public class Vargs<T> {
 		this.args = args;
 	}
 
-	T[] get() {
+	/**
+	 * パックされた引数を返します。
+	 * @return args
+	 */
+	public T[] get() {
 		return args;
+	}
+
+	/**
+	 * 引数の個数を返します。
+	 * @return length
+	 */
+	public int length() {
+		return args.length;
 	}
 }
