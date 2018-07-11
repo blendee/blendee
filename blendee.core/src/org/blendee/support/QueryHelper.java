@@ -656,18 +656,31 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 			String sql = composedSQL.sql();
 
-			Selector fetchSelector = new DataAccessHelper().getSelector(
-				optimizer,
-				createFetchCriteria(table),
-				null,
-				decorators());
+			String countSQL;
+			{
+				QueryBuilder builder = new QueryBuilder(new FromClause(optimizer.getTablePath()));
+				builder.setSelectClause(new SelectCountClause());
+				if (whereClause != null) builder.setWhereClause(whereClause);
+				countSQL = builder.sql();
+			}
 
-			fetchSelector.forSubquery(forSubquery);
+			String fetchSQL;
+			{
+				Selector fetchSelector = new DataAccessHelper().getSelector(
+					optimizer,
+					createFetchCriteria(table),
+					null,
+					decorators());
+
+				fetchSelector.forSubquery(forSubquery);
+
+				fetchSQL = fetchSelector.composeSQL().sql();
+			}
 
 			return new PlaybackExecutor(
 				sql,
-				toCountSQL(sql),
-				fetchSelector.composeSQL().sql(),
+				countSQL,
+				fetchSQL,
 				new ComplementerValues(composedSQL),
 				ContextManager.get(RelationshipFactory.class).getInstance(table),
 				selector.getSelectClause().getColumns(),
@@ -752,11 +765,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	private Criteria havingClause() {
 		if (havingClause == null) havingClause = CriteriaFactory.create();
 		return havingClause;
-	}
-
-	private static String toCountSQL(String sql) {
-		int fromPosition = sql.indexOf(" FROM ");
-		return "SELECT COUNT(*)" + sql.substring(fromPosition);
 	}
 
 	private static Criteria createFetchCriteria(TablePath tablePath) {

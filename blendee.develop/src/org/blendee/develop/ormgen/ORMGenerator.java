@@ -356,7 +356,7 @@ public class ORMGenerator {
 
 				TablePath childPath = child.getTablePath();
 				String childTableName = childPath.getTableName();
-				String methodName = checker.get(childTableName) ? childTableName + "By" + foreignKey : childTableName;
+				String methodName = "$" + (checker.get(childTableName) ? childTableName + "$" + foreignKey : childTableName);
 
 				list.add(
 					codeFormatter.formatRowRelationshipPart(
