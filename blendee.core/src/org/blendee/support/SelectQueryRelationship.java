@@ -33,6 +33,15 @@ public interface SelectQueryRelationship {
 	 * @return SELECT 句
 	 */
 	default SelectOffer list(SelectOffer... offers) {
+		return ls(offers);
+	}
+
+	/**
+	 * {@link #list} の短縮形です。
+	 * @param offers SELECT 句に含めるテーブルおよびカラム
+	 * @return SELECT 句
+	 */
+	default SelectOffer ls(SelectOffer... offers) {
 		SelectOffers visitor = new SelectOffers();
 		for (SelectOffer offer : offers) {
 			offer.get().forEach(c -> visitor.add(c));

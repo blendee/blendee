@@ -27,7 +27,7 @@ public interface ComposedSQL extends ChainPreparedStatementComplementer {
 			}
 
 			@Override
-			public int complement(int done, BlenPreparedStatement statement) {
+			public int complement(int done, BPreparedStatement statement) {
 				complementer.complement(statement);
 				return Integer.MIN_VALUE;
 			}
@@ -49,7 +49,7 @@ public interface ComposedSQL extends ChainPreparedStatementComplementer {
 			}
 
 			@Override
-			public int complement(int done, BlenPreparedStatement statement) {
+			public int complement(int done, BPreparedStatement statement) {
 				return complementer.complement(done, statement);
 			}
 		};

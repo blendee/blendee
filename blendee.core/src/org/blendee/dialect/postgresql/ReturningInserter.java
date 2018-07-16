@@ -2,7 +2,7 @@ package org.blendee.dialect.postgresql;
 
 import java.util.Objects;
 
-import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
@@ -35,7 +35,7 @@ public class ReturningInserter<T> {
 	public ReturningInserter(TablePath path) {
 		this.path = path;
 
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 
 		PrimaryKeyMetadata pkMetadata = connection.getPrimaryKeyMetadata(path);
 

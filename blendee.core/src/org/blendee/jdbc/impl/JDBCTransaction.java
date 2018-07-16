@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
@@ -32,7 +32,7 @@ public class JDBCTransaction extends Transaction {
 	}
 
 	@Override
-	protected BlenConnection getConnectionInternal() {
+	protected BConnection getConnectionInternal() {
 		return connection;
 	}
 

@@ -11,15 +11,15 @@ import java.sql.Timestamp;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
 
 /**
- * Blendee が使用する {@link BlenPreparedStatement} の標準実装クラスです。
+ * Blendee が使用する {@link BPreparedStatement} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-public class ConcretePreparedStatement implements BlenPreparedStatement {
+public class ConcretePreparedStatement implements BPreparedStatement {
 
 	private final Configure config;
 
@@ -177,7 +177,7 @@ public class ConcretePreparedStatement implements BlenPreparedStatement {
 	}
 
 	@Override
-	public BlenResultSet executeQuery() {
+	public BResultSet executeQuery() {
 		try {
 			return new ConcreteResultSet(config, statement.executeQuery(), this, finalizer);
 		} catch (SQLException e) {
@@ -204,7 +204,7 @@ public class ConcretePreparedStatement implements BlenPreparedStatement {
 	}
 
 	@Override
-	public BlenResultSet getResultSet() {
+	public BResultSet getResultSet() {
 		try {
 			return new ConcreteResultSet(config, statement.getResultSet(), this, finalizer);
 		} catch (SQLException e) {

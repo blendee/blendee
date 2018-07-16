@@ -2,11 +2,11 @@ package org.blendee.sql.binder;
 
 import java.sql.Types;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BlenPreparedStatement} に NULL を設定するための {@link Binder} です。
+ * {@link BPreparedStatement} に NULL を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class NullBinder extends Binder {
@@ -23,7 +23,7 @@ public final class NullBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BlenPreparedStatement statement) {
+	public void bind(int index, BPreparedStatement statement) {
 		statement.setNull(index, type);
 	}
 

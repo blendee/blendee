@@ -123,11 +123,11 @@ public class BlendeeManager implements ManagementSubject {
 	 * 現在のスレッドが持つ接続を返します。
 	 * @return 接続
 	 */
-	public static BlenConnection getConnection() {
+	public static BConnection getConnection() {
 		Transaction transaction = transactionThreadLocal.get();
 		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
-		BlenConnection connection = transaction.getConnection();
+		BConnection connection = transaction.getConnection();
 		if (connection == null) throw new IllegalStateException("このスレッドの接続が作成されていません");
 
 		return connection;

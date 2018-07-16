@@ -3,8 +3,8 @@ package org.blendee.support;
 import java.util.List;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
@@ -55,7 +55,7 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	BlenStatement createStatementForCount() {
+	BStatement createStatementForCount() {
 		return BlendeeManager
 			.getConnection()
 			.getStatement(countSQL, values);
@@ -101,14 +101,14 @@ class PlaybackOneToManyExecutor<O extends Row, M>
 			}
 
 			@Override
-			public int complement(int done, BlenPreparedStatement statement) {
+			public int complement(int done, BPreparedStatement statement) {
 				return values.complement(done, statement);
 			}
 		};
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		return values.complement(done, statement);
 	}
 

@@ -3,7 +3,7 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.BlenConnection;
+import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.util.Blendee;
 import org.eclipse.jface.action.IMenuManager;
@@ -17,7 +17,7 @@ public class ORMGeneratorRootElement implements Element {
 		final List<SchemaElement> list = new LinkedList<SchemaElement>();
 		try {
 			Blendee.execute(t -> {
-				BlenConnection connection = BlendeeManager.getConnection();
+				BConnection connection = BlendeeManager.getConnection();
 				for (String schema : schemas) {
 					list.add(new SchemaElement(connection, schema));
 				}

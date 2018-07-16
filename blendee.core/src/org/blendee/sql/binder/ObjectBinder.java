@@ -1,10 +1,10 @@
 package org.blendee.sql.binder;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BlenPreparedStatement} に {@link Object} の値を設定するための {@link Binder} です。
+ * {@link BPreparedStatement} に {@link Object} の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class ObjectBinder extends Binder {
@@ -25,7 +25,7 @@ public final class ObjectBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BlenPreparedStatement statement) {
+	public void bind(int index, BPreparedStatement statement) {
 		statement.setObject(index, value);
 	}
 

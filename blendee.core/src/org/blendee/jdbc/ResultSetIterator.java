@@ -6,14 +6,14 @@ import java.util.NoSuchElementException;
 import org.blendee.internal.U;
 
 /**
- * {@link BlenResultSet} を {@link Iterator} として使用するためのクラスです。
+ * {@link BResultSet} を {@link Iterator} として使用するためのクラスです。
  * @author 千葉 哲嗣
  */
 public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, AutoCloseable {
 
-	private final BlenStatement statement;
+	private final BStatement statement;
 
-	private final BlenResultSet result;
+	private final BResultSet result;
 
 	private boolean hasNext = false;
 
@@ -24,7 +24,7 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 	 * @param sql {@link ComposedSQL}
 	 */
 	public ResultSetIterator(ComposedSQL sql) {
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql);
 		result = statement.executeQuery();
 	}
@@ -35,7 +35,7 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 	 * @param complementer {@link PreparedStatementComplementer}
 	 */
 	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql, complementer);
 		result = statement.executeQuery();
 	}

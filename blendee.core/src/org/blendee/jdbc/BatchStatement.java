@@ -3,7 +3,7 @@ package org.blendee.jdbc;
 /**
  * SQL 文による更新をバッチ実行するためのオブジェクトを表すインターフェイスです。
  * @author 千葉 哲嗣
- * @see BlenConnection#getBatchStatement()
+ * @see BConnection#getBatchStatement()
  */
 public interface BatchStatement {
 

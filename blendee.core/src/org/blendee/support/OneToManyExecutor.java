@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
@@ -46,7 +46,7 @@ public abstract class OneToManyExecutor<O extends Row, M>
 
 	abstract QueryRelationship root();
 
-	abstract BlenStatement createStatementForCount();
+	abstract BStatement createStatementForCount();
 
 	@Override
 	public Many<O, M> execute() {
@@ -82,8 +82,8 @@ public abstract class OneToManyExecutor<O extends Row, M>
 
 	@Override
 	public int count() {
-		try (BlenStatement statement = createStatementForCount()) {
-			try (BlenResultSet result = statement.executeQuery()) {
+		try (BStatement statement = createStatementForCount()) {
+			try (BResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}

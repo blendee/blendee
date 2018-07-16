@@ -23,12 +23,12 @@ class LazyTransaction extends Transaction {
 	}
 
 	@Override
-	public BlenConnection getConnection() {
+	public BConnection getConnection() {
 		return prepareTransaction().getConnection();
 	}
 
 	@Override
-	protected BlenConnection getConnectionInternal() {
+	protected BConnection getConnectionInternal() {
 		throw new UnsupportedOperationException();
 	}
 

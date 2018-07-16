@@ -7,6 +7,7 @@ import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.OrderByClause;
@@ -26,6 +27,15 @@ public interface OrderByQueryRelationship {
 	 * @return offers
 	 */
 	default Offers<Offerable> list(Offerable... offers) {
+		return ls(offers);
+	}
+
+	/**
+	 * {@link #list} の短縮形です。
+	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
+	 * @return offers
+	 */
+	default Offers<Offerable> ls(Offerable... offers) {
 		return () -> Arrays.asList(offers);
 	}
 
@@ -100,6 +110,8 @@ public interface OrderByQueryRelationship {
 	 * @return {@link GroupByQueryColumn}
 	 */
 	default OrderByOffer order(int order, Offerable offer) {
+		Objects.requireNonNull(offer);
+
 		return new OrderByOffer(offer, order);
 	}
 

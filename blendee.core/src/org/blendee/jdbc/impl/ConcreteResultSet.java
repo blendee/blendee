@@ -13,14 +13,14 @@ import java.util.function.Consumer;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
 
 /**
- * Blendee が使用する {@link BlenResultSet} の標準実装クラスです。
+ * Blendee が使用する {@link BResultSet} の標準実装クラスです。
  * @author 千葉 哲嗣
  */
-public class ConcreteResultSet implements BlenResultSet {
+public class ConcreteResultSet implements BResultSet {
 
 	private final Configure config;
 

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
@@ -152,7 +152,7 @@ public class Selector {
 		PreparedStatementComplementer complementer,
 		Column[] selectColumns,
 		SelectedValuesConverter converter) {
-		BlenStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		BStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
 		return new SelectedValuesIterator(
 			statement,
 			statement.executeQuery(),

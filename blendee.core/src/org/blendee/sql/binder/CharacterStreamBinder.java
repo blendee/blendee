@@ -2,11 +2,11 @@ package org.blendee.sql.binder;
 
 import java.io.Reader;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BlenPreparedStatement} に {@link Reader} から読み込んだ値を設定するための {@link Binder} です。
+ * {@link BPreparedStatement} に {@link Reader} から読み込んだ値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class CharacterStreamBinder extends Binder {
@@ -46,7 +46,7 @@ public final class CharacterStreamBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BlenPreparedStatement statement) {
+	public void bind(int index, BPreparedStatement statement) {
 		statement.setCharacterStream(index, value, length);
 	}
 

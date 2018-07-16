@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
@@ -577,7 +577,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) /*++'++*/{/*++'++*/
+	public int complement(int done, BPreparedStatement statement) /*++'++*/{/*++'++*/
 		return helper.composeSQL().complement(done, statement);
 	/*++'++*/}/*++'++*/
 
@@ -695,6 +695,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public Executor executor() /*++'++*/{/*++'++*/
 		return  new Executor(helper.executor());
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public String toString() /*++'++*/{/*++'++*/
+		return helper.toString();
 	/*++'++*/}/*++'++*/
 
 	private static Class<?> getUsing(StackTraceElement element) /*++'++*/{/*++'++*/
@@ -1082,7 +1087,7 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		/*++'++*/}/*++'++*/
 
 		@Override
-		public int complement(int done, BlenPreparedStatement statement) /*++'++*/{/*++'++*/
+		public int complement(int done, BPreparedStatement statement) /*++'++*/{/*++'++*/
 			return inner.complement(done, statement);
 		/*++'++*/}/*++'++*/
 

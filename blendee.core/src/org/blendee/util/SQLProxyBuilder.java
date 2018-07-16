@@ -8,8 +8,8 @@ import java.nio.charset.Charset;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
@@ -23,7 +23,7 @@ import org.blendee.sql.ValueExtractorsConfigure;
  * interface-name.method-name.sql<br>
  * として、インターフェイスと同じ場所に配備したもののことです。<br>
  * インターフェイスに定義するメソッドは、戻り値に<br>
- * {@link BlenResultSet}, int, boolean, void<br>
+ * {@link BResultSet}, int, boolean, void<br>
  * を使用することができます。<br>
  * メソッドのパラメータには、 SQL 文に記述したプレースホルダにセットする値複数か、 {@link PreparedStatementComplementer} を実装したオブジェクトのみを渡すように定義してください。
  * @author 千葉 哲嗣
@@ -137,7 +137,7 @@ public class SQLProxyBuilder {
 
 			Class<?> returnType = method.getReturnType();
 
-			if (returnType.equals(BlenResultSet.class)) {
+			if (returnType.equals(BResultSet.class)) {
 				return statement(sql, complementer).executeQuery();
 			} else if (returnType.equals(int.class)) {
 				BatchStatement batch = batchStatement.get();
@@ -155,7 +155,7 @@ public class SQLProxyBuilder {
 		}
 	}
 
-	private static BlenStatement statement(String sql, PreparedStatementComplementer complementer) {
+	private static BStatement statement(String sql, PreparedStatementComplementer complementer) {
 		return BlendeeManager.getConnection().getStatement(sql, complementer);
 	}
 }

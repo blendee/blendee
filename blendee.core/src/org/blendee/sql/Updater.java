@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
 
@@ -104,7 +104,7 @@ public abstract class Updater implements ComposedSQL {
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		for (Iterator<Binder> i = values.values().iterator(); i.hasNext(); done++) {
 			i.next().bind(done + 1, statement);
 		}

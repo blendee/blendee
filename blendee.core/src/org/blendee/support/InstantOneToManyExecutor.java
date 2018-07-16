@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
@@ -94,7 +94,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	BlenStatement createStatementForCount() {
+	BStatement createStatementForCount() {
 		return BlendeeManager.getConnection().getStatement(toCountSQL());
 	}
 
@@ -222,7 +222,7 @@ public class InstantOneToManyExecutor<O extends Row, M>
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		return composedSQL().complement(done, statement);
 	}
 

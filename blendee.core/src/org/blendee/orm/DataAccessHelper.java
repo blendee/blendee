@@ -6,9 +6,9 @@ import java.util.Map;
 import org.blendee.internal.LRUCache;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
@@ -193,9 +193,9 @@ public class DataAccessHelper {
 		QueryBuilder builder = new QueryBuilder(new FromClause(path));
 		builder.setSelectClause(new SelectCountClause());
 		if (criteria != null) builder.setWhereClause(criteria);
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(builder)) {
-			try (BlenResultSet result = statement.executeQuery()) {
+		BConnection connection = BlendeeManager.getConnection();
+		try (BStatement statement = connection.getStatement(builder)) {
+			try (BResultSet result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}
@@ -713,7 +713,7 @@ public class DataAccessHelper {
 
 	private static class PreparedStatementFacade extends StatementFacade {
 
-		private BlenStatement statement;
+		private BStatement statement;
 
 		@Override
 		void process(ComposedSQL sql) {

@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
@@ -91,10 +91,10 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 	 * 集合関数を含む検索を実行します。
 	 * @param consumer {@link Consumer}
 	 */
-	default void aggregate(Consumer<BlenResultSet> consumer) {
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(this)) {
-			try (BlenResultSet result = statement.executeQuery()) {
+	default void aggregate(Consumer<BResultSet> consumer) {
+		BConnection connection = BlendeeManager.getConnection();
+		try (BStatement statement = connection.getStatement(this)) {
+			try (BResultSet result = statement.executeQuery()) {
 				consumer.accept(result);
 			}
 		}
@@ -105,10 +105,10 @@ public interface Executor<I extends Iterator<R>, R> extends ComposedSQL {
 	 * @param function {@link Function}
 	 * @return 任意の型の戻り値
 	 */
-	default <T> T aggregateAndGet(Function<BlenResultSet, T> function) {
-		BlenConnection connection = BlendeeManager.getConnection();
-		try (BlenStatement statement = connection.getStatement(this)) {
-			try (BlenResultSet result = statement.executeQuery()) {
+	default <T> T aggregateAndGet(Function<BResultSet, T> function) {
+		BConnection connection = BlendeeManager.getConnection();
+		try (BStatement statement = connection.getStatement(this)) {
+			try (BResultSet result = statement.executeQuery()) {
 				return function.apply(result);
 			}
 		}

@@ -1,6 +1,6 @@
 package org.blendee.sql;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
@@ -54,7 +54,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		return criteria.complement(done, statement);
 	}
 }

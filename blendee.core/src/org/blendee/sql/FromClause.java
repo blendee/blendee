@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
@@ -150,7 +150,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		int[] result = { done };
 		joints.forEach(j -> {
 			result[0] = j.complement(result[0], statement);
@@ -350,7 +350,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			list.addAll(another.process());
 		}
 
-		private int complement(int done, BlenPreparedStatement statement) {
+		private int complement(int done, BPreparedStatement statement) {
 			if (onCriteria == null) return done;
 			return onCriteria.complement(done, statement);
 		}

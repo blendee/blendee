@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.sql.FromClause.JoinType;
 
@@ -261,7 +261,7 @@ public class QueryBuilder implements ComposedSQL {
 	}
 
 	@Override
-	public synchronized int complement(int done, BlenPreparedStatement statement) {
+	public synchronized int complement(int done, BPreparedStatement statement) {
 		prepareForComposedSQL();
 
 		done = selectClause.complement(done, statement);

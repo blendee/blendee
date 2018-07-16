@@ -3,8 +3,8 @@ package org.blendee.orm;
 import java.math.BigInteger;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
@@ -95,7 +95,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	 */
 	@Override
 	public Bindable next(Criteria depends) {
-		BlenStatement statement;
+		BStatement statement;
 		if (depends.isAvailable()) {
 			statement = BlendeeManager.getConnection().getStatement(
 				"SELECT MAX("
@@ -112,7 +112,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 		String max;
 		try {
-			try (BlenResultSet result = statement.executeQuery()) {
+			try (BResultSet result = statement.executeQuery()) {
 				result.next();
 				max = result.getString(1);
 			}

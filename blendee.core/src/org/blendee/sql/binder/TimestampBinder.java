@@ -2,11 +2,11 @@ package org.blendee.sql.binder;
 
 import java.sql.Timestamp;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BlenPreparedStatement} に {@link Timestamp} の値を設定するための {@link Binder} です。
+ * {@link BPreparedStatement} に {@link Timestamp} の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class TimestampBinder extends Binder {
@@ -22,7 +22,7 @@ public final class TimestampBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BlenPreparedStatement statement) {
+	public void bind(int index, BPreparedStatement statement) {
 		statement.setTimestamp(index, value);
 	}
 

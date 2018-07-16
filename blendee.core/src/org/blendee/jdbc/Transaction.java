@@ -13,7 +13,7 @@ public abstract class Transaction implements AutoCloseable {
 
 	private Configure config;
 
-	private BlenConnection connection;
+	private BConnection connection;
 
 	/**
 	 * コミットします。
@@ -59,7 +59,7 @@ public abstract class Transaction implements AutoCloseable {
 	 * このトランザクションで使用する接続を取得します。
 	 * @return 接続
 	 */
-	public BlenConnection getConnection() {
+	public BConnection getConnection() {
 		if (connection == null) {
 			connection = getConnectionInternal();
 		}
@@ -76,7 +76,7 @@ public abstract class Transaction implements AutoCloseable {
 	 * このトランザクションで使用する接続を取得します。
 	 * @return 接続
 	 */
-	protected abstract BlenConnection getConnectionInternal();
+	protected abstract BConnection getConnectionInternal();
 
 	/**
 	 * 実際のコミットを行います。
@@ -108,7 +108,7 @@ public abstract class Transaction implements AutoCloseable {
 	void prepareConnection() {
 		Configure config = getConfigure();
 
-		BlenConnection connection = getConnection();
+		BConnection connection = getConnection();
 
 		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);
 

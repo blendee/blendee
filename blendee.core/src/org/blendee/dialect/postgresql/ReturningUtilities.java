@@ -3,9 +3,9 @@ package org.blendee.dialect.postgresql;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
@@ -55,16 +55,16 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 		InsertDMLBuilder builder = new InsertDMLBuilder(path);
 		builder.add(data);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BlenResultSet result = statement.executeQuery()) {
+			try (BResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}
@@ -107,17 +107,17 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
 		builder.add(data);
 		builder.setCriteria(criteria);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BlenResultSet result = statement.executeQuery()) {
+			try (BResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}
@@ -158,16 +158,16 @@ public class ReturningUtilities {
 		Objects.requireNonNull(consumer);
 		checkColumnNames(columnNames);
 
-		BlenConnection connection = BlendeeManager.getConnection();
+		BConnection connection = BlendeeManager.getConnection();
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
 		builder.setCriteria(criteria);
 
 		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BlenPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BlenResultSet result = statement.executeQuery()) {
+			try (BResultSet result = statement.executeQuery()) {
 				while (result.next()) {
 					consumer.accept(result);
 				}

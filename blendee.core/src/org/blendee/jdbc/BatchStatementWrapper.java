@@ -3,7 +3,7 @@ package org.blendee.jdbc;
 /**
  * {@link BatchStatement} をラップし、機能追加するための仕組みを定義したインターフェイスです。
  * @author 千葉 哲嗣
- * @see BlenConnection#setBatchStatementWrapper(BatchStatementWrapper)
+ * @see BConnection#setBatchStatementWrapper(BatchStatementWrapper)
  */
 @FunctionalInterface
 public interface BatchStatementWrapper {

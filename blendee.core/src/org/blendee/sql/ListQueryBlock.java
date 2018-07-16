@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.sql.ListQueryClause.WholeCounter;
 
@@ -74,7 +74,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		return complementer == null ? done : complementer.complement(done, statement);
 	}
 

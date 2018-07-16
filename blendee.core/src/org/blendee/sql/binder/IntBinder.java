@@ -2,11 +2,11 @@ package org.blendee.sql.binder;
 
 import java.math.BigDecimal;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
 /**
- * {@link BlenPreparedStatement} に int の値を設定するための {@link Binder} です。
+ * {@link BPreparedStatement} に int の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
 public final class IntBinder extends Binder {
@@ -22,7 +22,7 @@ public final class IntBinder extends Binder {
 	}
 
 	@Override
-	public void bind(int index, BlenPreparedStatement statement) {
+	public void bind(int index, BPreparedStatement statement) {
 		statement.setInt(index, value);
 	}
 

@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
- * {@link BlenPreparedStatement} にセットする値を持つ入れ物クラスです。
+ * {@link BPreparedStatement} にセットする値を持つ入れ物クラスです。
  * @author 千葉 哲嗣
  */
 public class ComplementerValues implements ChainPreparedStatementComplementer {
@@ -38,7 +38,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 	public ComplementerValues(PreparedStatementComplementer complementer) {
 		Map<Integer, Object> map = new TreeMap<>();
 
-		complementer.complement(new BlenPreparedStatement() {
+		complementer.complement(new BPreparedStatement() {
 
 			@Override
 			public int getUpdateCount() {
@@ -46,7 +46,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 			}
 
 			@Override
-			public BlenResultSet getResultSet() {
+			public BResultSet getResultSet() {
 				throw new UnsupportedOperationException();
 			}
 
@@ -61,7 +61,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 			}
 
 			@Override
-			public BlenResultSet executeQuery() {
+			public BResultSet executeQuery() {
 				throw new UnsupportedOperationException();
 			}
 
@@ -203,7 +203,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		int[] index = { done + 1 };
 		binders.forEach(b -> b.bind(index[0]++, statement));
 		return index[0];

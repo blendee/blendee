@@ -1,9 +1,9 @@
 package org.blendee.jdbc;
 
 /**
- * {@link BlenPreparedStatement} のプレースホルダに値を設定するものを定義したインターフェイスです。
+ * {@link BPreparedStatement} のプレースホルダに値を設定するものを定義したインターフェイスです。
  * @author 千葉 哲嗣
- * @see BlenConnection#getStatement(String, PreparedStatementComplementer)
+ * @see BConnection#getStatement(String, PreparedStatementComplementer)
  */
 @FunctionalInterface
 public interface ChainPreparedStatementComplementer extends PreparedStatementComplementer {
@@ -14,10 +14,10 @@ public interface ChainPreparedStatementComplementer extends PreparedStatementCom
 	 * @param statement 対象となるステートメント
 	 * @return statement にセットした数
 	 */
-	int complement(int done, BlenPreparedStatement statement);
+	int complement(int done, BPreparedStatement statement);
 
 	@Override
-	default void complement(BlenPreparedStatement statement) {
+	default void complement(BPreparedStatement statement) {
 		complement(0, statement);
 	}
 }

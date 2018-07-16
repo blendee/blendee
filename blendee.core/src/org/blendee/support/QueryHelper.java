@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.blendee.jdbc.BlenConnection;
-import org.blendee.jdbc.BlenPreparedStatement;
-import org.blendee.jdbc.BlenResultSet;
-import org.blendee.jdbc.BlenStatement;
+import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
@@ -407,14 +407,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	}
 
 	/**
-	 * @return FROM
-	 */
-	public FromClause getFromClause() {
-		if (fromClause == null) fromClause = new FromClause(table);
-		return fromClause;
-	}
-
-	/**
 	 * 現在保持している WHERE 句をリセットします。
 	 */
 	public void resetWhere() {
@@ -471,12 +463,14 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		whereClause = null;
 		havingClause = null;
 		groupByClause = null;
+		fromClause = null;
 		joinResources.clear();
 		unions.clear();
 		orderByClause = null;
 		decorators.clear();
 		rowMode = true;
 		sql = null;
+		forSubquery = false;
 	}
 
 	/**
@@ -484,21 +478,8 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 	 * @return {@link ComposedSQL}
 	 */
 	public ComposedSQL composeSQL() {
-		if (sql == null) {
-			if (rowMode) {
-				Selector selector = new DataAccessHelper().getSelector(
-					getOptimizer(),
-					whereClause,
-					orderByClause,
-					decorators());
-
-				selector.forSubquery(forSubquery);
-
-				sql = selector.composeSQL();
-			} else {
-				sql = buildBuilder();
-			}
-		}
+		if (sql == null)
+			sql = createComposedSQL();
 
 		return sql;
 	}
@@ -512,6 +493,12 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	public void forSubquery(boolean forSubquery) {
 		this.forSubquery = forSubquery;
+	}
+
+	@Override
+	public String toString() {
+		//実行したことで影響を及ぼさないようにcreateComposedSQLを使用する
+		return createComposedSQL().sql();
 	}
 
 	public static class PlaybackExecutor implements Executor<DataObjectIterator, DataObject> {
@@ -586,9 +573,9 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		@Override
 		public int count() {
 			checkRowMode(rowMode);
-			BlenConnection connection = BlendeeManager.getConnection();
-			try (BlenStatement statement = connection.getStatement(countSQL, values)) {
-				try (BlenResultSet result = statement.executeQuery()) {
+			BConnection connection = BlendeeManager.getConnection();
+			try (BStatement statement = connection.getStatement(countSQL, values)) {
+				try (BResultSet result = statement.executeQuery()) {
 					result.next();
 					return result.getInt(1);
 				}
@@ -606,7 +593,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 				}
 
 				@Override
-				public int complement(int done, BlenPreparedStatement statement) {
+				public int complement(int done, BPreparedStatement statement) {
 					return values.complement(done, statement);
 				}
 			};
@@ -623,7 +610,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		}
 
 		@Override
-		public int complement(int done, BlenPreparedStatement statement) {
+		public int complement(int done, BPreparedStatement statement) {
 			return values.complement(done, statement);
 		}
 
@@ -715,6 +702,22 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		builder.join(joinType, buildBuilderWithoutSelectColumnsSupply(), onCriteria);
 	}
 
+	private ComposedSQL createComposedSQL() {
+		if (rowMode) {
+			Selector selector = new DataAccessHelper().getSelector(
+				getOptimizer(),
+				whereClause,
+				orderByClause,
+				decorators());
+
+			selector.forSubquery(forSubquery);
+
+			return selector.composeSQL();
+		}
+
+		return buildBuilder();
+	}
+
 	private QueryBuilder buildBuilderWithoutSelectColumnsSupply() {
 		QueryBuilder builder = new QueryBuilder(false, getFromClause());
 
@@ -736,6 +739,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
 
 		return builder;
+	}
+
+	private FromClause getFromClause() {
+		if (fromClause == null) fromClause = new FromClause(table);
+		return fromClause;
 	}
 
 	private <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> joinInternal(

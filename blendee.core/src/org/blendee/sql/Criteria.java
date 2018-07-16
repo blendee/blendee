@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import org.blendee.jdbc.BlenPreparedStatement;
+import org.blendee.jdbc.BPreparedStatement;
 
 /**
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
@@ -127,7 +127,7 @@ public class Criteria extends QueryClause {
 	}
 
 	@Override
-	public int complement(int done, BlenPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		for (Iterator<Binder> i = binders.iterator(); i.hasNext(); done++) {
 			i.next().bind(done + 1, statement);
 		}
@@ -297,7 +297,7 @@ public class Criteria extends QueryClause {
 		}
 
 		@Override
-		public int complement(int done, BlenPreparedStatement statement) {
+		public int complement(int done, BPreparedStatement statement) {
 			if (inclusion == null) return done;
 			return inclusion.complement(done, statement);
 		}
