@@ -217,14 +217,14 @@ public class BlendeeEnvironment {
 			try {
 				function.execute(transaction);
 				if (top) transaction.commit();
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				try {
 					if (top) transaction.rollback();
-				} catch (Throwable t) {
-					t.printStackTrace(getPrintStream());
+				} catch (Throwable tt) {
+					tt.printStackTrace(getPrintStream());
 				}
 
-				throw e;
+				throw t;
 			} finally {
 				if (top) {
 					doFinally(
