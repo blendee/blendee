@@ -196,6 +196,15 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	}
 
 	/**
+	 * 指定されたカラム名が存在するか検査します。
+	 * @param columnName カラム名
+	 * @return カラムを含む場合、true
+	 */
+	public boolean hasColumn(String columnName) {
+		return columnMap.containsKey(MetadataUtilities.regularize(columnName));
+	}
+
+	/**
 	 * この要素が表すテーブルに存在するカラムを {@link Column} のインスタンスとして返します。
 	 * @param columnName カラム名
 	 * @return カラム名に対応する {@link Column} のインスタンス

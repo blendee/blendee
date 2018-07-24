@@ -67,6 +67,23 @@ public interface SelectQueryRelationship {
 	}
 
 	/**
+	 * SELECT 句に、このテーブルのカラムすべてを追加します。
+	 * @param relationship このテーブルから辿れるテーブル
+	 * @return {@link SelectOffer}
+	 */
+	default SelectOffer all(QueryRelationship relationship) {
+		return new SelectOffer() {
+
+			@Override
+			public List<ColumnExpression> get() {
+				return Arrays.stream(relationship.getRelationship().getColumns())
+					.map(c -> new ColumnExpression(c))
+					.collect(Collectors.toList());
+			}
+		};
+	}
+
+	/**
 	 * SELECT 句用 AVG(column)
 	 * @param column {@link SelectQueryColumn}
 	 * @return {@link ColumnExpression}
@@ -197,6 +214,21 @@ public interface SelectQueryRelationship {
 	default SelectOffer asterisk() {
 		getRoot().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
+
+		SelectOffers offers = new SelectOffers();
+		offers.add(new ColumnExpression("{0}", columns));
+
+		return offers;
+	}
+
+	/**
+	 * SELECT 句に 関連したテーブルの * を追加します。
+	 * @param relationship このテーブルから辿れるテーブル
+	 * @return {@link SelectOffer}
+	 */
+	default SelectOffer asterisk(QueryRelationship relationship) {
+		getRoot().quitRowMode();
+		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
 
 		SelectOffers offers = new SelectOffers();
 		offers.add(new ColumnExpression("{0}", columns));

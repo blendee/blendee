@@ -909,13 +909,12 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 		 * @return {0} relationship
 		 */
 		public /*++{5}.query.{0}Query.++*/ExtQRel<T, /*++{4}++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++{2}++*/() /*++'++*/{/*++'++*/
-			if (root$ != null) /*++'++*/{/*++'++*/
-				return new /*++{5}.query.{0}Query.++*/ExtQRel<>(
-					builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, root$);
-			/*++'++*/}/*++'++*/
-
 			return new /*++{5}.query.{0}Query.++*/ExtQRel<>(
-				builder$, this, /*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/, /*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE, super.path$);
+				builder$,
+				this,
+				/*++{5}.row.{3}++*//*--*/RowBase/*--*/./*++{0}++*/$/*++{1}++*/,
+				/*++{5}.row.{0}++*//*--*/RowBase/*--*/.$TABLE,
+				root$ != null ? root$ : super.path$);
 		/*++'++*/}/*++'++*/
 /*==RelationshipPart==*/
 	/*++'++*/}/*++'++*/
