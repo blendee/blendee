@@ -7,7 +7,7 @@ import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BatchStatementWrapper;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 
@@ -64,7 +64,7 @@ public abstract class ConnectionBase extends MetadataBase implements BConnection
 	}
 
 	@Override
-	public void lend(Borrower<Connection> borrower) {
+	public void lend(JDBCBorrower<Connection> borrower) {
 		base.lend(borrower);
 	}
 }

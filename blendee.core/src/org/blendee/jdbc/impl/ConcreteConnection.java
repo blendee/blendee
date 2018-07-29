@@ -22,7 +22,7 @@ import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
@@ -295,7 +295,7 @@ public class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public void lend(Borrower<Connection> borrower) {
+	public void lend(JDBCBorrower<Connection> borrower) {
 		try {
 			borrower.accept(connection);
 		} catch (SQLException e) {

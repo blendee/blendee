@@ -7,7 +7,7 @@ import java.sql.SQLException;
  * @param <T> JDBC クラス
  */
 @FunctionalInterface
-public interface Borrower<T> {
+public interface JDBCBorrower<T> {
 
 	/**
 	 * JDBC オブジェクトを借り受けます。

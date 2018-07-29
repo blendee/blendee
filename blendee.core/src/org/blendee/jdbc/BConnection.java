@@ -178,5 +178,5 @@ public interface BConnection extends Metadata {
 	 * このクラスのインスタンスが内部に {@link Connection} を持つ場合、それを貸します。
 	 * @param borrower 借り手
 	 */
-	void lend(Borrower<Connection> borrower);
+	void lend(JDBCBorrower<Connection> borrower);
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 
 /**
  * {@link BPreparedStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
@@ -154,7 +154,7 @@ public abstract class PreparedStatementBase implements BPreparedStatement {
 	}
 
 	@Override
-	public void lend(Borrower<Statement> borrower) {
+	public void lend(JDBCBorrower<Statement> borrower) {
 		base.lend(borrower);
 	}
 

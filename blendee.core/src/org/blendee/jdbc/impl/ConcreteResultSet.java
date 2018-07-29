@@ -14,7 +14,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BlendeeException;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.Configure;
 
 /**
@@ -379,7 +379,7 @@ public class ConcreteResultSet implements BResultSet {
 	}
 
 	@Override
-	public void lend(Borrower<ResultSet> borrower) {
+	public void lend(JDBCBorrower<ResultSet> borrower) {
 		try {
 			borrower.accept(base);
 		} catch (SQLException e) {

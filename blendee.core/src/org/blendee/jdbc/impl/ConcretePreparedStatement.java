@@ -15,7 +15,7 @@ import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BlendeeException;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.Configure;
 
 /**
@@ -234,7 +234,7 @@ public class ConcretePreparedStatement implements BPreparedStatement {
 	}
 
 	@Override
-	public void lend(Borrower<Statement> borrower) {
+	public void lend(JDBCBorrower<Statement> borrower) {
 		try {
 			borrower.accept(statement);
 		} catch (SQLException e) {

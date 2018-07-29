@@ -81,5 +81,5 @@ public interface BStatement extends AutoCloseable {
 	 * このクラスのインスタンスが内部に {@link Statement} を持つ場合、それを貸します。
 	 * @param borrower 借り手
 	 */
-	void lend(Borrower<Statement> borrower);
+	void lend(JDBCBorrower<Statement> borrower);
 }

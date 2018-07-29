@@ -40,5 +40,5 @@ public interface BResultSet extends AutoCloseable, Result {
 	 * このクラスのインスタンスが内部に {@link ResultSet} を持つ場合、それを貸します。
 	 * @param borrower 借り手
 	 */
-	void lend(Borrower<ResultSet> borrower);
+	void lend(JDBCBorrower<ResultSet> borrower);
 }

@@ -17,7 +17,7 @@ import java.util.TreeMap;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.Borrower;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
@@ -178,7 +178,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 			}
 
 			@Override
-			public void lend(Borrower<Statement> borrower) {
+			public void lend(JDBCBorrower<Statement> borrower) {
 				throw new UnsupportedOperationException();
 			}
 
