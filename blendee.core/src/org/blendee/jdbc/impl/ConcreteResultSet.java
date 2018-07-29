@@ -9,11 +9,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.function.Consumer;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BlendeeException;
+import org.blendee.jdbc.Borrower;
 import org.blendee.jdbc.Configure;
 
 /**
@@ -377,12 +378,13 @@ public class ConcreteResultSet implements BResultSet {
 		return statement;
 	}
 
-	/**
-	 * 内部で持っている {@link ResultSet} を直接操作できるようにします。
-	 * @param consumer {@link Consumer}
-	 */
-	public void borrow(Consumer<ResultSet> consumer) {
-		consumer.accept(base);
+	@Override
+	public void lend(Borrower<ResultSet> borrower) {
+		try {
+			borrower.accept(base);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
+		}
 	}
 
 	@Override

@@ -15,12 +15,14 @@ import java.util.TreeSet;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
-import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BatchStatementWrapper;
+import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.Borrower;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
@@ -290,6 +292,15 @@ public class ConcreteConnection implements BConnection {
 	@Override
 	public void setBatchStatementWrapper(BatchStatementWrapper wrapper) {
 		batchStatementWrappers.add(wrapper);
+	}
+
+	@Override
+	public void lend(Borrower<Connection> borrower) {
+		try {
+			borrower.accept(connection);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
+		}
 	}
 
 	@Override

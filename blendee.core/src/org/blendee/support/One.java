@@ -5,8 +5,8 @@ import org.blendee.internal.U;
 /**
  * {@link Row} 一件と同一であり、それを参照する {@link Row} も併せ持ちます。
  * @author 千葉 哲嗣
- * @param <O> One　一対多の一側の型
- * @param <M> Many　一対多の多側の型連鎖
+ * @param <O> One 一対多の一側の型
+ * @param <M> Many 一対多の多側の型連鎖
  */
 public class One<O extends Row, M> {
 
@@ -23,7 +23,7 @@ public class One<O extends Row, M> {
 	 * このインスタンスと同一の {@link Row} を返します。
 	 * @return {@link Row}
 	 */
-	public O oneself() {
+	public O get() {
 		return oneself;
 	}
 

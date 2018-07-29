@@ -173,4 +173,10 @@ public interface BConnection extends Metadata {
 	 * @param wrapper この接続が生成する {@link BatchStatement} のラッパー
 	 */
 	void setBatchStatementWrapper(BatchStatementWrapper wrapper);
+
+	/**
+	 * このクラスのインスタンスが内部に {@link Connection} を持つ場合、それを貸します。
+	 * @param borrower 借り手
+	 */
+	void lend(Borrower<Connection> borrower);
 }

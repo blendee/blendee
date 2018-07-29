@@ -121,4 +121,15 @@ public interface BPreparedStatement extends BStatement {
 	 * @see java.sql.Types
 	 */
 	void setNull(int parameterIndex, int type);
+
+	/**
+	 * このクラスのインスタンスが内部に {@link PreparedStatementBorrower} を持つ場合、それを貸します。
+	 * @param borrower 借り手
+	 */
+	void lend(PreparedStatementBorrower borrower);
+
+	/**
+	 * {@link PreparedStatementBorrower} 用 {@link Borrower}
+	 */
+	interface PreparedStatementBorrower extends Borrower<PreparedStatement> {}
 }

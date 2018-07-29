@@ -7,12 +7,15 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BlendeeException;
+import org.blendee.jdbc.Borrower;
 import org.blendee.jdbc.Configure;
 
 /**
@@ -227,6 +230,24 @@ public class ConcretePreparedStatement implements BPreparedStatement {
 			return statement.getMoreResults();
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
+		}
+	}
+
+	@Override
+	public void lend(Borrower<Statement> borrower) {
+		try {
+			borrower.accept(statement);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
+		}
+	}
+
+	@Override
+	public void lend(PreparedStatementBorrower borrower) {
+		try {
+			borrower.accept(statement);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
 		}
 	}
 

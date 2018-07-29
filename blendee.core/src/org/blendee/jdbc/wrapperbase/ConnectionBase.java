@@ -1,10 +1,13 @@
 package org.blendee.jdbc.wrapperbase;
 
-import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BatchStatementWrapper;
+import java.sql.Connection;
+
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BatchStatementWrapper;
+import org.blendee.jdbc.Borrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 
@@ -58,5 +61,10 @@ public abstract class ConnectionBase extends MetadataBase implements BConnection
 	@Override
 	public void setBatchStatementWrapper(BatchStatementWrapper wrapper) {
 		base.setBatchStatementWrapper(wrapper);
+	}
+
+	@Override
+	public void lend(Borrower<Connection> borrower) {
+		base.lend(borrower);
 	}
 }
