@@ -11,6 +11,4 @@ class QueryRelationshipConstants {
 	static final String MIN_TEMPLATE = "MIN({0})";
 
 	static final String COUNT_TEMPLATE = "COUNT({0})";
-
-	static final String COALESCE_TEMPLATE = "COALESCE({0})";
 }

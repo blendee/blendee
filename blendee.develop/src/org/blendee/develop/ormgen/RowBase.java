@@ -3,6 +3,8 @@
 /*++{8}++*/
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
+import org.blendee.jdbc.Result;
+import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Relationship;
@@ -58,6 +60,16 @@ extends /*++{3}++*//*--*/Object/*--*/
 	public /*++{2}++*//*--*/RowBase/*--*/(DataObject data) /*++'++*/{/*++'++*/
 		$relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 		this.$data = data;
+	/*++'++*/}/*++'++*/
+
+	/**
+	 * 参照、更新用コンストラクタです。<br>
+	 * aggregate の検索結果からカラム名により値を取り込みます。
+	 * @param result 値を持つ '{'@link Result'}'
+	 */
+	public /*++{2}++*//*--*/RowBase/*--*/(Result result) /*++'++*/{/*++'++*/
+		$relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+		this.$data = ColumnNameDataObjectBuilder.build(result, $relationship, ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
 	/*++'++*/}/*++'++*/
 
 	@Override

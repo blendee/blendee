@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.blendee.internal.LRUCache;
 import org.blendee.internal.U;
-import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;

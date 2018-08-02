@@ -1,15 +1,13 @@
 package org.blendee.support;
 
 import static org.blendee.support.QueryRelationshipConstants.AVG_TEMPLATE;
-import static org.blendee.support.QueryRelationshipConstants.COALESCE_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.COUNT_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
 
-import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,12 +140,51 @@ public interface SelectQueryRelationship {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COALESCE(AliasableOffer... columns) {
-		List<String> list = new LinkedList<>();
-		for (int i = 0; i < columns.length; i++) {
-			list.add("{" + i + "}");
+		return any(Coalesce.createTemplate(columns.length), columns);
+	}
+
+	/**
+	 * SELECT 句用 COALESCE
+	 * @param columns {@link AliasableOffer}
+	 * @param values カラム以外の要素
+	 * @return {@link AliasableOffer}
+	 */
+	default AliasableOffer COALESCE(Vargs<AliasableOffer> columns, Object... values) {
+		List<AliasableOffer> all = new ArrayList<>();
+		for (AliasableOffer column : columns.get()) {
+			all.add(column);
 		}
 
-		return any(MessageFormat.format(COALESCE_TEMPLATE, String.join(", ", list)), columns);
+		for (Object value : values) {
+			all.add(new ColumnExpression("{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+		}
+
+		int size = all.size();
+
+		return any(
+			Coalesce.createTemplate(size),
+			all.toArray(new AliasableOffer[size]));
+	}
+
+	/**
+	 * SELECT 句用 COALESCE
+	 * @param column {@link AliasableOffer}
+	 * @param values カラム以外の要素
+	 * @return {@link AliasableOffer}
+	 */
+	default AliasableOffer COALESCE(AliasableOffer column, Object... values) {
+		List<AliasableOffer> all = new ArrayList<>();
+		all.add(column);
+
+		for (Object value : values) {
+			all.add(new ColumnExpression("{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+		}
+
+		int size = all.size();
+
+		return any(
+			Coalesce.createTemplate(size),
+			all.toArray(new AliasableOffer[size]));
 	}
 
 	/**

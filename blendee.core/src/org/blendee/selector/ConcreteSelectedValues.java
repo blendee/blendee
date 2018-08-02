@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.Result;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
+import org.blendee.sql.Relationship;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.binder.NullBinder;
@@ -28,13 +31,10 @@ class ConcreteSelectedValues implements SelectedValues {
 
 	private final ValueExtractors extractors;
 
-	private final Result result;
-
 	ConcreteSelectedValues(
 		Result result,
 		Column[] selected,
 		ValueExtractors extractors) {
-		this.result = result;
 		this.extractors = extractors;
 		for (int i = 0; i < selected.length; i++) {
 			Column column = selected[i];
@@ -42,6 +42,29 @@ class ConcreteSelectedValues implements SelectedValues {
 			values.put(column, extractor.extract(result, i + 1));
 			if (result.wasNull()) nullValues.put(column, new NullBinder(result.getColumnType(i + 1)));
 		}
+	}
+
+	ConcreteSelectedValues(
+		Result result,
+		Relationship relation,
+		ValueExtractors extractors) {
+		this.extractors = extractors;
+
+		Map<String, Integer> columnMap = new LinkedHashMap<>();
+		int columnCount = result.getColumnCount();
+		for (int i = 0; i < columnCount; i++) {
+			int index = i + 1;
+			columnMap.put(result.getColumnName(index), index);
+		}
+
+		Arrays.stream(relation.getColumns())
+			.filter(c -> columnMap.containsKey(c.getName()))
+			.forEach(c -> {
+				ValueExtractor extractor = extractors.selectValueExtractor(c.getType());
+				int index = columnMap.get(c.getName());
+				values.put(c, extractor.extract(result, index));
+				if (result.wasNull()) nullValues.put(c, new NullBinder(result.getColumnType(index)));
+			});
 	}
 
 	@Override
@@ -135,11 +158,6 @@ class ConcreteSelectedValues implements SelectedValues {
 	@Override
 	public Column[] getSelectedColumns() {
 		return values.keySet().toArray(new Column[values.size()]);
-	}
-
-	@Override
-	public Result getResult() {
-		return result;
 	}
 
 	@Override

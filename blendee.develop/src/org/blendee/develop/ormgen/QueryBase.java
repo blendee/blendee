@@ -3,11 +3,14 @@
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import /*++{0}.manager.{1}Manager.{1}Iterator++*//*--*/org.blendee.develop.ormgen.ManagerBase.IteratorBase/*--*/;
 import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -569,6 +572,24 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	public ComposedSQL toCountSQL() /*++'++*/{/*++'++*/
 		helper.checkRowMode();
 		return helper.executor().toCountSQL();
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public void aggregate(Consumer<BResultSet> consumer) /*++'++*/{/*++'++*/
+		helper.quitRowMode();
+		org.blendee.support.Executor.super.aggregate(consumer);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public <T> T aggregateAndGet(Function<BResultSet, T> function) /*++'++*/{/*++'++*/
+		helper.quitRowMode();
+		return org.blendee.support.Executor.super.aggregateAndGet(function);
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public ResultSetIterator aggregate() /*++'++*/{/*++'++*/
+		helper.quitRowMode();
+		return org.blendee.support.Executor.super.aggregate();
 	/*++'++*/}/*++'++*/
 
 	@Override

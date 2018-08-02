@@ -22,6 +22,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
+import org.blendee.selector.ColumnNameSelectedValuesBuilder;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SelectedValues;
 import org.blendee.sql.Bindable;
@@ -34,6 +35,7 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
 import org.blendee.sql.Updater;
+import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BlobBinder;
 import org.blendee.sql.binder.BooleanBinder;
@@ -94,6 +96,14 @@ public class DataObject
 	DataObject(Relationship relationship, SelectedValues values) {
 		this.relationship = relationship;
 		this.values = values;
+	}
+
+	DataObject(Relationship relationship, Result result, ValueExtractors extractors) {
+		this.relationship = relationship;
+		this.values = ColumnNameSelectedValuesBuilder.build(
+			result,
+			relationship,
+			extractors);
 	}
 
 	/**
@@ -1077,11 +1087,6 @@ public class DataObject
 		@Override
 		public boolean isNull(Column column) {
 			return true;
-		}
-
-		@Override
-		public Result getResult() {
-			return null;
 		}
 
 		@Override
