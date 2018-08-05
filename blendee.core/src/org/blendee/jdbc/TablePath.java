@@ -1,5 +1,7 @@
 package org.blendee.jdbc;
 
+import java.util.Objects;
+
 /**
  * スキーマ名、テーブル名を持ち、テーブルを一意で特定する指標となるクラスです。
  * @author 千葉 哲嗣
@@ -10,8 +12,6 @@ public class TablePath implements Comparable<TablePath> {
 	 * 空の配列
 	 */
 	public static final TablePath[] EMPTY_ARRAY = {};
-
-	private static final char[] illegalChars = "!@#$%^&*()-=+\\|`~[]{};:'\",.<>/? ".toCharArray();
 
 	private static final String delimiter = ".";
 
@@ -26,8 +26,8 @@ public class TablePath implements Comparable<TablePath> {
 	 * @throws IllegalArgumentException 使用不可能な文字を使用した場合
 	 */
 	public TablePath(String schemaName, String tableName) {
-		checkObjectName("schemaName", schemaName);
-		checkObjectName("tableName", tableName);
+		Objects.requireNonNull(schemaName);
+		Objects.requireNonNull(tableName);
 		this.schemaName = schemaName;
 		this.tableName = tableName;
 	}
@@ -41,7 +41,7 @@ public class TablePath implements Comparable<TablePath> {
 	 * @see Initializer#addSchemaName(String)
 	 */
 	public TablePath(String tableName) {
-		checkObjectName("tableName", tableName);
+		Objects.requireNonNull(tableName);
 		schemaName = null;
 		this.tableName = tableName;
 	}
@@ -122,29 +122,9 @@ public class TablePath implements Comparable<TablePath> {
 	}
 
 	/**
-	 * 使用できるデータベースオブジェクト名かどうかを判定します。
-	 * @param name 判定対象
-	 * @return 使用できるかどうか
-	 */
-	public static boolean checkObjectName(String name) {
-		for (int i = 0; i < illegalChars.length; i++) {
-			if (name.indexOf(illegalChars[i]) != -1) return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * 大文字、小文字を意識しないようにする比較用の文字列
 	 */
 	private String id() {
 		return toString().toUpperCase();
-	}
-
-	private static void checkObjectName(String type, String name) {
-		for (int i = 0; i < illegalChars.length; i++) {
-			if (name.indexOf(illegalChars[i]) != -1)
-				throw new IllegalArgumentException(type + "には'" + illegalChars[i] + "'は使用できません");
-		}
 	}
 }

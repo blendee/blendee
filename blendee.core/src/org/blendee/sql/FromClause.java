@@ -82,7 +82,15 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @param path テーブルのルート
 	 */
 	public FromClause(TablePath path) {
-		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
+		this(ContextManager.get(RelationshipFactory.class).getInstance(path));
+	}
+
+	/**
+	 * パラメータのテーブルをルートとする FROM 句を生成します。
+	 * @param root テーブルのルート
+	 */
+	public FromClause(Relationship root) {
+		this.root = root;
 		localRelationships.add(new RelationshipContainer(root));
 	}
 
@@ -184,11 +192,25 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			cache = " FROM " + root.getTablePath();
 		} else {
 			LinkedList<String> result = process();
-			result.addFirst(root.getTablePath() + " " + root.getID());
+			result.addFirst(root.toString());
 			cache = " FROM " + String.join(" ", result);
 		}
 
 		return cache;
+	}
+
+	/**
+	 * このインスタンスのコピーを返します。
+	 * @return copy
+	 */
+	protected FromClause replicate() {
+		FromClause clone = new FromClause(root.getTablePath());
+
+		//中身はImmutableなのでそのままコピー
+		clone.localRelationships.addAll(localRelationships);
+		clone.joints.addAll(joints);
+
+		return clone;
 	}
 
 	void clearRelationships() {
@@ -208,16 +230,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 	boolean isJoined() {
 		return localRelationships.size() > 1 || joints.size() > 0 || forSubquery;
-	}
-
-	FromClause replicate() {
-		FromClause clone = new FromClause(root.getTablePath());
-
-		//中身はImmutableなのでそのままコピー
-		clone.localRelationships.addAll(localRelationships);
-		clone.joints.addAll(joints);
-
-		return clone;
 	}
 
 	private LinkedList<String> process() {
@@ -249,9 +261,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 		return type
 			+ " "
-			+ relationship.getTablePath()
-			+ " "
-			+ relationship.getID()
+			+ relationship
 			+ " ON ("
 			+ criteria.toString(true).trim()
 			+ ")";
@@ -263,9 +273,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		Criteria onCriteria) {
 		return type
 			+ " "
-			+ relationship.getTablePath()
-			+ " "
-			+ relationship.getID()
+			+ relationship
 			+ " ON ("
 			+ onCriteria.toString(true).trim()
 			+ ")";
@@ -351,6 +359,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		}
 
 		private int complement(int done, BPreparedStatement statement) {
+			done = another.complement(done, statement);
 			if (onCriteria == null) return done;
 			return onCriteria.complement(done, statement);
 		}

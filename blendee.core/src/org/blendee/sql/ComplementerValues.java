@@ -234,8 +234,8 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		int[] index = { done + 1 };
-		binders.forEach(b -> b.bind(index[0]++, statement));
+		int[] index = { done };
+		binders.forEach(b -> b.bind(++index[0], statement));
 		return index[0];
 	}
 

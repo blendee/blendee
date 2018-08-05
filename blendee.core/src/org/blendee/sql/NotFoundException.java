@@ -11,9 +11,12 @@ import org.blendee.jdbc.BlendeeException;
  */
 public class NotFoundException extends BlendeeException {
 
-	private static final long serialVersionUID = 8690198661404900748L;
+	private static final long serialVersionUID = -3432819920672893366L;
 
-	NotFoundException(String message) {
+	/**
+	 * @param message エラーメッセージ
+	 */
+	public NotFoundException(String message) {
 		super(message);
 	}
 }

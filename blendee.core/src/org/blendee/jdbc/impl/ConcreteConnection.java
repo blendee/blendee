@@ -22,11 +22,11 @@ import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.PreparedStatementWrapper;
 import org.blendee.jdbc.PrimaryKeyMetadata;
@@ -40,6 +40,8 @@ import org.blendee.jdbc.TablePath;
 public class ConcreteConnection implements BConnection {
 
 	private static final String[] tableTypes = { "TABLE", "VIEW" };
+
+	private static final char[] illegalChars = "!@#$%^&*()-=+\\|`~[]{};:'\",.<>/? ".toCharArray();
 
 	private final Connection connection;
 
@@ -126,7 +128,7 @@ public class ConcreteConnection implements BConnection {
 			while (result.next()) {
 				String tableName = result.getString("TABLE_NAME");
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
-				if (!TablePath.checkObjectName(tableName)) continue;
+				if (!checkObjectName(tableName)) continue;
 				tables.add(tableName);
 			}
 
@@ -346,7 +348,7 @@ public class ConcreteConnection implements BConnection {
 			while (result.next()) {
 				String tableName = result.getString(tableColumnName);
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
-				if (!TablePath.checkObjectName(tableName)) continue;
+				if (!checkObjectName(tableName)) continue;
 				TablePath path = new TablePath(result.getString(schemaColumnName), tableName);
 				targets.add(path);
 			}
@@ -362,6 +364,14 @@ public class ConcreteConnection implements BConnection {
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
+	}
+
+	private static boolean checkObjectName(String name) {
+		for (int i = 0; i < illegalChars.length; i++) {
+			if (name.indexOf(illegalChars[i]) != -1) return false;
+		}
+
+		return true;
 	}
 
 	/**

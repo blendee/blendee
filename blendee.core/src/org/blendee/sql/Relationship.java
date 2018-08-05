@@ -1,22 +1,11 @@
 package org.blendee.sql;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import org.blendee.internal.CollectionMap;
 import org.blendee.internal.Traversable;
-import org.blendee.internal.TraversableNode;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
-import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
-import org.blendee.jdbc.DataTypeConverter;
-import org.blendee.jdbc.MetadataUtilities;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -24,185 +13,40 @@ import org.blendee.jdbc.TablePath;
  * データベース上では同じテーブルとなる Relationship どうしでも、ルートとなる Relationship が異なる場合、それらは別物として扱われます。
  * @author 千葉 哲嗣
  */
-public final class Relationship implements Traversable, Comparable<Relationship> {
-
-	private final TablePath path;
-
-	private final Relationship root;
-
-	private final Relationship parent;
-
-	private final String id;
-
-	private final CrossReference reference;
-
-	private final Column[] columns;
-
-	private final Map<String, Column> columnMap = new HashMap<>();
-
-	private final Column[] primaryKeyColumns;
-
-	private final CollectionMap<TablePath, Relationship> convertMap;
-
-	private final DataTypeConverter converter;
-
-	private final List<TablePath> relationshipPath;
-
-	private final Object lock = new Object();
-
-	private TraversableNode node;
-
-	private Map<String, Relationship> foreignKeyNameMap;
-
-	private Map<String, Relationship> foreignKeyIdMap;
-
-	Relationship(
-		Relationship root,
-		Relationship parent,
-		CrossReference reference,
-		TablePath path,
-		String id,
-		List<TablePath> relationshipPath,
-		DataTypeConverter converter,
-		CollectionMap<TablePath, Relationship> convertMap) {
-		this.path = path;
-
-		convertMap.put(path, this);
-		this.convertMap = convertMap;
-
-		if (root == null) {
-			this.root = this;
-		} else {
-			this.root = root;
-		}
-
-		this.parent = parent;
-		this.reference = reference;
-		this.id = id;
-
-		this.relationshipPath = relationshipPath;
-
-		this.converter = converter;
-
-		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
-		columns = new Column[metadatas.length];
-		DecimalFormat columnFormat = RelationshipFactory.createDigitFormat(metadatas.length);
-		for (int i = 0; i < metadatas.length; i++) {
-			ColumnMetadata metadata = metadatas[i];
-			Column column = new RelationshipColumn(this, metadata, converter, columnFormat.format(i));
-			columns[i] = column;
-			columnMap.put(metadata.getName(), column);
-		}
-
-		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
-		primaryKeyColumns = new Column[primaryKeyColumnNames.length];
-		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
-			primaryKeyColumns[i] = columnMap.get(MetadataUtilities.regularize(primaryKeyColumnNames[i]));
-		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o != null && o.getClass().equals(TablePath.class))
-			throw new IllegalStateException(TablePath.class.getName() + " と比較することはできません");
-
-		return o instanceof Relationship && id.equals(((Relationship) o).id);
-	}
-
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+public interface Relationship extends Traversable, Comparable<Relationship> {
 
 	/**
 	 * この要素が表すテーブルを返します。
 	 * @return この要素が表すテーブル
 	 */
-	public TablePath getTablePath() {
-		return path;
-	}
-
-	@Override
-	public int compareTo(Relationship target) {
-		return id.compareTo(target.id);
-	}
+	TablePath getTablePath();
 
 	/**
 	 * この要素が直接参照している子要素の配列を返します。
 	 * @return この要素が参照している要素の配列
 	 */
-	public Relationship[] getRelationships() {
-		Traversable[] traversables = getSubNode().getTraversables();
-		Relationship[] relations = new Relationship[traversables.length];
-		for (int i = 0; i < traversables.length; i++) {
-			relations[i] = (Relationship) traversables[i];
-		}
-
-		return relations;
-	}
+	Relationship[] getRelationships();
 
 	/**
 	 * {@link Traverser} にこの要素以下のツリーを走査させます。
 	 * @param traverser ツリーを走査する {@link Traverser}
 	 */
-	public void traverse(Traverser traverser) {
+	default void traverse(Traverser traverser) {
 		TraverserOperator.operate(traverser, this);
-	}
-
-	@Override
-	public TraversableNode getSubNode() {
-		synchronized (lock) {
-			if (node != null) return node;
-
-			node = new TraversableNode();
-
-			List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
-			myRelationshipPath.add(path);
-
-			CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
-
-			DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
-
-			foreignKeyNameMap = new HashMap<>();
-			foreignKeyIdMap = new HashMap<>();
-
-			for (int i = 0; i < references.length; i++) {
-				CrossReference element = references[i];
-				Relationship child = new Relationship(
-					this.root,
-					this,
-					element,
-					element.getPrimaryKeyTable(),
-					id + "_" + relationshipFormat.format(i),
-					myRelationshipPath,
-					converter,
-					convertMap);
-				foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
-				String[] foreignKeyColumns = element.getForeignKeyColumnNames();
-				foreignKeyIdMap.put(createForeignKeyId(foreignKeyColumns), child);
-				node.add(child);
-			}
-		}
-
-		return node;
 	}
 
 	/**
 	 * この要素を Blendee 内で一意に特定する ID を返します。 ID はテーブル別名として使用されます。
 	 * @return ID
 	 */
-	public String getID() {
-		return id;
-	}
+	String getID();
 
 	/**
 	 * 指定されたカラム名が存在するか検査します。
 	 * @param columnName カラム名
 	 * @return カラムを含む場合、true
 	 */
-	public boolean hasColumn(String columnName) {
-		return columnMap.containsKey(MetadataUtilities.regularize(columnName));
-	}
+	boolean hasColumn(String columnName);
 
 	/**
 	 * この要素が表すテーブルに存在するカラムを {@link Column} のインスタンスとして返します。
@@ -210,40 +54,26 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @return カラム名に対応する {@link Column} のインスタンス
 	 * @throws NotFoundException テーブルにカラムが存在しない場合
 	 */
-	public Column getColumn(String columnName) {
-		Column column = columnMap.get(MetadataUtilities.regularize(columnName));
-		if (column == null) throw new NotFoundException(this + " に " + columnName + " が見つかりません");
-		return column;
-	}
+	Column getColumn(String columnName);
 
 	/**
 	 * この要素が表すテーブルの全カラムを返します。
 	 * @return 全カラム
 	 */
-	public Column[] getColumns() {
-		return columns.clone();
-	}
+	Column[] getColumns();
 
 	/**
 	 * この要素が表すテーブルの主キーを構成する全カラムを返します。
 	 * @return 主キーを構成する全カラム
 	 */
-	public Column[] getPrimaryKeyColumns() {
-		return primaryKeyColumns.clone();
-	}
+	Column[] getPrimaryKeyColumns();
 
 	/**
 	 * この要素が表すテーブルの主キーに、パラメータのカラムが含まれるか検査します。
 	 * @param column 検査するカラム
 	 * @return 主キーを構成するカラムと同一の場合、 true
 	 */
-	public boolean belongsPrimaryKey(Column column) {
-		for (Column pkColumn : primaryKeyColumns) {
-			if (pkColumn.equals(column)) return true;
-		}
-
-		return false;
-	}
+	boolean belongsPrimaryKey(Column column);
 
 	/**
 	 * この要素が直接参照している子要素を、外部キー名をもとに探して返します。
@@ -251,18 +81,7 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @return 外部キー名に対応する参照先
 	 * @throws NotFoundException 外部キー名に対応する参照先がない場合
 	 */
-	public Relationship find(String foreignKeyName) {
-		Relationship relationship;
-		synchronized (lock) {
-			if (foreignKeyNameMap == null) getSubNode();
-			relationship = foreignKeyNameMap.get(MetadataUtilities.regularize(foreignKeyName));
-		}
-
-		if (relationship == null)
-			throw new NotFoundException(createErrorMessage(foreignKeyName));
-
-		return relationship;
-	}
+	Relationship find(String foreignKeyName);
 
 	/**
 	 * この要素が直接参照している子要素を、外部キーを構成するカラム名をもとに探して返します。
@@ -270,66 +89,39 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @return 外部キーカラム名に対応する参照先
 	 * @throws NotFoundException 外部キーカラム名に対応する参照先がない場合
 	 */
-	public Relationship find(String[] foreignKeyColumnNames) {
-		String keyId = createForeignKeyId(MetadataUtilities.regularize(foreignKeyColumnNames));
-
-		Relationship relationship;
-		synchronized (lock) {
-			if (foreignKeyIdMap == null) getSubNode();
-			relationship = foreignKeyIdMap.get(keyId);
-		}
-
-		if (relationship == null)
-			throw new NotFoundException(createErrorMessage(String.join(" ", foreignKeyColumnNames)));
-
-		return relationship;
-	}
+	Relationship find(String[] foreignKeyColumnNames);
 
 	/**
 	 * この要素と、この要素を直接参照している親要素との間の関連情報を返します。
 	 * @return 要素間の関連情報
 	 * @throws UnsupportedOperationException この要素がルートの場合
 	 */
-	public CrossReference getCrossReference() {
-		if (isRoot()) throw new UnsupportedOperationException();
-		return reference;
-	}
+	CrossReference getCrossReference();
 
 	/**
 	 * この要素を直接参照している親要素を返します。
 	 * @return この要素を直接参照している要素
 	 * @throws UnsupportedOperationException この要素がルートの場合
 	 */
-	public Relationship getParent() {
-		if (isRoot()) throw new UnsupportedOperationException();
-		return parent;
-	}
+	Relationship getParent();
 
 	/**
 	 * この要素がルートかどうか検査します。
 	 * @return ルートの場合 true
 	 */
-	public boolean isRoot() {
-		return root == this;
-	}
+	boolean isRoot();
 
 	/**
 	 * この要素が属するツリーのルート要素を返します。
 	 * @return ルート要素
 	 */
-	public Relationship getRoot() {
-		return root;
-	}
+	Relationship getRoot();
 
 	/**
 	 * パラメータのコレクションにこの要素の親要素を連鎖的に全て追加していきます。
 	 * @param parents 追加してほしいコレクション
 	 */
-	public void addParentTo(Collection<Relationship> parents) {
-		if (parent == null) return;
-		parent.addParentTo(parents);
-		parents.add(parent);
-	}
+	void addParentTo(Collection<Relationship> parents);
 
 	/**
 	 * この Relationship が含まれるツリーに、パラメータのテーブルがある場合、それに対応する Relationship を返します。<br>
@@ -337,22 +129,12 @@ public final class Relationship implements Traversable, Comparable<Relationship>
 	 * @param path 変換したい {@link TablePath}
 	 * @return 変換された {@link Relationship} の配列
 	 */
-	public Relationship[] convert(TablePath path) {
-		Collection<Relationship> list = convertMap.get(path);
-		return list.toArray(new Relationship[list.size()]);
-	}
+	Relationship[] convert(TablePath path);
 
+	/**
+	 * この {@link Relationship} の文字列表現を返します。
+	 * @return 基本的には table id
+	 */
 	@Override
-	public String toString() {
-		return path + " " + id;
-	}
-
-	private String createErrorMessage(String base) {
-		return this + " では " + base + " は使用できません";
-	}
-
-	private static String createForeignKeyId(String[] foreignKeyColumnNames) {
-		Arrays.sort(foreignKeyColumnNames);
-		return String.join(",", foreignKeyColumnNames);
-	}
+	String toString();
 }

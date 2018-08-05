@@ -1,5 +1,8 @@
 package org.blendee.support;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 /**
  * 可変パラメータの引数をパックするクラスです。
  * @author 千葉 哲嗣
@@ -37,5 +40,12 @@ public class Vargs<T> {
 	 */
 	public int length() {
 		return args.length;
+	}
+
+	/**
+	 * @return {@link Stream}
+	 */
+	public Stream<T> stream() {
+		return Arrays.stream(args);
 	}
 }

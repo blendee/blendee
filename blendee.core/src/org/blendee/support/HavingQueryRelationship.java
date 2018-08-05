@@ -6,9 +6,13 @@ import static org.blendee.support.QueryRelationshipConstants.MAX_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.QueryRelationshipConstants.SUM_TEMPLATE;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.blendee.sql.Column;
 import org.blendee.sql.MultiColumn;
-import org.blendee.sql.TemplateColumn;
+import org.blendee.sql.PseudoColumn;
 
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
@@ -70,6 +74,48 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 	/**
 	 * COALESCE を追加します。
 	 * @param columns 対象カラム
+	 * @param values カラム以外の要素
+	 * @return カラム
+	 */
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COALESCE(Vargs<HavingQueryColumn<O>> columns, Object... values) {
+		List<Column> list = new LinkedList<>();
+		columns.stream().forEach(c -> list.add(c.column()));
+
+		Arrays.stream(values).forEach(v -> {
+			list.add(new PseudoColumn(getRelationship(), v.toString(), false));
+		});
+
+		int size = list.size();
+		return new HavingQueryColumn<>(
+			getRoot(),
+			getContext(),
+			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
+	}
+
+	/**
+	 * COALESCE を追加します。
+	 * @param column 対象カラム
+	 * @param values カラム以外の要素
+	 * @return カラム
+	 */
+	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COALESCE(HavingQueryColumn<O> column, Object... values) {
+		List<Column> list = new LinkedList<>();
+		list.add(column.column());
+
+		Arrays.stream(values).forEach(v -> {
+			list.add(new PseudoColumn(getRelationship(), v.toString(), false));
+		});
+
+		int size = list.size();
+		return new HavingQueryColumn<>(
+			getRoot(),
+			getContext(),
+			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
+	}
+
+	/**
+	 * COALESCE を追加します。
+	 * @param columns 対象カラム
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingQueryColumn<O> COALESCE(Vargs<HavingQueryColumn<O>> columns) {
@@ -89,7 +135,7 @@ public interface HavingQueryRelationship extends CriteriaQueryRelationship {
 		return new HavingQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new TemplateColumn(template, column.column()));
+			new MultiColumn(template, column.column()));
 	}
 
 	/**

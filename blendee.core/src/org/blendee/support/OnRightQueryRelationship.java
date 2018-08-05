@@ -2,7 +2,6 @@ package org.blendee.support;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.MultiColumn;
-import org.blendee.sql.TemplateColumn;
 
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
@@ -33,7 +32,7 @@ public interface OnRightQueryRelationship extends CriteriaQueryRelationship {
 		return new OnRightQueryColumn<>(
 			getRoot(),
 			getContext(),
-			new TemplateColumn(template, column.column()));
+			new MultiColumn(template, column.column()));
 	}
 
 	/**

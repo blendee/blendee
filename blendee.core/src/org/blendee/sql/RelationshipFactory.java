@@ -122,7 +122,7 @@ public class RelationshipFactory implements ManagementSubject {
 
 		List<TablePath> relationshipPath = new LinkedList<>();
 
-		return new Relationship(
+		return new ConcreteRelationship(
 			null,
 			null,
 			null,

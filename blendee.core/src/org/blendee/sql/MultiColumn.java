@@ -25,7 +25,7 @@ public class MultiColumn implements Column {
 	 * @param template カラムの代わりに使用する文字列表現のテンプレート
 	 * @param columns テンプレートに埋め込まれるカラム
 	 */
-	public MultiColumn(String template, Column[] columns) {
+	public MultiColumn(String template, Column... columns) {
 		Objects.requireNonNull(template);
 
 		Relationship root = null;

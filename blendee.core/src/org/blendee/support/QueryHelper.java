@@ -109,6 +109,25 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		left = onOperators;
 	}
 
+	QueryHelper(
+		FromClause fromClause,
+		S select,
+		G groupBy,
+		O orderBy,
+		LogicalOperators<W> whereOperators,
+		LogicalOperators<H> havingOperators,
+		LogicalOperators<L> onOperators) {
+		this.fromClause = fromClause;
+		table = null;
+		this.select = select;
+		this.groupBy = groupBy;
+		this.orderBy = orderBy;
+		this.whereOperators = whereOperators;
+		this.havingOperators = havingOperators;
+		left = onOperators;
+		rowMode = false;
+	}
+
 	/**
 	 * SELECT 句を記述します。
 	 * @param function {@link SelectOfferFunction}
@@ -683,7 +702,7 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			null,
 			null,
 			new ComplementerValues(builder),
-			ContextManager.get(RelationshipFactory.class).getInstance(table),
+			null,
 			Column.EMPTY_ARRAY,
 			rowMode);
 	}
@@ -700,6 +719,10 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	public void joinTo(QueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		builder.join(joinType, buildBuilderWithoutSelectColumnsSupply(), onCriteria);
+	}
+
+	void setSelectClause(SelectClause selectClause) {
+		this.selectClause = selectClause;
 	}
 
 	private ComposedSQL createComposedSQL() {
