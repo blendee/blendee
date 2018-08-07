@@ -70,10 +70,10 @@ public interface Query {
 	void joinTo(QueryBuilder mainBuilder, JoinType joinType, Criteria onCriteria);
 
 	/**
-	 * {@link Subquery} を生成します。
-	 * @return {@link Subquery}
+	 * {@link QueryBuilder} を生成します。
+	 * @return {@link QueryBuilder}
 	 */
-	Subquery toSubquery();
+	QueryBuilder toQueryBuilder();
 
 	/**
 	 * @param forSubquery true の場合、カラムにテーブルIDが付与される

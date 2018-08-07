@@ -42,6 +42,7 @@ import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByQueryColumn;
 import org.blendee.support.OrderByQueryRelationship;
 import org.blendee.support.Query;
+import org.blendee.support.RightQuery;
 import org.blendee.support.QueryColumn;
 import org.blendee.support.QueryContext;
 import org.blendee.support.QueryCriteriaContext;
@@ -52,7 +53,6 @@ import org.blendee.support.QueryRelationship;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectQueryColumn;
 import org.blendee.support.SelectQueryRelationship;
-import org.blendee.support.Subquery;
 import org.blendee.support.WhereQueryColumn;
 import org.blendee.support.WhereQueryRelationship;
 
@@ -63,7 +63,7 @@ import org.blendee.support.WhereQueryRelationship;
  */
 public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	extends /*++{2}++*//*--*/Object/*--*/
-	implements Query, Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, /*++{0}.row.{1}++*//*--*/RowBase/*--*/> /*++'++*/{/*++'++*/
+	implements Query, Executor</*++{1}Iterator++*//*--*/IteratorBase/*--*/, /*++{0}.row.{1}++*//*--*/RowBase/*--*/>, RightQuery</*++{1}Query++*//*--*/QueryBase/*--*/.OnRightQRel> /*++'++*/{/*++'++*/
 
 	private static final QueryContext<SelectQCol> selectContext = (relationship, name) -> new SelectQCol(relationship, name);
 
@@ -218,11 +218,6 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 			this,
 			QueryContext.OTHER,
 			QueryCriteriaContext.NULL);
-
-	/**
-	 * 他の '{'@link Query'}' に JOIN するための接続ポイントです。
-	 */
-	public final OnRightQRel joint =  onRightOperators.AND;
 
 	/**
 	 * SELECT 句用のカラムを選択するための '{'@link QueryRelationship'}' です。
@@ -382,38 +377,38 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 
 	/**
 	 * このクエリに INNER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
+	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
-		return helper.INNER_JOIN(rightJoint, this);
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> INNER_JOIN(RightQuery<R> right) /*++'++*/{/*++'++*/
+		return helper.INNER_JOIN(right, this);
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * このクエリに LEFT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
+	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
-		return helper.LEFT_OUTER_JOIN(rightJoint, this);
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> LEFT_OUTER_JOIN(RightQuery<R> right) /*++'++*/{/*++'++*/
+		return helper.LEFT_OUTER_JOIN(right, this);
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * このクエリに RIGHT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
+	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
-		return helper.RIGHT_OUTER_JOIN(rightJoint, this);
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> RIGHT_OUTER_JOIN(RightQuery<R> right) /*++'++*/{/*++'++*/
+		return helper.RIGHT_OUTER_JOIN(right, this);
 	/*++'++*/}/*++'++*/
 
 	/**
 	 * このクエリに FULL OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの '{'@link OnRightQueryRelationship'}'
+	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(R rightJoint) /*++'++*/{/*++'++*/
-		return helper.FULL_OUTER_JOIN(rightJoint, this);
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, /*++{1}Query++*//*--*/QueryBase/*--*/> FULL_OUTER_JOIN(RightQuery<R> right) /*++'++*/{/*++'++*/
+		return helper.FULL_OUTER_JOIN(right, this);
 	/*++'++*/}/*++'++*/
 
 	/**
@@ -613,8 +608,8 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	/*++'++*/}/*++'++*/
 
 	@Override
-	public Subquery toSubquery() /*++'++*/{/*++'++*/
-		return helper.toSubquery();
+	public QueryBuilder toQueryBuilder() /*++'++*/{/*++'++*/
+		return helper.buildBuilder();
 	/*++'++*/}/*++'++*/
 
 	@Override
@@ -716,6 +711,11 @@ public class /*++{1}Query++*//*--*/QueryBase/*--*/
 	@Override
 	public Executor executor() /*++'++*/{/*++'++*/
 		return  new Executor(helper.executor());
+	/*++'++*/}/*++'++*/
+
+	@Override
+	public OnRightQRel joint() /*++'++*/{/*++'++*/
+		return onRightOperators.AND;
 	/*++'++*/}/*++'++*/
 
 	@Override

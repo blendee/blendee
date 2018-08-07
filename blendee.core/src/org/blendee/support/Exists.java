@@ -13,7 +13,7 @@ class Exists {
 	static void setExists(CriteriaQueryRelationship relationship, Query subquery, String keyword) {
 		relationship.getRoot().forSubquery(true);
 
-		QueryBuilder builder = subquery.toSubquery().getQueryBuilder();
+		QueryBuilder builder = subquery.toQueryBuilder();
 		builder.forSubquery(true);
 
 		builder.sql();

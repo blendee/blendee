@@ -237,7 +237,7 @@ public interface SelectQueryRelationship {
 		root.quitRowMode();
 		root.forSubquery(true);
 
-		QueryBuilder builder = subquery.toSubquery().getQueryBuilder();
+		QueryBuilder builder = subquery.toQueryBuilder();
 		builder.forSubquery(true);
 
 		Column[] columns = { new PseudoColumn(getRelationship(), builder.sql(), false) };

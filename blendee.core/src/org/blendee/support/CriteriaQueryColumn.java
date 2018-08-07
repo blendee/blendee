@@ -902,7 +902,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O IN(Query subquery) {
-		getContext().addCriteria(subquery.toSubquery().createCriteria(false, column()));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toQueryBuilder(), false, column()));
 
 		return logocalOperators();
 	}
@@ -961,7 +961,7 @@ public abstract class CriteriaQueryColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link Query}
 	 */
 	public O NOT_IN(Query subquery) {
-		getContext().addCriteria(subquery.toSubquery().createCriteria(true, column()));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toQueryBuilder(), true, column()));
 
 		return logocalOperators();
 	}

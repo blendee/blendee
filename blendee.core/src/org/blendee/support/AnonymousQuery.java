@@ -27,7 +27,7 @@ import org.blendee.support.QueryHelper.PlaybackExecutor;
  * テーブル名 a_asset
  */
 public class AnonymousQuery extends java.lang.Object
-	implements Query, Executor<Iterator<Void>, Void> {
+	implements Query, Executor<Iterator<Void>, Void>, RightQuery<AnonymousQuery.OnRightQRel> {
 
 	private static final QueryContext<SelectQCol> selectContext = (
 		relationship,
@@ -276,41 +276,42 @@ public class AnonymousQuery extends java.lang.Object
 
 	/**
 	 * このクエリに INNER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの {@link OnRightQueryRelationship}
+	 * @param right 別クエリの {@link OnRightQueryRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, AnonymousQuery> INNER_JOIN(R rightJoint) {
-		return helper.INNER_JOIN(rightJoint, this);
+	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, AnonymousQuery> INNER_JOIN(
+		RightQuery<R> right) {
+		return helper.INNER_JOIN(right, this);
 	}
 
 	/**
 	 * このクエリに LEFT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの {@link OnRightQueryRelationship}
+	 * @param right 別クエリの {@link OnRightQueryRelationship}
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, AnonymousQuery> LEFT_OUTER_JOIN(
-		R rightJoint) {
-		return helper.LEFT_OUTER_JOIN(rightJoint, this);
+		RightQuery<R> right) {
+		return helper.LEFT_OUTER_JOIN(right, this);
 	}
 
 	/**
 	 * このクエリに RIGHT OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの {@link OnRightQueryRelationship}
+	 * @param right 別クエリの {@link OnRightQueryRelationship}
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, AnonymousQuery> RIGHT_OUTER_JOIN(
-		R rightJoint) {
-		return helper.RIGHT_OUTER_JOIN(rightJoint, this);
+		RightQuery<R> right) {
+		return helper.RIGHT_OUTER_JOIN(right, this);
 	}
 
 	/**
 	 * このクエリに FULL OUTER JOIN で別テーブルを結合します。
-	 * @param rightJoint 別クエリの {@link OnRightQueryRelationship}
+	 * @param right 別クエリの {@link OnRightQueryRelationship}
 	 * @return ON
 	 */
 	public <R extends OnRightQueryRelationship> QueryOnClause<OnLeftQRel, R, AnonymousQuery> FULL_OUTER_JOIN(
-		R rightJoint) {
-		return helper.FULL_OUTER_JOIN(rightJoint, this);
+		RightQuery<R> right) {
+		return helper.FULL_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -489,9 +490,9 @@ public class AnonymousQuery extends java.lang.Object
 	}
 
 	@Override
-	public Subquery toSubquery() {
+	public QueryBuilder toQueryBuilder() {
 		careEmptySelect();
-		return helper.toSubquery();
+		return helper.buildBuilder();
 	}
 
 	@Override
@@ -585,6 +586,11 @@ public class AnonymousQuery extends java.lang.Object
 	public AnonymousExecutor executor() {
 		careEmptySelect();
 		return new AnonymousExecutor(helper.executor());
+	}
+
+	@Override
+	public OnRightQRel joint() {
+		return onRightOperators.AND;
 	}
 
 	@Override

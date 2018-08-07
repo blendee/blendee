@@ -248,20 +248,20 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 		function.apply(orderBy).get().forEach(o -> o.offer());
 	}
 
-	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> INNER_JOIN(R rightJoint, Q query) {
-		return joinInternal(JoinType.INNER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> INNER_JOIN(RightQuery<R> right, Q query) {
+		return joinInternal(JoinType.INNER_JOIN, right, query);
 	}
 
-	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> LEFT_OUTER_JOIN(R rightJoint, Q query) {
-		return joinInternal(JoinType.LEFT_OUTER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> LEFT_OUTER_JOIN(RightQuery<R> right, Q query) {
+		return joinInternal(JoinType.LEFT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> RIGHT_OUTER_JOIN(R rightJoint, Q query) {
-		return joinInternal(JoinType.RIGHT_OUTER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> RIGHT_OUTER_JOIN(RightQuery<R> right, Q query) {
+		return joinInternal(JoinType.RIGHT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> FULL_OUTER_JOIN(R rightJoint, Q query) {
-		return joinInternal(JoinType.FULL_OUTER_JOIN, rightJoint, query);
+	public <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> FULL_OUTER_JOIN(RightQuery<R> right, Q query) {
+		return joinInternal(JoinType.FULL_OUTER_JOIN, right, query);
 	}
 
 	public void UNION(ComposedSQL query) {
@@ -501,13 +501,6 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 			sql = createComposedSQL();
 
 		return sql;
-	}
-
-	/**
-	 * @return {@link QueryBuilder}
-	 */
-	public Subquery toSubquery() {
-		return new Subquery(buildBuilder());
 	}
 
 	public void forSubquery(boolean forSubquery) {
@@ -771,9 +764,11 @@ public class QueryHelper<S extends SelectQueryRelationship, G extends GroupByQue
 
 	private <R extends OnRightQueryRelationship, Q extends Query> QueryOnClause<L, R, Q> joinInternal(
 		JoinType joinType,
-		R rightJoint,
+		RightQuery<R> right,
 		Q query) {
 		quitRowMode();
+
+		R rightJoint = right.joint();
 
 		JoinResource joinResource = new JoinResource();
 		joinResource.rightRoot = rightJoint.getRoot();

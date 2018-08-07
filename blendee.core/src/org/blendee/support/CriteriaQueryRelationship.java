@@ -103,7 +103,7 @@ public interface CriteriaQueryRelationship {
 	 * @param subquery 追加条件
 	 */
 	default void subquery(boolean notIn, Query subquery) {
-		getContext().addCriteria(subquery.toSubquery().createCriteria(notIn, getRoot()));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toQueryBuilder(), notIn, getRoot()));
 	}
 
 	/**
@@ -119,7 +119,7 @@ public interface CriteriaQueryRelationship {
 			columns[i] = mainQueryColumns[i].column();
 		}
 
-		getContext().addCriteria(subquery.toSubquery().createCriteria(notIn, columns));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toQueryBuilder(), notIn, columns));
 	}
 
 	/**
