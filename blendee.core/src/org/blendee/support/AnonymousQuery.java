@@ -154,11 +154,6 @@ public class AnonymousQuery extends java.lang.Object
 	private final OnRightLogicalOperators onRightOperators = new OnRightLogicalOperators();
 
 	/**
-	 * 他の {@link Query} に JOIN するための接続ポイントです。
-	 */
-	public final OnRightQRel joint = onRightOperators.AND;
-
-	/**
 	 * SELECT 句用のカラムを選択するための {@link QueryRelationship} です。
 	 */
 	private final SelectQRel select = new SelectQRel(this, selectContext, QueryCriteriaContext.NULL);
