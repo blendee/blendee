@@ -9,7 +9,7 @@ public class Constants {
 
 	public static final String SCHEMA_NAMES = "schemaNames";
 
-	public static final String OUTPUT_PACKAGE_NAMES = "outputPackageNames";
+	public static final String OUTPUT_PACKAGE_NAME = "outputPackageName";
 
 	public static final String JDBC_DRIVER_CLASS = "jdbcDriverClass";
 

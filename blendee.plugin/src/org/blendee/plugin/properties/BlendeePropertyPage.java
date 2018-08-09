@@ -75,34 +75,16 @@ public class BlendeePropertyPage
 		final StringFieldEditor schemaNamesEditor = new StringFieldEditor(
 			Constants.SCHEMA_NAMES,
 			"スキーマ名 (スペースで区切って複数入力可)",
-			getFieldEditorParent()) {
-
-			@Override
-			protected boolean doCheckState() {
-				if (!U.presents(getStringValue())) return true;
-
-				return checkSchemas(this, packagesEditorContainer[0], this);
-			}
-		};
+			getFieldEditorParent()) {};
 
 		schemaNamesEditor.setEmptyStringAllowed(true);
 		addField(schemaNamesEditor);
 
 		/*---------------------------------------------------*/
 		StringFieldEditor packagesEditor = new StringFieldEditor(
-			Constants.OUTPUT_PACKAGE_NAMES,
-			"生成する Data Object の出力パッケージ名"
-				+ U.LINE_SEPARATOR
-				+ " (スペース区切り、スキーマ名と同数入力すること)",
-			getFieldEditorParent()) {
-
-			@Override
-			protected boolean doCheckState() {
-				if (!U.presents(getStringValue())) return true;
-
-				return checkSchemas(schemaNamesEditor, this, this);
-			}
-		};
+			Constants.OUTPUT_PACKAGE_NAME,
+			"生成する Data Object の出力パッケージ名",
+			getFieldEditorParent()) {};
 
 		packagesEditorContainer[0] = packagesEditor;
 		packagesEditor.setValidateStrategy(StringFieldEditor.VALIDATE_ON_FOCUS_LOST);
@@ -358,29 +340,6 @@ public class BlendeePropertyPage
 		addField(rowParentClassEditor);
 
 		/*---------------------------------------------------*/
-		ClassFieldEditor queryParentClassEditor = new ClassFieldEditor(
-			Constants.QUERY_PARENT_CLASS,
-			"自動生成 Query の親クラス",
-			element.getProject(),
-			getFieldEditorParent()) {
-
-			@Override
-			protected boolean doCheckState() {
-				String typeName = getStringValue();
-				if (U.presents(typeName) && findType(typeName) == null) {
-					setErrorMessage("プロジェクト内にクラス " + typeName + " が見つかりません");
-					return false;
-				}
-
-				return true;
-			}
-		};
-
-		queryParentClassEditor.setChangeButtonText("参照...");
-		queryParentClassEditor.setEmptyStringAllowed(true);
-		addField(queryParentClassEditor);
-
-		/*---------------------------------------------------*/
 		ClassFieldEditor codeFormatterClassEditor = new ClassFieldEditor(
 			Constants.CODE_FORMATTER_CLASS,
 			"CodeFormatter 実装クラス",
@@ -427,25 +386,6 @@ public class BlendeePropertyPage
 		addField(notUseNullGuardEditor);
 	}
 
-	private static boolean checkSchemas(
-		StringFieldEditor schemaNamesEditor,
-		StringFieldEditor packagesEditor,
-		StringFieldEditor target) {
-		String[] schemas = BlendeePlugin.splitByBlankAndRemoveEmptyString(
-			schemaNamesEditor.getStringValue());
-		String[] packages = BlendeePlugin.splitByBlankAndRemoveEmptyString(
-			packagesEditor.getStringValue());
-
-		//初回チェック時はまだパッケージ入力欄が初期化されていないので値がない（入力されていても）
-		//そこで双方に値が入っているときのみ検査を行う
-		if (schemas.length > 0 && packages.length > 0 && schemas.length > packages.length) {
-			target.setErrorMessage("スキーマ名に対応する出力パッケージがありません");
-			return false;
-		}
-
-		return true;
-	}
-
 	@Override
 	public boolean performOk() {
 		boolean ok = super.performOk();
@@ -461,7 +401,7 @@ public class BlendeePropertyPage
 			BlendeePlugin.splitByBlankAndRemoveEmptyString(
 				properties.getProperty(Constants.SCHEMA_NAMES)));
 
-		changed |= checkAndSetValue(store, properties, Constants.OUTPUT_PACKAGE_NAMES);
+		changed |= checkAndSetValue(store, properties, Constants.OUTPUT_PACKAGE_NAME);
 
 		changed |= checkAndSetValue(store, properties, Constants.JDBC_DRIVER_CLASS);
 
@@ -541,8 +481,8 @@ public class BlendeePropertyPage
 			store.getString(Constants.SCHEMA_NAMES));
 
 		store.setDefault(
-			Constants.OUTPUT_PACKAGE_NAMES,
-			store.getString(Constants.OUTPUT_PACKAGE_NAMES));
+			Constants.OUTPUT_PACKAGE_NAME,
+			store.getString(Constants.OUTPUT_PACKAGE_NAME));
 
 		store.setDefault(
 			Constants.JDBC_DRIVER_CLASS,

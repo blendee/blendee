@@ -66,7 +66,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	private String[] schemaNames = {};
 
-	private final Map<String, String> outputPackages = new HashMap<>();
+	private String outputPackage;
 
 	private Class<?> managerParentClass;
 
@@ -311,8 +311,8 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		this.classBuilderView = view;
 	}
 
-	public String getOutputPackage(String schemaName) {
-		return outputPackages.get(schemaName);
+	public String getOutputPackage() {
+		return outputPackage;
 	}
 
 	public static String regularizeColumnRepositoryFilePath(IJavaProject project, String path) {
@@ -341,17 +341,15 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	}
 
 	private void refresh() throws JavaProjectException {
-		outputPackages.clear();
-
 		Map<OptionKey<?>, Object> init = new HashMap<>();
 
 		Properties properties = getPersistentProperties(currentProject);
 
+		outputPackage = properties.getProperty(Constants.OUTPUT_PACKAGE_NAME);
+
 		init.put(
 			BlendeeConstants.ANNOTATED_ROW_PACKAGES,
-			splitByBlankAndRemoveEmptyString(
-				properties.getProperty(
-					Constants.OUTPUT_PACKAGE_NAMES)));
+			splitByBlankAndRemoveEmptyString(outputPackage));
 
 		String[] schemaNameArray = splitByBlankAndRemoveEmptyString(
 			properties.getProperty(Constants.SCHEMA_NAMES));
@@ -359,12 +357,6 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		setSchemaNames(schemaNameArray);
 
 		init.put(BlendeeConstants.SCHEMA_NAMES, schemaNameArray);
-
-		String[] packageNameArray = splitByBlankAndRemoveEmptyString(
-			properties.getProperty(Constants.OUTPUT_PACKAGE_NAMES));
-		for (int i = 0; i < schemaNameArray.length; i++) {
-			outputPackages.put(schemaNameArray[i], packageNameArray[i]);
-		}
 
 		String columnRepositoryFile = generalizeColumnRepositoryFilePath(
 			currentProject,

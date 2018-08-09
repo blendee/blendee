@@ -11,10 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
+import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
@@ -38,9 +40,14 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 * このクラスのインスタンスを生成します。
 	 */
 	public AnnotationMetadataFactory() {
-		virtualSpace = getInstance(
-			ContextManager.get(BlendeeManager.class).getConfigure().getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
-				() -> new NullPointerException()));
+		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
+		String[] rootPackages = config.getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
+			() -> new NullPointerException());
+
+		Stream<String> result = Arrays.stream(rootPackages)
+			.flatMap(root -> Arrays.stream(config.getSchemaNames()).map(s -> root + "." + s));
+
+		virtualSpace = getInstance(result);
 	}
 
 	@Override
@@ -75,13 +82,13 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		return Row.class.isAssignableFrom(clazz) && !clazz.isInterface();
 	}
 
-	private VirtualSpace getInstance(String[] packages) {
+	private VirtualSpace getInstance(Stream<String> packages) {
 		VirtualSpace space = new VirtualSpace();
-		for (String name : packages) {
-			listClasses(getClassLoader(), name + ".row").stream()
+		packages.forEach(
+			name -> listClasses(getClassLoader(), name)
+				.stream()
 				.map(AnnotationMetadataFactory::convert)
-				.forEach(table -> space.addTable(table));
-		}
+				.forEach(table -> space.addTable(table)));
 
 		return space;
 	}

@@ -106,7 +106,7 @@ public class TableElement extends PropertySourceElement {
 	void build() throws Exception {
 		BlendeePlugin plugin = BlendeePlugin.getDefault();
 
-		String packageName = plugin.getOutputPackage(parent.getName());
+		String packageName = plugin.getOutputPackage();
 
 		IPackageFragment baseFragment = findPackage(packageName);
 		if (baseFragment == null)
@@ -117,10 +117,8 @@ public class TableElement extends PropertySourceElement {
 		ORMGenerator generator = new ORMGenerator(
 			BlendeeManager.getConnection(),
 			baseFragment.getElementName(),
-			parent.getName(),
 			plugin.getRowManagerParentClass(),
 			plugin.getRowParentClass(),
-			plugin.getQueryParentClass(),
 			plugin.getCodeFormatter(),
 			plugin.useNumberClass(),
 			!plugin.notUseNullGuard());
@@ -131,15 +129,13 @@ public class TableElement extends PropertySourceElement {
 		//自身をセット
 		tables.add(relation.getTablePath());
 
-		IPackageFragment rowPackage = getPackage(fragmentRoot, packageName + ".row");
-		IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + ".manager");
-		IPackageFragment queryPackage = getPackage(fragmentRoot, packageName + ".query");
+		IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + "." + ORMGenerator.carePackageName(parent.getName()));
 
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
 			Relationship target = factory.getInstance(targetPath);
 
-			build(generator, rowPackage, managerPackage, queryPackage, target);
+			build(generator, managerPackage, target);
 
 			collect(tables, target);
 
@@ -196,8 +192,8 @@ public class TableElement extends PropertySourceElement {
 		String typeName = String.join(
 			".",
 			new String[] {
-				BlendeePlugin.getDefault().getOutputPackage(parent.getName()),
-				"row",
+				BlendeePlugin.getDefault().getOutputPackage(),
+				ORMGenerator.carePackageName(parent.getName()),
 				path.getTableName() });
 		try {
 			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
@@ -209,9 +205,7 @@ public class TableElement extends PropertySourceElement {
 
 	private void build(
 		ORMGenerator generator,
-		IPackageFragment rowPackage,
-		IPackageFragment managerPackage,
-		IPackageFragment queryPackage,
+		IPackageFragment packageFragment,
 		Relationship relation) {
 		TablePath path = relation.getTablePath();
 		String tableName = path.getTableName();
@@ -220,17 +214,9 @@ public class TableElement extends PropertySourceElement {
 				BlendeePlugin.getDefault().getProject().getOptions(true));
 
 			createSource(
-				ORMGenerator.createRowCompilationUnitName(tableName),
-				rowPackage,
-				format(formatter, generator.buildRow(relation)));
-			createSource(
-				ORMGenerator.createRowManagerCompilationUnitName(tableName),
-				managerPackage,
-				format(formatter, generator.buildRowManager(relation)));
-			createSource(
-				ORMGenerator.createQueryCompilationUnitName(tableName),
-				queryPackage,
-				format(formatter, generator.buildQuery(relation)));
+				ORMGenerator.createCompilationUnitName(tableName),
+				packageFragment,
+				format(formatter, generator.build(relation)));
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
 		}

@@ -1,6 +1,9 @@
 package org.blendee.develop.ormgen;
 
-import java.text.MessageFormat;
+import java.util.Map;
+
+import org.blendee.support.Query;
+import org.blendee.support.Row;
 
 /**
  * {@link ORMGenerator} で生成されるクラスの出力前に割り込み、コードを組み立てるインターフェイスです。
@@ -9,69 +12,80 @@ import java.text.MessageFormat;
 public interface CodeFormatter {
 
 	/**
-	 * {@link ManagerBase} をテンプレートとしたコードを組み立てます。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link TableBase} をテンプレートとしたコードを組み立てます。
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatRowManager(String template, String... arguments);
+	default String format(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link RowBase} をテンプレートとしたコードを組み立てます。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatRow(String template, String... arguments);
+	default String formatColumnNamesPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link RowBase} の setter getter 生成部分のコードを組み立てます。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatRowPropertyAccessorPart(String template, String... arguments);
+	default String formatRelationshipsPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link RowBase} のリレーション生成部分のコードを組み立てます。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link Row} の setter getter 生成部分のコードを組み立てます。
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatRowRelationshipPart(String template, String... arguments);
+	default String formatRowPropertyAccessorPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link QueryBase} をテンプレートとしたコードを組み立てます。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link Row} のリレーション生成部分のコードを組み立てます。
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatQuery(String template, String... arguments);
+	default String formatRowRelationshipPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link QueryBase} の項目生成部分のコードを組み立てます。<br>
-	 * 具体的な箇所は {@link QueryBase} を参照してください。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link Query} の項目生成部分のコードを組み立てます。<br>
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatQueryColumnPart1(String template, String... arguments);
+	default String formatQueryColumnPart1(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link QueryBase} の項目生成部分のコードを組み立てます。<br>
-	 * 具体的な箇所は {@link QueryBase} を参照してください。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link Query} の項目生成部分のコードを組み立てます。<br>
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatQueryColumnPart2(String template, String... arguments);
+	default String formatQueryColumnPart2(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 
 	/**
-	 * {@link QueryBase} のリレーション生成部分のコードを組み立てます。<br>
-	 * 具体的な箇所は {@link QueryBase} を参照してください。
-	 * @param template {@link MessageFormat} 形式テンプレート
+	 * {@link Query} のリレーション生成部分のコードを組み立てます。<br>
+	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	String formatQueryRelationshipPart(String template, String... arguments);
+	default String formatQueryRelationshipPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
 }

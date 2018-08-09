@@ -41,18 +41,18 @@ import org.blendee.support.annotation.PseudoPK;
 import org.blendee.support.annotation.RowRelationship;
 
 /**
- * データベースの構成を読み取り、各テーブルの RowManager クラスと Row クラスの Java ソースを生成するジェネレータクラスです。
+ * データベースの構成を読み取り、各テーブルクラスの Java ソースを生成するジェネレータクラスです。
  * @author 千葉 哲嗣
  */
 public class ORMGenerator {
 
-	private static final CodeFormatter defaultCodeFormatter = new DefaultCodeFormatter();
+	private static final CodeFormatter defaultCodeFormatter = new CodeFormatter() {};
 
-	private static final String managerTemplate;
+	private static final String template;
 
-	private static final String rowTemplate;
+	private static final String columnNamesPartTemplate;
 
-	private static final String queryTemplate;
+	private static final String relationshipsPartTemplate;
 
 	private static final String rowPropertyAccessorPartTemplate;
 
@@ -70,13 +70,9 @@ public class ORMGenerator {
 
 	private final String rootPackageName;
 
-	private final String schemaName;
-
 	private final Class<?> managerSuperclass;
 
 	private final Class<?> rowSuperclass;
-
-	private final Class<?> querySuperclass;
 
 	private final CodeFormatter codeFormatter;
 
@@ -97,59 +93,58 @@ public class ORMGenerator {
 	}
 
 	static {
-		String charset = "UTF-8";
-
+		String source = readTemplate(TableBase.class, "UTF-8");
 		{
-			managerTemplate = convertToTemplate(readTemplate(ManagerBase.class, charset));
+			String[] result = pickupFromSource(source, "ColumnNamesPart");
+			columnNamesPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
 		}
 
 		{
-			String source = readTemplate(RowBase.class, charset);
-			{
-				String[] result = pickupFromSource(source, "RowPropertyAccessorPart");
-				rowPropertyAccessorPartTemplate = convertToTemplate(result[0]);
-				source = result[1];
-			}
-			{
-				String[] result = pickupFromSource(source, "RowRelationshipPart");
-				rowRelationshipPartTemplate = convertToTemplate(result[0]);
-				source = result[1];
-			}
-
-			rowTemplate = convertToTemplate(source);
+			String[] result = pickupFromSource(source, "RelationshipsPart");
+			relationshipsPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
 		}
 
 		{
-			String source = readTemplate(QueryBase.class, charset);
-			{
-				String[] result = pickupFromSource(source, "ColumnPart1");
-				queryColumnPart1Template = convertToTemplate(result[0]);
-				source = result[1];
-			}
-			{
-				String[] result = pickupFromSource(source, "ColumnPart2");
-				queryColumnPart2Template = convertToTemplate(result[0]);
-				source = result[1];
-			}
-			{
-				String[] result = pickupFromSource(source, "RelationshipPart");
-				queryRelationshipPartTemplate = convertToTemplate(result[0]);
-				source = result[1];
-			}
-
-			queryTemplate = convertToTemplate(source);
+			String[] result = pickupFromSource(source, "RowPropertyAccessorPart");
+			rowPropertyAccessorPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
 		}
 
+		{
+			String[] result = pickupFromSource(source, "RowRelationshipPart");
+			rowRelationshipPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
+		}
+
+		{
+			String[] result = pickupFromSource(source, "ColumnPart1");
+			queryColumnPart1Template = convertToTemplate(result[0]);
+			source = result[1];
+		}
+
+		{
+			String[] result = pickupFromSource(source, "ColumnPart2");
+			queryColumnPart2Template = convertToTemplate(result[0]);
+			source = result[1];
+		}
+
+		{
+			String[] result = pickupFromSource(source, "QueryRelationshipPart");
+			queryRelationshipPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
+		}
+
+		template = convertToTemplate(source);
 	}
 
 	/**
 	 * インスタンスを生成します。
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
 	 * @param rootPackageName 各自動生成クラスが属するパッケージの親パッケージ
-	 * @param schemaName テーブルを読み込む対象となるスキーマ
-	 * @param rowManagerSuperclass RowManager クラスの親クラス
+	 * @param managerSuperclass RowManager クラスの親クラス
 	 * @param rowSuperclass Row クラスの親クラス
-	 * @param querySuperclass Query クラスの親クラス
 	 * @param codeFormatter {@link CodeFormatter}
 	 * @param useNumberClass Row クラスの数値型項目を {@link Number} で統一する
 	 * @param useNullGuard Row クラスの項目に null ガードを適用する
@@ -157,20 +152,15 @@ public class ORMGenerator {
 	public ORMGenerator(
 		Metadata metadata,
 		String rootPackageName,
-		String schemaName,
-		Class<?> rowManagerSuperclass,
+		Class<?> managerSuperclass,
 		Class<?> rowSuperclass,
-		Class<?> querySuperclass,
 		CodeFormatter codeFormatter,
 		boolean useNumberClass,
 		boolean useNullGuard) {
 		this.metadata = Objects.requireNonNull(metadata);
 		this.rootPackageName = Objects.requireNonNull(rootPackageName);
-
-		this.schemaName = schemaName;
-		this.managerSuperclass = rowManagerSuperclass != null ? rowManagerSuperclass : Object.class;
+		this.managerSuperclass = managerSuperclass != null ? managerSuperclass : Object.class;
 		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;
-		this.querySuperclass = querySuperclass != null ? querySuperclass : Object.class;
 
 		this.codeFormatter = codeFormatter == null ? defaultCodeFormatter : codeFormatter;
 
@@ -188,23 +178,28 @@ public class ORMGenerator {
 	}
 
 	/**
+	 * パッケージ名に使用できるように文字列を加工します。
+	 * @param name
+	 * @return for packageName
+	 */
+	public static String carePackageName(String name) {
+		name = name.toLowerCase();
+		return SourceVersion.isName(name) ? name : "$" + name;
+	}
+
+	/**
 	 * すべてのクラスファイルを生成します。
+	 * @param schemaName 対象となるスキーマ
 	 * @param home 生成された Java ソースを保存するためのルートとなる場所
 	 * @param srcCharset 生成する Java ソースの文字コード
 	 * @throws IOException ファイル書き込みに失敗した場合
 	 */
-	public void build(File home, Charset srcCharset) throws IOException {
+	public void build(String schemaName, File home, Charset srcCharset) throws IOException {
 		File rootPackageDir = new File(home, String.join("/", rootPackageName.split("\\.")));
 		rootPackageDir.mkdirs();
 
-		File rowPackageDir = new File(rootPackageDir, "row");
-		rowPackageDir.mkdir();
-
-		File managerPackageDir = new File(rootPackageDir, "manager");
-		managerPackageDir.mkdir();
-
-		File queryPackageDir = new File(rootPackageDir, "query");
-		queryPackageDir.mkdir();
+		File packageDir = new File(rootPackageDir, carePackageName(schemaName));
+		packageDir.mkdir();
 
 		TablePath[] tables = metadata.getTables(schemaName);
 		for (TablePath table : tables) {
@@ -218,86 +213,49 @@ public class ORMGenerator {
 			//TODO 警告出す方法を検討
 
 			write(
-				new File(rowPackageDir, createRowManagerCompilationUnitName(tableName)),
-				buildRowManager(relation),
-				srcCharset);
-
-			write(
-				new File(managerPackageDir, createRowCompilationUnitName(tableName)),
-				buildRow(relation),
-				srcCharset);
-
-			write(
-				new File(queryPackageDir, createQueryCompilationUnitName(tableName)),
-				buildQuery(relation),
+				new File(packageDir, createCompilationUnitName(tableName)),
+				build(relation),
 				srcCharset);
 		}
 	}
 
 	/**
-	 * このクラスが生成する RowManager のコンパイル単位名を返します。
+	 * このクラスが生成する Table のコンパイル単位名を返します。
 	 * @param tableName 対象となるテーブル名
 	 * @return コンパイル単位名
 	 */
-	public static String createRowManagerCompilationUnitName(String tableName) {
-		return tableName + "Manager.java";
-	}
-
-	/**
-	 * このクラスが生成する Row のコンパイル単位名を返します。
-	 * @param tableName 対象となるテーブル名
-	 * @return コンパイル単位名
-	 */
-	public static String createRowCompilationUnitName(String tableName) {
+	public static String createCompilationUnitName(String tableName) {
 		checkName(tableName);
 		return tableName + ".java";
 	}
 
 	/**
-	 * このクラスが生成する Query のコンパイル単位名を返します。
-	 * @param tableName 対象となるテーブル名
-	 * @return コンパイル単位名
-	 */
-	public static String createQueryCompilationUnitName(String tableName) {
-		return tableName + "Query.java";
-	}
-
-	/**
-	 * RowManager クラスを作成します。
+	 * Table クラスを一件作成します。
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
 	 * @return 生成されたソース
 	 */
-	public String buildRowManager(Relationship relation) {
+	public String build(Relationship relation) {
 		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
 
 		TablePath target = relation.getTablePath();
 
-		return codeFormatter.formatRowManager(
-			managerTemplate,
-			rootPackageName,
-			target.getTableName(),
-			managerSuperclass.getName(),
-			buildTableComment(metadata, target));
-	}
+		String schemaName = target.getSchemaName();
 
-	/**
-	 * Row クラスを一件作成します。
-	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
-	 * @return 生成されたソース
-	 */
-	public String buildRow(Relationship relation) {
-		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
+		String packageName = rootPackageName + "." + carePackageName(schemaName);
 
-		TablePath target = relation.getTablePath();
 		String tableName = target.getTableName();
 
 		checkName(tableName);
 
 		Set<String> importPart = new LinkedHashSet<>();
 
-		String propertyAccessorPart;
+		String columnNamesPart, propertyAccessorPart, columnPart1, columnPart2;
 		{
-			List<String> list = new LinkedList<>();
+			List<String> columnNames = new LinkedList<>();
+			List<String> properties = new LinkedList<>();
+			List<String> list1 = new LinkedList<>();
+			List<String> list2 = new LinkedList<>();
+
 			for (Column column : relation.getColumns()) {
 				Class<?> type = column.getType();
 
@@ -314,10 +272,8 @@ public class ORMGenerator {
 				boolean returnOptional = false;
 				if (useNullGuard) {
 					if (column.getColumnMetadata().isNotNull() || column.isPrimaryKey()) {
-						importPart.add(buildImportPart(Objects.class));
 						nullCheck = Objects.class.getSimpleName() + ".requireNonNull(value);" + U.LINE_SEPARATOR;
 					} else {
-						importPart.add(buildImportPart(Optional.class));
 						String optional = Optional.class.getSimpleName();
 						returnPrefix = optional + ".ofNullable(";
 						returnSuffix = ")";
@@ -328,142 +284,116 @@ public class ORMGenerator {
 
 				String columnName = safe(column.getName());
 
-				list.add(
-					codeFormatter.formatRowPropertyAccessorPart(
-						rowPropertyAccessorPartTemplate,
-						toUpperCaseFirstLetter(columnName),
-						columnName,
-						classNameString,
-						buildColumnComment(column),
-						nullCheck,
-						returnType,
-						returnPrefix,
-						returnSuffix,
-						Boolean.toString(returnOptional)));
+				Map<String, String> args = new HashMap<>();
+				args.put("PACKAGE", packageName);
+				args.put("TABLE", tableName);
+				args.put("METHOD", toUpperCaseFirstLetter(columnName));
+				args.put("COLUMN", columnName);
+				args.put("TYPE", classNameString);
+				args.put("COMMENT", buildColumnComment(column));
+				args.put("NULL_CHECK", nullCheck);
+				args.put("RETURN_TYPE", returnType);
+				args.put("PREFIX", returnPrefix);
+				args.put("SUFFIX", returnSuffix);
+				args.put("OPTIONAL", Boolean.toString(returnOptional));
+
+				columnNames.add(
+					codeFormatter.formatColumnNamesPart(columnNamesPartTemplate, args));
+
+				properties.add(
+					codeFormatter.formatRowPropertyAccessorPart(rowPropertyAccessorPartTemplate, args));
+
+				list1.add(
+					codeFormatter.formatQueryColumnPart1(queryColumnPart1Template, args));
+
+				list2.add(
+					codeFormatter.formatQueryColumnPart2(queryColumnPart2Template, args));
 			}
 
-			propertyAccessorPart = String.join("", list);
+			columnNamesPart = String.join("", columnNames);
+			propertyAccessorPart = String.join("", properties);
+			columnPart1 = String.join("", list1);
+			columnPart2 = String.join("", list2);
 		}
 
-		String relationshipPart;
+		String relationshipsPart, rowRelationshipPart, myTemplate, queryRelationshipPart;
 		{
 			Map<String, Boolean> checker = createDuprecateChecker(relation);
 
-			List<String> list = new LinkedList<>();
+			List<String> relationships = new LinkedList<>();
+			List<String> rowRelationships = new LinkedList<>();
+			List<String> queryRelationships = new LinkedList<>();
+
 			for (Relationship child : relation.getRelationships()) {
 				CrossReference crossReference = child.getCrossReference();
 				String foreignKey = crossReference.getForeignKeyName();
 
 				TablePath childPath = child.getTablePath();
 				String childTableName = childPath.getTableName();
+
 				String methodName = "$" + (checker.get(childTableName) ? childTableName + "$" + foreignKey : childTableName);
 
-				list.add(
+				String relationship = "$" + (checker.get(childTableName) ? childTableName + "$" + foreignKey : childTableName);
+
+				String typeParam = Many.class.getSimpleName() + "<" + packageName + "." + tableName + ".Row, M>";
+
+				Map<String, String> args = new HashMap<>();
+				args.put("PACKAGE", packageName);
+				args.put("TABLE", tableName);
+				args.put("REFERENCE_PACKAGE", rootPackageName + "." + carePackageName(childPath.getSchemaName()));
+				args.put("REFERENCE", childTableName);
+				args.put("FK", foreignKey);
+				args.put("FK_COLUMNS", String.join(", ", crossReference.getForeignKeyColumnNames()));
+				args.put("METHOD", methodName);
+				args.put("RELATIONSHIP", relationship);
+				args.put("MANY", typeParam);
+
+				relationships.add(
+					codeFormatter.formatRelationshipsPart(
+						relationshipsPartTemplate,
+						args));
+
+				rowRelationships.add(
 					codeFormatter.formatRowRelationshipPart(
 						rowRelationshipPartTemplate,
-						child.getTablePath().getTableName(),
-						foreignKey,
-						String.join(", ", crossReference.getForeignKeyColumnNames()),
-						methodName,
-						rootPackageName));
-			}
+						args));
 
-			if (list.size() > 0) importPart.add(buildImportPart(RowRelationship.class));
-
-			relationshipPart = String.join("", list);
-		}
-
-		return codeFormatter.formatRow(
-			rowTemplate,
-			rootPackageName,
-			schemaName,
-			tableName,
-			rowSuperclass.getName(),
-			propertyAccessorPart,
-			relationshipPart,
-			buildTableComment(metadata, target),
-			buildAnnotationPart(metadata, relation, importPart),
-			String.join(U.LINE_SEPARATOR, importPart));
-	}
-
-	/**
-	 * Query クラスを一件作成します。
-	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
-	 * @return 生成されたソース
-	 */
-	public String buildQuery(Relationship relation) {
-		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
-
-		TablePath target = relation.getTablePath();
-		String rootTableName = target.getTableName();
-
-		String columnPart1, columnPart2;
-		{
-			List<String> list1 = new LinkedList<>();
-			List<String> list2 = new LinkedList<>();
-			for (Column column : relation.getColumns()) {
-				String columnName = safe(column.getName());
-
-				list1.add(
-					codeFormatter.formatQueryColumnPart1(
-						queryColumnPart1Template,
-						columnName));
-
-				list2.add(
-					codeFormatter.formatQueryColumnPart2(
-						queryColumnPart2Template,
-						columnName,
-						rootTableName,
-						rootPackageName));
-			}
-
-			columnPart1 = String.join("", list1);
-			columnPart2 = String.join("", list2);
-		}
-
-		String myQueryTemplate, relationshipPart;
-		{
-			Map<String, Boolean> checker = createDuprecateChecker(relation);
-
-			List<String> list = new LinkedList<>();
-			for (Relationship child : relation.getRelationships()) {
-				TablePath childTablePath = child.getTablePath();
-
-				String foreignKey = child.getCrossReference().getForeignKeyName();
-
-				String tableName = childTablePath.getTableName();
-
-				String relationship = "$" + (checker.get(tableName) ? tableName + "$" + foreignKey : tableName);
-
-				String typeParam = Many.class.getSimpleName() + "<" + rootPackageName + ".row." + rootTableName + ", M>";
-
-				list.add(
+				queryRelationships.add(
 					codeFormatter.formatQueryRelationshipPart(
 						queryRelationshipPartTemplate,
-						tableName,
-						foreignKey,
-						relationship,
-						rootTableName,
-						typeParam,
-						rootPackageName));
+						args));
 			}
 
-			myQueryTemplate = erase(queryTemplate, list.isEmpty());
+			if (relationships.size() > 0) {
+				importPart.add(buildImportPart(RowRelationship.class));
+				importPart.add(buildImportPart(Many.class));
+			}
 
-			relationshipPart = String.join("", list);
+			myTemplate = erase(template, relationships.isEmpty());
+
+			relationshipsPart = String.join("", relationships);
+			rowRelationshipPart = String.join("", rowRelationships);
+			queryRelationshipPart = String.join("", queryRelationships);
 		}
 
-		String tableName = relation.getTablePath().getTableName();
+		Map<String, String> args = new HashMap<>();
+		args.put("PACKAGE", packageName);
+		args.put("SCHEMA", schemaName);
+		args.put("TABLE", tableName);
+		args.put("ANNOTATION", buildAnnotationPart(metadata, relation, importPart));
+		args.put("IMPORTS", String.join(U.LINE_SEPARATOR, importPart));
+		args.put("PARENT", managerSuperclass.getName());
+		args.put("COLUMN_NAMES_PART", columnNamesPart);
+		args.put("RELATIONSHIPS_PART", relationshipsPart);
+		args.put("ROW_PARENT", rowSuperclass.getName());
+		args.put("ROW_PROPERTY_ACCESSOR_PART", propertyAccessorPart);
+		args.put("ROW_RELATIONSHIP_PART", rowRelationshipPart);
+		args.put("COLUMN_PART1", columnPart1);
+		args.put("COLUMN_PART2", columnPart2);
+		args.put("QUERY_RELATIONSHIP_PART", queryRelationshipPart);
+		args.put("TABLE_COMMENT", buildTableComment(metadata, target));
 
-		return codeFormatter.formatQuery(
-			myQueryTemplate,
-			rootPackageName,
-			tableName,
-			querySuperclass.getName(),
-			columnPart1,
-			columnPart2,
-			relationshipPart,
-			relation.getRelationships().length > 0 ? ("import " + Many.class.getName() + ";") : "");
+		return codeFormatter.format(myTemplate, args);
 	}
 
 	@Override
@@ -615,6 +545,8 @@ public class ORMGenerator {
 		TableMetadata tableMetadata = metadata.getTableMetadata(target);
 
 		StringBuilder builder = new StringBuilder();
+		builder.append("schema: " + target.getSchemaName());
+		builder.append(U.LINE_SEPARATOR);
 		builder.append("name: " + tableMetadata.getName());
 		builder.append(U.LINE_SEPARATOR);
 		builder.append("type: " + tableMetadata.getType());
