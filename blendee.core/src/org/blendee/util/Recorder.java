@@ -51,17 +51,19 @@ public class Recorder {
 	 * decision が返す結果は、{@link HashMap} のキーとして使用されるので、キーの要件を満たす必要があります。
 	 * @param decision 使用するクエリを判定し、それを知らせる結果を返す {@link Supplier}
 	 * @param supplier decision の結果を受け取り、状況にあった {@link Executor} を生成する処理
-	 * @param playbackPlaceHolderValues 再実行時のプレースホルダにセットする値
+	 * @param playbackPlaceHolderValuesSupplier decision の結果を受け取り、再実行時のプレースホルダにセットする値を生成する処理
 	 * @return {@link Executor}
 	 */
 	@SuppressWarnings("unchecked")
 	public static <R, E extends Executor<?, ?>> E play(
 		Supplier<R> decision,
 		Function<R, E> supplier,
-		Object... playbackPlaceHolderValues) {
+		Function<R, Object[]> playbackPlaceHolderValuesSupplier) {
 		Class<?> lambdaClass = supplier.getClass();
 
 		R result = decision.get();
+
+		Object[] values = playbackPlaceHolderValuesSupplier.apply(result);
 
 		Executor<?, ?> executor = null;
 		synchronized (executorMapCache) {
@@ -74,13 +76,13 @@ public class Recorder {
 
 			executor = map.get(result);
 			if (executor == null) {
-				executor = supplier.apply(result).reproduce(playbackPlaceHolderValues);
+				executor = supplier.apply(result).reproduce(values);
 				map.put(result, executor);
 
 				return (E) executor;
 			}
 		}
 
-		return (E) executor.reproduce(playbackPlaceHolderValues);
+		return (E) executor.reproduce(values);
 	}
 }
