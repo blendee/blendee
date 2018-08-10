@@ -16,10 +16,10 @@ import org.blendee.plugin.views.QueryEditorView;
 import org.blendee.selector.CommandColumnRepository;
 import org.blendee.sql.Column;
 import org.blendee.sql.FromClause;
-import org.blendee.sql.QueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectStatementBuilder;
 import org.blendee.util.Blendee;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -576,7 +576,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 				Blendee.execute(t -> {
 					Column[] columns = element.repository.getColumns(element.id);
 
-					QueryBuilder builder = new QueryBuilder(new FromClause(path));
+					SelectStatementBuilder builder = new SelectStatementBuilder(new FromClause(path));
 					SelectClause selectClause = new SelectClause();
 					for (int i = 0; i < columns.length; i++) {
 						selectClause.add(columns[i]);

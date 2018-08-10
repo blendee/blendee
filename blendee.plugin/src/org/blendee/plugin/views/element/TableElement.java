@@ -3,7 +3,7 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.develop.ormgen.ORMGenerator;
+import org.blendee.develop.ormgen.TableFacadeGenerator;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
@@ -114,7 +114,7 @@ public class TableElement extends PropertySourceElement {
 
 		IPackageFragmentRoot fragmentRoot = findPackageRoot(baseFragment);
 
-		ORMGenerator generator = new ORMGenerator(
+		TableFacadeGenerator generator = new TableFacadeGenerator(
 			BlendeeManager.getConnection(),
 			baseFragment.getElementName(),
 			plugin.getRowManagerParentClass(),
@@ -129,7 +129,7 @@ public class TableElement extends PropertySourceElement {
 		//自身をセット
 		tables.add(relation.getTablePath());
 
-		IPackageFragment schemaPackage = getPackage(fragmentRoot, packageName + "." + ORMGenerator.carePackageName(parent.getName()));
+		IPackageFragment schemaPackage = getPackage(fragmentRoot, packageName + "." + TableFacadeGenerator.carePackageName(parent.getName()));
 
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
@@ -193,7 +193,7 @@ public class TableElement extends PropertySourceElement {
 			".",
 			new String[] {
 				BlendeePlugin.getDefault().getOutputPackage(),
-				ORMGenerator.carePackageName(parent.getName()),
+				TableFacadeGenerator.carePackageName(parent.getName()),
 				path.getTableName() });
 		try {
 			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;
@@ -204,7 +204,7 @@ public class TableElement extends PropertySourceElement {
 	}
 
 	private void build(
-		ORMGenerator generator,
+		TableFacadeGenerator generator,
 		IPackageFragment packageFragment,
 		Relationship relation) {
 		TablePath path = relation.getTablePath();
@@ -214,7 +214,7 @@ public class TableElement extends PropertySourceElement {
 				BlendeePlugin.getDefault().getProject().getOptions(true));
 
 			createSource(
-				ORMGenerator.createCompilationUnitName(tableName),
+				TableFacadeGenerator.createCompilationUnitName(tableName),
 				packageFragment,
 				format(formatter, generator.build(relation)));
 		} catch (JavaModelException e) {

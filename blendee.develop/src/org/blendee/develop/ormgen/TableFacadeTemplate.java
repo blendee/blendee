@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package org.blendee.develop.ormgen;
+/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.develop.ormgen/*--*/;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -73,7 +73,7 @@ import org.blendee.support.WhereRelationship;
  * 自動生成されたテーブル操作クラスです。
 [[TABLE_COMMENT]]
  */
-/*++[[ANNOTATION]]++*/public class TableFacadeTemplate
+/*++[[ANNOTATION]]++*/public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	extends /*++[[PARENT]]++*//*--*/Object/*--*/
 	implements
 		TableFacade<Row>,
@@ -415,18 +415,18 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * 空のインスタンスを生成します。
 	 */
-	public TableFacadeTemplate() {}
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/() {}
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
 	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link Optimizer} に依存します。
 	 * @param optimizer SELECT 句を決定する
 	 */
-	public TableFacadeTemplate(Optimizer optimizer) {
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
 		helper$.setOptimizer(Objects.requireNonNull(optimizer));
 	}
 
-	private TableFacadeTemplate(Class<?> using, String id) {
+	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
 		helper$.setOptimizer(
 			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $TABLE, using));
 	}
