@@ -17,7 +17,7 @@ import org.blendee.jdbc.TablePath;
 /**
  * SELECT 文の FROM 句を表すクラスです。
  * @author 千葉 哲嗣
- * @see QueryBuilder#QueryBuilder(FromClause)
+ * @see SelectStatementBuilder#SelectStatementBuilder(FromClause)
  */
 public class FromClause implements ChainPreparedStatementComplementer {
 

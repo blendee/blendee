@@ -14,7 +14,7 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryBuilder;
+import org.blendee.sql.SelectStatementBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -34,7 +34,7 @@ public class Selector {
 
 	private final Relationship root;
 
-	private final QueryBuilder builder;
+	private final SelectStatementBuilder builder;
 
 	private final Optimizer optimizer;
 
@@ -58,7 +58,7 @@ public class Selector {
 	public Selector(Optimizer optimizer) {
 		TablePath path = optimizer.getTablePath();
 		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
-		builder = new QueryBuilder(new FromClause(path));
+		builder = new SelectStatementBuilder(new FromClause(path));
 		this.optimizer = optimizer;
 	}
 

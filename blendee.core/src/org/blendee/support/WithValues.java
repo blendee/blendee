@@ -13,7 +13,7 @@ import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
- * {@link CriteriaQueryRelationship#with(String, java.util.function.Consumer)} の template にセットするカラムとプレースホルダの値を渡すための入れ物クラスです。
+ * {@link CriteriaRelationship#with(String, java.util.function.Consumer)} の template にセットするカラムとプレースホルダの値を渡すための入れ物クラスです。
  * @author 千葉 哲嗣
  */
 public class WithValues {
@@ -27,7 +27,7 @@ public class WithValues {
 	 * @param columns template にセットするカラム
 	 * @return self
 	 */
-	public WithValues columns(CriteriaQueryColumn<?>... columns) {
+	public WithValues columns(CriteriaColumn<?>... columns) {
 		Arrays.stream(columns).map(c -> c.column()).forEach(this.columns::add);
 		return this;
 	}

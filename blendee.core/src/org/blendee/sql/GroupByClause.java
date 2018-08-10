@@ -4,7 +4,7 @@ package org.blendee.sql;
  * SELECT 文の GROUP BY 句を表すクラスです。
  * @author 千葉 哲嗣
  */
-public class GroupByClause extends ListQueryClause<GroupByClause> {
+public class GroupByClause extends ListClause<GroupByClause> {
 
 	@Override
 	protected GroupByClause createNewInstance() {

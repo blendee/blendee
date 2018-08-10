@@ -1,6 +1,6 @@
 package org.blendee.support;
 
-import org.blendee.sql.ListQueryClause;
+import org.blendee.sql.ListClause;
 
 /**
  * 句の候補を表すインターフェイスです。
@@ -19,6 +19,6 @@ public interface Offerable {
 	 * 句に追加されます。
 	 */
 	default void offer() {
-		offer(ListQueryClause.DEFAULT_ORDER);
+		offer(ListClause.DEFAULT_ORDER);
 	}
 }

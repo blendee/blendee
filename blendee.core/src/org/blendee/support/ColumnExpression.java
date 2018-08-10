@@ -6,7 +6,7 @@ import java.util.List;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
-import org.blendee.sql.ListQueryClause;
+import org.blendee.sql.ListClause;
 import org.blendee.sql.MultiColumn;
 import org.blendee.sql.SelectClause;
 
@@ -23,7 +23,7 @@ public class ColumnExpression extends AliasableOffer {
 
 	private final ChainPreparedStatementComplementer complementer;
 
-	private int order = ListQueryClause.DEFAULT_ORDER;
+	private int order = ListClause.DEFAULT_ORDER;
 
 	/**
 	 * @param column {@link Column}

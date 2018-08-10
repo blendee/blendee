@@ -1052,7 +1052,7 @@ public class CriteriaFactory {
 		Criteria subquery) {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
-		QueryBuilder builder = new QueryBuilder(
+		SelectStatementBuilder builder = new SelectStatementBuilder(
 			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath()));
 		builder.setWhereClause(subquery);
 		SelectClause selectClause = new SelectClause();
@@ -1076,7 +1076,7 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubquery(
 		Column[] columns,
-		QueryBuilder subquery,
+		SelectStatementBuilder subquery,
 		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 
@@ -1106,7 +1106,7 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubqueryWithoutCheck(
 		Column[] columns,
-		QueryBuilder subquery,
+		SelectStatementBuilder subquery,
 		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 

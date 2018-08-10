@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
-import org.blendee.sql.ListQueryClause.WholeCounter;
+import org.blendee.sql.ListClause.WholeCounter;
 
 /**
  * 要素を並列に複数持つクエリの句の一部分を表すクラスです。
@@ -34,7 +34,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	ListQueryBlock() {
-		this.order = ListQueryClause.DEFAULT_ORDER;
+		this.order = ListClause.DEFAULT_ORDER;
 	}
 
 	@Override

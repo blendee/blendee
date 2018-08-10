@@ -1,7 +1,7 @@
 package org.blendee.sql;
 
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.sql.QueryBuilder.UnionOperator;
+import org.blendee.sql.SelectStatementBuilder.UnionOperator;
 
 /**
  * UNION されたクエリを構成する要素を保持するクラスです。

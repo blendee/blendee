@@ -26,7 +26,7 @@ import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryBuilder;
+import org.blendee.sql.SelectStatementBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -190,7 +190,7 @@ public class DataAccessHelper {
 	 * @return パラメータの条件にマッチする件数
 	 */
 	public int count(TablePath path, Criteria criteria) {
-		QueryBuilder builder = new QueryBuilder(new FromClause(path));
+		SelectStatementBuilder builder = new SelectStatementBuilder(new FromClause(path));
 		builder.setSelectClause(new SelectCountClause());
 		if (criteria != null) builder.setWhereClause(criteria);
 		BConnection connection = BlendeeManager.getConnection();

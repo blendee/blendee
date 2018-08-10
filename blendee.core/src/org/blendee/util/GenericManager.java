@@ -11,12 +11,12 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.support.RowIterator;
-import org.blendee.support.RowManager;
+import org.blendee.support.TableFacade;
 
 /**
- * {@link RowManager} の汎用実装クラスです。
+ * {@link TableFacade} の汎用実装クラスです。
  */
-public class GenericManager extends java.lang.Object implements RowManager<GenericRow> {
+public class GenericManager extends java.lang.Object implements TableFacade<GenericRow> {
 
 	private final TablePath tablePath;
 

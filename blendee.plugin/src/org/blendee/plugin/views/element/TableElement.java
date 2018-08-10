@@ -129,13 +129,13 @@ public class TableElement extends PropertySourceElement {
 		//自身をセット
 		tables.add(relation.getTablePath());
 
-		IPackageFragment managerPackage = getPackage(fragmentRoot, packageName + "." + ORMGenerator.carePackageName(parent.getName()));
+		IPackageFragment schemaPackage = getPackage(fragmentRoot, packageName + "." + ORMGenerator.carePackageName(parent.getName()));
 
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
 			Relationship target = factory.getInstance(targetPath);
 
-			build(generator, managerPackage, target);
+			build(generator, schemaPackage, target);
 
 			collect(tables, target);
 

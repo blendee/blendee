@@ -1,15 +1,15 @@
 package org.blendee.support;
 
 /**
- * {@link Query} に ORDER BY 句を設定するための関数型インターフェイスです。
+ * {@link QueryBuilder} に ORDER BY 句を設定するための関数型インターフェイスです。
  * @author 千葉 哲嗣
- * @param <R> 使用する {@link Query} のルートテーブル
+ * @param <R> 使用する {@link QueryBuilder} のルートテーブル
  */
 @FunctionalInterface
-public interface OrderByOfferFunction<R extends OrderByQueryRelationship> {
+public interface OrderByOfferFunction<R extends OrderByRelationship> {
 
 	/**
-	 * @param relation 使用する {@link Query} のルートテーブル
+	 * @param relation 使用する {@link QueryBuilder} のルートテーブル
 	 * @return {@link Offers}
 	 */
 	Offers<Offerable> apply(R relation);

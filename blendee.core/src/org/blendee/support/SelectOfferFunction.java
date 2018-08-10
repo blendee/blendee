@@ -7,16 +7,16 @@ import java.util.List;
 import org.blendee.sql.Column;
 
 /**
- * {@link Query} に SELECT 句を設定するための関数型インターフェイスです。
+ * {@link QueryBuilder} に SELECT 句を設定するための関数型インターフェイスです。
  * @author 千葉 哲嗣
- * @param <R> 使用する {@link Query} のルートテーブル
+ * @param <R> 使用する {@link QueryBuilder} のルートテーブル
  */
 @FunctionalInterface
-public interface SelectOfferFunction<R extends SelectQueryRelationship> {
+public interface SelectOfferFunction<R extends SelectRelationship> {
 
 	/**
-	 * @param relation 使用する {@link Query} のルートテーブル
-	 * @return {@link SelectQueryRelationship#list(SelectOffer...)} で生成した {@link SelectOffers}
+	 * @param relation 使用する {@link QueryBuilder} のルートテーブル
+	 * @return {@link SelectRelationship#list(SelectOffer...)} で生成した {@link SelectOffers}
 	 */
 	Offers<ColumnExpression> apply(R relation);
 

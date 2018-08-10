@@ -34,8 +34,8 @@ class ListClauses {
 		return toString(order, joined);
 	}
 
-	private String toString(LinkedList<? extends ListQueryClause<?>> list, boolean joined) {
-		ListQueryClause<?> clause = list.pop();
+	private String toString(LinkedList<? extends ListClause<?>> list, boolean joined) {
+		ListClause<?> clause = list.pop();
 		list.forEach(e -> clause.merge(e));
 
 		clause.sortBlocks();

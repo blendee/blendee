@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.blendee.sql.ListQueryClause;
+import org.blendee.sql.ListClause;
 
 /**
  * ORDER BY 句の検索候補を表すインターフェイスです。
@@ -23,7 +23,7 @@ public class OrderByOffer implements Offerable, Offers<Offerable> {
 	 */
 	OrderByOffer(Consumer<Integer> offerFunction) {
 		this.offerFunction = offerFunction;
-		order = ListQueryClause.DEFAULT_ORDER;
+		order = ListClause.DEFAULT_ORDER;
 		offerable = null;
 	}
 

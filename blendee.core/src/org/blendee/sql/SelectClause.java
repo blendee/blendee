@@ -5,9 +5,9 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
 /**
  * SELECT 句を表すクラスです。
  * @author 千葉 哲嗣
- * @see QueryBuilder#setSelectClause(SelectClause)
+ * @see SelectStatementBuilder#setSelectClause(SelectClause)
  */
-public class SelectClause extends ListQueryClause<SelectClause> {
+public class SelectClause extends ListClause<SelectClause> {
 
 	/**
 	 * この SELECT 句に新しいカラムをエイリアス付きで追加します。

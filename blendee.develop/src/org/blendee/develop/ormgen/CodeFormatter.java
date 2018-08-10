@@ -2,17 +2,17 @@ package org.blendee.develop.ormgen;
 
 import java.util.Map;
 
-import org.blendee.support.Query;
+import org.blendee.support.QueryBuilder;
 import org.blendee.support.Row;
 
 /**
- * {@link ORMGenerator} で生成されるクラスの出力前に割り込み、コードを組み立てるインターフェイスです。
+ * {@link TableFacadeGenerator} で生成されるクラスの出力前に割り込み、コードを組み立てるインターフェイスです。
  * @author 千葉 哲嗣
  */
 public interface CodeFormatter {
 
 	/**
-	 * {@link TableBase} をテンプレートとしたコードを組み立てます。
+	 * {@link TableFacadeTemplate} をテンプレートとしたコードを組み立てます。
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
@@ -60,32 +60,32 @@ public interface CodeFormatter {
 	}
 
 	/**
-	 * {@link Query} の項目生成部分のコードを組み立てます。<br>
+	 * {@link QueryBuilder} の項目生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	default String formatQueryColumnPart1(String template, Map<String, String> arguments) {
+	default String formatRelationshipColumnPart1(String template, Map<String, String> arguments) {
 		return Formatter.format(template, arguments);
 	}
 
 	/**
-	 * {@link Query} の項目生成部分のコードを組み立てます。<br>
+	 * {@link QueryBuilder} の項目生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	default String formatQueryColumnPart2(String template, Map<String, String> arguments) {
+	default String formatRelationshipColumnPart2(String template, Map<String, String> arguments) {
 		return Formatter.format(template, arguments);
 	}
 
 	/**
-	 * {@link Query} のリレーション生成部分のコードを組み立てます。<br>
+	 * {@link QueryBuilder} のリレーション生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	default String formatQueryRelationshipPart(String template, Map<String, String> arguments) {
+	default String formatTableRelationshipPart(String template, Map<String, String> arguments) {
 		return Formatter.format(template, arguments);
 	}
 }

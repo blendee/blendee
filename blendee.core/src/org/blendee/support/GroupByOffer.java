@@ -10,9 +10,9 @@ public class GroupByOffer implements Offerable, Offers<Offerable> {
 
 	private final int order;
 
-	private final GroupByQueryColumn column;
+	private final GroupByColumn column;
 
-	GroupByOffer(int order, GroupByQueryColumn column) {
+	GroupByOffer(int order, GroupByColumn column) {
 		this.order = order;
 		this.column = column;
 	}
