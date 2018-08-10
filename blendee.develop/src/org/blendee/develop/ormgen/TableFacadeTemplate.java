@@ -388,7 +388,7 @@ import org.blendee.support.WhereRelationship;
 			orderByContext$,
 			CriteriaContext.NULL);
 
-	private final QueryBuilderBehavior<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnLeftQRel> helper$ = new QueryBuilderBehavior<>(
+	private final QueryBuilderBehavior<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnLeftQRel> behavior$ = new QueryBuilderBehavior<>(
 		$TABLE,
 		select$,
 		groupBy$,
@@ -423,11 +423,11 @@ import org.blendee.support.WhereRelationship;
 	 * @param optimizer SELECT 句を決定する
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
-		helper$.setOptimizer(Objects.requireNonNull(optimizer));
+		behavior$.setOptimizer(Objects.requireNonNull(optimizer));
 	}
 
 	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
-		helper$.setOptimizer(
+		behavior$.setOptimizer(
 			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $TABLE, using));
 	}
 
@@ -524,7 +524,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT(
 		SelectOfferFunction<SelectQRel> function) {
-		helper$.SELECT(function);
+		behavior$.SELECT(function);
 		return this;
 	}
 
@@ -535,7 +535,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_DISTINCT(
 		SelectOfferFunction<SelectQRel> function) {
-		helper$.SELECT_DISTINCT(function);
+		behavior$.SELECT_DISTINCT(function);
 		return this;
 	}
 
@@ -544,7 +544,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_COUNT() {
-		helper$.SELECT_COUNT();
+		behavior$.SELECT_COUNT();
 		return this;
 	}
 
@@ -555,7 +555,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ GROUP_BY(
 		GroupByOfferFunction<GroupByQRel> function) {
-		helper$.GROUP_BY(function);
+		behavior$.GROUP_BY(function);
 		return this;
 	}
 
@@ -567,7 +567,7 @@ import org.blendee.support.WhereRelationship;
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ WHERE(
 		Consumer<WhereQRel>... consumers) {
-		helper$.WHERE(consumers);
+		behavior$.WHERE(consumers);
 		return this;
 	}
 
@@ -578,7 +578,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public Criteria createWhereCriteria(
 		Consumer<WhereQRel> consumer) {
-		return helper$.createWhereCriteria(consumer);
+		return behavior$.createWhereCriteria(consumer);
 	}
 
 	/**
@@ -589,7 +589,7 @@ import org.blendee.support.WhereRelationship;
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ HAVING(
 		Consumer<HavingQRel>... consumers) {
-		helper$.HAVING(consumers);
+		behavior$.HAVING(consumers);
 		return this;
 	}
 
@@ -600,7 +600,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public Criteria createHavingCriteria(
 		Consumer<HavingQRel> consumer) {
-		return helper$.createHavingCriteria(consumer);
+		return behavior$.createHavingCriteria(consumer);
 	}
 
 	/**
@@ -609,7 +609,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
-		return helper$.INNER_JOIN(right, this);
+		return behavior$.INNER_JOIN(right, this);
 	}
 
 	/**
@@ -618,7 +618,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
-		return helper$.LEFT_OUTER_JOIN(right, this);
+		return behavior$.LEFT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -627,7 +627,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
-		return helper$.RIGHT_OUTER_JOIN(right, this);
+		return behavior$.RIGHT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -636,7 +636,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
-		return helper$.FULL_OUTER_JOIN(right, this);
+		return behavior$.FULL_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -646,7 +646,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(ComposedSQL sql) {
-		helper$.UNION(sql);
+		behavior$.UNION(sql);
 		return this;
 	}
 
@@ -657,7 +657,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(ComposedSQL sql) {
-		helper$.UNION_ALL(sql);
+		behavior$.UNION_ALL(sql);
 		return this;
 	}
 
@@ -668,13 +668,13 @@ import org.blendee.support.WhereRelationship;
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ ORDER_BY(
 		OrderByOfferFunction<OrderByQRel> function) {
-		helper$.ORDER_BY(function);
+		behavior$.ORDER_BY(function);
 		return this;
 	}
 
 	@Override
 	public boolean hasWhereClause() {
-		return helper$.hasWhereClause();
+		return behavior$.hasWhereClause();
 	}
 
 	/**
@@ -684,7 +684,7 @@ import org.blendee.support.WhereRelationship;
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupBy(GroupByClause clause) {
-		helper$.setGroupByClause(clause);
+		behavior$.setGroupByClause(clause);
 		return this;
 	}
 
@@ -695,7 +695,7 @@ import org.blendee.support.WhereRelationship;
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderBy(OrderByClause clause) {
-		helper$.setOrderByClause(clause);
+		behavior$.setOrderByClause(clause);
 		return this;
 	}
 
@@ -706,7 +706,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ and(Criteria criteria) {
-		helper$.and(criteria);
+		behavior$.and(criteria);
 		return this;
 	}
 
@@ -717,7 +717,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ or(Criteria criteria) {
-		helper$.or(criteria);
+		behavior$.or(criteria);
 		return this;
 	}
 
@@ -727,7 +727,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
-		helper$.apply(decorators);
+		behavior$.apply(decorators);
 		return this;
 	}
 
@@ -758,91 +758,91 @@ import org.blendee.support.WhereRelationship;
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return helper$.decorators();
+		return behavior$.decorators();
 	}
 
 	@Override
 	public Iterator execute() {
-		helper$.checkRowMode();
-		return wrap(helper$.query().execute());
+		behavior$.checkRowMode();
+		return wrap(behavior$.query().execute());
 	}
 
 	@Override
 	public Optional<Row> fetch(String... primaryKeyMembers) {
-		helper$.checkRowMode();
-		return helper$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior$.checkRowMode();
+		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public Optional<Row> fetch(Number... primaryKeyMembers) {
-		helper$.checkRowMode();
-		return helper$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior$.checkRowMode();
+		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public Optional<Row> fetch(Bindable... primaryKeyMembers) {
-		helper$.checkRowMode();
-		return helper$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior$.checkRowMode();
+		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public int count() {
-		helper$.checkRowMode();
-		return helper$.query().count();
+		behavior$.checkRowMode();
+		return behavior$.query().count();
 	}
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		helper$.checkRowMode();
-		return helper$.query().toCountSQL();
+		behavior$.checkRowMode();
+		return behavior$.query().toCountSQL();
 	}
 
 	@Override
 	public void aggregate(Consumer<BResultSet> consumer) {
-		helper$.quitRowMode();
+		behavior$.quitRowMode();
 		org.blendee.support.Query.super.aggregate(consumer);
 	}
 
 	@Override
 	public <T> T aggregateAndGet(Function<BResultSet, T> function) {
-		helper$.quitRowMode();
+		behavior$.quitRowMode();
 		return org.blendee.support.Query.super.aggregateAndGet(function);
 	}
 
 	@Override
 	public ResultSetIterator aggregate() {
-		helper$.quitRowMode();
+		behavior$.quitRowMode();
 		return org.blendee.support.Query.super.aggregate();
 	}
 
 	@Override
 	public String sql() {
-		return helper$.composeSQL().sql();
+		return behavior$.composeSQL().sql();
 	}
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		return helper$.composeSQL().complement(done, statement);
+		return behavior$.composeSQL().complement(done, statement);
 	}
 
 	@Override
 	public Query reproduce(Object... placeHolderValues) {
-		return new Query(helper$.query().reproduce(placeHolderValues));
+		return new Query(behavior$.query().reproduce(placeHolderValues));
 	}
 
 	@Override
 	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
-		helper$.joinTo(builder, joinType, onCriteria);
+		behavior$.joinTo(builder, joinType, onCriteria);
 	}
 
 	@Override
 	public SelectStatementBuilder toSelectStatementBuilder() {
-		return helper$.buildBuilder();
+		return behavior$.buildBuilder();
 	}
 
 	@Override
 	public void forSubquery(boolean forSubquery) {
-		 helper$.forSubquery(forSubquery);
+		 behavior$.forSubquery(forSubquery);
 	}
 
 	/**
@@ -850,7 +850,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetWhere() {
-		helper$.resetWhere();
+		behavior$.resetWhere();
 		return this;
 	}
 
@@ -859,7 +859,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetHaving() {
-		helper$.resetHaving();
+		behavior$.resetHaving();
 		return this;
 	}
 
@@ -868,7 +868,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetSelect() {
-		helper$.resetSelect();
+		behavior$.resetSelect();
 		return this;
 	}
 
@@ -877,7 +877,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetGroupBy() {
-		helper$.resetGroupBy();
+		behavior$.resetGroupBy();
 		return this;
 	}
 
@@ -886,7 +886,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetOrderBy() {
-		helper$.resetOrderBy();
+		behavior$.resetOrderBy();
 		return this;
 	}
 
@@ -895,7 +895,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetUnions() {
-		helper$.resetUnions();
+		behavior$.resetUnions();
 		return this;
 	}
 
@@ -904,7 +904,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetJoins() {
-		helper$.resetJoins();
+		behavior$.resetJoins();
 		return this;
 	}
 
@@ -913,7 +913,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
-		helper$.resetDecorators();
+		behavior$.resetDecorators();
 		return this;
 	}
 
@@ -922,23 +922,23 @@ import org.blendee.support.WhereRelationship;
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ reset() {
-		helper$.reset();
+		behavior$.reset();
 		return this;
 	}
 
 	@Override
 	public void quitRowMode() {
-		helper$.quitRowMode();
+		behavior$.quitRowMode();
 	}
 
 	@Override
 	public boolean rowMode() {
-		return helper$.rowMode();
+		return behavior$.rowMode();
 	}
 
 	@Override
 	public Query query() {
-		return  new Query(helper$.query());
+		return  new Query(behavior$.query());
 	}
 
 	@Override
@@ -948,7 +948,7 @@ import org.blendee.support.WhereRelationship;
 
 	@Override
 	public String toString() {
-		return helper$.toString();
+		return behavior$.toString();
 	}
 
 	private static Class<?> getUsing(StackTraceElement element) {
@@ -1052,26 +1052,26 @@ import org.blendee.support.WhereRelationship;
 
 		@Override
 		public Optimizer getOptimizer() {
-			if (table$ != null) return table$.helper$.getOptimizer();
+			if (table$ != null) return table$.behavior$.getOptimizer();
 			return null;
 		}
 
 		@Override
 		public GroupByClause getGroupByClause() {
 			if (table$ == null) return parent$.getGroupByClause();
-			return table$.helper$.getGroupByClause();
+			return table$.behavior$.getGroupByClause();
 		}
 
 		@Override
 		public OrderByClause getOrderByClause() {
 			if (table$ == null) return parent$.getOrderByClause();
-			return table$.helper$.getOrderByClause();
+			return table$.behavior$.getOrderByClause();
 		}
 
 		@Override
 		public Criteria getWhereClause() {
 			if (table$ == null) return parent$.getWhereClause();
-			return table$.helper$.getWhereClause();
+			return table$.behavior$.getWhereClause();
 		}
 
 		@Override
