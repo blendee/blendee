@@ -1092,7 +1092,7 @@ import org.blendee.support.WhereRelationship;
 
 		@Override
 		public Row createRow(DataObject data) {
-			return table$.createRow(data);
+			return new Row(data);
 		}
 
 		@Override
