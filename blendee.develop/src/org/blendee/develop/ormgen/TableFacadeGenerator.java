@@ -35,6 +35,7 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.Many;
+import org.blendee.support.TableFacadePackageRule;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
 import org.blendee.support.annotation.PseudoPK;
@@ -178,18 +179,6 @@ public class TableFacadeGenerator {
 	}
 
 	/**
-	 * パッケージ名に使用できるように文字列を加工します。
-	 * @param name
-	 * @return for packageName
-	 */
-	public static String carePackageName(String name) {
-		name = name.toLowerCase();
-
-		//パッケージの並び順を考慮し、後ろに$を付ける
-		return SourceVersion.isName(name) ? name : name.toUpperCase();
-	}
-
-	/**
 	 * すべてのクラスファイルを生成します。
 	 * @param schemaName 対象となるスキーマ
 	 * @param home 生成された Java ソースを保存するためのルートとなる場所
@@ -200,7 +189,7 @@ public class TableFacadeGenerator {
 		File rootPackageDir = new File(home, String.join("/", rootPackageName.split("\\.")));
 		rootPackageDir.mkdirs();
 
-		File packageDir = new File(rootPackageDir, carePackageName(schemaName));
+		File packageDir = new File(rootPackageDir, TableFacadePackageRule.care(schemaName));
 		packageDir.mkdir();
 
 		TablePath[] tables = metadata.getTables(schemaName);
@@ -243,7 +232,7 @@ public class TableFacadeGenerator {
 
 		String schemaName = target.getSchemaName();
 
-		String packageName = rootPackageName + "." + carePackageName(schemaName);
+		String packageName = rootPackageName + "." + TableFacadePackageRule.care(schemaName);
 
 		String tableName = target.getTableName();
 
@@ -342,7 +331,7 @@ public class TableFacadeGenerator {
 				Map<String, String> args = new HashMap<>();
 				args.put("PACKAGE", packageName);
 				args.put("TABLE", tableName);
-				args.put("REFERENCE_PACKAGE", rootPackageName + "." + carePackageName(childPath.getSchemaName()));
+				args.put("REFERENCE_PACKAGE", rootPackageName + "." + TableFacadePackageRule.care(childPath.getSchemaName()));
 				args.put("REFERENCE", childTableName);
 				args.put("FK", foreignKey);
 				args.put("FK_COLUMNS", String.join(", ", crossReference.getForeignKeyColumnNames()));
@@ -621,7 +610,7 @@ public class TableFacadeGenerator {
 	 * 使用できない名前の検査
 	 */
 	private static void checkName(String name) {
-		if (!isGeneratableTableName(name)) throw new IllegalStateException(name);;
+		if (!isGeneratableTableName(name)) throw new IllegalStateException(name);
 	}
 
 	private static String safe(String name) {

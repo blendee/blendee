@@ -22,6 +22,7 @@ import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TablePath;
 import org.blendee.support.Row;
+import org.blendee.support.TableFacadePackageRule;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
 import org.blendee.support.annotation.PseudoPK;
@@ -45,7 +46,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			() -> new NullPointerException());
 
 		Stream<String> result = Arrays.stream(rootPackages)
-			.flatMap(root -> Arrays.stream(config.getSchemaNames()).map(s -> root + "." + s));
+			.flatMap(root -> Arrays.stream(config.getSchemaNames()).map(s -> root + "." + TableFacadePackageRule.care(s)));
 
 		virtualSpace = getInstance(result);
 	}

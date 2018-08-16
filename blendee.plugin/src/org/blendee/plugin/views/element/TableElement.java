@@ -11,6 +11,7 @@ import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.support.TableFacadePackageRule;
 import org.blendee.util.Blendee;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -129,7 +130,7 @@ public class TableElement extends PropertySourceElement {
 		//自身をセット
 		tables.add(relation.getTablePath());
 
-		IPackageFragment schemaPackage = getPackage(fragmentRoot, packageName + "." + TableFacadeGenerator.carePackageName(parent.getName()));
+		IPackageFragment schemaPackage = getPackage(fragmentRoot, packageName + "." + TableFacadePackageRule.care(parent.getName()));
 
 		while (tables.size() > 0) {
 			TablePath targetPath = tables.pop();
@@ -193,7 +194,7 @@ public class TableElement extends PropertySourceElement {
 			".",
 			new String[] {
 				BlendeePlugin.getDefault().getOutputPackage(),
-				TableFacadeGenerator.carePackageName(parent.getName()),
+				TableFacadePackageRule.care(parent.getName()),
 				path.getTableName() });
 		try {
 			if (BlendeePlugin.getDefault().getProject().findType(typeName) != null) return true;

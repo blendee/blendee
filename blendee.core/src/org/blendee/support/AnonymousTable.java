@@ -15,30 +15,29 @@ import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.PseudoColumn;
-import org.blendee.sql.SelectStatementBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.SelectStatementBuilder;
 import org.blendee.support.QueryBuilderBehavior.PlaybackQuery;
 
 /**
  * 無名テーブルクラスです。
  * @author 千葉 哲嗣
  */
-public class AnonymousTable extends java.lang.Object
-	implements QueryBuilder, Query<Iterator<Void>, Void>, RightTable<AnonymousTable.OnRightQRel> {
+public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>, RightTable<AnonymousTable.OnRightRel> {
 
-	private static final TableFacadeContext<SelectQCol> selectContext = (
+	private static final TableFacadeContext<SelectCol> selectContext = (
 		relationship,
-		name) -> new SelectQCol(relationship, name);
+		name) -> new SelectCol(relationship, name);
 
-	private static final TableFacadeContext<GroupByQCol> groupByContext = (
+	private static final TableFacadeContext<GroupByCol> groupByContext = (
 		relationship,
-		name) -> new GroupByQCol(relationship, name);
+		name) -> new GroupByCol(relationship, name);
 
-	private static final TableFacadeContext<OrderByQCol> orderByContext = (
+	private static final TableFacadeContext<OrderByCol> orderByContext = (
 		relationship,
-		name) -> new OrderByQCol(relationship, name);
+		name) -> new OrderByCol(relationship, name);
 
 	private static final TableFacadeContext<WhereColumn<WhereLogicalOperators>> whereContext = TableFacadeContext
 		.newWhereBuilder();
@@ -55,22 +54,22 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class WhereLogicalOperators implements LogicalOperators<WhereQRel> {
+	public class WhereLogicalOperators implements LogicalOperators<WhereRel> {
 
 		private WhereLogicalOperators() {}
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereQRel AND = new WhereQRel(AnonymousTable.this, whereContext, CriteriaContext.AND);
+		public final WhereRel AND = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereQRel OR = new WhereQRel(AnonymousTable.this, whereContext, CriteriaContext.OR);
+		public final WhereRel OR = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.OR);
 
 		@Override
-		public WhereQRel defaultOperator() {
+		public WhereRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -78,22 +77,22 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * HAVING 句 で使用する AND, OR です。
 	 */
-	public class HavingLogicalOperators implements LogicalOperators<HavingQRel> {
+	public class HavingLogicalOperators implements LogicalOperators<HavingRel> {
 
 		private HavingLogicalOperators() {}
 
 		/**
 		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingQRel AND = new HavingQRel(AnonymousTable.this, havingContext, CriteriaContext.AND);
+		public final HavingRel AND = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.AND);
 
 		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingQRel OR = new HavingQRel(AnonymousTable.this, havingContext, CriteriaContext.OR);
+		public final HavingRel OR = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.OR);
 
 		@Override
-		public HavingQRel defaultOperator() {
+		public HavingRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -101,22 +100,22 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * ON 句 (LEFT) で使用する AND, OR です。
 	 */
-	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftQRel> {
+	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftRel> {
 
 		private OnLeftLogicalOperators() {}
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftQRel AND = new OnLeftQRel(AnonymousTable.this, onLeftContext, CriteriaContext.AND);
+		public final OnLeftRel AND = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.AND);
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftQRel OR = new OnLeftQRel(AnonymousTable.this, onLeftContext, CriteriaContext.OR);
+		public final OnLeftRel OR = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.OR);
 
 		@Override
-		public OnLeftQRel defaultOperator() {
+		public OnLeftRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -124,22 +123,22 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * ON 句 (RIGHT) で使用する AND, OR です。
 	 */
-	public class OnRightLogicalOperators implements LogicalOperators<OnRightQRel> {
+	public class OnRightLogicalOperators implements LogicalOperators<OnRightRel> {
 
 		private OnRightLogicalOperators() {}
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightQRel AND = new OnRightQRel(AnonymousTable.this, onRightContext, CriteriaContext.AND);
+		public final OnRightRel AND = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.AND);
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightQRel OR = new OnRightQRel(AnonymousTable.this, onRightContext, CriteriaContext.OR);
+		public final OnRightRel OR = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.OR);
 
 		@Override
-		public OnRightQRel defaultOperator() {
+		public OnRightRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -155,19 +154,19 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * SELECT 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final SelectQRel select = new SelectQRel(this, selectContext, CriteriaContext.NULL);
+	private final SelectRel select = new SelectRel(this, selectContext, CriteriaContext.NULL);
 
 	/**
 	 * GROUP BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final GroupByQRel groupBy = new GroupByQRel(this, groupByContext, CriteriaContext.NULL);
+	private final GroupByRel groupBy = new GroupByRel(this, groupByContext, CriteriaContext.NULL);
 
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final OrderByQRel orderBy = new OrderByQRel(this, orderByContext, CriteriaContext.NULL);
+	private final OrderByRel orderBy = new OrderByRel(this, orderByContext, CriteriaContext.NULL);
 
-	private final QueryBuilderBehavior<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnLeftQRel> helper;
+	private final QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> helper;
 
 	private final AnonymousRelationship relationship;
 
@@ -194,7 +193,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param function
 	 * @return この {@link QueryBuilder}
 	 */
-	public AnonymousTable SELECT(SelectOfferFunction<SelectQRel> function) {
+	public AnonymousTable SELECT(SelectOfferFunction<SelectRel> function) {
 		helper.SELECT(function);
 		return this;
 	}
@@ -204,7 +203,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param function
 	 * @return この {@link QueryBuilder}
 	 */
-	public AnonymousTable SELECT_DISTINCT(SelectOfferFunction<SelectQRel> function) {
+	public AnonymousTable SELECT_DISTINCT(SelectOfferFunction<SelectRel> function) {
 		helper.SELECT_DISTINCT(function);
 		return this;
 	}
@@ -223,7 +222,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param function
 	 * @return この {@link QueryBuilder}
 	 */
-	public AnonymousTable GROUP_BY(GroupByOfferFunction<GroupByQRel> function) {
+	public AnonymousTable GROUP_BY(GroupByOfferFunction<GroupByRel> function) {
 		helper.GROUP_BY(function);
 		return this;
 	}
@@ -234,7 +233,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @return この {@link QueryBuilder}
 	 */
 	@SafeVarargs
-	public final AnonymousTable WHERE(Consumer<WhereQRel>... consumers) {
+	public final AnonymousTable WHERE(Consumer<WhereRel>... consumers) {
 		helper.WHERE(consumers);
 		return this;
 	}
@@ -244,7 +243,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param consumer {@link Consumer}
 	 * @return {@link Criteria}
 	 */
-	public Criteria createWhereCriteria(Consumer<WhereQRel> consumer) {
+	public Criteria createWhereCriteria(Consumer<WhereRel> consumer) {
 		return helper.createWhereCriteria(consumer);
 	}
 
@@ -254,7 +253,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @return この {@link QueryBuilder}
 	 */
 	@SafeVarargs
-	public final AnonymousTable HAVING(Consumer<HavingQRel>... consumers) {
+	public final AnonymousTable HAVING(Consumer<HavingRel>... consumers) {
 		helper.HAVING(consumers);
 		return this;
 	}
@@ -264,7 +263,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param consumer {@link Consumer}
 	 * @return {@link Criteria}
 	 */
-	public Criteria createHavingCriteria(Consumer<HavingQRel> consumer) {
+	public Criteria createHavingCriteria(Consumer<HavingRel> consumer) {
 		return helper.createHavingCriteria(consumer);
 	}
 
@@ -273,7 +272,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param right 別クエリの {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, AnonymousTable> INNER_JOIN(
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> INNER_JOIN(
 		RightTable<R> right) {
 		return helper.INNER_JOIN(right, this);
 	}
@@ -283,7 +282,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param right 別クエリの {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, AnonymousTable> LEFT_OUTER_JOIN(
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> LEFT_OUTER_JOIN(
 		RightTable<R> right) {
 		return helper.LEFT_OUTER_JOIN(right, this);
 	}
@@ -293,7 +292,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param right 別クエリの {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, AnonymousTable> RIGHT_OUTER_JOIN(
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> RIGHT_OUTER_JOIN(
 		RightTable<R> right) {
 		return helper.RIGHT_OUTER_JOIN(right, this);
 	}
@@ -303,7 +302,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param right 別クエリの {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, AnonymousTable> FULL_OUTER_JOIN(
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> FULL_OUTER_JOIN(
 		RightTable<R> right) {
 		return helper.FULL_OUTER_JOIN(right, this);
 	}
@@ -335,7 +334,7 @@ public class AnonymousTable extends java.lang.Object
 	 * @param function
 	 * @return この {@link QueryBuilder}
 	 */
-	public AnonymousTable ORDER_BY(OrderByOfferFunction<OrderByQRel> function) {
+	public AnonymousTable ORDER_BY(OrderByOfferFunction<OrderByRel> function) {
 		helper.ORDER_BY(function);
 		return this;
 	}
@@ -583,7 +582,7 @@ public class AnonymousTable extends java.lang.Object
 	}
 
 	@Override
-	public OnRightQRel joint() {
+	public OnRightRel joint() {
 		return onRightOperators.AND;
 	}
 
@@ -608,28 +607,28 @@ public class AnonymousTable extends java.lang.Object
 	 * @param <T> 使用されるカラムのタイプにあった型
 	 * @param <M> Many 一対多の多側の型連鎖
 	 */
-	public static class QRel<T, M> implements TableFacadeRelationship {
+	public static class Rel<T, M> implements TableFacadeRelationship {
 
-		private final AnonymousTable table$;
+		private final AnonymousTable table;
 
-		private final CriteriaContext context$;
+		private final CriteriaContext context;
 
-		private final TableFacadeContext<T> builder$;
+		private final TableFacadeContext<T> builder;
 
-		private QRel(AnonymousTable table$, TableFacadeContext<T> builder$, CriteriaContext context$) {
-			this.table$ = table$;
-			this.context$ = context$;
-			this.builder$ = builder$;
+		private Rel(AnonymousTable table, TableFacadeContext<T> builder, CriteriaContext context) {
+			this.table = table;
+			this.context = context;
+			this.builder = builder;
 		}
 
 		@Override
 		public CriteriaContext getContext() {
-			return context$;
+			return context;
 		}
 
 		@Override
 		public Relationship getRelationship() {
-			return table$.relationship;
+			return table.relationship;
 		}
 
 		@Override
@@ -639,17 +638,17 @@ public class AnonymousTable extends java.lang.Object
 
 		@Override
 		public GroupByClause getGroupByClause() {
-			return table$.helper.getGroupByClause();
+			return table.helper.getGroupByClause();
 		}
 
 		@Override
 		public OrderByClause getOrderByClause() {
-			return table$.helper.getOrderByClause();
+			return table.helper.getOrderByClause();
 		}
 
 		@Override
 		public Criteria getWhereClause() {
-			return table$.helper.getWhereClause();
+			return table.helper.getWhereClause();
 		}
 
 		@Override
@@ -664,7 +663,7 @@ public class AnonymousTable extends java.lang.Object
 
 		@Override
 		public QueryBuilder getRoot() {
-			return table$;
+			return table;
 		}
 
 		@Override
@@ -677,102 +676,102 @@ public class AnonymousTable extends java.lang.Object
 		 * @return 使用されるカラムのタイプにあった型
 		 */
 		public T col(String name) {
-			return builder$.buildColumn(this, name);
+			return builder.buildColumn(this, name);
 		}
 	}
 
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQRel extends QRel<SelectQCol, Void> implements SelectRelationship {
+	public static class SelectRel extends Rel<SelectCol, Void> implements SelectRelationship {
 
-		private SelectQRel(AnonymousTable query$, TableFacadeContext<SelectQCol> builder$, CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private SelectRel(AnonymousTable query, TableFacadeContext<SelectCol> builder, CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * WHERE 句用
 	 */
-	public static class WhereQRel extends QRel<WhereColumn<WhereLogicalOperators>, Void>
+	public static class WhereRel extends Rel<WhereColumn<WhereLogicalOperators>, Void>
 		implements WhereRelationship {
 
-		private WhereQRel(
-			AnonymousTable query$,
-			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder$,
-			CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private WhereRel(
+			AnonymousTable query,
+			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder,
+			CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * GROUB BY 句用
 	 */
-	public static class GroupByQRel extends QRel<GroupByQCol, Void> implements GroupByRelationship {
+	public static class GroupByRel extends Rel<GroupByCol, Void> implements GroupByRelationship {
 
-		private GroupByQRel(AnonymousTable query$, TableFacadeContext<GroupByQCol> builder$, CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private GroupByRel(AnonymousTable query, TableFacadeContext<GroupByCol> builder, CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * HAVING 句用
 	 */
-	public static class HavingQRel extends QRel<HavingColumn<HavingLogicalOperators>, Void>
+	public static class HavingRel extends Rel<HavingColumn<HavingLogicalOperators>, Void>
 		implements HavingRelationship {
 
-		private HavingQRel(
-			AnonymousTable query$,
-			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder$,
-			CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private HavingRel(
+			AnonymousTable query,
+			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder,
+			CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQRel extends QRel<OrderByQCol, Void> implements OrderByRelationship {
+	public static class OrderByRel extends Rel<OrderByCol, Void> implements OrderByRelationship {
 
-		private OrderByQRel(AnonymousTable query$, TableFacadeContext<OrderByQCol> builder$, CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private OrderByRel(AnonymousTable query, TableFacadeContext<OrderByCol> builder, CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * ON 句 (LEFT) 用
 	 */
-	public static class OnLeftQRel extends QRel<OnLeftColumn<OnLeftLogicalOperators>, Void>
+	public static class OnLeftRel extends Rel<OnLeftColumn<OnLeftLogicalOperators>, Void>
 		implements OnLeftRelationship {
 
-		private OnLeftQRel(
-			AnonymousTable query$,
-			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder$,
-			CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private OnLeftRel(
+			AnonymousTable query,
+			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder,
+			CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * ON 句 (RIGHT) 用
 	 */
-	public static class OnRightQRel extends QRel<OnRightColumn<OnRightLogicalOperators>, Void>
+	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void>
 		implements OnRightRelationship {
 
-		private OnRightQRel(
-			AnonymousTable query$,
-			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder$,
-			CriteriaContext context$) {
-			super(query$, builder$, context$);
+		private OnRightRel(
+			AnonymousTable query,
+			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder,
+			CriteriaContext context) {
+			super(query, builder, context);
 		}
 	}
 
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQCol extends SelectColumn {
+	public static class SelectCol extends SelectColumn {
 
-		private SelectQCol(TableFacadeRelationship relationship, String name) {
+		private SelectCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -780,9 +779,9 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * GROUP BY 句用
 	 */
-	public static class GroupByQCol extends GroupByColumn {
+	public static class GroupByCol extends GroupByColumn {
 
-		private GroupByQCol(TableFacadeRelationship relationship, String name) {
+		private GroupByCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -790,9 +789,9 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQCol extends OrderByColumn {
+	public static class OrderByCol extends OrderByColumn {
 
-		private OrderByQCol(TableFacadeRelationship relationship, String name) {
+		private OrderByCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -800,7 +799,7 @@ public class AnonymousTable extends java.lang.Object
 	/**
 	 * Query
 	 */
-	public class AnonymousQuery implements org.blendee.support.Query<Iterator<Void>, Void> {
+	public class AnonymousQuery implements Query<Iterator<Void>, Void> {
 
 		private final PlaybackQuery inner;
 
