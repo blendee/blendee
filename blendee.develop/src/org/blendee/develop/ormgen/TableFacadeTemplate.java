@@ -79,7 +79,7 @@ import org.blendee.support.WhereRelationship;
 		TableFacade<Row>,
 		QueryBuilder,
 		Query</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Iterator, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Row>,
-		RightTable</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.OnRightQRel> {
+		RightTable</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.OnRightRel> {
 
 	/**
 	 * この定数クラスのスキーマ名
@@ -220,11 +220,11 @@ import org.blendee.support.WhereRelationship;
 /*==RowRelationshipPart==*/
 	}
 
-	private static final TableFacadeContext<SelectQCol> selectContext$ = (relationship, name) -> new SelectQCol(relationship, name);
+	private static final TableFacadeContext<SelectCol> selectContext$ = (relationship, name) -> new SelectCol(relationship, name);
 
-	private static final TableFacadeContext<GroupByQCol> groupByContext$ = (relationship, name) -> new GroupByQCol(relationship, name);
+	private static final TableFacadeContext<GroupByCol> groupByContext$ = (relationship, name) -> new GroupByCol(relationship, name);
 
-	private static final TableFacadeContext<OrderByQCol> orderByContext$ = (relationship, name) -> new OrderByQCol(relationship, name);
+	private static final TableFacadeContext<OrderByCol> orderByContext$ = (relationship, name) -> new OrderByCol(relationship, name);
 
 	private static final TableFacadeContext<WhereColumn<WhereLogicalOperators>> whereContext$ =  TableFacadeContext.newWhereBuilder();
 
@@ -237,14 +237,14 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
-	public class WhereLogicalOperators implements LogicalOperators<WhereQRel> {
+	public class WhereLogicalOperators implements LogicalOperators<WhereRel> {
 
 		private WhereLogicalOperators() {}
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereQRel AND = new WhereQRel(
+		public final WhereRel AND = new WhereRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				whereContext$,
 				CriteriaContext.AND);
@@ -252,13 +252,13 @@ import org.blendee.support.WhereRelationship;
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereQRel OR = new WhereQRel(
+		public final WhereRel OR = new WhereRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				whereContext$,
 				CriteriaContext.OR);
 
 		@Override
-		public WhereQRel defaultOperator() {
+		public WhereRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -266,15 +266,15 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * HAVING 句 で使用する AND, OR です。
 	 */
-	public class HavingLogicalOperators implements LogicalOperators<HavingQRel> {
+	public class HavingLogicalOperators implements LogicalOperators<HavingRel> {
 
 		private HavingLogicalOperators() {}
 
 		/**
 		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingQRel AND =
-			new HavingQRel(
+		public final HavingRel AND =
+			new HavingRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				havingContext$,
 				CriteriaContext.AND);
@@ -282,13 +282,13 @@ import org.blendee.support.WhereRelationship;
 		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingQRel OR = new HavingQRel(
+		public final HavingRel OR = new HavingRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				havingContext$,
 				CriteriaContext.OR);
 
 		@Override
-		public HavingQRel defaultOperator() {
+		public HavingRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -296,15 +296,15 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ON 句 (LEFT) で使用する AND, OR です。
 	 */
-	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftQRel> {
+	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftRel> {
 
 		private OnLeftLogicalOperators() {}
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftQRel AND =
-			new OnLeftQRel(
+		public final OnLeftRel AND =
+			new OnLeftRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onLeftContext$,
 				CriteriaContext.AND);
@@ -312,14 +312,14 @@ import org.blendee.support.WhereRelationship;
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftQRel OR =
-			new OnLeftQRel(
+		public final OnLeftRel OR =
+			new OnLeftRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onLeftContext$,
 				CriteriaContext.OR);
 
 		@Override
-		public OnLeftQRel defaultOperator() {
+		public OnLeftRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -328,15 +328,15 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ON 句 (RIGHT) で使用する AND, OR です。
 	 */
-	public class OnRightLogicalOperators implements LogicalOperators<OnRightQRel> {
+	public class OnRightLogicalOperators implements LogicalOperators<OnRightRel> {
 
 		private OnRightLogicalOperators() {}
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightQRel AND =
-			new OnRightQRel(
+		public final OnRightRel AND =
+			new OnRightRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onRightContext$,
 				CriteriaContext.AND);
@@ -344,14 +344,14 @@ import org.blendee.support.WhereRelationship;
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightQRel OR =
-			new OnRightQRel(
+		public final OnRightRel OR =
+			new OnRightRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onRightContext$,
 				CriteriaContext.OR);
 
 		@Override
-		public OnRightQRel defaultOperator() {
+		public OnRightRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -367,7 +367,7 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * SELECT 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final SelectQRel select$ = new SelectQRel(
+	private final SelectRel select$ = new SelectRel(
 			this,
 			selectContext$,
 			CriteriaContext.NULL);
@@ -375,7 +375,7 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * GROUP BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final GroupByQRel groupBy$ = new GroupByQRel(
+	private final GroupByRel groupBy$ = new GroupByRel(
 			this,
 			groupByContext$,
 			CriteriaContext.NULL);
@@ -383,12 +383,12 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ORDER BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
 	 */
-	private final OrderByQRel orderBy$ = new OrderByQRel(
+	private final OrderByRel orderBy$ = new OrderByRel(
 			this,
 			orderByContext$,
 			CriteriaContext.NULL);
 
-	private final QueryBuilderBehavior<SelectQRel, GroupByQRel, WhereQRel, HavingQRel, OrderByQRel, OnLeftQRel> behavior$ = new QueryBuilderBehavior<>(
+	private final QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> behavior$ = new QueryBuilderBehavior<>(
 		$TABLE,
 		select$,
 		groupBy$,
@@ -523,7 +523,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT(
-		SelectOfferFunction<SelectQRel> function) {
+		SelectOfferFunction<SelectRel> function) {
 		behavior$.SELECT(function);
 		return this;
 	}
@@ -534,7 +534,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_DISTINCT(
-		SelectOfferFunction<SelectQRel> function) {
+		SelectOfferFunction<SelectRel> function) {
 		behavior$.SELECT_DISTINCT(function);
 		return this;
 	}
@@ -554,7 +554,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ GROUP_BY(
-		GroupByOfferFunction<GroupByQRel> function) {
+		GroupByOfferFunction<GroupByRel> function) {
 		behavior$.GROUP_BY(function);
 		return this;
 	}
@@ -566,7 +566,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ WHERE(
-		Consumer<WhereQRel>... consumers) {
+		Consumer<WhereRel>... consumers) {
 		behavior$.WHERE(consumers);
 		return this;
 	}
@@ -577,7 +577,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return {@link Criteria}
 	 */
 	public Criteria createWhereCriteria(
-		Consumer<WhereQRel> consumer) {
+		Consumer<WhereRel> consumer) {
 		return behavior$.createWhereCriteria(consumer);
 	}
 
@@ -588,7 +588,7 @@ import org.blendee.support.WhereRelationship;
 	 */
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ HAVING(
-		Consumer<HavingQRel>... consumers) {
+		Consumer<HavingRel>... consumers) {
 		behavior$.HAVING(consumers);
 		return this;
 	}
@@ -599,7 +599,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return {@link Criteria}
 	 */
 	public Criteria createHavingCriteria(
-		Consumer<HavingQRel> consumer) {
+		Consumer<HavingRel> consumer) {
 		return behavior$.createHavingCriteria(consumer);
 	}
 
@@ -608,7 +608,7 @@ import org.blendee.support.WhereRelationship;
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
 		return behavior$.INNER_JOIN(right, this);
 	}
 
@@ -617,7 +617,7 @@ import org.blendee.support.WhereRelationship;
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
 		return behavior$.LEFT_OUTER_JOIN(right, this);
 	}
 
@@ -626,7 +626,7 @@ import org.blendee.support.WhereRelationship;
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
 		return behavior$.RIGHT_OUTER_JOIN(right, this);
 	}
 
@@ -635,7 +635,7 @@ import org.blendee.support.WhereRelationship;
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftQRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
 		return behavior$.FULL_OUTER_JOIN(right, this);
 	}
 
@@ -667,7 +667,7 @@ import org.blendee.support.WhereRelationship;
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ ORDER_BY(
-		OrderByOfferFunction<OrderByQRel> function) {
+		OrderByOfferFunction<OrderByRel> function) {
 		behavior$.ORDER_BY(function);
 		return this;
 	}
@@ -942,7 +942,7 @@ import org.blendee.support.WhereRelationship;
 	}
 
 	@Override
-	public OnRightQRel joint() {
+	public OnRightRel joint() {
 		return onRightOperators$.AND;
 	}
 
@@ -1170,11 +1170,11 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQRel extends ExtRel<SelectQCol, Void> implements SelectRelationship {
+	public static class SelectRel extends ExtRel<SelectCol, Void> implements SelectRelationship {
 
-		private SelectQRel(
+		private SelectRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<SelectQCol> builder$,
+			TableFacadeContext<SelectCol> builder$,
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
 		}
@@ -1183,9 +1183,9 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * WHERE 句用
 	 */
-	public static class WhereQRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
+	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
 
-		private WhereQRel(
+		private WhereRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder$,
 			CriteriaContext context$) {
@@ -1196,11 +1196,11 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * GROUB BY 句用
 	 */
-	public static class GroupByQRel extends ExtRel<GroupByQCol, Void> implements GroupByRelationship {
+	public static class GroupByRel extends ExtRel<GroupByCol, Void> implements GroupByRelationship {
 
-		private GroupByQRel(
+		private GroupByRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<GroupByQCol> builder$,
+			TableFacadeContext<GroupByCol> builder$,
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
 		}
@@ -1209,9 +1209,9 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * HAVING 句用
 	 */
-	public static class HavingQRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship {
+	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship {
 
-		private HavingQRel(
+		private HavingRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder$,
 			CriteriaContext context$) {
@@ -1222,11 +1222,11 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQRel extends ExtRel<OrderByQCol, Void> implements OrderByRelationship {
+	public static class OrderByRel extends ExtRel<OrderByCol, Void> implements OrderByRelationship {
 
-		private OrderByQRel(
+		private OrderByRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<OrderByQCol> builder$,
+			TableFacadeContext<OrderByCol> builder$,
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
 		}
@@ -1235,9 +1235,9 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ON 句 (LEFT) 用
 	 */
-	public static class OnLeftQRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship {
+	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship {
 
-		private OnLeftQRel(
+		private OnLeftRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder$,
 			CriteriaContext context$) {
@@ -1248,9 +1248,9 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ON 句 (RIGHT) 用
 	 */
-	public static class OnRightQRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship {
+	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship {
 
-		private OnRightQRel(
+		private OnRightRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder$,
 			CriteriaContext context$) {
@@ -1261,10 +1261,10 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * SELECT 句用
 	 */
-	public static class SelectQCol
+	public static class SelectCol
 		extends SelectColumn {
 
-		private SelectQCol(TableFacadeRelationship relationship, String name) {
+		private SelectCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -1272,10 +1272,10 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * GROUP BY 句用
 	 */
-	public static class GroupByQCol
+	public static class GroupByCol
 		extends GroupByColumn {
 
-		private GroupByQCol(TableFacadeRelationship relationship, String name) {
+		private GroupByCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}
@@ -1283,10 +1283,10 @@ import org.blendee.support.WhereRelationship;
 	/**
 	 * ORDER BY 句用
 	 */
-	public static class OrderByQCol
+	public static class OrderByCol
 		extends OrderByColumn {
 
-		private OrderByQCol(TableFacadeRelationship relationship, String name) {
+		private OrderByCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}

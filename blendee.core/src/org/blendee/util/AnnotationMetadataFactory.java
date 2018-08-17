@@ -22,6 +22,7 @@ import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TablePath;
 import org.blendee.support.Row;
+import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadePackageRule;
 import org.blendee.support.annotation.FKs;
 import org.blendee.support.annotation.PseudoFK;
@@ -80,7 +81,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	 * @return アノテーションの調査をするクラスの対象かどうか
 	 */
 	protected boolean matches(Class<?> clazz) {
-		return Row.class.isAssignableFrom(clazz) && !clazz.isInterface();
+		return TableFacade.class.isAssignableFrom(clazz) && !clazz.isInterface();
 	}
 
 	private VirtualSpace getInstance(Stream<String> packages) {
@@ -142,7 +143,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private List<Class<?>> forFile(String packageName, ClassLoader loader, URL url) {
-		File[] files = new File(url.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
+		File[] files = new File(url.getFile()).listFiles((dir, name) -> filterFile(name));
 
 		return Arrays.stream(files)
 			.map(file -> packageName + "." + file.getName().replaceAll(".class$", ""))
@@ -156,7 +157,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			return Collections.list(jarFile.entries())
 				.stream()
 				.map(entry -> entry.getName())
-				.filter(name -> name.startsWith(path) && name.endsWith(".class"))
+				.filter(name -> name.startsWith(path) && filterFile(name.substring(name.lastIndexOf('/'))))
 				.map(name -> name.replace('/', '.').replaceAll(".class$", ""))
 				.map(name -> U.call(() -> loader.loadClass(name.replace('/', '.').replaceAll(".class$", ""))))
 				.filter(this::matches)
@@ -164,5 +165,9 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	private static boolean filterFile(String name) {
+		return name.indexOf('$') == -1 && name.endsWith(".class");
 	}
 }
