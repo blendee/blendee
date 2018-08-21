@@ -24,9 +24,9 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.support.Row;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadePackageRule;
-import org.blendee.support.annotation.FKs;
-import org.blendee.support.annotation.PseudoFK;
-import org.blendee.support.annotation.PseudoPK;
+import org.blendee.support.annotation.ForeignKey;
+import org.blendee.support.annotation.PrimaryKey;
+import org.blendee.support.annotation.Table;
 
 /**
  * {@link VirtualSpace} を {@link Row} に付与されたアノテーションからロードするファクトリクラスです。
@@ -96,30 +96,29 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private static TableSource convert(Class<?> clazz) {
-		PseudoPK pk = clazz.getAnnotation(PseudoPK.class);
-		FKs fks = clazz.getAnnotation(FKs.class);
+		Table table = clazz.getAnnotation(Table.class);
+
+		PrimaryKey pk = clazz.getAnnotation(PrimaryKey.class);
 
 		List<ForeignKeySource> fkSources = new LinkedList<>();
-		if (fks != null) fkSources = Arrays.stream(fks.value())
-			.map(AnnotationMetadataFactory::createSource)
-			.collect(Collectors.toList());
-
-		PseudoFK fk = clazz.getAnnotation(PseudoFK.class);
-		if (fk != null) fkSources.add(createSource(fk));
+		Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
+			ForeignKey fk = f.getAnnotation(ForeignKey.class);
+			if (fk != null && fk.pseudo()) fkSources.add(createSource(fk));
+		});
 
 		return new TableSource(
-			new TablePath(clazz.getSimpleName()),
+			new TablePath(table.schema(), table.name()),
 			null,
 			emptyColumns,
-			pk == null ? null : createSource(pk),
+			pk == null || !pk.pseudo() ? null : createSource(pk),
 			fkSources.toArray(new ForeignKeySource[fkSources.size()]));
 	}
 
-	private static PrimaryKeySource createSource(PseudoPK annotation) {
+	private static PrimaryKeySource createSource(PrimaryKey annotation) {
 		return new PrimaryKeySource(annotation.name(), annotation.columns(), true);
 	}
 
-	private static ForeignKeySource createSource(PseudoFK annotation) {
+	private static ForeignKeySource createSource(ForeignKey annotation) {
 		return new ForeignKeySource(
 			annotation.name(),
 			annotation.columns(),

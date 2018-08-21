@@ -58,8 +58,6 @@ import org.blendee.support.TableFacadeContext;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.QueryBuilderBehavior;
 import org.blendee.support.QueryBuilderBehavior.PlaybackQuery;
-import org.blendee.support.annotation.RowGetter;
-import org.blendee.support.annotation.RowSetter;
 import org.blendee.support.OnClause;
 import org.blendee.support.TableFacadeRelationship;
 import org.blendee.support.SelectOfferFunction;
@@ -67,13 +65,17 @@ import org.blendee.support.SelectColumn;
 import org.blendee.support.SelectRelationship;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
-/*--*/import org.blendee.support.annotation.RowRelationship;/*--*/
+import org.blendee.support.annotation.Table;
+import org.blendee.support.annotation.Column;
+/*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
+/*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
 
 /**
  * 自動生成されたテーブル操作クラスです。
 [[TABLE_COMMENT]]
  */
-/*++[[ANNOTATION]]++*/public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
+@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
+public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	extends /*++[[PARENT]]++*//*--*/Object/*--*/
 	implements
 		TableFacade<Row>,
@@ -101,18 +103,20 @@ import org.blendee.support.WhereRelationship;
 	/**
 [[COMMENT]]
 	 */
+	@Column(name = "[[COLUMN]]", type = /*++[[TYPE]].class++*//*--*/Object.class/*--*/, notNull = /*++[[NOT_NULL]]++*//*--*/true/*--*/)
 	public static final String /*++[[COLUMN]]++*//*--*/columnName/*--*/ = "[[COLUMN]]";
 /*==ColumnNamesPart==*/
 
-/*++[[RELATIONSHIPS_PART]]++*/
-/*==RelationshipsPart==*/
+/*++[[FOREIGN_KEYS_PART]]++*/
+/*==ForeignKeysPart==*/
 	/**
-	 * 参照先テーブル名 [[REFERENCE]]<br>
-	 * 外部キー名 [[FK]]<br>
-	 * 項目名 [[FK_COLUMNS]]
+	 * name: [[FK]]<br>
+	 * reference: [[REFERENCE]]<br>
+	 * columns: [[FK_COLUMNS]]
 	 */
-	public static final String /*++[[REFERENCE]]++*/$/*++[[FK]]++*/ = "[[FK]]";
-/*==RelationshipsPart==*/
+	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)
+	public static final String /*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/ = "[[FK]]";
+/*==ForeignKeysPart==*/
 
 	/**
 	 * 登録用コンストラクタです。
@@ -183,7 +187,6 @@ import org.blendee.support.WhereRelationship;
 	[[COMMENT]]
 		 * @param value [[TYPE]]
 		 */
-		@RowSetter(column = "[[TABLE]]", type = /*++[[TYPE]]++*//*--*/Object/*--*/.class)
 		public void set/*++[[METHOD]]++*/(/*++[[TYPE]]++*//*--*/Object/*--*/ value) {
 			/*++[[NULL_CHECK]]++*/ValueExtractor valueExtractor = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
 				relationship$.getColumn("[[COLUMN]]").getType());
@@ -195,7 +198,6 @@ import org.blendee.support.WhereRelationship;
 	[[COMMENT]]
 		 * @return [[TYPE]]
 		 */
-		@RowGetter(column = "[[TABLE]]", type = /*++[[TYPE]]++*//*--*/Object/*--*/.class, optional = /*++[[OPTIONAL]]++*//*--*/false/*--*/)
 		public /*++[[RETURN_TYPE]]++*/ /*--*/String/*--*/get/*++[[METHOD]]++*/() {
 			Binder binder = data$.getBinder("[[COLUMN]]");
 			return /*++[[PREFIX]]++*/(/*++[[TYPE]]++*//*--*/String/*--*/) binder.getValue()/*++[[SUFFIX]]++*/;
@@ -211,10 +213,9 @@ import org.blendee.support.WhereRelationship;
 		 * 項目名 [[FK_COLUMNS]]
 		 * @return 参照しているレコードの Row
 		 */
-		@RowRelationship(fk = "[[FK]]", referenced = /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/Row.class)
 		public /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/Row /*++[[METHOD]]++*//*--*/getRelationship/*--*/() {
 			return /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/row(
-				data$.getDataObject(/*++[[REFERENCE]]++*/$/*++[[FK]]++*/));
+				data$.getDataObject(/*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/));
 		}
 
 /*==RowRelationshipPart==*/
@@ -1160,7 +1161,7 @@ import org.blendee.support.WhereRelationship;
 			return new /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/ExtRel<>(
 				builder$,
 				this,
-				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]++*/$/*++[[FK]]++*/,
+				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/,
 				/*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/$TABLE,
 				root$ != null ? root$ : super.path$);
 		}

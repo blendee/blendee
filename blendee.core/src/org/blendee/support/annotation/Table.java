@@ -7,16 +7,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 外部キーアノテーションをまとめるためのアノテーションです。
+ * テーブルを表すアノテーションです。
  * @author 千葉 哲嗣
  */
 @Target({ TYPE })
 @Retention(RUNTIME)
-public @interface FKs {
+public @interface Table {
 
 	/**
-	 * 外部キーアノテーション
-	 * @return 外部キーアノテーション
+	 * テーブル名
+	 * @return テーブル名
 	 */
-	PseudoFK[] value();
+	String name();
+
+	/**
+	 * スキーマ名
+	 * @return スキーマ名
+	 */
+	String schema();
 }

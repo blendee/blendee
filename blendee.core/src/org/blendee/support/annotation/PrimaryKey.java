@@ -7,12 +7,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 実在しない主キーをテーブル（ビュー）に付与するためのアノテーションです。
+ * 主キーを表すアノテーションです。
  * @author 千葉 哲嗣
  */
 @Target({ TYPE })
 @Retention(RUNTIME)
-public @interface PseudoPK {
+public @interface PrimaryKey {
 
 	/**
 	 * 主キー名
@@ -25,4 +25,10 @@ public @interface PseudoPK {
 	 * @return 主キーを構成するカラム
 	 */
 	String[] columns();
+
+	/**
+	 * 疑似PKか
+	 * @return true の場合、 疑似PK
+	 */
+	boolean pseudo() default false;
 }

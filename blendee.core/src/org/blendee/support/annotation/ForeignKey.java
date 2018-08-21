@@ -1,18 +1,18 @@
 package org.blendee.support.annotation;
 
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 実在しない外部キーをテーブル（ビュー）に付与するためのアノテーションです。
+ * 外部キーを表すアノテーションです。
  * @author 千葉 哲嗣
  */
-@Target({ TYPE })
+@Target({ FIELD })
 @Retention(RUNTIME)
-public @interface PseudoFK {
+public @interface ForeignKey {
 
 	/**
 	 * 外部キー名
@@ -38,4 +38,10 @@ public @interface PseudoFK {
 	 * @return 主キーを構成するカラム
 	 */
 	String[] refColumns() default {};
+
+	/**
+	 * 疑似FKか
+	 * @return true の場合、 疑似FK
+	 */
+	boolean pseudo() default false;
 }

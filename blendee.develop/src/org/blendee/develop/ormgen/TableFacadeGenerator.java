@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.lang.model.SourceVersion;
 
@@ -36,10 +34,8 @@ import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.Many;
 import org.blendee.support.TableFacadePackageRule;
-import org.blendee.support.annotation.FKs;
-import org.blendee.support.annotation.PseudoFK;
-import org.blendee.support.annotation.PseudoPK;
-import org.blendee.support.annotation.RowRelationship;
+import org.blendee.support.annotation.ForeignKey;
+import org.blendee.support.annotation.PrimaryKey;
 
 /**
  * データベースの構成を読み取り、各テーブルクラスの Java ソースを生成するジェネレータクラスです。
@@ -53,7 +49,9 @@ public class TableFacadeGenerator {
 
 	private static final String columnNamesPartTemplate;
 
-	private static final String relationshipsPartTemplate;
+	private static final String primaryKeyPartTemplate;
+
+	private static final String foreignKeysPartTemplate;
 
 	private static final String rowPropertyAccessorPartTemplate;
 
@@ -102,8 +100,14 @@ public class TableFacadeGenerator {
 		}
 
 		{
-			String[] result = pickupFromSource(source, "RelationshipsPart");
-			relationshipsPartTemplate = convertToTemplate(result[0]);
+			String[] result = pickupFromSource(source, "PrimaryKeyPart");
+			primaryKeyPartTemplate = convertToTemplate(result[0]);
+			source = result[1];
+		}
+
+		{
+			String[] result = pickupFromSource(source, "ForeignKeysPart");
+			foreignKeysPartTemplate = convertToTemplate(result[0]);
 			source = result[1];
 		}
 
@@ -259,10 +263,12 @@ public class TableFacadeGenerator {
 					classNameString = convertForNumber(convertPrimitiveClassToWrapperClass(column.getType())).getName();
 				}
 
+				boolean notNull = column.getColumnMetadata().isNotNull();
+
 				String nullCheck = "", returnPrefix = "", returnSuffix = "", returnType = classNameString;
 				boolean returnOptional = false;
 				if (useNullGuard) {
-					if (column.getColumnMetadata().isNotNull() || column.isPrimaryKey()) {
+					if (notNull || column.isPrimaryKey()) {
 						nullCheck = Objects.class.getSimpleName() + ".requireNonNull(value);" + U.LINE_SEPARATOR;
 					} else {
 						String optional = Optional.class.getSimpleName();
@@ -281,6 +287,7 @@ public class TableFacadeGenerator {
 				args.put("METHOD", toUpperCaseFirstLetter(columnName));
 				args.put("COLUMN", columnName);
 				args.put("TYPE", classNameString);
+				args.put("NOT_NULL", String.valueOf(notNull));
 				args.put("COMMENT", buildColumnComment(column));
 				args.put("NULL_CHECK", nullCheck);
 				args.put("RETURN_TYPE", returnType);
@@ -307,7 +314,26 @@ public class TableFacadeGenerator {
 			columnPart2 = String.join("", list2);
 		}
 
-		String relationshipsPart, rowRelationshipPart, myTemplate, tableRelationshipPart;
+		String primaryKeyPart;
+		{
+			PrimaryKeyMetadata primaryKey = metadata.getPrimaryKeyMetadata(relation.getTablePath());
+			String[] columns = primaryKey.getColumnNames();
+
+			if (columns.length > 0) {
+				Map<String, String> args = new HashMap<>();
+				args.put("PK", primaryKey.getName());
+				args.put("PK_COLUMNS", "\"" + String.join("\", \"", primaryKey.getColumnNames()) + "\"");
+
+				args.put("PSEUDO", primaryKey.isPseudo() ? ", pseudo = true" : "");
+
+				primaryKeyPart = codeFormatter.formatPrimaryKeyPart(primaryKeyPartTemplate, args);
+				importPart.add(buildImportPart(PrimaryKey.class));
+			} else {
+				primaryKeyPart = "";
+			}
+		}
+
+		String foreignKeysPart, rowRelationshipPart, myTemplate, tableRelationshipPart;
 		{
 			Map<String, Boolean> checker = createDuprecateChecker(relation);
 
@@ -334,14 +360,22 @@ public class TableFacadeGenerator {
 				args.put("REFERENCE_PACKAGE", rootPackageName + "." + TableFacadePackageRule.care(childPath.getSchemaName()));
 				args.put("REFERENCE", childTableName);
 				args.put("FK", foreignKey);
-				args.put("FK_COLUMNS", String.join(", ", crossReference.getForeignKeyColumnNames()));
+
+				String[] fkColumns = crossReference.getForeignKeyColumnNames();
+				args.put("FK_COLUMNS", String.join(", ", fkColumns));
+				args.put("ANNOTATION_FK_COLUMNS", "\"" + String.join("\", \"", fkColumns) + "\"");
+
+				args.put("REF_COLUMNS", "\"" + String.join("\", \"", crossReference.getPrimaryKeyColumnNames()) + "\"");
+
+				args.put("PSEUDO", crossReference.isPseudo() ? ", pseudo = true" : "");
+
 				args.put("METHOD", methodName);
 				args.put("RELATIONSHIP", relationship);
 				args.put("MANY", typeParam);
 
 				relationships.add(
-					codeFormatter.formatRelationshipsPart(
-						relationshipsPartTemplate,
+					codeFormatter.formatForeignKeysPart(
+						foreignKeysPartTemplate,
 						args));
 
 				rowRelationships.add(
@@ -356,13 +390,13 @@ public class TableFacadeGenerator {
 			}
 
 			if (relationships.size() > 0) {
-				importPart.add(buildImportPart(RowRelationship.class));
+				importPart.add(buildImportPart(ForeignKey.class));
 				importPart.add(buildImportPart(Many.class));
 			}
 
 			myTemplate = erase(template, relationships.isEmpty());
 
-			relationshipsPart = String.join("", relationships);
+			foreignKeysPart = String.join("", relationships);
 			rowRelationshipPart = String.join("", rowRelationships);
 			tableRelationshipPart = String.join("", tableRelationships);
 		}
@@ -371,11 +405,11 @@ public class TableFacadeGenerator {
 		args.put("PACKAGE", packageName);
 		args.put("SCHEMA", schemaName);
 		args.put("TABLE", tableName);
-		args.put("ANNOTATION", buildAnnotationPart(metadata, relation, importPart));
 		args.put("IMPORTS", String.join(U.LINE_SEPARATOR, importPart));
 		args.put("PARENT", managerSuperclass.getName());
 		args.put("COLUMN_NAMES_PART", columnNamesPart);
-		args.put("RELATIONSHIPS_PART", relationshipsPart);
+		args.put("PRIMARY_KEY_PART", primaryKeyPart);
+		args.put("FOREIGN_KEYS_PART", foreignKeysPart);
 		args.put("ROW_PARENT", rowSuperclass.getName());
 		args.put("ROW_PROPERTY_ACCESSOR_PART", propertyAccessorPart);
 		args.put("ROW_RELATIONSHIP_PART", rowRelationshipPart);
@@ -390,95 +424,6 @@ public class TableFacadeGenerator {
 	@Override
 	public String toString() {
 		return U.toString(this);
-	}
-
-	private static String buildAnnotationPart(
-		Metadata metadata,
-		Relationship relation,
-		Set<String> importPart) {
-		List<String> result = new LinkedList<>();
-
-		String pkPart = buildPKAnnotation(
-			metadata.getPrimaryKeyMetadata(relation.getTablePath()));
-
-		if (pkPart.length() > 0) {
-			importPart.add(buildImportPart(PseudoPK.class));
-			result.add(pkPart);
-		}
-
-		String fkPart = String.join(
-			", ",
-			Arrays.stream(relation.getRelationships())
-				.map(r -> r.getCrossReference())
-				.map(TableFacadeGenerator::buildFKAnnotation)
-				.filter(part -> part.length() > 0)
-				.collect(Collectors.toList()));
-
-		if (fkPart.length() > 0) {
-			fkPart = "@" + FKs.class.getSimpleName() + "({" + fkPart + "})";
-			result.add(fkPart);
-			importPart.add(buildImportPart(FKs.class));
-			importPart.add(buildImportPart(PseudoFK.class));
-		}
-
-		String resultString = String.join(U.LINE_SEPARATOR, result);
-
-		return resultString.length() > 0 ? resultString + U.LINE_SEPARATOR : resultString;
-	}
-
-	private static String buildPKAnnotation(PrimaryKeyMetadata pk) {
-		String[] columnNames = pk.getColumnNames();
-		if (pk == null || columnNames.length == 0 || !pk.isPseudo()) return "";
-
-		return buildPKAnnotation(PseudoPK.class, pk.getName(), columnNames);
-	}
-
-	private static String buildFKAnnotation(CrossReference fk) {
-		String[] columnNames = fk.getForeignKeyColumnNames();
-		if (columnNames.length == 0 || !fk.isPseudo()) return "";
-
-		return buildFKAnnotation(
-			PseudoFK.class,
-			fk.getForeignKeyName(),
-			fk.getPrimaryKeyTable().toString(),
-			columnNames);
-	}
-
-	private static String buildPKAnnotation(
-		Class<?> annotation,
-		String keyName,
-		String[] columnNames) {
-		return "@"
-			+ annotation.getSimpleName()
-			+ "(name = \""
-			+ keyName
-			+ "\", columns = {"
-			+ buildColumnsPart(columnNames)
-			+ "})";
-	}
-
-	private static String buildFKAnnotation(
-		Class<?> annotation,
-		String keyName,
-		String references,
-		String[] columnNames) {
-		return "@"
-			+ annotation.getSimpleName()
-			+ "(name = \""
-			+ keyName
-			+ "\", references = \""
-			+ references
-			+ "\", columns = {"
-			+ buildColumnsPart(columnNames)
-			+ "})";
-	}
-
-	private static String buildColumnsPart(String[] columnNames) {
-		return String.join(
-			", ",
-			Arrays.stream(columnNames)
-				.map(name -> "\"" + name + "\"")
-				.collect(Collectors.toList()));
 	}
 
 	private static String buildImportPart(Class<?> target) {
@@ -566,6 +511,9 @@ public class TableFacadeGenerator {
 			+ ")";
 
 		builder.append("type: " + metadata.getTypeName() + sizeString);
+		builder.append(U.LINE_SEPARATOR);
+
+		builder.append("not null: " + metadata.isNotNull());
 
 		return decorate(builder.toString(), "\t");
 	}

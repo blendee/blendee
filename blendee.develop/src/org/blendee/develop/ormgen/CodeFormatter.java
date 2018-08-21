@@ -35,7 +35,16 @@ public interface CodeFormatter {
 	 * @param arguments 引数
 	 * @return 生成後のコード
 	 */
-	default String formatRelationshipsPart(String template, Map<String, String> arguments) {
+	default String formatPrimaryKeyPart(String template, Map<String, String> arguments) {
+		return Formatter.format(template, arguments);
+	}
+
+	/**
+	 * @param template テンプレート
+	 * @param arguments 引数
+	 * @return 生成後のコード
+	 */
+	default String formatForeignKeysPart(String template, Map<String, String> arguments) {
 		return Formatter.format(template, arguments);
 	}
 
