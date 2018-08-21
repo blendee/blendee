@@ -10,7 +10,7 @@ import org.blendee.sql.Updatable;
  * 連続値の最大を超えた場合にスローされる例外です。
  * @author 千葉 哲嗣
  * @see SequenceGenerator#next(Criteria)
- * @see DataAccessHelper#insert(TablePath, SequenceGenerator, Updatable, int, SQLDecorator)
+ * @see DataAccessHelper#insert(TablePath, SequenceGenerator, Updatable, int, SQLDecorator...)
  */
 public class SequenceOverflowException extends BlendeeException {
 
