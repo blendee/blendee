@@ -226,20 +226,20 @@ public interface RowManager<T extends Row> {
 	/**
 	 * パラメータの {@link Row} の INSERT を行います。
 	 * @param row INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
-	default void insert(T row, SQLDecorator adjuster) {
-		new DataAccessHelper().insert(getTablePath(), row, adjuster);
+	default void insert(T row, SQLDecorator... options) {
+		new DataAccessHelper().insert(getTablePath(), row, options);
 	}
 
 	/**
 	 * パラメータの {@link Row} の INSERT をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param row INSERT 対象
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
-	default void insert(BatchStatement statement, T row, SQLDecorator adjuster) {
-		new DataAccessHelper().insert(statement, getTablePath(), row, adjuster);
+	default void insert(BatchStatement statement, T row, SQLDecorator... options) {
+		new DataAccessHelper().insert(statement, getTablePath(), row, options);
 	}
 
 	/**
@@ -250,7 +250,7 @@ public interface RowManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(SequenceGenerator generator, T row, int retry) {
-		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, null);
+		return new DataAccessHelper().insert(getTablePath(), generator, row, retry);
 	}
 
 	/**
@@ -262,7 +262,7 @@ public interface RowManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(BatchStatement statement, SequenceGenerator generator, T row, int retry) {
-		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, null);
+		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry);
 	}
 
 	/**
@@ -270,11 +270,11 @@ public interface RowManager<T extends Row> {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
-	default Bindable insert(SequenceGenerator generator, T row, int retry, SQLDecorator adjuster) {
-		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, adjuster);
+	default Bindable insert(SequenceGenerator generator, T row, int retry, SQLDecorator... options) {
+		return new DataAccessHelper().insert(getTablePath(), generator, row, retry, options);
 	}
 
 	/**
@@ -283,7 +283,7 @@ public interface RowManager<T extends Row> {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	default Bindable insert(
@@ -291,8 +291,8 @@ public interface RowManager<T extends Row> {
 		SequenceGenerator generator,
 		T row,
 		int retry,
-		SQLDecorator adjuster) {
-		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, adjuster);
+		SQLDecorator... options) {
+		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, options);
 	}
 
 	/**
@@ -302,7 +302,7 @@ public interface RowManager<T extends Row> {
 	 * @return 更新件数
 	 */
 	default int update(Criteria criteria, Updatable updatable) {
-		return new DataAccessHelper().update(getTablePath(), updatable, criteria, null);
+		return new DataAccessHelper().update(getTablePath(), updatable, criteria);
 	}
 
 	/**
@@ -312,29 +312,29 @@ public interface RowManager<T extends Row> {
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
 	default void update(BatchStatement statement, Criteria criteria, Updatable updatable) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, null);
+		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria);
 	}
 
 	/**
 	 * パラメータの条件に該当する行を更新します。
 	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
-	default int update(Criteria criteria, Updatable updatable, SQLDecorator adjuster) {
-		return new DataAccessHelper().update(getTablePath(), updatable, criteria, adjuster);
+	default int update(Criteria criteria, Updatable updatable, SQLDecorator... options) {
+		return new DataAccessHelper().update(getTablePath(), updatable, criteria, options);
 	}
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
-	default void update(BatchStatement statement, Criteria criteria, Updatable updatable, SQLDecorator adjuster) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, adjuster);
+	default void update(BatchStatement statement, Criteria criteria, Updatable updatable, SQLDecorator... options) {
+		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, options);
 	}
 
 	/**
