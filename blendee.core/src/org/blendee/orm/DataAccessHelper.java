@@ -254,7 +254,7 @@ public class DataAccessHelper {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
@@ -262,14 +262,14 @@ public class DataAccessHelper {
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		return insertInternal(
 			getThreadStatement(),
 			path,
 			generator,
 			updatable,
 			retry,
-			adjuster);
+			options);
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class DataAccessHelper {
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param retry {@link SequenceGenerator} のリトライ回数
-	 * @param adjuster INSERT 文を調整する {@link SQLDecorator}
+	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
@@ -289,14 +289,14 @@ public class DataAccessHelper {
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		return insertInternal(
 			new BatchStatementFacade(statement),
 			path,
 			generator,
 			updatable,
 			retry,
-			adjuster);
+			options);
 	}
 
 	/**
@@ -304,20 +304,20 @@ public class DataAccessHelper {
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
 	public int update(
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		return updateInternal(
 			getThreadStatement(),
 			path,
 			updatable,
 			criteria,
-			adjuster);
+			options);
 	}
 
 	/**
@@ -326,40 +326,40 @@ public class DataAccessHelper {
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param criteria WHERE 句となる条件
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		updateInternal(
 			new BatchStatementFacade(statement),
 			path,
 			updatable,
 			criteria,
-			adjuster);
+			options);
 	}
 
 	/**
 	 * 対象となるテーブルの、全レコードに対して UPDATE を実行します。
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 * @return 更新件数
 	 */
 	public int update(
 		TablePath path,
 		Updatable updatable,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		StatementFacade statement = getThreadStatement();
 		return updateInternalFinally(
 			statement,
 			path,
 			updatable,
 			null,
-			adjuster);
+			options);
 	}
 
 	/**
@@ -367,19 +367,19 @@ public class DataAccessHelper {
 	 * @param statement バッチ実行を依頼する {@link BatchStatement}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
-	 * @param adjuster UPDATE 文を調整する {@link SQLDecorator}
+	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
 		BatchStatement statement,
 		TablePath path,
 		Updatable updatable,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		updateInternalFinally(
 			new BatchStatementFacade(statement),
 			path,
 			updatable,
 			null,
-			adjuster);
+			options);
 	}
 
 	/**
@@ -642,9 +642,9 @@ public class DataAccessHelper {
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
-		SQLDecorator adjuster) {
+		SQLDecorator... options) {
 		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
-		return updateInternalFinally(statement, path, updatable, criteria, adjuster);
+		return updateInternalFinally(statement, path, updatable, criteria, options);
 	}
 
 	private static int updateInternalFinally(
