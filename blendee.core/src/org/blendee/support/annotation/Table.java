@@ -25,4 +25,16 @@ public @interface Table {
 	 * @return スキーマ名
 	 */
 	String schema();
+
+	/**
+	 * テーブルの型
+	 * @return テーブルの型
+	 */
+	String type();
+
+	/**
+	 * 備考
+	 * @return 備考
+	 */
+	String remarks();
 }

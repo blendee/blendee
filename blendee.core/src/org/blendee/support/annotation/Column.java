@@ -24,7 +24,49 @@ public @interface Column {
 	 * 型
 	 * @return 型
 	 */
-	Class<?> type();
+	int type();
+
+	/**
+	 * データソース依存の型名
+	 * @return データソース依存の型名
+	 */
+	String typeName();
+
+	/**
+	 * カラムサイズ
+	 * @return カラムサイズ
+	 */
+	int size();
+
+	/**
+	 * 小数点以下の桁数を持つか
+	 * @return 小数点以下の桁数を持つ場合、 true
+	 */
+	boolean hasDecimalDigits() default false;
+
+	/**
+	 * 小数点以下の桁数
+	 * @return 小数点以下の桁数
+	 */
+	int decimalDigits() default 0;
+
+	/**
+	 * 備考
+	 * @return 備考
+	 */
+	String remarks();
+
+	/**
+	 * デフォルト値
+	 * @return デフォルト値
+	 */
+	String defaultValue();
+
+	/**
+	 * テーブル内の位置
+	 * @return テーブル内の位置 (1 から始まる )
+	 */
+	int ordinalPosition();
 
 	/**
 	 * NOT NULL 制約があるか

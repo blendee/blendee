@@ -106,6 +106,11 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			if (fk != null && fk.pseudo()) fkSources.add(createSource(fk));
 		});
 
+		//手動でクラスに直接つけられた疑似FKを取り込み
+		Arrays.stream(clazz.getAnnotationsByType(ForeignKey.class)).forEach(fk -> {
+			if (fk != null && fk.pseudo()) fkSources.add(createSource(fk));
+		});
+
 		return new TableSource(
 			new TablePath(table.schema(), table.name()),
 			null,

@@ -74,7 +74,7 @@ import org.blendee.support.annotation.Column;
  * 自動生成されたテーブル操作クラスです。
 [[TABLE_COMMENT]]
  */
-@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
+@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]", type = "[[TYPE]]", remarks = "[[REMARKS]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
 public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	extends /*++[[PARENT]]++*//*--*/Object/*--*/
 	implements
@@ -103,7 +103,17 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 [[COMMENT]]
 	 */
-	@Column(name = "[[COLUMN]]", type = /*++[[TYPE]].class++*//*--*/Object.class/*--*/, notNull = /*++[[NOT_NULL]]++*//*--*/true/*--*/)
+	@Column(
+		name = "[[COLUMN]]",
+		type = /*++[[DB_TYPE]]++*//*--*/0/*--*/,
+		typeName = "[[TYPE_NAME]]",
+		size = /*++[[SIZE]]++*//*--*/0/*--*/,
+		hasDecimalDigits = /*++[[HAS_DECIMAL_DIGITS]]++*//*--*/false/*--*/,
+		decimalDigits = /*++[[DECIMAL_DIGITS]]++*//*--*/0/*--*/,
+		remarks = "[[REMARKS]]",
+		defaultValue = "[[DEFAULT]]",
+		ordinalPosition = /*++[[ORDINAL_POSITION]]++*//*--*/0/*--*/,
+		notNull = /*++[[NOT_NULL]]++*//*--*/true/*--*/)
 	public static final String /*++[[COLUMN]]++*//*--*/columnName/*--*/ = "[[COLUMN]]";
 /*==ColumnNamesPart==*/
 

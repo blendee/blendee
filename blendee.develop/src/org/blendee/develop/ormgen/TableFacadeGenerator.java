@@ -263,7 +263,9 @@ public class TableFacadeGenerator {
 					classNameString = convertForNumber(convertPrimitiveClassToWrapperClass(column.getType())).getName();
 				}
 
-				boolean notNull = column.getColumnMetadata().isNotNull();
+				ColumnMetadata columnMetadata = column.getColumnMetadata();
+
+				boolean notNull = columnMetadata.isNotNull();
 
 				String nullCheck = "", returnPrefix = "", returnSuffix = "", returnType = classNameString;
 				boolean returnOptional = false;
@@ -287,13 +289,26 @@ public class TableFacadeGenerator {
 				args.put("METHOD", toUpperCaseFirstLetter(columnName));
 				args.put("COLUMN", columnName);
 				args.put("TYPE", classNameString);
-				args.put("NOT_NULL", String.valueOf(notNull));
 				args.put("COMMENT", buildColumnComment(column));
 				args.put("NULL_CHECK", nullCheck);
 				args.put("RETURN_TYPE", returnType);
 				args.put("PREFIX", returnPrefix);
 				args.put("SUFFIX", returnSuffix);
 				args.put("OPTIONAL", Boolean.toString(returnOptional));
+
+				args.put("DB_TYPE", Integer.toString(columnMetadata.getType()));
+				args.put("TYPE_NAME", columnMetadata.getTypeName());
+				args.put("SIZE", Integer.toString(columnMetadata.getSize()));
+				args.put("HAS_DECIMAL_DIGITS", Boolean.toString(columnMetadata.hasDecimalDigits()));
+				args.put("DECIMAL_DIGITS", Integer.toString(columnMetadata.getDecimalDigits()));
+				args.put("REMARKS", escape(columnMetadata.getRemarks()));
+
+				String defaultValue = columnMetadata.getDefaultValue();
+				args.put("DEFAULT", defaultValue == null ? null : escape(defaultValue));
+
+				args.put("ORDINAL_POSITION", Integer.toString(columnMetadata.getOrdinalPosition()));
+
+				args.put("NOT_NULL", String.valueOf(notNull));
 
 				columnNames.add(
 					codeFormatter.formatColumnNamesPart(columnNamesPartTemplate, args));
@@ -416,7 +431,13 @@ public class TableFacadeGenerator {
 		args.put("COLUMN_PART1", columnPart1);
 		args.put("COLUMN_PART2", columnPart2);
 		args.put("TABLE_RELATIONSHIP_PART", tableRelationshipPart);
-		args.put("TABLE_COMMENT", buildTableComment(metadata, target));
+
+		TableMetadata tableMetadata = metadata.getTableMetadata(target);
+
+		args.put("TABLE_COMMENT", buildTableComment(tableMetadata, target));
+
+		args.put("TYPE", tableMetadata.getType());
+		args.put("REMARKS", escape(tableMetadata.getRemarks()));
 
 		return codeFormatter.format(myTemplate, args);
 	}
@@ -428,6 +449,42 @@ public class TableFacadeGenerator {
 
 	private static String buildImportPart(Class<?> target) {
 		return "import " + target.getName() + ";";
+	}
+
+	private static String escape(String string) {
+		if (!U.presents(string)) return "";
+
+		StringBuilder builder = new StringBuilder();
+
+		string.chars().forEach(c -> {
+			switch (c) {
+			case '\t':
+				builder.append("\\t");
+				break;
+			case '\b':
+				builder.append("\\b");
+				break;
+			case '\n':
+				builder.append("\\n");
+				break;
+			case '\r':
+				builder.append("\\r");
+				break;
+			case '\f':
+				builder.append("\\f");
+				break;
+			case '\"':
+				builder.append("\\\"");
+				break;
+			case '\\':
+				builder.append("\\\\");
+				break;
+			default:
+				builder.append((char) c);
+			}
+		});
+
+		return builder.toString();
 	}
 
 	private static Map<String, Boolean> createDuprecateChecker(Relationship relation) {
@@ -476,10 +533,8 @@ public class TableFacadeGenerator {
 	}
 
 	private static String buildTableComment(
-		Metadata metadata,
+		TableMetadata tableMetadata,
 		TablePath target) {
-		TableMetadata tableMetadata = metadata.getTableMetadata(target);
-
 		StringBuilder builder = new StringBuilder();
 		builder.append("schema: " + target.getSchemaName());
 		builder.append(U.LINE_SEPARATOR);
