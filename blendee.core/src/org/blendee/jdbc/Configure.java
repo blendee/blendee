@@ -54,7 +54,7 @@ public final class Configure {
 
 	private boolean initialized = false;
 
-	private boolean metadatasInitialized = false;
+	private boolean metadatasPrepared = false;
 
 	Configure(
 		Class<? extends TransactionFactory> transactionFactoryClass,
@@ -254,6 +254,14 @@ public final class Configure {
 		return U.toString(this);
 	}
 
+	/**
+	 * 内部で保持する {@link Metadata} をクリアします。
+	 */
+	public synchronized void clearMetadatas() {
+		metadatas = null;
+		metadatasPrepared = false;
+	}
+
 	void check() {
 		if (!isCurrent()) throw new IllegalStateException("古い設定を使用しています");
 	}
@@ -266,10 +274,10 @@ public final class Configure {
 		initialized = true;
 	}
 
-	synchronized void initializeMetadatas(Metadata depends) {
-		if (metadatasInitialized) return;
+	synchronized void prepareMetadatas(Metadata depends) {
+		if (metadatasPrepared) return;
 		metadatas = createInstance(metadataFactoryClass).createMetadatas(depends);
-		metadatasInitialized = true;
+		metadatasPrepared = true;
 	}
 
 	synchronized TransactionFactory getTransactionFactoryWithoutCheck() {

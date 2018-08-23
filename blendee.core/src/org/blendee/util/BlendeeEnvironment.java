@@ -320,7 +320,14 @@ public class BlendeeEnvironment {
 	public void clearCache() {
 		try {
 			ContextManager.setContext(contextName);
-			ContextManager.get(BlendeeManager.class).clearMetadataCache();
+
+			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+
+			manager.clearMetadataCache();
+
+			if (manager.initialized())
+				manager.getConfigure().clearMetadatas();
+
 			ContextManager.get(RelationshipFactory.class).clearCache();
 		} finally {
 			ContextManager.releaseContext();

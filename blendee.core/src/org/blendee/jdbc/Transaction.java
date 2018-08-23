@@ -116,7 +116,7 @@ public abstract class Transaction implements AutoCloseable {
 			connection,
 			new Logger(config.getLogOutputWithoutCheck(), config.getLogStackTracePatternWithoutCheck()));
 
-		config.initializeMetadatas(connection);
+		config.prepareMetadatas(connection);
 		Metadata[] metadatas = config.getMetadatasWithoutCheck();
 		if (metadatas.length > 0) connection = new MetadatasConnection(connection, metadatas);
 

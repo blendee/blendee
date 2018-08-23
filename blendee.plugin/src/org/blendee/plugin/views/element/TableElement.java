@@ -83,7 +83,7 @@ public class TableElement extends PropertySourceElement {
 	@Override
 	public void doubleClick() {
 		try {
-			Blendee.clearCache();
+			BlendeePlugin.getDefault().refresh();
 			Blendee.execute(t -> {
 				build();
 			});
@@ -255,7 +255,7 @@ public class TableElement extends PropertySourceElement {
 		private TableElement element;
 
 		private TableAction() {
-			String text = "Data Object クラスを生成する";
+			String text = "Table クラスを生成する";
 			setText(text);
 			setToolTipText(text);
 			setImageDescriptor(Constants.TABLE_ICON);
@@ -264,7 +264,7 @@ public class TableElement extends PropertySourceElement {
 		@Override
 		public void run() {
 			try {
-				Blendee.clearCache();
+				BlendeePlugin.getDefault().refresh();
 				Blendee.execute(t -> {
 					element.build();
 				});

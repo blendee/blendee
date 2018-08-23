@@ -79,6 +79,17 @@ public class VirtualSpace implements Metadata {
 	}
 
 	/**
+	 * 保持している情報を全てクリアし、 start = false となります。
+	 */
+	public synchronized void stop() {
+		tables.clear();
+		schemas.clear();
+		virtualTables.clear();
+		crossReferences.clear();
+		started = false;
+	}
+
+	/**
 	 * 既に {@link #start(Metadata)} が実行しているかどうかを検査します。
 	 * @return 既に {@link #start(Metadata)} が実行している場合、 true
 	 */

@@ -334,13 +334,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static Throwable cause(Throwable t) {
-		Throwable cause = t.getCause();
-		if (cause == null) return t;
-		return cause(cause);
-	}
-
-	private void refresh() throws JavaProjectException {
+	public void refresh() throws JavaProjectException {
 		Map<OptionKey<?>, Object> init = new HashMap<>();
 
 		Properties properties = getPersistentProperties(currentProject);
@@ -478,6 +472,12 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
 		}
+	}
+
+	private static Throwable cause(Throwable t) {
+		Throwable cause = t.getCause();
+		if (cause == null) return t;
+		return cause(cause);
 	}
 
 	private static void checkProject(IJavaProject project) throws JavaProjectException {
