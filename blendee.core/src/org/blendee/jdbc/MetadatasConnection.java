@@ -2,9 +2,9 @@ package org.blendee.jdbc;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.impl.SimplePrimaryKeyMetadata;
@@ -72,27 +72,35 @@ class MetadatasConnection extends ConnectionBase {
 	}
 
 	/**
-	 * 全ての {@link Metadata} の持つ情報が統合されます。
+	 * 前方にある {@link Metadata} の持つキー情報が優先して使用されます。
 	 */
 	@Override
 	public TablePath[] getResourcesOfImportedKey(TablePath path) {
-		List<TablePath> list = new LinkedList<>();
-		for (Metadata metadata : metadatas)
-			list.addAll(Arrays.asList(metadata.getResourcesOfImportedKey(path)));
+		Set<TablePath> set = new LinkedHashSet<>();
+		for (Metadata metadata : metadatas) {
+			Arrays.stream(metadata.getResourcesOfImportedKey(path)).forEach(p -> {
+				if (!set.contains(p))
+					set.add(p);
+			});
+		}
 
-		return list.toArray(new TablePath[list.size()]);
+		return set.toArray(new TablePath[set.size()]);
 	}
 
 	/**
-	 * 全ての {@link Metadata} の持つ情報が統合されます。
+	 * 前方にある {@link Metadata} の持つキー情報が優先して使用されます。
 	 */
 	@Override
 	public TablePath[] getResourcesOfExportedKey(TablePath path) {
-		List<TablePath> list = new LinkedList<>();
-		for (Metadata metadata : metadatas)
-			list.addAll(Arrays.asList(metadata.getResourcesOfExportedKey(path)));
+		Set<TablePath> set = new LinkedHashSet<>();
+		for (Metadata metadata : metadatas) {
+			Arrays.stream(metadata.getResourcesOfExportedKey(path)).forEach(p -> {
+				if (!set.contains(p))
+					set.add(p);
+			});
+		}
 
-		return list.toArray(new TablePath[list.size()]);
+		return set.toArray(new TablePath[set.size()]);
 	}
 
 	/**
@@ -100,10 +108,14 @@ class MetadatasConnection extends ConnectionBase {
 	 */
 	@Override
 	public CrossReference[] getCrossReferences(TablePath exported, TablePath imported) {
-		List<CrossReference> list = new LinkedList<>();
-		for (Metadata metadata : metadatas)
-			list.addAll(Arrays.asList(metadata.getCrossReferences(exported, imported)));
+		Map<String, CrossReference> map = new LinkedHashMap<>();
+		for (Metadata metadata : metadatas) {
+			Arrays.stream(metadata.getCrossReferences(exported, imported)).forEach(c -> {
+				String key = c.getForeignKeyName();
+				if (!map.containsKey(key)) map.put(key, c);
+			});
+		}
 
-		return list.toArray(new CrossReference[list.size()]);
+		return map.values().toArray(new CrossReference[map.size()]);
 	}
 }

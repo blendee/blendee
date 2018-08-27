@@ -24,6 +24,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.support.Row;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadePackageRule;
+import org.blendee.support.annotation.Column;
 import org.blendee.support.annotation.ForeignKey;
 import org.blendee.support.annotation.PrimaryKey;
 import org.blendee.support.annotation.Table;
@@ -33,8 +34,6 @@ import org.blendee.support.annotation.Table;
  * @author 千葉 哲嗣
  */
 public class AnnotationMetadataFactory implements MetadataFactory {
-
-	private static final ColumnMetadata[] emptyColumns = new ColumnMetadata[] {};
 
 	private final VirtualSpace virtualSpace = new VirtualSpace();
 
@@ -97,7 +96,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			name -> listClasses(getClassLoader(), name)
 				.stream()
 				.map(AnnotationMetadataFactory::convert)
-				.forEach(table -> virtualSpace.addTable(table)));
+				.forEach(virtualSpace::addTable));
 	}
 
 	private static TableSource convert(Class<?> clazz) {
@@ -106,21 +105,48 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		PrimaryKey pk = clazz.getAnnotation(PrimaryKey.class);
 
 		List<ForeignKeySource> fkSources = new LinkedList<>();
+		List<ColumnMetadata> columnMetadatas = new LinkedList<>();
 		Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
 			ForeignKey fk = f.getAnnotation(ForeignKey.class);
-			if (fk != null && fk.pseudo()) fkSources.add(createSource(fk));
+			if (fk != null) fkSources.add(createSource(fk));
+
+			Column column = f.getAnnotation(Column.class);
+
+			if (column != null) {
+				ColumnMetadata columnMetadata = new VirtualColumnMetadata(
+					table.schema(),
+					table.name(),
+					column.name(),
+					column.type(),
+					column.typeName(),
+					column.size(),
+					column.hasDecimalDigits(),
+					column.decimalDigits(),
+					column.remarks(),
+					column.defaultValue(),
+					column.ordinalPosition(),
+					column.notNull());
+
+				columnMetadatas.add(columnMetadata);
+			}
 		});
 
 		//手動でクラスに直接つけられた疑似FKを取り込み
 		Arrays.stream(clazz.getAnnotationsByType(ForeignKey.class)).forEach(fk -> {
-			if (fk != null && fk.pseudo()) fkSources.add(createSource(fk));
+			if (fk != null) fkSources.add(createSource(fk));
 		});
+
+		VirtualTableMetadata tableMetadata = new VirtualTableMetadata(
+			table.schema(),
+			table.name(),
+			table.type(),
+			table.remarks());
 
 		return new TableSource(
 			new TablePath(table.schema(), table.name()),
-			null,
-			emptyColumns,
-			pk == null || !pk.pseudo() ? null : createSource(pk),
+			tableMetadata,
+			columnMetadatas.toArray(new ColumnMetadata[columnMetadatas.size()]),
+			pk == null ? null : createSource(pk),
 			fkSources.toArray(new ForeignKeySource[fkSources.size()]));
 	}
 
