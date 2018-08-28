@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,6 +49,7 @@ class Logger {
 		synchronized (getClass()) {
 			if (printStream == null) return;
 			printStream.println("------ SQL START ------");
+			printStream.println("[" + new Date() + "]");
 
 			if (stackTracePattern != null) {
 				printStream.println("call from:");
