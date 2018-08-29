@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.blendee.internal.CollectionMap;
@@ -14,6 +15,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
+import org.blendee.jdbc.StoredIdentifier;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.impl.SimpleCrossReference;
@@ -42,6 +44,8 @@ public class VirtualSpace implements Metadata {
 
 	private final CollectionMapMap<TablePath, TablePath, CrossReference> crossReferences = CollectionMapMap.newInstance();
 
+	private StoredIdentifier storedIdentifier;
+
 	private boolean started = false;
 
 	/**
@@ -49,9 +53,19 @@ public class VirtualSpace implements Metadata {
 	 * @param table 新しいテーブル情報
 	 */
 	public synchronized void addTable(TableSource table) {
+		checkStarted();
 		TablePath path = table.getTablePath();
 		tables.put(path, table);
 		schemas.put(path.getSchemaName(), path);
+	}
+
+	/**
+	 * @param storedIdentifier {@link StoredIdentifier}
+	 */
+	public synchronized void setStoredIdentifier(StoredIdentifier storedIdentifier) {
+		checkStarted();
+		Objects.requireNonNull(storedIdentifier);
+		this.storedIdentifier = storedIdentifier;
 	}
 
 	/**
@@ -60,7 +74,11 @@ public class VirtualSpace implements Metadata {
 	 * @throws IllegalStateException 既にこのメソッドが実行されている場合
 	 */
 	public synchronized void start(Metadata depends) {
-		if (started) throw new IllegalStateException("既にスタートしています");
+		checkStarted();
+
+		if (storedIdentifier == null) storedIdentifier = depends.getStoredIdentifier();
+		Objects.requireNonNull(storedIdentifier);
+
 		CollectionMap<TablePath, TablePath> exported = new CollectionMap<TablePath, TablePath>() {
 
 			@Override
@@ -86,6 +104,7 @@ public class VirtualSpace implements Metadata {
 		schemas.clear();
 		virtualTables.clear();
 		crossReferences.clear();
+		storedIdentifier = null;
 		started = false;
 	}
 
@@ -137,8 +156,17 @@ public class VirtualSpace implements Metadata {
 	}
 
 	@Override
+	public StoredIdentifier getStoredIdentifier() {
+		return storedIdentifier;
+	}
+
+	@Override
 	public String toString() {
 		return U.toString(this);
+	}
+
+	private void checkStarted() {
+		if (started) throw new IllegalStateException("既にスタートしています");
 	}
 
 	private synchronized VirtualTable getTable(TablePath path) {
@@ -189,10 +217,11 @@ public class VirtualSpace implements Metadata {
 		TableSource table,
 		CollectionMap<TablePath, TablePath> exported,
 		Metadata depends) {
-		ForeignKeySource[] fks = table.getForeignKeySources();
-		for (ForeignKeySource fk : fks) {
+		TablePath tablePath = table.getTablePath();
+
+		for (ForeignKeySource fk : table.getForeignKeySources()) {
 			TablePath importedTable = fk.getImportedTable();
-			exported.put(importedTable, table.getTablePath());
+			exported.put(importedTable, tablePath);
 
 			TableSource pkTableBase = tables.get(importedTable);
 			TableSource pkTable;
@@ -205,13 +234,13 @@ public class VirtualSpace implements Metadata {
 			String[] pkColumns = fk.getPKColumns();
 			if (pkColumns.length == 0) pkColumns = pkTable.getPrimaryKeySource().getColumnNames();
 
-			crossReferences.get(table.getTablePath()).put(
+			crossReferences.get(tablePath).put(
 				pkTable.getTablePath(),
 				new SimpleCrossReference(
 					pkTable.getPrimaryKeySource().getName(),
 					fk.getName(),
 					pkTable.getTablePath(),
-					table.getTablePath(),
+					tablePath,
 					pkColumns,
 					fk.getFKColumns(),
 					true));

@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.blendee.jdbc.MetadataCache.Request;
-import org.blendee.jdbc.wrapperbase.ConnectionBase;
+import org.blendee.jdbc.wrapperbase.MetadataBase;
 
 /**
  * @author 千葉 哲嗣
  */
-class MetadataCacheConnection extends ConnectionBase {
+class CacheMetadata extends MetadataBase {
 
 	private final MetadataCache cache = ContextManager.get(MetadataCache.class);
 
-	MetadataCacheConnection(BConnection conn) {
-		super(conn);
+	CacheMetadata(Metadata metadata) {
+		super(metadata);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			TablePath[] createCacheTarget() {
-				return MetadataCacheConnection.super.getTables(schemaName);
+				return CacheMetadata.super.getTables(schemaName);
 			}
 		});
 
@@ -46,7 +46,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			ColumnMetadata[] createCacheTarget() {
-				return MetadataCacheConnection.super.getColumnMetadatas(path);
+				return CacheMetadata.super.getColumnMetadatas(path);
 			}
 		});
 
@@ -64,7 +64,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			PrimaryKeyMetadata createCacheTarget() {
-				return MetadataCacheConnection.super.getPrimaryKeyMetadata(path);
+				return CacheMetadata.super.getPrimaryKeyMetadata(path);
 			}
 		});
 	}
@@ -80,7 +80,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			TablePath[] createCacheTarget() {
-				return MetadataCacheConnection.super.getResourcesOfImportedKey(path);
+				return CacheMetadata.super.getResourcesOfImportedKey(path);
 			}
 		});
 
@@ -98,7 +98,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			TablePath[] createCacheTarget() {
-				return MetadataCacheConnection.super.getResourcesOfExportedKey(path);
+				return CacheMetadata.super.getResourcesOfExportedKey(path);
 			}
 		});
 
@@ -121,7 +121,7 @@ class MetadataCacheConnection extends ConnectionBase {
 
 			@Override
 			CrossReference[] createCacheTarget() {
-				return MetadataCacheConnection.super.getCrossReferences(exportedTable, importedTable);
+				return CacheMetadata.super.getCrossReferences(exportedTable, importedTable);
 			}
 		});
 

@@ -3,27 +3,38 @@ package org.blendee.jdbc;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.impl.SimplePrimaryKeyMetadata;
-import org.blendee.jdbc.wrapperbase.ConnectionBase;
+import org.blendee.jdbc.wrapperbase.MetadataBase;
 
 /**
  * @author 千葉 哲嗣
  */
-class MetadatasConnection extends ConnectionBase {
+public class Metadatas extends MetadataBase {
 
 	private final Metadata[] metadatas;
 
-	MetadatasConnection(BConnection base, Metadata[] metadatas) {
-		super(base);
-		this.metadatas = new Metadata[metadatas.length + 1];
+	/**
+	 * @param metadatas {@link Metadata}
+	 */
+	public Metadatas(Metadata... metadatas) {
+		super(metadatas[0]);
+		this.metadatas = metadatas.clone();
+	}
 
-		System.arraycopy(metadatas, 0, this.metadatas, 0, metadatas.length);
+	@Override
+	public TablePath[] getTables(String schemaName) {
+		List<TablePath> tables = new LinkedList<>();
+		for (Metadata metadata : metadatas) {
+			Arrays.stream(metadata.getTables(schemaName)).forEach(tables::add);
+		}
 
-		this.metadatas[metadatas.length] = base;
+		return tables.toArray(new TablePath[tables.size()]);
 	}
 
 	/**

@@ -1,10 +1,12 @@
 package org.blendee.util;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -101,6 +103,79 @@ public class BlendeeEnvironment {
 	}
 
 	/**
+	 * システムプロパティから Blendee を使用可能な状態にします。
+	 * @return self
+	 */
+	public BlendeeEnvironment start() {
+		Map<OptionKey<?>, Object> param = new Map<OptionKey<?>, Object>() {
+
+			@Override
+			public int size() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public boolean isEmpty() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public boolean containsKey(Object key) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public boolean containsValue(Object value) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Object get(Object object) {
+				ParsableOptionKey<?> key = (ParsableOptionKey<?>) object;
+				String value = System.getProperty("org.blendee." + key.getKey());
+				return key.parse(value);
+			}
+
+			@Override
+			public Object put(OptionKey<?> key, Object value) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Object remove(Object key) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public void putAll(Map<? extends OptionKey<?>, ? extends Object> m) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public void clear() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Set<OptionKey<?>> keySet() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Collection<Object> values() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Set<Entry<OptionKey<?>, Object>> entrySet() {
+				throw new UnsupportedOperationException();
+			}
+		};
+
+		return start(param);
+	}
+
+	/**
 	 * Blendee を使用可能な状態にします。
 	 * @param initValues Blendee を初期化するための値
 	 * @return self
@@ -135,7 +210,7 @@ public class BlendeeEnvironment {
 			Optional.ofNullable(
 				BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
 					() -> Optional.of(getDefaultMetadataFactoryClass())
-						.filter(c -> BlendeeConstants.ANNOTATED_ROW_PACKAGES.extract(initValues).isPresent())
+						.filter(c -> BlendeeConstants.TABLE_FACADE_PACKAGE.extract(initValues).isPresent())
 						.orElse(null)))
 				.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
 
@@ -324,9 +399,6 @@ public class BlendeeEnvironment {
 			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
 
 			manager.clearMetadataCache();
-
-			if (manager.initialized())
-				manager.getConfigure().clearMetadatas();
 
 			ContextManager.get(RelationshipFactory.class).clearCache();
 		} finally {

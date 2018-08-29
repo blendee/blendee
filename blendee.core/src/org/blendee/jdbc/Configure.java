@@ -16,14 +16,6 @@ import org.blendee.internal.U;
  */
 public final class Configure {
 
-	private final Class<? extends TransactionFactory> transactionFactoryClass;
-
-	private final Class<? extends ErrorConverter> errorConverterClass;
-
-	private final Class<? extends DataTypeConverter> dataTypeConverterClass;
-
-	private final Class<? extends MetadataFactory> metadataFactoryClass;
-
 	private final String[] schemaNames;
 
 	private final boolean useAutoCommit;
@@ -44,17 +36,13 @@ public final class Configure {
 
 	private final Map<OptionKey<?>, ?> options;
 
-	private TransactionFactory transactionFactory;
+	private final Metadata metadata;
 
-	private ErrorConverter errorConverter;
+	private final TransactionFactory transactionFactory;
 
-	private DataTypeConverter dataTypeConverter;
+	private final ErrorConverter errorConverter;
 
-	private Metadata[] metadatas;
-
-	private boolean initialized = false;
-
-	private boolean metadatasPrepared = false;
+	private final DataTypeConverter dataTypeConverter;
 
 	Configure(
 		Class<? extends TransactionFactory> transactionFactoryClass,
@@ -71,10 +59,6 @@ public final class Configure {
 		Pattern logStackTracePattern,
 		int maxStatementsPerConnection,
 		Map<OptionKey<?>, ?> options) {
-		this.transactionFactoryClass = transactionFactoryClass;
-		this.errorConverterClass = errorConverterClass;
-		this.dataTypeConverterClass = dataTypeConverterClass;
-		this.metadataFactoryClass = metadataFactoryClass;
 		this.schemaNames = schemaNames.clone();
 		this.useAutoCommit = useAutoCommit;
 		this.useLazyTransaction = useLazyTransaction;
@@ -85,6 +69,14 @@ public final class Configure {
 		this.logStackTracePattern = logStackTracePattern;
 		this.maxStatementsPerConnection = maxStatementsPerConnection;
 		this.options = Collections.unmodifiableMap(options);
+
+		transactionFactory = createInstance(transactionFactoryClass);
+		errorConverter = createInstance(errorConverterClass);
+		dataTypeConverter = createInstance(dataTypeConverterClass);
+
+		Metadata metadata = createInstance(metadataFactoryClass).createMetadata();
+		if (useMetadataCache) metadata = new CacheMetadata(metadata);
+		this.metadata = metadata;
 	}
 
 	/**
@@ -102,7 +94,7 @@ public final class Configure {
 	 * @return この設定で使用している {@link ErrorConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public synchronized ErrorConverter getErrorConverter() {
+	public ErrorConverter getErrorConverter() {
 		check();
 		return errorConverter;
 	}
@@ -112,7 +104,7 @@ public final class Configure {
 	 * @return この設定で使用している {@link DataTypeConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public synchronized DataTypeConverter getDataTypeConverter() {
+	public DataTypeConverter getDataTypeConverter() {
 		check();
 		return dataTypeConverter;
 	}
@@ -122,9 +114,9 @@ public final class Configure {
 	 * @return この設定で使用している {@link Metadata}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public Metadata[] getMetadatas() {
+	public Metadata getMetadata() {
 		check();
-		return getMetadatasWithoutCheck();
+		return getMetadataWithoutCheck();
 	}
 
 	/**
@@ -254,42 +246,16 @@ public final class Configure {
 		return U.toString(this);
 	}
 
-	/**
-	 * 内部で保持する {@link Metadata} をクリアします。
-	 */
-	public synchronized void clearMetadatas() {
-		metadatas = null;
-		metadatasPrepared = false;
-	}
-
 	void check() {
 		if (!isCurrent()) throw new IllegalStateException("古い設定を使用しています");
 	}
 
-	synchronized void initialize() {
-		if (initialized) return;
-		transactionFactory = createInstance(transactionFactoryClass);
-		errorConverter = createInstance(errorConverterClass);
-		dataTypeConverter = createInstance(dataTypeConverterClass);
-		initialized = true;
-	}
-
-	synchronized void prepareMetadatas(Metadata depends) {
-		if (metadatasPrepared) return;
-		metadatas = createInstance(metadataFactoryClass).createMetadatas(depends);
-		metadatasPrepared = true;
-	}
-
-	synchronized TransactionFactory getTransactionFactoryWithoutCheck() {
+	TransactionFactory getTransactionFactoryWithoutCheck() {
 		return transactionFactory;
 	}
 
-	synchronized Metadata[] getMetadatasWithoutCheck() {
-		return metadatas;
-	}
-
-	boolean usesMetadataCacheWithoutCheck() {
-		return useMetadataCache;
+	Metadata getMetadataWithoutCheck() {
+		return metadata;
 	}
 
 	boolean enablesLogWithoutCheck() {

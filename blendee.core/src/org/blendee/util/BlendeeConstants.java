@@ -191,11 +191,11 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<String> JDBC_PASSWORD = new ParsableOptionKey<>("jdbc-password", TO_STRING);
 
 	/**
-	 * (String[]) ANNOTATED_ENTITY_PACKAGES
+	 * (String) TABLE_FACADE_PACKAGE
 	 * @see AnnotationMetadataFactory
 	 */
-	public static final ParsableOptionKey<String[]> ANNOTATED_ROW_PACKAGES = new ParsableOptionKey<>(
-		"annotated-row-packages",
+	public static final ParsableOptionKey<String> TABLE_FACADE_PACKAGE = new ParsableOptionKey<>(
+		"table-facade-packages",
 		TO_STRING_ARRAY);
 
 	/**

@@ -4,6 +4,7 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
+import org.blendee.jdbc.StoredIdentifier;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
 
@@ -58,6 +59,11 @@ public abstract class MetadataBase implements Metadata {
 		TablePath exportedTable,
 		TablePath importedTable) {
 		return base.getCrossReferences(exportedTable, importedTable);
+	}
+
+	@Override
+	public StoredIdentifier getStoredIdentifier() {
+		return base.getStoredIdentifier();
 	}
 
 	@Override

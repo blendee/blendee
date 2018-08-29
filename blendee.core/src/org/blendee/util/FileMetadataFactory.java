@@ -11,6 +11,7 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
+import org.blendee.jdbc.impl.JDBCMetadata;
 
 /**
  * {@link VirtualSpace} を XML ファイルからロードするファクトリクラスです。
@@ -49,12 +50,12 @@ public class FileMetadataFactory implements MetadataFactory {
 	}
 
 	@Override
-	public Metadata[] createMetadatas(Metadata depends) {
+	public Metadata createMetadata() {
 		if (!virtualSpace.isStarted()) {
-			virtualSpace.start(depends);
+			virtualSpace.start(new JDBCMetadata());
 		}
 
-		return new Metadata[] { virtualSpace };
+		return virtualSpace;
 	}
 
 	@Override

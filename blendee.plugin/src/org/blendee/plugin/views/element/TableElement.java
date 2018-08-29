@@ -116,7 +116,7 @@ public class TableElement extends PropertySourceElement {
 		IPackageFragmentRoot fragmentRoot = findPackageRoot(baseFragment);
 
 		TableFacadeGenerator generator = new TableFacadeGenerator(
-			BlendeeManager.getConnection(),
+			BlendeeManager.get().getMetadata(),
 			baseFragment.getElementName(),
 			plugin.getRowManagerParentClass(),
 			plugin.getRowParentClass(),

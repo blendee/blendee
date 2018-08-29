@@ -18,7 +18,7 @@ public class MetadataUtilities {
 	 * @return スキーマに存在する全てのテーブル
 	 */
 	public static TablePath[] getTables(final String schemaName) {
-		return BlendeeManager.getConnection().getTables(schemaName);
+		return BlendeeManager.get().getMetadata().getTables(schemaName);
 	}
 
 	/**
@@ -27,7 +27,7 @@ public class MetadataUtilities {
 	 * @return テーブルに存在する全てのカラム
 	 */
 	public static ColumnMetadata[] getColumnMetadatas(final TablePath path) {
-		return BlendeeManager.getConnection().getColumnMetadatas(path);
+		return BlendeeManager.get().getMetadata().getColumnMetadatas(path);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MetadataUtilities {
 	 * @return 主キーを構成するカラム
 	 */
 	public static String[] getPrimaryKeyColumnNames(final TablePath path) {
-		return BlendeeManager.getConnection().getPrimaryKeyMetadata(path).getColumnNames();
+		return BlendeeManager.get().getMetadata().getPrimaryKeyMetadata(path).getColumnNames();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class MetadataUtilities {
 	 * @return 主キー名
 	 */
 	public static String getPrimaryKeyName(TablePath path) {
-		return BlendeeManager.getConnection().getPrimaryKeyMetadata(path).getName();
+		return BlendeeManager.get().getMetadata().getPrimaryKeyMetadata(path).getName();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class MetadataUtilities {
 	 * @return 参照しているテーブル
 	 */
 	public static TablePath[] getResourcesOfImportedKey(TablePath path) {
-		return BlendeeManager.getConnection().getResourcesOfImportedKey(path);
+		return BlendeeManager.get().getMetadata().getResourcesOfImportedKey(path);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class MetadataUtilities {
 	 * @return 参照されているテーブル
 	 */
 	public static TablePath[] getResourcesOfExportedKey(TablePath path) {
-		return BlendeeManager.getConnection().getResourcesOfExportedKey(path);
+		return BlendeeManager.get().getMetadata().getResourcesOfExportedKey(path);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class MetadataUtilities {
 	 * @return テーブル間の関係情報
 	 */
 	public static CrossReference[] getCrossReferences(TablePath exported, TablePath imported) {
-		return BlendeeManager.getConnection().getCrossReferences(exported, imported);
+		return BlendeeManager.get().getMetadata().getCrossReferences(exported, imported);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class MetadataUtilities {
 	 * @return 標準化された名称
 	 */
 	public static String regularize(String name) {
-		return BlendeeManager.getConnection().regularize(name);
+		return BlendeeManager.get().getMetadata().getStoredIdentifier().regularize(name);
 	}
 
 	/**
@@ -108,9 +108,9 @@ public class MetadataUtilities {
 	public static String[] regularize(String[] names) {
 		String[] regularized = new String[names.length];;
 
-		BConnection connection = BlendeeManager.getConnection();
+		StoredIdentifier identifier = BlendeeManager.get().getMetadata().getStoredIdentifier();
 		for (int i = 0; i < names.length; i++) {
-			regularized[i] = connection.regularize(names[i]);
+			regularized[i] = identifier.regularize(names[i]);
 		}
 
 		return regularized;

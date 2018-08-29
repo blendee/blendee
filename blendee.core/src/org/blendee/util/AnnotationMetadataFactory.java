@@ -9,9 +9,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
@@ -21,6 +21,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TablePath;
+import org.blendee.jdbc.impl.JDBCMetadata;
 import org.blendee.support.Row;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadePackageRule;
@@ -35,6 +36,8 @@ import org.blendee.support.annotation.Table;
  */
 public class AnnotationMetadataFactory implements MetadataFactory {
 
+	private static final String DEFAULT_ROOT_PACKAGE = "org.blendee.db";
+
 	private final VirtualSpace virtualSpace = new VirtualSpace();
 
 	/**
@@ -45,20 +48,22 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	@Override
-	public Metadata[] createMetadatas(Metadata depends) {
+	public Metadata createMetadata() {
 		if (!virtualSpace.isStarted()) {
-			virtualSpace.start(depends);
+			virtualSpace.start(new JDBCMetadata());
 		}
 
-		return new Metadata[] { virtualSpace };
+		return virtualSpace;
 	}
 
 	/**
 	 * 内部で保持するキャッシュを再読み込みします。
 	 */
 	public void refresh() {
-		virtualSpace.stop();
-		prepareVirtualSpace();
+		synchronized (virtualSpace) {
+			virtualSpace.stop();
+			prepareVirtualSpace();
+		}
 	}
 
 	@Override
@@ -86,17 +91,25 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 
 	private void prepareVirtualSpace() {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
-		String[] rootPackages = config.getOption(BlendeeConstants.ANNOTATED_ROW_PACKAGES).orElseThrow(
-			() -> new NullPointerException());
+		String rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
 
-		Stream<String> packages = Arrays.stream(rootPackages)
-			.flatMap(root -> Arrays.stream(config.getSchemaNames()).map(s -> root + "." + TableFacadePackageRule.care(s)));
+		DatabaseInfo info = new DatabaseInfo(rootPackage);
+		try {
+			Properties properties = info.read();
 
-		packages.forEach(
-			name -> listClasses(getClassLoader(), name)
-				.stream()
-				.map(AnnotationMetadataFactory::convert)
-				.forEach(virtualSpace::addTable));
+			if (info.hasStoredIdentifier(properties))
+				virtualSpace.setStoredIdentifier(info.getStoredIdentifier(properties));
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+
+		Arrays.stream(config.getSchemaNames())
+			.map(s -> rootPackage + "." + TableFacadePackageRule.care(s))
+			.forEach(
+				name -> listClasses(getClassLoader(), name)
+					.stream()
+					.map(AnnotationMetadataFactory::convert)
+					.forEach(virtualSpace::addTable));
 	}
 
 	private static TableSource convert(Class<?> clazz) {

@@ -51,7 +51,7 @@ public abstract class Transaction implements AutoCloseable {
 		try {
 			closeInternal();
 		} finally {
-			BlendeeManager.removeThreadLocal();
+			BlendeeManager.get().removeThreadLocal();
 		}
 	}
 
@@ -110,15 +110,9 @@ public abstract class Transaction implements AutoCloseable {
 
 		BConnection connection = getConnection();
 
-		if (config.usesMetadataCacheWithoutCheck()) connection = new MetadataCacheConnection(connection);
-
 		if (config.enablesLogWithoutCheck()) connection = new LoggingConnection(
 			connection,
 			new Logger(config.getLogOutputWithoutCheck(), config.getLogStackTracePatternWithoutCheck()));
-
-		config.prepareMetadatas(connection);
-		Metadata[] metadatas = config.getMetadatasWithoutCheck();
-		if (metadatas.length > 0) connection = new MetadatasConnection(connection, metadatas);
 
 		this.connection = connection;
 	}

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,9 +27,11 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
+import org.blendee.jdbc.Metadatas;
 import org.blendee.jdbc.PrimaryKeyMetadata;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
+import org.blendee.jdbc.impl.JDBCMetadata;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -36,6 +39,7 @@ import org.blendee.support.Many;
 import org.blendee.support.TableFacadePackageRule;
 import org.blendee.support.annotation.ForeignKey;
 import org.blendee.support.annotation.PrimaryKey;
+import org.blendee.util.DatabaseInfo;
 
 /**
  * データベースの構成を読み取り、各テーブルクラスの Java ソースを生成するジェネレータクラスです。
@@ -162,7 +166,7 @@ public class TableFacadeGenerator {
 		CodeFormatter codeFormatter,
 		boolean useNumberClass,
 		boolean useNullGuard) {
-		this.metadata = Objects.requireNonNull(metadata);
+		this.metadata = new Metadatas(new JDBCMetadata(), Objects.requireNonNull(metadata));
 		this.rootPackageName = Objects.requireNonNull(rootPackageName);
 		this.managerSuperclass = managerSuperclass != null ? managerSuperclass : Object.class;
 		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;
@@ -190,7 +194,7 @@ public class TableFacadeGenerator {
 	 * @throws IOException ファイル書き込みに失敗した場合
 	 */
 	public void build(String schemaName, File home, Charset srcCharset) throws IOException {
-		File rootPackageDir = new File(home, String.join("/", rootPackageName.split("\\.")));
+		File rootPackageDir = getRootPackageDir(home);
 		rootPackageDir.mkdirs();
 
 		File packageDir = new File(rootPackageDir, TableFacadePackageRule.care(schemaName));
@@ -222,6 +226,28 @@ public class TableFacadeGenerator {
 	public static String createCompilationUnitName(String tableName) {
 		checkName(tableName);
 		return tableName + ".java";
+	}
+
+	/**
+	 * データベース全体の情報をファイルに保存します。
+	 * @param home 生成された Java ソースを保存するためのルートとなる場所
+	 * @throws IOException ファイル書き込みに失敗した場合
+	 */
+	public void writeDatabaseInfo(File home) throws IOException {
+		File rootPackageDir = getRootPackageDir(home);
+		rootPackageDir.mkdirs();
+
+		DatabaseInfo info = new DatabaseInfo(rootPackageName);
+
+		Properties properties = new Properties();
+
+		info.setStoredIdentifier(properties, metadata.getStoredIdentifier());
+
+		info.write(home, properties);
+	}
+
+	private File getRootPackageDir(File home) {
+		return new File(home, String.join("/", rootPackageName.split("\\.")));
 	}
 
 	/**

@@ -3,7 +3,7 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.blendee.jdbc.BConnection;
+import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
@@ -26,9 +26,9 @@ public class SchemaElement extends PropertySourceElement {
 
 	private final Map<TablePath, TableElement> children = new LinkedHashMap<>();;
 
-	SchemaElement(BConnection connection, String name) {
+	SchemaElement(Metadata metadata, String name) {
 		this.name = name;
-		TablePath[] tables = connection.getTables(name);
+		TablePath[] tables = metadata.getTables(name);
 
 		for (TablePath table : tables) {
 			children.put(table, new TableElement(this, table));

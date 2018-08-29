@@ -3,7 +3,7 @@ package org.blendee.jdbc;
 /**
  * データベースの主にテーブルに関するメタデータを保持し、参照することが可能であることを表すインターフェイスです。
  * @author 千葉 哲嗣
- * @see MetadataFactory#createMetadatas(Metadata)
+ * @see MetadataFactory#createMetadata()
  */
 public interface Metadata {
 
@@ -63,4 +63,10 @@ public interface Metadata {
 	CrossReference[] getCrossReferences(
 		TablePath exported,
 		TablePath imported);
+
+	/**
+	 * パラメータで指定された名称を、データベースで使用される標準的な名前に変換する {@link StoredIdentifier} を返します。
+	 * @return {@link StoredIdentifier}
+	 */
+	StoredIdentifier getStoredIdentifier();
 }

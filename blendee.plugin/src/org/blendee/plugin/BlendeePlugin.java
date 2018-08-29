@@ -341,9 +341,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 		outputPackage = properties.getProperty(Constants.OUTPUT_PACKAGE_NAME);
 
-		init.put(
-			BlendeeConstants.ANNOTATED_ROW_PACKAGES,
-			splitByBlankAndRemoveEmptyString(outputPackage));
+		init.put(BlendeeConstants.TABLE_FACADE_PACKAGE, outputPackage.trim());
 
 		String[] schemaNameArray = splitByBlankAndRemoveEmptyString(
 			properties.getProperty(Constants.SCHEMA_NAMES));

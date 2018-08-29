@@ -9,7 +9,7 @@ import java.util.function.Function;
  * @author 千葉 哲嗣
  * @see BlendeeManager#getConnection()
  */
-public interface BConnection extends Metadata {
+public interface BConnection {
 
 	/**
 	 * SQL 文から {@link BStatement} のインスタンスを生成し、返します。<br>
@@ -154,13 +154,6 @@ public interface BConnection extends Metadata {
 	 * @return {@link BatchStatement} のインスタンス
 	 */
 	BatchStatement getBatchStatement();
-
-	/**
-	 * パラメータで指定された名称を、データベースで使用される標準的な名前に変換します。
-	 * @param name 標準化前の名称
-	 * @return 標準化された名称
-	 */
-	String regularize(String name);
 
 	/**
 	 * {@link PreparedStatementWrapper} を設定し、この接続が生成する {@link BPreparedStatement} をラップさせます。

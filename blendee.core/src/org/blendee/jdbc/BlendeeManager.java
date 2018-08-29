@@ -8,7 +8,7 @@ import org.blendee.internal.LoggingManager;
  */
 public class BlendeeManager implements ManagementSubject {
 
-	private static final ThreadLocal<Transaction> transactionThreadLocal = new ThreadLocal<>();
+	private final ThreadLocal<Transaction> transactionThreadLocal = new ThreadLocal<>();
 
 	private final Object lock = new Object();
 
@@ -91,8 +91,6 @@ public class BlendeeManager implements ManagementSubject {
 		Configure config = getConfigure();
 		config.check();
 
-		config.initialize();
-
 		TransactionFactory factory = config.getTransactionFactoryWithoutCheck();
 		Transaction transaction;
 		if (config.usesLazyTransaction()) {
@@ -120,11 +118,27 @@ public class BlendeeManager implements ManagementSubject {
 	}
 
 	/**
+	 * {@link Metadata} を返します。
+	 * @return {@link Metadata}
+	 */
+	public Metadata getMetadata() {
+		return config.getMetadata();
+	}
+
+	/**
+	 * 現在のコンテキストの {@link BlendeeManager} を返します。
+	 * @return {@link BlendeeManager}
+	 */
+	public static BlendeeManager get() {
+		return ContextManager.get(BlendeeManager.class);
+	}
+
+	/**
 	 * 現在のスレッドが持つ接続を返します。
 	 * @return 接続
 	 */
 	public static BConnection getConnection() {
-		Transaction transaction = transactionThreadLocal.get();
+		Transaction transaction = get().transactionThreadLocal.get();
 		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
 
 		BConnection connection = transaction.getConnection();
@@ -146,7 +160,7 @@ public class BlendeeManager implements ManagementSubject {
 		}
 	}
 
-	static void removeThreadLocal() {
+	void removeThreadLocal() {
 		transactionThreadLocal.remove();
 	}
 }

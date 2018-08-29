@@ -15,7 +15,7 @@ import org.blendee.jdbc.PreparedStatementWrapper;
  * {@link BConnection} のラッパーを実装するベースとなる、抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class ConnectionBase extends MetadataBase implements BConnection {
+public abstract class ConnectionBase implements BConnection {
 
 	private final BConnection base;
 
@@ -24,7 +24,6 @@ public abstract class ConnectionBase extends MetadataBase implements BConnection
 	 * @param base ベースとなるインスタンス
 	 */
 	protected ConnectionBase(BConnection base) {
-		super(base);
 		this.base = base;
 	}
 
@@ -46,11 +45,6 @@ public abstract class ConnectionBase extends MetadataBase implements BConnection
 	@Override
 	public BatchStatement getBatchStatement() {
 		return base.getBatchStatement();
-	}
-
-	@Override
-	public String regularize(String name) {
-		return base.regularize(name);
 	}
 
 	@Override

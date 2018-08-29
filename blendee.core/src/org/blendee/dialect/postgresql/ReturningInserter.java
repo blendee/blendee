@@ -2,11 +2,11 @@ package org.blendee.dialect.postgresql;
 
 import java.util.Objects;
 
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.DataTypeConverter;
+import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
@@ -35,9 +35,9 @@ public class ReturningInserter<T> {
 	public ReturningInserter(TablePath path) {
 		this.path = path;
 
-		BConnection connection = BlendeeManager.getConnection();
+		Metadata metadata = BlendeeManager.get().getMetadata();
 
-		PrimaryKeyMetadata pkMetadata = connection.getPrimaryKeyMetadata(path);
+		PrimaryKeyMetadata pkMetadata = metadata.getPrimaryKeyMetadata(path);
 
 		String[] columnNames = pkMetadata.getColumnNames();
 		if (columnNames.length != 1) throw new IllegalStateException("PK の項目が複数あります table=[" + path + "]");
@@ -47,10 +47,10 @@ public class ReturningInserter<T> {
 		DataTypeConverter converter = ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter();
 		ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
-		for (ColumnMetadata metadata : connection.getColumnMetadatas(path)) {
-			if (columnName.equals(metadata.getName())) {
+		for (ColumnMetadata columnMetadata : metadata.getColumnMetadatas(path)) {
+			if (columnName.equals(columnMetadata.getName())) {
 				extractor = extractors.selectValueExtractor(
-					converter.convert(metadata.getType(), metadata.getTypeName()));
+					converter.convert(columnMetadata.getType(), columnMetadata.getTypeName()));
 				break;
 			}
 		}

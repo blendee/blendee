@@ -100,6 +100,14 @@ public class ParsableOptionKey<T> extends OptionKey<T> {
 		return Optional.ofNullable(value).map(v -> parser.parse(v));
 	}
 
+	/**
+	 * キーを返します。
+	 * @return キー
+	 */
+	public String getKey() {
+		return key;
+	}
+
 	@Override
 	public String toString() {
 		return key + " [" + parser.name() + "]";
