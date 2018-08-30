@@ -1,10 +1,10 @@
 package org.blendee.plugin.views;
 
 import org.blendee.plugin.BlendeePlugin;
-import org.blendee.plugin.Constants;
 import org.blendee.plugin.BlendeePlugin.JavaProjectException;
+import org.blendee.plugin.Constants;
 import org.blendee.plugin.views.element.Element;
-import org.blendee.plugin.views.element.ORMGeneratorRootElement;
+import org.blendee.plugin.views.element.GeneratorRootElement;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -34,7 +34,7 @@ public class ClassBuilderView extends AbstractView {
 
 	private class MyTreeContentProvider implements ITreeContentProvider {
 
-		private ORMGeneratorRootElement root;
+		private GeneratorRootElement root;
 
 		private MyTreeContentProvider() {
 			reset();
@@ -74,7 +74,7 @@ public class ClassBuilderView extends AbstractView {
 
 		private void reset() {
 			if (BlendeePlugin.getDefault().getProject() == null) {
-				root = new ORMGeneratorRootElement();
+				root = new GeneratorRootElement();
 				return;
 			}
 
@@ -82,7 +82,7 @@ public class ClassBuilderView extends AbstractView {
 
 			collapseAllAction.setEnabled(true);
 
-			root = new ORMGeneratorRootElement(
+			root = new GeneratorRootElement(
 				BlendeePlugin.getDefault().getSchemaNames());
 		}
 	}

@@ -30,13 +30,17 @@ import org.blendee.support.Query;
 import org.blendee.util.BlendeeConstants;
 import org.blendee.util.FileColumnRepositoryFactory;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -469,6 +473,32 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			}
 		} catch (Exception e) {
 			throw new JavaProjectException(e);
+		}
+	}
+
+	public static IPackageFragment findPackage(String packageName) {
+		String packagePath = packageName.replace('.', '/');
+		try {
+			IJavaElement element = BlendeePlugin.getDefault().getProject().findElement(new Path(packagePath));
+			if (element instanceof IPackageFragment) return (IPackageFragment) element;
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
+
+		return null;
+	}
+
+	public static void refreshOutputPackage() {
+		BlendeePlugin plugin = BlendeePlugin.getDefault();
+
+		String packageName = plugin.getOutputPackage();
+
+		IPackageFragment baseFragment = findPackage(packageName);
+
+		try {
+			baseFragment.getResource().refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 

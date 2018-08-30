@@ -195,8 +195,8 @@ public interface BlendeeConstants {
 	 * @see AnnotationMetadataFactory
 	 */
 	public static final ParsableOptionKey<String> TABLE_FACADE_PACKAGE = new ParsableOptionKey<>(
-		"table-facade-packages",
-		TO_STRING_ARRAY);
+		"table-facade-package",
+		TO_STRING);
 
 	/**
 	 * 文字列のキーからこのクラスのメンバーに変換します。

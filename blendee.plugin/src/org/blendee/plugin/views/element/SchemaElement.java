@@ -3,7 +3,7 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.blendee.jdbc.Metadata;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
@@ -24,11 +24,12 @@ public class SchemaElement extends PropertySourceElement {
 
 	private final String name;
 
-	private final Map<TablePath, TableElement> children = new LinkedHashMap<>();;
+	private final Map<TablePath, TableElement> children = new LinkedHashMap<>();
 
-	SchemaElement(Metadata metadata, String name) {
+	SchemaElement(String name) {
 		this.name = name;
-		TablePath[] tables = metadata.getTables(name);
+
+		TablePath[] tables = BlendeeManager.get().getMetadata().getTables(name);
 
 		for (TablePath table : tables) {
 			children.put(table, new TableElement(this, table));
@@ -123,6 +124,8 @@ public class SchemaElement extends PropertySourceElement {
 				});
 			} catch (Throwable t) {
 				throw new IllegalStateException(t);
+			} finally {
+				BlendeePlugin.refreshOutputPackage();
 			}
 		}
 	}
@@ -149,6 +152,8 @@ public class SchemaElement extends PropertySourceElement {
 				});
 			} catch (Throwable t) {
 				throw new IllegalStateException(t);
+			} finally {
+				BlendeePlugin.refreshOutputPackage();
 			}
 		}
 	}

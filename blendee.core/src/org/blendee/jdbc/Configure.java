@@ -16,6 +16,14 @@ import org.blendee.internal.U;
  */
 public final class Configure {
 
+	private final Class<? extends TransactionFactory> transactionFactoryClass;
+
+	private final Class<? extends ErrorConverter> errorConverterClass;
+
+	private final Class<? extends DataTypeConverter> dataTypeConverterClass;
+
+	private final Class<? extends MetadataFactory> metadataFactoryClass;
+
 	private final String[] schemaNames;
 
 	private final boolean useAutoCommit;
@@ -36,13 +44,15 @@ public final class Configure {
 
 	private final Map<OptionKey<?>, ?> options;
 
-	private final Metadata metadata;
+	private MetadataFactory metadataFactory;
 
-	private final TransactionFactory transactionFactory;
+	private TransactionFactory transactionFactory;
 
-	private final ErrorConverter errorConverter;
+	private ErrorConverter errorConverter;
 
-	private final DataTypeConverter dataTypeConverter;
+	private DataTypeConverter dataTypeConverter;
+
+	private boolean initialized = false;
 
 	Configure(
 		Class<? extends TransactionFactory> transactionFactoryClass,
@@ -59,6 +69,10 @@ public final class Configure {
 		Pattern logStackTracePattern,
 		int maxStatementsPerConnection,
 		Map<OptionKey<?>, ?> options) {
+		this.transactionFactoryClass = transactionFactoryClass;
+		this.errorConverterClass = errorConverterClass;
+		this.dataTypeConverterClass = dataTypeConverterClass;
+		this.metadataFactoryClass = metadataFactoryClass;
 		this.schemaNames = schemaNames.clone();
 		this.useAutoCommit = useAutoCommit;
 		this.useLazyTransaction = useLazyTransaction;
@@ -69,14 +83,6 @@ public final class Configure {
 		this.logStackTracePattern = logStackTracePattern;
 		this.maxStatementsPerConnection = maxStatementsPerConnection;
 		this.options = Collections.unmodifiableMap(options);
-
-		transactionFactory = createInstance(transactionFactoryClass);
-		errorConverter = createInstance(errorConverterClass);
-		dataTypeConverter = createInstance(dataTypeConverterClass);
-
-		Metadata metadata = createInstance(metadataFactoryClass).createMetadata();
-		if (useMetadataCache) metadata = new CacheMetadata(metadata);
-		this.metadata = metadata;
 	}
 
 	/**
@@ -94,8 +100,9 @@ public final class Configure {
 	 * @return この設定で使用している {@link ErrorConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public ErrorConverter getErrorConverter() {
+	public synchronized ErrorConverter getErrorConverter() {
 		check();
+		if (!initialized) initialize();
 		return errorConverter;
 	}
 
@@ -104,19 +111,20 @@ public final class Configure {
 	 * @return この設定で使用している {@link DataTypeConverter}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public DataTypeConverter getDataTypeConverter() {
+	public synchronized DataTypeConverter getDataTypeConverter() {
 		check();
+		if (!initialized) initialize();
 		return dataTypeConverter;
 	}
 
 	/**
-	 * この設定で使用している {@link Metadata} を返します。
-	 * @return この設定で使用している {@link Metadata}
+	 * この設定で使用している {@link MetadataFactory} を返します。
+	 * @return この設定で使用している {@link MetadataFactory}
 	 * @throws IllegalStateException 古い設定を使用している場合
 	 */
-	public Metadata getMetadata() {
+	public MetadataFactory getMetadataFactory() {
 		check();
-		return getMetadataWithoutCheck();
+		return getMetadataFactoryWithoutCheck();
 	}
 
 	/**
@@ -250,12 +258,14 @@ public final class Configure {
 		if (!isCurrent()) throw new IllegalStateException("古い設定を使用しています");
 	}
 
-	TransactionFactory getTransactionFactoryWithoutCheck() {
+	synchronized TransactionFactory getTransactionFactoryWithoutCheck() {
+		if (!initialized) initialize();
 		return transactionFactory;
 	}
 
-	Metadata getMetadataWithoutCheck() {
-		return metadata;
+	synchronized MetadataFactory getMetadataFactoryWithoutCheck() {
+		if (!initialized) initialize();
+		return metadataFactory;
 	}
 
 	boolean enablesLogWithoutCheck() {
@@ -268,6 +278,17 @@ public final class Configure {
 
 	Pattern getLogStackTracePatternWithoutCheck() {
 		return logStackTracePattern;
+	}
+
+	synchronized void initialize() {
+		if (initialized) return;
+
+		metadataFactory = createInstance(metadataFactoryClass);
+		transactionFactory = createInstance(transactionFactoryClass);
+		errorConverter = createInstance(errorConverterClass);
+		dataTypeConverter = createInstance(dataTypeConverterClass);
+
+		initialized = true;
 	}
 
 	private static <T> T createInstance(Class<? extends T> clazz) {

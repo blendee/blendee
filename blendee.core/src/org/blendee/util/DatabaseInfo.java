@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -26,16 +27,25 @@ public class DatabaseInfo {
 
 	private final String rootPackageName;
 
+	private final ClassLoader loader;
+
 	public DatabaseInfo(String rootPackageName) {
 		Objects.requireNonNull(rootPackageName);
 		this.rootPackageName = rootPackageName;
+		loader = getClass().getClassLoader();
+	}
+
+	DatabaseInfo(String rootPackageName, ClassLoader loader) {
+		Objects.requireNonNull(rootPackageName);
+		this.rootPackageName = rootPackageName;
+		this.loader = loader;
 	}
 
 	public Properties read() throws IOException {
-		String path = "/" + rootPackageName.replace('.', '/') + "/" + fileName;
+		String path = rootPackageName.replace('.', '/') + "/" + fileName;
 
 		Properties prop = new Properties();
-		InputStream input = getClass().getResourceAsStream(path);
+		InputStream input = loader.getResourceAsStream(path);
 		if (input == null) return prop;
 
 		prop.load(new BufferedReader(new InputStreamReader(input, defaultCharset)));
@@ -45,13 +55,14 @@ public class DatabaseInfo {
 
 	public void write(File homeDir, Properties properties) throws IOException {
 		File dir = new File(homeDir, String.join("/", rootPackageName.split("\\.")));
-		properties.store(
-			new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, fileName)), defaultCharset)),
-			DatabaseInfo.class.getName());
+
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, fileName)), defaultCharset))) {
+			properties.store(writer, DatabaseInfo.class.getName());
+		}
 	}
 
 	public void setStoredIdentifier(Properties properties, StoredIdentifier value) {
-		properties.getProperty(storedIdentifierKey, value.name());
+		properties.setProperty(storedIdentifierKey, value.name());
 	}
 
 	public boolean hasStoredIdentifier(Properties properties) {

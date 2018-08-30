@@ -18,10 +18,13 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.MetadataFactory;
+import org.blendee.jdbc.PrimaryKeyMetadata;
+import org.blendee.jdbc.StoredIdentifier;
+import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.impl.JDBCMetadata;
 import org.blendee.support.Row;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadePackageRule;
@@ -50,7 +53,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	@Override
 	public Metadata createMetadata() {
 		if (!virtualSpace.isStarted()) {
-			virtualSpace.start(new JDBCMetadata());
+			virtualSpace.start(getDepends());
 		}
 
 		return virtualSpace;
@@ -89,11 +92,59 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		return TableFacade.class.isAssignableFrom(clazz) && !clazz.isInterface();
 	}
 
+	/**
+	 * @return {@link Metadata}
+	 */
+	protected Metadata getDepends() {
+		return new Metadata() {
+
+			@Override
+			public TablePath[] getTables(String schemaName) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public TableMetadata getTableMetadata(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public ColumnMetadata[] getColumnMetadatas(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public TablePath[] getResourcesOfImportedKey(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public TablePath[] getResourcesOfExportedKey(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public CrossReference[] getCrossReferences(TablePath exported, TablePath imported) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public StoredIdentifier getStoredIdentifier() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
 	private void prepareVirtualSpace() {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 		String rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
 
-		DatabaseInfo info = new DatabaseInfo(rootPackage);
+		DatabaseInfo info = new DatabaseInfo(rootPackage, getClassLoader());
 		try {
 			Properties properties = info.read();
 

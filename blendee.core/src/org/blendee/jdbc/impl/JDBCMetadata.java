@@ -50,7 +50,6 @@ public class JDBCMetadata implements Metadata {
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
-
 	}
 
 	@Override

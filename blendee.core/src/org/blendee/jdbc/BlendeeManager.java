@@ -14,6 +14,8 @@ public class BlendeeManager implements ManagementSubject {
 
 	private Configure config;
 
+	private Metadata metadata;
+
 	private AutoCloseableFinalizer autoCloseableFinalizer;
 
 	/**
@@ -88,6 +90,8 @@ public class BlendeeManager implements ManagementSubject {
 	public Transaction startTransaction() {
 		if (startsTransaction()) throw new IllegalStateException("既にこのスレッド用にトランザクションが開始されています");
 
+		config.initialize();
+
 		Configure config = getConfigure();
 		config.check();
 
@@ -122,7 +126,13 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return {@link Metadata}
 	 */
 	public Metadata getMetadata() {
-		return config.getMetadata();
+		synchronized (lock) {
+			if (metadata == null) {
+				metadata = config.getMetadataFactory().createMetadata();
+			}
+
+			return metadata;
+		}
 	}
 
 	/**

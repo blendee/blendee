@@ -118,7 +118,7 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public synchronized TablePath[] getTables(String schemaName) {
-		Collection<TablePath> paths = schemas.get(schemaName);
+		Collection<TablePath> paths = schemas.get(storedIdentifier.regularize(schemaName));
 		return paths.toArray(new TablePath[paths.size()]);
 	}
 

@@ -27,11 +27,9 @@ import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
-import org.blendee.jdbc.Metadatas;
 import org.blendee.jdbc.PrimaryKeyMetadata;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
-import org.blendee.jdbc.impl.JDBCMetadata;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -166,7 +164,7 @@ public class TableFacadeGenerator {
 		CodeFormatter codeFormatter,
 		boolean useNumberClass,
 		boolean useNullGuard) {
-		this.metadata = new Metadatas(new JDBCMetadata(), Objects.requireNonNull(metadata));
+		this.metadata = Objects.requireNonNull(metadata);
 		this.rootPackageName = Objects.requireNonNull(rootPackageName);
 		this.managerSuperclass = managerSuperclass != null ? managerSuperclass : Object.class;
 		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;

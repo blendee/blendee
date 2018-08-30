@@ -32,6 +32,26 @@ public class OrderByClause extends ListClause<OrderByClause> {
 		DESC(" DESC"),
 
 		/**
+		 * 順方向 NULL 先頭
+		 */
+		ASC_NULLS_FIRST(" ASC NULLS FIRST"),
+
+		/**
+		 * 順方向 NULL 末尾
+		 */
+		ASC_NULLS_LAST(" ASC NULLS LAST"),
+
+		/**
+		 * 逆方向 NULL 先頭
+		 */
+		DESC_NULLS_FIRST(" DESC NULLS FIRST"),
+
+		/**
+		 * 逆方向 NULL 末尾
+		 */
+		DESC_NULLS_LAST(" DESC NULLS LAST"),
+
+		/**
 		 * 指定なし
 		 */
 		NONE("");

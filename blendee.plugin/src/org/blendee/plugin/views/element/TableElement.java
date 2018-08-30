@@ -13,7 +13,6 @@ import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.TableFacadePackageRule;
 import org.blendee.util.Blendee;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -89,6 +88,8 @@ public class TableElement extends PropertySourceElement {
 			});
 		} catch (Throwable t) {
 			throw new IllegalStateException(t);
+		} finally {
+			BlendeePlugin.refreshOutputPackage();
 		}
 	}
 
@@ -109,7 +110,7 @@ public class TableElement extends PropertySourceElement {
 
 		String packageName = plugin.getOutputPackage();
 
-		IPackageFragment baseFragment = findPackage(packageName);
+		IPackageFragment baseFragment = BlendeePlugin.findPackage(packageName);
 		if (baseFragment == null)
 			throw new IllegalStateException("パッケージ " + packageName + " が存在しません");
 
@@ -144,6 +145,8 @@ public class TableElement extends PropertySourceElement {
 			//Metadataはキャッシュを使用しているので、同じテーブルを処理してもDBから再取得はしない
 			factory.clearCache();
 		}
+
+		generator.writeDatabaseInfo(fragmentRoot.getResource().getLocation().toFile());
 	}
 
 	boolean isAvailable() {
@@ -167,7 +170,7 @@ public class TableElement extends PropertySourceElement {
 	}
 
 	private IPackageFragment getPackage(IPackageFragmentRoot fragmentRoot, String packageName) {
-		IPackageFragment fragment = findPackage(packageName);
+		IPackageFragment fragment = BlendeePlugin.findPackage(packageName);
 		if (fragment != null) return fragment;
 
 		try {
@@ -175,18 +178,6 @@ public class TableElement extends PropertySourceElement {
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	private IPackageFragment findPackage(String packageName) {
-		String packagePath = packageName.replace('.', '/');
-		try {
-			IJavaElement element = BlendeePlugin.getDefault().getProject().findElement(new Path(packagePath));
-			if (element instanceof IPackageFragment) return (IPackageFragment) element;
-		} catch (JavaModelException e) {
-			throw new IllegalStateException(e);
-		}
-
-		return null;
 	}
 
 	private boolean isAvailable(TablePath path) {
@@ -270,6 +261,8 @@ public class TableElement extends PropertySourceElement {
 				});
 			} catch (Throwable t) {
 				throw new IllegalStateException(t);
+			} finally {
+				BlendeePlugin.refreshOutputPackage();
 			}
 		}
 	}
