@@ -19,6 +19,26 @@ public class AscDesc implements Offerable, Offers<Offerable> {
 	 */
 	public final OrderByOffer DESC;
 
+	/**
+	 * ORDER BY 句に、このカラムを ASC NULLS FIRST として追加します。
+	 */
+	public final OrderByOffer ASC_NULLS_FIRST;
+
+	/**
+	 * ORDER BY 句に、このカラムを ASC NULLS LAST として追加します。
+	 */
+	public final OrderByOffer ASC_NULLS_LAST;
+
+	/**
+	 * ORDER BY 句に、このカラムを DESC NULLS FIRST として追加します。
+	 */
+	public final OrderByOffer DESC_NULLS_FIRST;
+
+	/**
+	 * ORDER BY 句に、このカラムを DESC NULLS LAST として追加します。
+	 */
+	public final OrderByOffer DESC_NULLS_LAST;
+
 	private final OrderByOffer NONE;
 
 	/**
@@ -28,9 +48,17 @@ public class AscDesc implements Offerable, Offers<Offerable> {
 	AscDesc(
 		OrderByOffer asc,
 		OrderByOffer desc,
+		OrderByOffer ascNullsFirst,
+		OrderByOffer ascNullsLast,
+		OrderByOffer descNullsFirst,
+		OrderByOffer descNullsLast,
 		OrderByOffer none) {
 		ASC = asc;
 		DESC = desc;
+		ASC_NULLS_FIRST = ascNullsFirst;
+		ASC_NULLS_LAST = ascNullsLast;
+		DESC_NULLS_FIRST = descNullsFirst;
+		DESC_NULLS_LAST = descNullsLast;
 		NONE = none;
 	}
 

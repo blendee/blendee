@@ -2,6 +2,7 @@ package org.blendee.sql;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -17,18 +18,20 @@ import java.util.TreeMap;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * {@link BPreparedStatement} にセットする値を持つ入れ物クラスです。
  * @author 千葉 哲嗣
  */
-public class ComplementerValues implements ChainPreparedStatementComplementer {
+public class ComplementerValues implements Serializable, ChainPreparedStatementComplementer {
 
 	// 不変オブジェクトであること!!
+
+	private static final long serialVersionUID = -5407654162334400925L;
 
 	private final List<ValueExtractor> extractors;
 

@@ -1,5 +1,7 @@
 package org.blendee.sql;
 
+import java.io.Serializable;
+
 import org.blendee.jdbc.BPreparedStatement;
 
 /**
@@ -7,7 +9,8 @@ import org.blendee.jdbc.BPreparedStatement;
  * サブクラスは、 {@link BPreparedStatement} に、具体的にどの型で値を設定するかを知っている必要があります。
  * @author 千葉 哲嗣
  */
-public abstract class Binder implements Bindable {
+@SuppressWarnings("serial")
+public abstract class Binder implements Serializable, Bindable {
 
 	/**
 	 * 空の配列

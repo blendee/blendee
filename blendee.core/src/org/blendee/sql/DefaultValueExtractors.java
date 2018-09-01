@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -31,7 +32,9 @@ import org.blendee.sql.binder.UUIDBinder;
  * Blendee のデフォルト {@link ValueExtractors} です。
  * @author 千葉 哲嗣
  */
-public class DefaultValueExtractors implements ValueExtractors {
+public class DefaultValueExtractors implements Serializable, ValueExtractors {
+
+	private static final long serialVersionUID = -8243718443698540512L;
 
 	private final Map<Class<?>, ValueExtractor> map = new HashMap<>();
 
@@ -89,6 +92,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class BigDecimalValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = -4662309679618593331L;
+
 		private static final BigDecimalValueExtractor singleton = new BigDecimalValueExtractor();
 
 		private BigDecimalValueExtractor() {}
@@ -105,6 +110,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class BinaryStreamValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = 4437877446497481506L;
 
 		private static final BinaryStreamValueExtractor singleton = new BinaryStreamValueExtractor();
 
@@ -123,6 +130,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class BlobValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = -1986149757572436758L;
+
 		private static final BlobValueExtractor singleton = new BlobValueExtractor();
 
 		private BlobValueExtractor() {}
@@ -139,6 +148,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class BooleanValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = 5796140901292798840L;
 
 		private static final BooleanValueExtractor singleton = new BooleanValueExtractor();
 
@@ -160,6 +171,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class ByteArrayValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = -7340155243401419161L;
+
 		private static final ByteArrayValueExtractor singleton = new ByteArrayValueExtractor();
 
 		private ByteArrayValueExtractor() {}
@@ -176,6 +189,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class CharacterStreamValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = 174419453685740598L;
 
 		private static final CharacterStreamValueExtractor singleton = new CharacterStreamValueExtractor();
 
@@ -194,6 +209,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class ClobValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = -2843373767236871388L;
+
 		private static final ClobValueExtractor singleton = new ClobValueExtractor();
 
 		private ClobValueExtractor() {}
@@ -210,6 +227,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class DoubleValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = 5059534352103218125L;
 
 		private static final DoubleValueExtractor singleton = new DoubleValueExtractor();
 
@@ -231,6 +250,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class FloatValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = 7269984069990446503L;
+
 		private static final FloatValueExtractor singleton = new FloatValueExtractor();
 
 		private FloatValueExtractor() {}
@@ -250,6 +271,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class IntValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = -528597918843186484L;
 
 		private static final IntValueExtractor singleton = new IntValueExtractor();
 
@@ -271,6 +294,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class LongValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = 6431522889979534441L;
+
 		private static final LongValueExtractor singleton = new LongValueExtractor();
 
 		private LongValueExtractor() {}
@@ -291,6 +316,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class ObjectValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = 5779284780494382295L;
+
 		private static final ObjectValueExtractor singleton = new ObjectValueExtractor();
 
 		private ObjectValueExtractor() {}
@@ -307,6 +334,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class StringValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = -5677037011459982352L;
 
 		private static final StringValueExtractor singleton = new StringValueExtractor();
 
@@ -325,6 +354,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	private static class TimestampValueExtractor implements ValueExtractor {
 
+		private static final long serialVersionUID = 5201456014035985162L;
+
 		private static final TimestampValueExtractor singleton = new TimestampValueExtractor();
 
 		private TimestampValueExtractor() {}
@@ -341,6 +372,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 	}
 
 	private static class UUIDValueExtractor implements ValueExtractor {
+
+		private static final long serialVersionUID = -5324867161418603224L;
 
 		private static final UUIDValueExtractor singleton = new UUIDValueExtractor();
 

@@ -11,6 +11,8 @@ import org.blendee.sql.Binder;
  */
 public final class IntBinder extends Binder {
 
+	private static final long serialVersionUID = 983497176124299147L;
+
 	private final int value;
 
 	/**

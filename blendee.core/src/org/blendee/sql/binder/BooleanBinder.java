@@ -9,6 +9,8 @@ import org.blendee.sql.Binder;
  */
 public final class BooleanBinder extends Binder {
 
+	private static final long serialVersionUID = 5936012973826527763L;
+
 	private final boolean value;
 
 	/**

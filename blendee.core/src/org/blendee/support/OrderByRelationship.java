@@ -100,6 +100,10 @@ public interface OrderByRelationship {
 		return new AscDesc(
 			new OrderByOffer(order -> clause.add(order, template, Direction.ASC, columns)),
 			new OrderByOffer(order -> clause.add(order, template, Direction.DESC, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.ASC_NULLS_FIRST, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.ASC_NULLS_LAST, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.DESC_NULLS_FIRST, columns)),
+			new OrderByOffer(order -> clause.add(order, template, Direction.DESC_NULLS_LAST, columns)),
 			new OrderByOffer(order -> clause.add(order, template, Direction.NONE, columns)));
 	}
 

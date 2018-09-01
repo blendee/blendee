@@ -23,6 +23,26 @@ public class OrderByColumn implements Offerable, Offers<Offerable> {
 	 */
 	public final OrderByOffer DESC;
 
+	/**
+	 * ORDER BY 句に、このカラムを ASC NULLS FIRST として追加します。
+	 */
+	public final OrderByOffer ASC_NULLS_FIRST;
+
+	/**
+	 * ORDER BY 句に、このカラムを ASC NULLS LAST として追加します。
+	 */
+	public final OrderByOffer ASC_NULLS_LAST;
+
+	/**
+	 * ORDER BY 句に、このカラムを DESC NULLS FIRST として追加します。
+	 */
+	public final OrderByOffer DESC_NULLS_FIRST;
+
+	/**
+	 * ORDER BY 句に、このカラムを DESC NULLS LAST として追加します。
+	 */
+	public final OrderByOffer DESC_NULLS_LAST;
+
 	private final OrderByOffer NONE;
 
 	private final Column column;
@@ -38,6 +58,14 @@ public class OrderByColumn implements Offerable, Offers<Offerable> {
 			order -> helper.getOrderByClause().add(order, column, Direction.ASC));
 		DESC = new OrderByOffer(
 			order -> helper.getOrderByClause().add(order, column, Direction.DESC));
+		ASC_NULLS_FIRST = new OrderByOffer(
+			order -> helper.getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
+		ASC_NULLS_LAST = new OrderByOffer(
+			order -> helper.getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
+		DESC_NULLS_FIRST = new OrderByOffer(
+			order -> helper.getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
+		DESC_NULLS_LAST = new OrderByOffer(
+			order -> helper.getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
 		NONE = new OrderByOffer(
 			order -> helper.getOrderByClause().add(order, column, Direction.NONE));
 	}

@@ -11,6 +11,8 @@ import org.blendee.sql.Binder;
  */
 public final class BigDecimalBinder extends Binder {
 
+	private static final long serialVersionUID = 4555962684209853864L;
+
 	private final BigDecimal value;
 
 	/**

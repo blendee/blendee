@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 
 /**
  * プレースホルダの型ヒントを表します。
  * @author 千葉 哲嗣
  */
-public abstract class Placeholder extends Binder implements Bindable {
+@SuppressWarnings("serial")
+public abstract class Placeholder extends Binder {
 
 	/**
 	 * {@link String}
