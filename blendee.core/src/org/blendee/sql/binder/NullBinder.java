@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class NullBinder extends Binder {
 
-	private static final long serialVersionUID = -6667614794659024024L;
-
 	private final int type;
 
 	/**

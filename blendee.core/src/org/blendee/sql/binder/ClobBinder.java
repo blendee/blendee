@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class ClobBinder extends Binder {
 
-	private static final long serialVersionUID = 7840321773762641678L;
-
 	private final Clob value;
 
 	/**

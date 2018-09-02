@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class CharacterStreamBinder extends Binder {
 
-	private static final long serialVersionUID = -691588171884626882L;
-
 	private final Reader value;
 
 	private final int length;

@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class TimestampBinder extends Binder {
 
-	private static final long serialVersionUID = -1048731509781433850L;
-
 	private final Timestamp value;
 
 	/**

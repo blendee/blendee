@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public class UUIDBinder extends Binder {
 
-	private static final long serialVersionUID = -3440206056562652768L;
-
 	private final UUID value;
 
 	/**

@@ -1,7 +1,5 @@
 package org.blendee.sql;
 
-import java.io.Serializable;
-
 import org.blendee.jdbc.Result;
 
 /**
@@ -9,7 +7,7 @@ import org.blendee.jdbc.Result;
  * @author 千葉 哲嗣
  * @see ValueExtractors#selectValueExtractor(Class)
  */
-public interface ValueExtractor extends Serializable {
+public interface ValueExtractor {
 
 	/**
 	 * 検索結果から、指定された位置の値を何らかのオブジェクトとして返します。

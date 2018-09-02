@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class BinaryStreamBinder extends Binder {
 
-	private static final long serialVersionUID = -4956120256958427873L;
-
 	private final InputStream value;
 
 	private final int length;

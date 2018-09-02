@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class FloatBinder extends Binder {
 
-	private static final long serialVersionUID = 779352667341242434L;
-
 	private final float value;
 
 	/**

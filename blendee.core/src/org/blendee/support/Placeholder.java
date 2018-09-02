@@ -10,7 +10,6 @@ import org.blendee.sql.Binder;
  * プレースホルダの型ヒントを表します。
  * @author 千葉 哲嗣
  */
-@SuppressWarnings("serial")
 public abstract class Placeholder extends Binder {
 
 	/**

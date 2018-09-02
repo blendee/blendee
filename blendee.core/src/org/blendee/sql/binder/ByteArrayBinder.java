@@ -11,8 +11,6 @@ import org.blendee.sql.Binder;
  */
 public final class ByteArrayBinder extends Binder {
 
-	private static final long serialVersionUID = -5970104190926644922L;
-
 	private final ByteArray byteArray;
 
 	/**
