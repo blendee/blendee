@@ -9,53 +9,49 @@ import org.blendee.jdbc.PreparedStatementComplementer;
  */
 public abstract class BatchStatementBase implements BatchStatement {
 
-	private final BatchStatement base;
-
 	/**
-	 * ラップするインスタンスを受け取るコンストラクタです。
-	 * @param base ベースとなるインスタンス
+	 * ベースとなるインスタンスを返します。
+	 * @return ベースとなるインスタンス
 	 */
-	protected BatchStatementBase(BatchStatement base) {
-		this.base = base;
-	}
+	protected abstract BatchStatement base();
 
 	@Override
 	public void addBatch(String sql) {
-		base.addBatch(sql);
+		base().addBatch(sql);
 	}
 
 	@Override
 	public void addBatch(String sql, PreparedStatementComplementer complementer) {
-		base.addBatch(sql, complementer);
+		base().addBatch(sql, complementer);
 	}
 
 	@Override
 	public int[] executeBatch() {
-		return base.executeBatch();
+		return base().executeBatch();
 	}
 
 	@Override
 	public void setThreshold(int threshold) {
-		base.setThreshold(threshold);
+		base().setThreshold(threshold);
 	}
 
 	@Override
 	public void close() {
-		base.close();
+		base().close();
 	}
 
 	@Override
 	public String toString() {
-		return base.toString();
+		return base().toString();
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		return base.equals(o);
+		return base().equals(o);
 	}
 
 	@Override
 	public int hashCode() {
-		return base.hashCode();
+		return base().hashCode();
 	}
 }

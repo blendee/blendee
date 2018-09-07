@@ -12,14 +12,13 @@ import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BatchStatementWrapper;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
-import org.blendee.jdbc.PreparedStatementWrapper;
+import org.blendee.jdbc.StatementWrapper;
 
 /**
  * Blendee が使用する {@link BConnection} の標準実装クラスです。
@@ -29,9 +28,7 @@ public class ConcreteConnection implements BConnection {
 
 	private final Connection connection;
 
-	private final List<PreparedStatementWrapper> preparedStatementWrappers = new LinkedList<>();
-
-	private final List<BatchStatementWrapper> batchStatementWrappers = new LinkedList<>();
+	private final List<StatementWrapper> statementWrappers = new LinkedList<>();
 
 	private final Configure config;
 
@@ -65,13 +62,13 @@ public class ConcreteConnection implements BConnection {
 	@Override
 	public BStatement getStatement(String sql) {
 		ConcretePreparedStatement statement = create(sql);
-		return wrap(statement, preparedStatementWrappers);
+		return wrap((BStatement) statement, statementWrappers);
 	}
 
 	@Override
-	public BStatement getStatement(String sql, PreparedStatementComplementer complementer) {
+	public BPreparedStatement getStatement(String sql, PreparedStatementComplementer complementer) {
 		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
+		BPreparedStatement wrapped = wrap(statement, statementWrappers);
 		complementer.complement(wrapped);
 		return wrapped;
 	}
@@ -79,24 +76,19 @@ public class ConcreteConnection implements BConnection {
 	@Override
 	public BPreparedStatement prepareStatement(String sql) {
 		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, preparedStatementWrappers);
+		BPreparedStatement wrapped = wrap(statement, statementWrappers);
 		return wrapped;
 	}
 
 	@Override
 	public BatchStatement getBatchStatement() {
 		ConcreteBatchStatement statement = new ConcreteBatchStatement(this);
-		return wrap(statement, batchStatementWrappers);
+		return wrap(statement, statementWrappers);
 	}
 
 	@Override
-	public void setPreparedStatementWrapper(PreparedStatementWrapper wrapper) {
-		preparedStatementWrappers.add(wrapper);
-	}
-
-	@Override
-	public void setBatchStatementWrapper(BatchStatementWrapper wrapper) {
-		batchStatementWrappers.add(wrapper);
+	public void setStatementWrapper(StatementWrapper wrapper) {
+		statementWrappers.add(wrapper);
 	}
 
 	@Override
@@ -117,26 +109,34 @@ public class ConcreteConnection implements BConnection {
 		return new BatchPreparedStatement(config, createStatement(sql), finalizer);
 	}
 
-	BPreparedStatement wrapInternal(ConcretePreparedStatement statement) {
-		return wrap(statement, preparedStatementWrappers);
+	BPreparedStatement wrap(ConcretePreparedStatement statement) {
+		return wrap(statement, statementWrappers);
 	}
 
 	private ConcretePreparedStatement create(String sql) {
 		return new ConcretePreparedStatement(config, createStatement(sql), finalizer);
 	}
 
+	private static BStatement wrap(
+		BStatement statement,
+		List<StatementWrapper> wrappers) {
+		for (StatementWrapper wrapper : wrappers)
+			statement = wrapper.wrap(statement);
+		return statement;
+	}
+
 	private static BPreparedStatement wrap(
 		BPreparedStatement statement,
-		List<PreparedStatementWrapper> wrappers) {
-		for (PreparedStatementWrapper wrapper : wrappers)
+		List<StatementWrapper> wrappers) {
+		for (StatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);
 		return statement;
 	}
 
 	private static BatchStatement wrap(
 		BatchStatement statement,
-		List<BatchStatementWrapper> wrappers) {
-		for (BatchStatementWrapper wrapper : wrappers)
+		List<StatementWrapper> wrappers) {
+		for (StatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);
 		return statement;
 	}

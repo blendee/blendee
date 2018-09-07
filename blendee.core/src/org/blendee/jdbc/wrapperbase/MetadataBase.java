@@ -14,70 +14,66 @@ import org.blendee.jdbc.TablePath;
  */
 public abstract class MetadataBase implements Metadata {
 
-	private final Metadata base;
-
 	/**
-	 * ラップするインスタンスを受け取るコンストラクタです。
-	 * @param base ベースとなるインスタンス
+	 * ベースとなるインスタンスを返します。
+	 * @return ベースとなるインスタンス
 	 */
-	protected MetadataBase(Metadata base) {
-		this.base = base;
-	}
+	protected abstract Metadata base();
 
 	@Override
 	public TablePath[] getTables(String schemaName) {
-		return base.getTables(schemaName);
+		return base().getTables(schemaName);
 	}
 
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
-		return base.getTableMetadata(path);
+		return base().getTableMetadata(path);
 	}
 
 	@Override
 	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
-		return base.getColumnMetadatas(path);
+		return base().getColumnMetadatas(path);
 	}
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
-		return base.getPrimaryKeyMetadata(path);
+		return base().getPrimaryKeyMetadata(path);
 	}
 
 	@Override
 	public TablePath[] getResourcesOfImportedKey(TablePath path) {
-		return base.getResourcesOfImportedKey(path);
+		return base().getResourcesOfImportedKey(path);
 	}
 
 	@Override
 	public TablePath[] getResourcesOfExportedKey(TablePath path) {
-		return base.getResourcesOfExportedKey(path);
+		return base().getResourcesOfExportedKey(path);
 	}
 
 	@Override
 	public CrossReference[] getCrossReferences(
 		TablePath exportedTable,
 		TablePath importedTable) {
-		return base.getCrossReferences(exportedTable, importedTable);
+		return base().getCrossReferences(exportedTable, importedTable);
 	}
 
 	@Override
 	public StoredIdentifier getStoredIdentifier() {
-		return base.getStoredIdentifier();
+		return base().getStoredIdentifier();
 	}
 
 	@Override
 	public String toString() {
-		return base.toString();
+		return base().toString();
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		return base.equals(o);
+		return base().equals(o);
 	}
 
 	@Override
 	public int hashCode() {
-		return base.hashCode();
+		return base().hashCode();
 	}
 }

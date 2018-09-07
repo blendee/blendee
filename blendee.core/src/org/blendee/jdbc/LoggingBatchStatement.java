@@ -1,5 +1,7 @@
 package org.blendee.jdbc;
 
+import java.util.Objects;
+
 import org.blendee.jdbc.wrapperbase.BatchStatementBase;
 
 /**
@@ -9,9 +11,18 @@ class LoggingBatchStatement extends BatchStatementBase {
 
 	private final Logger logger;
 
-	LoggingBatchStatement(BatchStatement statement, Logger manager) {
-		super(statement);
-		this.logger = manager;
+	private final BatchStatement base;
+
+	LoggingBatchStatement(BatchStatement statement, Logger logger) {
+		Objects.requireNonNull(statement);
+		Objects.requireNonNull(logger);
+		base = statement;
+		this.logger = logger;
+	}
+
+	@Override
+	protected BatchStatement base() {
+		return base;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import org.blendee.jdbc.wrapperbase.PreparedStatementBase;
 
@@ -14,9 +15,19 @@ class LoggingPreparedStatement extends PreparedStatementBase {
 
 	private final Logger logger;
 
+	private final BPreparedStatement base;
+
 	LoggingPreparedStatement(BPreparedStatement statement, Logger logger) {
-		super(statement);
+		Objects.requireNonNull(statement);
+		Objects.requireNonNull(logger);
+
+		base = statement;
 		this.logger = logger;
+	}
+
+	@Override
+	protected BPreparedStatement base() {
+		return base;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.blendee.internal.U;
@@ -19,12 +20,22 @@ public class Metadatas extends MetadataBase {
 
 	private final Metadata[] metadatas;
 
+	private final Metadata base;
+
 	/**
 	 * @param metadatas {@link Metadata}
 	 */
 	public Metadatas(Metadata... metadatas) {
-		super(metadatas[0]);
+		base = metadatas[0];
+
+		Objects.requireNonNull(base);
+
 		this.metadatas = metadatas.clone();
+	}
+
+	@Override
+	protected Metadata base() {
+		return base;
 	}
 
 	@Override

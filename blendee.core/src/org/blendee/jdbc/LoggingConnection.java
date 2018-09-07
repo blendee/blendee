@@ -1,20 +1,28 @@
 package org.blendee.jdbc;
 
+import java.util.Objects;
+
 import org.blendee.jdbc.wrapperbase.ConnectionBase;
 
 /**
  * @author 千葉 哲嗣
  */
-class LoggingConnection extends ConnectionBase
-	implements PreparedStatementWrapper, BatchStatementWrapper {
+class LoggingConnection extends ConnectionBase implements StatementWrapper {
 
 	private final Logger logger;
 
+	private final BConnection base;
+
 	LoggingConnection(BConnection conn, Logger logger) {
-		super(conn);
-		conn.setPreparedStatementWrapper(this);
-		conn.setBatchStatementWrapper(this);
+		Objects.requireNonNull(logger);
+		base = conn;
+		conn.setStatementWrapper(this);
 		this.logger = logger;
+	}
+
+	@Override
+	protected BConnection base() {
+		return base;
 	}
 
 	@Override
@@ -35,6 +43,11 @@ class LoggingConnection extends ConnectionBase
 	public BPreparedStatement prepareStatement(String sql) {
 		logger.setSql(sql);
 		return super.prepareStatement(sql);
+	}
+
+	@Override
+	public BStatement wrap(BStatement statement) {
+		return new LoggingStatement(statement, logger);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package org.blendee.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.blendee.jdbc.MetadataCache.Request;
 import org.blendee.jdbc.wrapperbase.MetadataBase;
@@ -13,8 +14,16 @@ class CacheMetadata extends MetadataBase {
 
 	private final MetadataCache cache = ContextManager.get(MetadataCache.class);
 
+	private final Metadata base;
+
 	CacheMetadata(Metadata metadata) {
-		super(metadata);
+		Objects.requireNonNull(metadata);
+		base = metadata;
+	}
+
+	@Override
+	protected Metadata base() {
+		return base;
 	}
 
 	@Override

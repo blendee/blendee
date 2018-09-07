@@ -5,7 +5,7 @@ package org.blendee.jdbc;
  * @author 千葉 哲嗣
  * @see BConnection#getBatchStatement()
  */
-public interface BatchStatement {
+public interface BatchStatement extends AutoCloseable {
 
 	/**
 	 * バッチ更新を行う SQL 文を追加します。<br>
@@ -46,5 +46,6 @@ public interface BatchStatement {
 	/**
 	 * このステートメントを閉じます。
 	 */
+	@Override
 	void close();
 }

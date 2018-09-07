@@ -156,16 +156,10 @@ public interface BConnection {
 	BatchStatement getBatchStatement();
 
 	/**
-	 * {@link PreparedStatementWrapper} を設定し、この接続が生成する {@link BPreparedStatement} をラップさせます。
-	 * @param wrapper この接続が生成する {@link BPreparedStatement} のラッパー
+	 * {@link StatementWrapper} を設定し、この接続が生成する各 BPreparedStatement をラップさせます。
+	 * @param wrapper この接続が生成する Statement のラッパー
 	 */
-	void setPreparedStatementWrapper(PreparedStatementWrapper wrapper);
-
-	/**
-	 * {@link BatchStatementWrapper} を設定し、この接続が生成する {@link BatchStatement} をラップさせます。
-	 * @param wrapper この接続が生成する {@link BatchStatement} のラッパー
-	 */
-	void setBatchStatementWrapper(BatchStatementWrapper wrapper);
+	void setStatementWrapper(StatementWrapper wrapper);
 
 	/**
 	 * このクラスのインスタンスが内部に {@link Connection} を持つ場合、それを貸します。

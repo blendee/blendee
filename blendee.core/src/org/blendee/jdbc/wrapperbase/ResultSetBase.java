@@ -8,24 +8,20 @@ import org.blendee.jdbc.BResultSet;
  */
 public abstract class ResultSetBase extends ResultBase implements BResultSet {
 
-	private final BResultSet base;
-
 	/**
-	 * ラップするインスタンスを受け取るコンストラクタです。
-	 * @param base ベースとなるインスタンス
+	 * ベースとなるインスタンスを返します。
+	 * @return ベースとなるインスタンス
 	 */
-	protected ResultSetBase(BResultSet base) {
-		super(base);
-		this.base = base;
-	}
+	@Override
+	protected abstract BResultSet base();
 
 	@Override
 	public boolean next() {
-		return base.next();
+		return base().next();
 	}
 
 	@Override
 	public void close() {
-		base.close();
+		base().close();
 	}
 }

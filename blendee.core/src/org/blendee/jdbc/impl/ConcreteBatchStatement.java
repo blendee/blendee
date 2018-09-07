@@ -50,9 +50,10 @@ class ConcreteBatchStatement implements BatchStatement {
 		} else {
 			statement = holder.getStatement();
 		}
+
 		counter++;
 		holder.addGlobalOrder(batchOrder++);
-		complementer.complement(connection.wrapInternal(statement));
+		complementer.complement(connection.wrap(statement));
 		statement.addBatch();
 	}
 
