@@ -191,6 +191,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの = 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O eq(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
+	}
+
+	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link QueryBuilder}
@@ -306,6 +317,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 */
 	public O ne(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} <> {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの <> 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O ne(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.NE, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
 	}
 
 	/**
@@ -427,6 +449,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの < 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O lt(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LT, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
+	}
+
+	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link QueryBuilder}
@@ -542,6 +575,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 */
 	public O gt(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} > {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの > 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O gt(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GT, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
 	}
 
 	/**
@@ -663,6 +707,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	}
 
 	/**
+	 * 条件句に、このカラムの <= 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O le(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LE, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
+	}
+
+	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
 	 * @return 連続呼び出し用 {@link QueryBuilder}
@@ -778,6 +833,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 */
 	public O ge(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} >= {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの >= 条件を追加します。
+	 * @param subquery 検索条件の値
+	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 */
+	public O ge(QueryBuilder subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GE, column, subquery.toSelectStatementBuilder()));
+
+		return logocalOperators();
 	}
 
 	/**

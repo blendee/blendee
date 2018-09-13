@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import org.blendee.sql.Column;
 
 /**
- * ORDER BY 句に新しい要素を追加するクラスです。<br>
+ * SELECT 句に新しい要素を追加するクラスです。<br>
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */

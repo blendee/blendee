@@ -53,14 +53,22 @@ public class CriteriaFactory {
 		 */
 		GE(">=");
 
+		private final String operator;
+
 		private final String expression;
 
 		private ComparisonOperator(String operator) {
+			this.operator = operator;
 			expression = "{0} " + operator + " ?";
 		}
 
 		private Criteria create(Column column, Bindable bindable) {
 			return createCriteria(expression, new Column[] { column }, new Bindable[] { bindable });
+		}
+
+		@Override
+		public String toString() {
+			return operator;
 		}
 	}
 
@@ -1120,6 +1128,27 @@ public class CriteriaFactory {
 
 		List<Binder> binders = new ComplementerValues(subquery).binders();
 		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
+	}
+
+	/**
+	 * サブクエリを使用した条件句を生成します。
+	 * @param operator {@link ComparisonOperator}
+	 * @param column 主となるクエリ側のカラム
+	 * @param subquery サブクエリ
+	 * @return 生成されたインスタンス
+	 * @throws SubqueryException 主となるクエリ側のカラムが空の場合
+	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
+	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
+	 */
+	public static Criteria createSubquery(
+		ComparisonOperator operator,
+		Column column,
+		SelectStatementBuilder subquery) {
+		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
+		String subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
+
+		List<Binder> binders = new ComplementerValues(subquery).binders();
+		return new Criteria(subqueryString, new Column[] { column }, binders.toArray(new Binder[binders.size()]));
 	}
 
 	private static String buildInClause(int length) {

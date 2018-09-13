@@ -367,46 +367,59 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 	}
 
-	private final WhereLogicalOperators whereOperators$ = new WhereLogicalOperators();
+	private OnRightLogicalOperators onRightOperators$;
 
-	private final HavingLogicalOperators havingOperators$ = new HavingLogicalOperators();
+	private Behavior behavior$;
 
-	private final OnLeftLogicalOperators onLeftOperators$ = new OnLeftLogicalOperators();
+	private Behavior behavior() {
+		return behavior$ == null ? (behavior$ = new Behavior()) : behavior$;
+	}
 
-	private final OnRightLogicalOperators onRightOperators$ = new OnRightLogicalOperators();
+	private class Behavior extends QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
-	/**
-	 * SELECT 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final SelectRel select$ = new SelectRel(
-			this,
-			selectContext$,
-			CriteriaContext.NULL);
+		private Behavior() {
+			super($TABLE);
+		}
 
-	/**
-	 * GROUP BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final GroupByRel groupBy$ = new GroupByRel(
-			this,
-			groupByContext$,
-			CriteriaContext.NULL);
+		@Override
+		protected SelectRel newSelect() {
+			return new SelectRel(
+					/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+					selectContext$,
+					CriteriaContext.NULL);
+		}
 
-	/**
-	 * ORDER BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final OrderByRel orderBy$ = new OrderByRel(
-			this,
-			orderByContext$,
-			CriteriaContext.NULL);
+		@Override
+		protected GroupByRel newGroupBy() {
+			return new GroupByRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				groupByContext$,
+				CriteriaContext.NULL);
+		}
 
-	private final QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> behavior$ = new QueryBuilderBehavior<>(
-		$TABLE,
-		select$,
-		groupBy$,
-		orderBy$,
-		whereOperators$,
-		havingOperators$,
-		onLeftOperators$);
+		@Override
+		protected OrderByRel newOrderBy() {
+			return new OrderByRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				orderByContext$,
+				CriteriaContext.NULL);
+		}
+
+		@Override
+		protected WhereLogicalOperators newWhereOperators() {
+			return new WhereLogicalOperators();
+		}
+
+		@Override
+		protected HavingLogicalOperators newHavingOperators() {
+			return new HavingLogicalOperators();
+		}
+
+		@Override
+		protected OnLeftLogicalOperators newOnLeftOperators() {
+			return new OnLeftLogicalOperators();
+		}
+	}
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
@@ -434,11 +447,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param optimizer SELECT 句を決定する
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
-		behavior$.setOptimizer(Objects.requireNonNull(optimizer));
+		behavior().setOptimizer(Objects.requireNonNull(optimizer));
 	}
 
 	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
-		behavior$.setOptimizer(
+		behavior().setOptimizer(
 			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $TABLE, using));
 	}
 
@@ -535,7 +548,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT(
 		SelectOfferFunction<SelectRel> function) {
-		behavior$.SELECT(function);
+		behavior().SELECT(function);
 		return this;
 	}
 
@@ -546,7 +559,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_DISTINCT(
 		SelectOfferFunction<SelectRel> function) {
-		behavior$.SELECT_DISTINCT(function);
+		behavior().SELECT_DISTINCT(function);
 		return this;
 	}
 
@@ -555,7 +568,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_COUNT() {
-		behavior$.SELECT_COUNT();
+		behavior().SELECT_COUNT();
 		return this;
 	}
 
@@ -566,7 +579,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ GROUP_BY(
 		GroupByOfferFunction<GroupByRel> function) {
-		behavior$.GROUP_BY(function);
+		behavior().GROUP_BY(function);
 		return this;
 	}
 
@@ -578,7 +591,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ WHERE(
 		Consumer<WhereRel>... consumers) {
-		behavior$.WHERE(consumers);
+		behavior().WHERE(consumers);
 		return this;
 	}
 
@@ -589,7 +602,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public Criteria createWhereCriteria(
 		Consumer<WhereRel> consumer) {
-		return behavior$.createWhereCriteria(consumer);
+		return behavior().createWhereCriteria(consumer);
 	}
 
 	/**
@@ -600,7 +613,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ HAVING(
 		Consumer<HavingRel>... consumers) {
-		behavior$.HAVING(consumers);
+		behavior().HAVING(consumers);
 		return this;
 	}
 
@@ -611,7 +624,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public Criteria createHavingCriteria(
 		Consumer<HavingRel> consumer) {
-		return behavior$.createHavingCriteria(consumer);
+		return behavior().createHavingCriteria(consumer);
 	}
 
 	/**
@@ -620,7 +633,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
-		return behavior$.INNER_JOIN(right, this);
+		return behavior().INNER_JOIN(right, this);
 	}
 
 	/**
@@ -629,7 +642,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
-		return behavior$.LEFT_OUTER_JOIN(right, this);
+		return behavior().LEFT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -638,7 +651,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
-		return behavior$.RIGHT_OUTER_JOIN(right, this);
+		return behavior().RIGHT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -647,7 +660,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return ON
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
-		return behavior$.FULL_OUTER_JOIN(right, this);
+		return behavior().FULL_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -657,7 +670,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(ComposedSQL sql) {
-		behavior$.UNION(sql);
+		behavior().UNION(sql);
 		return this;
 	}
 
@@ -668,7 +681,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return この {@link QueryBuilder}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(ComposedSQL sql) {
-		behavior$.UNION_ALL(sql);
+		behavior().UNION_ALL(sql);
 		return this;
 	}
 
@@ -679,13 +692,13 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ ORDER_BY(
 		OrderByOfferFunction<OrderByRel> function) {
-		behavior$.ORDER_BY(function);
+		behavior().ORDER_BY(function);
 		return this;
 	}
 
 	@Override
 	public boolean hasWhereClause() {
-		return behavior$.hasWhereClause();
+		return behavior().hasWhereClause();
 	}
 
 	/**
@@ -695,7 +708,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupBy(GroupByClause clause) {
-		behavior$.setGroupByClause(clause);
+		behavior().setGroupByClause(clause);
 		return this;
 	}
 
@@ -706,7 +719,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderBy(OrderByClause clause) {
-		behavior$.setOrderByClause(clause);
+		behavior().setOrderByClause(clause);
 		return this;
 	}
 
@@ -717,7 +730,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ and(Criteria criteria) {
-		behavior$.and(criteria);
+		behavior().and(criteria);
 		return this;
 	}
 
@@ -728,7 +741,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ or(Criteria criteria) {
-		behavior$.or(criteria);
+		behavior().or(criteria);
 		return this;
 	}
 
@@ -738,7 +751,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
-		behavior$.apply(decorators);
+		behavior().apply(decorators);
 		return this;
 	}
 
@@ -748,112 +761,112 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public LogicalOperators<?> getWhereLogicalOperators() {
-		return whereOperators$;
+	public LogicalOperators<WhereRel> getWhereLogicalOperators() {
+		return behavior().whereOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getHavingLogicalOperators() {
-		return havingOperators$;
+	public LogicalOperators<HavingRel> getHavingLogicalOperators() {
+		return behavior().havingOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getOnLeftLogicalOperators() {
-		return onLeftOperators$;
+	public LogicalOperators<OnLeftRel> getOnLeftLogicalOperators() {
+		return behavior().onLeftOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getOnRightLogicalOperators() {
-		return onRightOperators$;
+	public OnRightLogicalOperators getOnRightLogicalOperators() {
+		return onRightOperators$ == null ? (onRightOperators$ = new OnRightLogicalOperators()) : onRightOperators$;
 	}
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return behavior$.decorators();
+		return behavior().decorators();
 	}
 
 	@Override
 	public Iterator execute() {
-		behavior$.checkRowMode();
-		return wrap(behavior$.query().execute());
+		behavior().checkRowMode();
+		return wrap(behavior().query().execute());
 	}
 
 	@Override
 	public Optional<Row> fetch(String... primaryKeyMembers) {
-		behavior$.checkRowMode();
-		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior().checkRowMode();
+		return behavior().query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public Optional<Row> fetch(Number... primaryKeyMembers) {
-		behavior$.checkRowMode();
-		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior().checkRowMode();
+		return behavior().query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public Optional<Row> fetch(Bindable... primaryKeyMembers) {
-		behavior$.checkRowMode();
-		return behavior$.query().fetch(primaryKeyMembers).map(o -> createRow(o));
+		behavior().checkRowMode();
+		return behavior().query().fetch(primaryKeyMembers).map(o -> createRow(o));
 	}
 
 	@Override
 	public int count() {
-		behavior$.checkRowMode();
-		return behavior$.query().count();
+		behavior().checkRowMode();
+		return behavior().query().count();
 	}
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		behavior$.checkRowMode();
-		return behavior$.query().toCountSQL();
+		behavior().checkRowMode();
+		return behavior().query().toCountSQL();
 	}
 
 	@Override
 	public void aggregate(Consumer<BResultSet> consumer) {
-		behavior$.quitRowMode();
+		behavior().quitRowMode();
 		org.blendee.support.Query.super.aggregate(consumer);
 	}
 
 	@Override
 	public <T> T aggregateAndGet(Function<BResultSet, T> function) {
-		behavior$.quitRowMode();
+		behavior().quitRowMode();
 		return org.blendee.support.Query.super.aggregateAndGet(function);
 	}
 
 	@Override
 	public ResultSetIterator aggregate() {
-		behavior$.quitRowMode();
+		behavior().quitRowMode();
 		return org.blendee.support.Query.super.aggregate();
 	}
 
 	@Override
 	public String sql() {
-		return behavior$.composeSQL().sql();
+		return behavior().composeSQL().sql();
 	}
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		return behavior$.composeSQL().complement(done, statement);
+		return behavior().composeSQL().complement(done, statement);
 	}
 
 	@Override
 	public Query reproduce(Object... placeHolderValues) {
-		return new Query(behavior$.query().reproduce(placeHolderValues));
+		return new Query(behavior().query().reproduce(placeHolderValues));
 	}
 
 	@Override
 	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
-		behavior$.joinTo(builder, joinType, onCriteria);
+		behavior().joinTo(builder, joinType, onCriteria);
 	}
 
 	@Override
 	public SelectStatementBuilder toSelectStatementBuilder() {
-		return behavior$.buildBuilder();
+		return behavior().buildBuilder();
 	}
 
 	@Override
 	public void forSubquery(boolean forSubquery) {
-		 behavior$.forSubquery(forSubquery);
+		 behavior().forSubquery(forSubquery);
 	}
 
 	/**
@@ -861,7 +874,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetWhere() {
-		behavior$.resetWhere();
+		behavior().resetWhere();
 		return this;
 	}
 
@@ -870,7 +883,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetHaving() {
-		behavior$.resetHaving();
+		behavior().resetHaving();
 		return this;
 	}
 
@@ -879,7 +892,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetSelect() {
-		behavior$.resetSelect();
+		behavior().resetSelect();
 		return this;
 	}
 
@@ -888,7 +901,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetGroupBy() {
-		behavior$.resetGroupBy();
+		behavior().resetGroupBy();
 		return this;
 	}
 
@@ -897,7 +910,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetOrderBy() {
-		behavior$.resetOrderBy();
+		behavior().resetOrderBy();
 		return this;
 	}
 
@@ -906,7 +919,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetUnions() {
-		behavior$.resetUnions();
+		behavior().resetUnions();
 		return this;
 	}
 
@@ -915,7 +928,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetJoins() {
-		behavior$.resetJoins();
+		behavior().resetJoins();
 		return this;
 	}
 
@@ -924,7 +937,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
-		behavior$.resetDecorators();
+		behavior().resetDecorators();
 		return this;
 	}
 
@@ -933,33 +946,33 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ reset() {
-		behavior$.reset();
+		behavior().reset();
 		return this;
 	}
 
 	@Override
 	public void quitRowMode() {
-		behavior$.quitRowMode();
+		behavior().quitRowMode();
 	}
 
 	@Override
 	public boolean rowMode() {
-		return behavior$.rowMode();
+		return behavior().rowMode();
 	}
 
 	@Override
 	public Query query() {
-		return  new Query(behavior$.query());
+		return  new Query(behavior().query());
 	}
 
 	@Override
 	public OnRightRel joint() {
-		return onRightOperators$.AND;
+		return getOnRightLogicalOperators().AND;
 	}
 
 	@Override
 	public String toString() {
-		return behavior$.toString();
+		return behavior().toString();
 	}
 
 	private static Class<?> getUsing(StackTraceElement element) {
@@ -1063,26 +1076,26 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public Optimizer getOptimizer() {
-			if (table$ != null) return table$.behavior$.getOptimizer();
+			if (table$ != null) return table$.behavior().getOptimizer();
 			return null;
 		}
 
 		@Override
 		public GroupByClause getGroupByClause() {
 			if (table$ == null) return parent$.getGroupByClause();
-			return table$.behavior$.getGroupByClause();
+			return table$.behavior().getGroupByClause();
 		}
 
 		@Override
 		public OrderByClause getOrderByClause() {
 			if (table$ == null) return parent$.getOrderByClause();
-			return table$.behavior$.getOrderByClause();
+			return table$.behavior().getOrderByClause();
 		}
 
 		@Override
 		public Criteria getWhereClause() {
 			if (table$ == null) return parent$.getWhereClause();
-			return table$.behavior$.getWhereClause();
+			return table$.behavior().getWhereClause();
 		}
 
 		@Override

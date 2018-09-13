@@ -210,7 +210,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			new TablePath(table.schema(), table.name()),
 			tableMetadata,
 			columnMetadatas.toArray(new ColumnMetadata[columnMetadatas.size()]),
-			pk == null ? null : createSource(pk),
+			pk == null ? new PrimaryKeySource(null, new String[] {}, false) : createSource(pk),
 			fkSources.toArray(new ForeignKeySource[fkSources.size()]));
 	}
 

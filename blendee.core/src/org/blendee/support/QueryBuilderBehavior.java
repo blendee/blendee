@@ -32,14 +32,14 @@ import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SelectStatementBuilder;
-import org.blendee.sql.SelectStatementBuilder.UnionOperator;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
+import org.blendee.sql.SelectStatementBuilder;
+import org.blendee.sql.SelectStatementBuilder.UnionOperator;
 import org.blendee.sql.Union;
 import org.blendee.sql.binder.NullBinder;
 
@@ -48,21 +48,9 @@ import org.blendee.sql.binder.NullBinder;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
+public abstract class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
 
 	private final TablePath table;
-
-	private final S select;
-
-	private final G groupBy;
-
-	private final O orderBy;
-
-	private final LogicalOperators<W> whereOperators;
-
-	private final LogicalOperators<H> havingOperators;
-
-	private final LogicalOperators<L> left;
 
 	private boolean rowMode = true;
 
@@ -92,40 +80,62 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 
 	private boolean forSubquery;
 
-	public QueryBuilderBehavior(
-		TablePath table,
-		S select,
-		G groupBy,
-		O orderBy,
-		LogicalOperators<W> whereOperators,
-		LogicalOperators<H> havingOperators,
-		LogicalOperators<L> onOperators) {
+	public QueryBuilderBehavior(TablePath table) {
 		this.table = table;
-		this.select = select;
-		this.groupBy = groupBy;
-		this.orderBy = orderBy;
-		this.whereOperators = whereOperators;
-		this.havingOperators = havingOperators;
-		left = onOperators;
 	}
 
-	QueryBuilderBehavior(
-		FromClause fromClause,
-		S select,
-		G groupBy,
-		O orderBy,
-		LogicalOperators<W> whereOperators,
-		LogicalOperators<H> havingOperators,
-		LogicalOperators<L> onOperators) {
+	QueryBuilderBehavior(FromClause fromClause) {
 		this.fromClause = fromClause;
 		table = null;
-		this.select = select;
-		this.groupBy = groupBy;
-		this.orderBy = orderBy;
-		this.whereOperators = whereOperators;
-		this.havingOperators = havingOperators;
-		left = onOperators;
 		rowMode = false;
+	}
+
+	protected abstract S newSelect();
+
+	protected abstract G newGroupBy();
+
+	protected abstract O newOrderBy();
+
+	protected abstract LogicalOperators<W> newWhereOperators();
+
+	protected abstract LogicalOperators<H> newHavingOperators();
+
+	protected abstract LogicalOperators<L> newOnLeftOperators();
+
+	private S select;
+
+	private G groupBy;
+
+	private O orderBy;
+
+	private LogicalOperators<W> whereOperators;
+
+	private LogicalOperators<H> havingOperators;
+
+	private LogicalOperators<L> onLeftOperators;
+
+	private S select() {
+		return select == null ? (select = newSelect()) : select;
+	}
+
+	private G groupBy() {
+		return groupBy == null ? (groupBy = newGroupBy()) : groupBy;
+	}
+
+	private O orderBy() {
+		return orderBy == null ? (orderBy = newOrderBy()) : orderBy;
+	}
+
+	public LogicalOperators<W> whereOperators() {
+		return whereOperators == null ? (whereOperators = newWhereOperators()) : whereOperators;
+	}
+
+	public LogicalOperators<H> havingOperators() {
+		return havingOperators == null ? (havingOperators = newHavingOperators()) : havingOperators;
+	}
+
+	public LogicalOperators<L> onLeftOperators() {
+		return onLeftOperators == null ? (onLeftOperators = newOnLeftOperators()) : onLeftOperators;
 	}
 
 	/**
@@ -133,7 +143,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 	 * @param function {@link SelectOfferFunction}
 	 */
 	public void SELECT(SelectOfferFunction<S> function) {
-		Offers<ColumnExpression> offers = function.apply(select);
+		Offers<ColumnExpression> offers = function.apply(select());
 
 		if (rowMode) {
 			if (optimizerForSelect == null)
@@ -158,7 +168,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 		SelectOfferFunction<S> function) {
 		quitRowMode();
 
-		Offers<ColumnExpression> offers = function.apply(select);
+		Offers<ColumnExpression> offers = function.apply(select());
 
 		SelectDistinctClause mySelectClause = new SelectDistinctClause();
 		offers.get().forEach(c -> c.accept(mySelectClause));
@@ -180,7 +190,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 	public void GROUP_BY(
 		GroupByOfferFunction<G> function) {
 		quitRowMode();
-		function.apply(groupBy).get().forEach(o -> o.offer());
+		function.apply(groupBy()).get().forEach(o -> o.offer());
 	}
 
 	/**
@@ -197,7 +207,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 				Criteria contextCriteria = CriteriaFactory.create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
-				consumer.accept(whereOperators.defaultOperator());
+				consumer.accept(whereOperators().defaultOperator());
 
 				whereClause().and(contextCriteria);
 			}
@@ -226,7 +236,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 				Criteria contextCriteria = CriteriaFactory.create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
-				consumer.accept(havingOperators.defaultOperator());
+				consumer.accept(havingOperators().defaultOperator());
 
 				havingClause().and(contextCriteria);
 			}
@@ -245,7 +255,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 	 */
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
-		function.apply(orderBy).get().forEach(o -> o.offer());
+		function.apply(orderBy()).get().forEach(o -> o.offer());
 	}
 
 	public <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
@@ -294,7 +304,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 			Criteria criteria = CriteriaFactory.create();
 			CriteriaContext.setContextCriteria(criteria);
 
-			consumer.accept(whereOperators.defaultOperator());
+			consumer.accept(whereOperators().defaultOperator());
 
 			return criteria;
 		} finally {
@@ -318,7 +328,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 			Criteria criteria = CriteriaFactory.create();
 			CriteriaContext.setContextCriteria(criteria);
 
-			consumer.accept(havingOperators.defaultOperator());
+			consumer.accept(havingOperators().defaultOperator());
 
 			return criteria;
 		} finally {
@@ -778,7 +788,7 @@ public class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupB
 
 		return new OnClause<>(
 			joinResource,
-			left.defaultOperator(),
+			onLeftOperators().defaultOperator(),
 			rightJoint,
 			query);
 	}

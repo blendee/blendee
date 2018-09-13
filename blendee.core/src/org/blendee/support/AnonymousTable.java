@@ -143,30 +143,50 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 		}
 	}
 
-	private final WhereLogicalOperators whereOperators = new WhereLogicalOperators();
+	private OnRightLogicalOperators onRightOperators;
 
-	private final HavingLogicalOperators havingOperators = new HavingLogicalOperators();
+	private Behavior behavior;
 
-	private final OnLeftLogicalOperators onLeftOperators = new OnLeftLogicalOperators();
+	private Behavior behavior() {
+		return behavior == null ? (behavior = new Behavior()) : behavior;
+	}
 
-	private final OnRightLogicalOperators onRightOperators = new OnRightLogicalOperators();
+	private class Behavior extends QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
-	/**
-	 * SELECT 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final SelectRel select = new SelectRel(this, selectContext, CriteriaContext.NULL);
+		private Behavior() {
+			super(new AnonymousFromClause(relationship));
+		}
 
-	/**
-	 * GROUP BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final GroupByRel groupBy = new GroupByRel(this, groupByContext, CriteriaContext.NULL);
+		@Override
+		protected SelectRel newSelect() {
+			return new SelectRel(AnonymousTable.this, selectContext, CriteriaContext.NULL);
+		}
 
-	/**
-	 * ORDER BY 句用のカラムを選択するための {@link TableFacadeRelationship} です。
-	 */
-	private final OrderByRel orderBy = new OrderByRel(this, orderByContext, CriteriaContext.NULL);
+		@Override
+		protected GroupByRel newGroupBy() {
+			return new GroupByRel(AnonymousTable.this, groupByContext, CriteriaContext.NULL);
+		}
 
-	private final QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> helper;
+		@Override
+		protected OrderByRel newOrderBy() {
+			return new OrderByRel(AnonymousTable.this, orderByContext, CriteriaContext.NULL);
+		}
+
+		@Override
+		protected WhereLogicalOperators newWhereOperators() {
+			return new WhereLogicalOperators();
+		}
+
+		@Override
+		protected HavingLogicalOperators newHavingOperators() {
+			return new HavingLogicalOperators();
+		}
+
+		@Override
+		protected OnLeftLogicalOperators newOnLeftOperators() {
+			return new OnLeftLogicalOperators();
+		}
+	}
 
 	private final AnonymousRelationship relationship;
 
@@ -177,15 +197,6 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	public AnonymousTable(QueryBuilder inner, String alias) {
 		relationship = new AnonymousRelationship(inner.query(), alias);
-
-		helper = new QueryBuilderBehavior<>(
-			new AnonymousFromClause(relationship),
-			select,
-			groupBy,
-			orderBy,
-			whereOperators,
-			havingOperators,
-			onLeftOperators);
 	}
 
 	/**
@@ -194,7 +205,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable SELECT(SelectOfferFunction<SelectRel> function) {
-		helper.SELECT(function);
+		behavior().SELECT(function);
 		return this;
 	}
 
@@ -204,7 +215,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable SELECT_DISTINCT(SelectOfferFunction<SelectRel> function) {
-		helper.SELECT_DISTINCT(function);
+		behavior().SELECT_DISTINCT(function);
 		return this;
 	}
 
@@ -213,7 +224,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable SELECT_COUNT() {
-		helper.SELECT_COUNT();
+		behavior().SELECT_COUNT();
 		return this;
 	}
 
@@ -223,7 +234,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable GROUP_BY(GroupByOfferFunction<GroupByRel> function) {
-		helper.GROUP_BY(function);
+		behavior().GROUP_BY(function);
 		return this;
 	}
 
@@ -234,7 +245,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	@SafeVarargs
 	public final AnonymousTable WHERE(Consumer<WhereRel>... consumers) {
-		helper.WHERE(consumers);
+		behavior().WHERE(consumers);
 		return this;
 	}
 
@@ -244,7 +255,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return {@link Criteria}
 	 */
 	public Criteria createWhereCriteria(Consumer<WhereRel> consumer) {
-		return helper.createWhereCriteria(consumer);
+		return behavior().createWhereCriteria(consumer);
 	}
 
 	/**
@@ -254,7 +265,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	@SafeVarargs
 	public final AnonymousTable HAVING(Consumer<HavingRel>... consumers) {
-		helper.HAVING(consumers);
+		behavior().HAVING(consumers);
 		return this;
 	}
 
@@ -264,7 +275,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return {@link Criteria}
 	 */
 	public Criteria createHavingCriteria(Consumer<HavingRel> consumer) {
-		return helper.createHavingCriteria(consumer);
+		return behavior().createHavingCriteria(consumer);
 	}
 
 	/**
@@ -274,7 +285,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> INNER_JOIN(
 		RightTable<R> right) {
-		return helper.INNER_JOIN(right, this);
+		return behavior().INNER_JOIN(right, this);
 	}
 
 	/**
@@ -284,7 +295,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> LEFT_OUTER_JOIN(
 		RightTable<R> right) {
-		return helper.LEFT_OUTER_JOIN(right, this);
+		return behavior().LEFT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -294,7 +305,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> RIGHT_OUTER_JOIN(
 		RightTable<R> right) {
-		return helper.RIGHT_OUTER_JOIN(right, this);
+		return behavior().RIGHT_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -304,7 +315,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 */
 	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> FULL_OUTER_JOIN(
 		RightTable<R> right) {
-		return helper.FULL_OUTER_JOIN(right, this);
+		return behavior().FULL_OUTER_JOIN(right, this);
 	}
 
 	/**
@@ -314,7 +325,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable UNION(ComposedSQL sql) {
-		helper.UNION(sql);
+		behavior().UNION(sql);
 		return this;
 	}
 
@@ -325,7 +336,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable UNION_ALL(ComposedSQL sql) {
-		helper.UNION_ALL(sql);
+		behavior().UNION_ALL(sql);
 		return this;
 	}
 
@@ -335,13 +346,13 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return この {@link QueryBuilder}
 	 */
 	public AnonymousTable ORDER_BY(OrderByOfferFunction<OrderByRel> function) {
-		helper.ORDER_BY(function);
+		behavior().ORDER_BY(function);
 		return this;
 	}
 
 	@Override
 	public boolean hasWhereClause() {
-		return helper.hasWhereClause();
+		return behavior().hasWhereClause();
 	}
 
 	/**
@@ -351,7 +362,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public AnonymousTable groupBy(GroupByClause clause) {
-		helper.setGroupByClause(clause);
+		behavior().setGroupByClause(clause);
 		return this;
 	}
 
@@ -362,7 +373,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public AnonymousTable orderBy(OrderByClause clause) {
-		helper.setOrderByClause(clause);
+		behavior().setOrderByClause(clause);
 		return this;
 	}
 
@@ -373,7 +384,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public AnonymousTable and(Criteria criteria) {
-		helper.and(criteria);
+		behavior().and(criteria);
 		return this;
 	}
 
@@ -384,7 +395,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public AnonymousTable or(Criteria criteria) {
-		helper.or(criteria);
+		behavior().or(criteria);
 		return this;
 	}
 
@@ -394,7 +405,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return {@link QueryBuilder} 自身
 	 */
 	public AnonymousTable apply(SQLDecorator... decorators) {
-		helper.apply(decorators);
+		behavior().apply(decorators);
 		return this;
 	}
 
@@ -404,28 +415,28 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	}
 
 	@Override
-	public LogicalOperators<?> getWhereLogicalOperators() {
-		return whereOperators;
+	public LogicalOperators<WhereRel> getWhereLogicalOperators() {
+		return behavior().whereOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getHavingLogicalOperators() {
-		return havingOperators;
+	public LogicalOperators<HavingRel> getHavingLogicalOperators() {
+		return behavior().havingOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getOnLeftLogicalOperators() {
-		return onLeftOperators;
+	public LogicalOperators<OnLeftRel> getOnLeftLogicalOperators() {
+		return behavior().onLeftOperators();
 	}
 
 	@Override
-	public LogicalOperators<?> getOnRightLogicalOperators() {
-		return onRightOperators;
+	public OnRightLogicalOperators getOnRightLogicalOperators() {
+		return onRightOperators == null ? (onRightOperators = new OnRightLogicalOperators()) : onRightOperators;
 	}
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return helper.decorators();
+		return behavior().decorators();
 	}
 
 	@Override
@@ -461,36 +472,36 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	@Override
 	public String sql() {
 		careEmptySelect();
-		return helper.composeSQL().sql();
+		return behavior().composeSQL().sql();
 	}
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
 		careEmptySelect();
-		return helper.composeSQL().complement(done, statement);
+		return behavior().composeSQL().complement(done, statement);
 	}
 
 	@Override
 	public AnonymousQuery reproduce(Object... placeHolderValues) {
 		careEmptySelect();
-		return new AnonymousQuery(helper.query().reproduce(placeHolderValues));
+		return new AnonymousQuery(behavior().query().reproduce(placeHolderValues));
 	}
 
 	@Override
 	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
 		careEmptySelect();//下でこのQueryが評価されてしまうのでSELECT句を補う
-		helper.joinTo(builder, joinType, onCriteria);
+		behavior().joinTo(builder, joinType, onCriteria);
 	}
 
 	@Override
 	public SelectStatementBuilder toSelectStatementBuilder() {
 		careEmptySelect();
-		return helper.buildBuilder();
+		return behavior().buildBuilder();
 	}
 
 	@Override
 	public void forSubquery(boolean forSubquery) {
-		helper.forSubquery(forSubquery);
+		behavior().forSubquery(forSubquery);
 	}
 
 	/**
@@ -498,7 +509,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetWhere() {
-		helper.resetWhere();
+		behavior().resetWhere();
 		return this;
 	}
 
@@ -507,7 +518,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetHaving() {
-		helper.resetHaving();
+		behavior().resetHaving();
 		return this;
 	}
 
@@ -516,7 +527,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetSelect() {
-		helper.resetSelect();
+		behavior().resetSelect();
 		return this;
 	}
 
@@ -525,7 +536,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetGroupBy() {
-		helper.resetGroupBy();
+		behavior().resetGroupBy();
 		return this;
 	}
 
@@ -534,7 +545,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetOrderBy() {
-		helper.resetOrderBy();
+		behavior().resetOrderBy();
 		return this;
 	}
 
@@ -543,7 +554,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetUnions() {
-		helper.resetUnions();
+		behavior().resetUnions();
 		return this;
 	}
 
@@ -552,7 +563,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetJoins() {
-		helper.resetJoins();
+		behavior().resetJoins();
 		return this;
 	}
 
@@ -561,24 +572,24 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetDecorators() {
-		helper.resetDecorators();
+		behavior().resetDecorators();
 		return this;
 	}
 
 	@Override
 	public void quitRowMode() {
-		helper.quitRowMode();
+		behavior().quitRowMode();
 	}
 
 	@Override
 	public boolean rowMode() {
-		return helper.rowMode();
+		return behavior().rowMode();
 	}
 
 	@Override
 	public AnonymousQuery query() {
 		careEmptySelect();
-		return new AnonymousQuery(helper.query());
+		return new AnonymousQuery(behavior().query());
 	}
 
 	@Override
@@ -589,15 +600,15 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	@Override
 	public String toString() {
 		careEmptySelect();
-		return helper.toString();
+		return behavior().toString();
 	}
 
 	private void careEmptySelect() {
-		SelectClause select = helper.getSelectClause();
+		SelectClause select = behavior().getSelectClause();
 		if (select == null || select.getColumnsSize() == 0) {
 			select = new SelectClause();
 			select.add("{0}", new PseudoColumn(relationship, "*", true));
-			helper.setSelectClause(select);
+			behavior().setSelectClause(select);
 		}
 	}
 
@@ -638,17 +649,17 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 
 		@Override
 		public GroupByClause getGroupByClause() {
-			return table.helper.getGroupByClause();
+			return table.behavior().getGroupByClause();
 		}
 
 		@Override
 		public OrderByClause getOrderByClause() {
-			return table.helper.getOrderByClause();
+			return table.behavior().getOrderByClause();
 		}
 
 		@Override
 		public Criteria getWhereClause() {
-			return table.helper.getWhereClause();
+			return table.behavior().getWhereClause();
 		}
 
 		@Override
