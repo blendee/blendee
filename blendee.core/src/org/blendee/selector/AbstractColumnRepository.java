@@ -72,9 +72,9 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized void renameID(String oldID, String newId, String... usingClassNames) {
-		if (oldID.equals(newId)) return;
-		TablePathSource oldPath = tablePathMap.remove(oldID);
+	public synchronized void renameId(String oldId, String newId, String... usingClassNames) {
+		if (oldId.equals(newId)) return;
+		TablePathSource oldPath = tablePathMap.remove(oldId);
 		if (oldPath == null) return;
 		tablePathMap.remove(newId);
 		TablePathSource newPath = setTablePathInternal(
@@ -98,7 +98,7 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized String[] getIDs() {
+	public synchronized String[] getIds() {
 		Set<String> keys = tablePathMap.keySet();
 		String[] result = keys.toArray(new String[keys.size()]);
 		Arrays.sort(result);

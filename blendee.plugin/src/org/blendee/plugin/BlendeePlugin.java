@@ -50,7 +50,7 @@ import org.osgi.framework.BundleContext;
 
 public class BlendeePlugin extends AbstractUIPlugin {
 
-	private static final String pluginID = "org.blendee.plugin";
+	private static final String pluginId = "org.blendee.plugin";
 
 	private static final String currentProjectKeyName = "project-name";
 
@@ -151,7 +151,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
-		String projectName = InstanceScope.INSTANCE.getNode(pluginID).get(currentProjectKeyName, null);
+		String projectName = InstanceScope.INSTANCE.getNode(pluginId).get(currentProjectKeyName, null);
 		if (projectName == null || projectName.equals("")) return;
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		if (project.isOpen() && project.hasNature(JavaCore.NATURE_ID)) {
@@ -168,7 +168,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		if (currentProject != null) {
-			InstanceScope.INSTANCE.getNode(pluginID).put(
+			InstanceScope.INSTANCE.getNode(pluginId).put(
 				currentProjectKeyName,
 				currentProject.getElementName());
 		}

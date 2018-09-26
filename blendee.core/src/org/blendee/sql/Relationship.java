@@ -39,7 +39,7 @@ public interface Relationship extends Traversable, Comparable<Relationship> {
 	 * この要素を Blendee 内で一意に特定する ID を返します。 ID はテーブル別名として使用されます。
 	 * @return ID
 	 */
-	String getID();
+	String getId();
 
 	/**
 	 * 指定されたカラム名が存在するか検査します。

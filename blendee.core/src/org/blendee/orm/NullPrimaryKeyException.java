@@ -15,7 +15,7 @@ public class NullPrimaryKeyException extends BlendeeException {
 		super(
 			relationship.getTablePath()
 				+ " ("
-				+ relationship.getID()
+				+ relationship.getId()
 				+ ") は PK に値を持たないので、使用できません");
 	}
 }

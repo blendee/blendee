@@ -27,7 +27,7 @@ public interface Column extends Comparable<Column> {
 	 * このカラムを Blendee 内で一意に特定する ID を返します。 ID はカラム別名として使用されます。
 	 * @return ID
 	 */
-	public String getID();
+	public String getId();
 
 	/**
 	 * このインスタンスがさし示すカラムの値とパラメータの値が等しいものという条件句を生成します。

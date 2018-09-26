@@ -17,6 +17,6 @@ public class IllegalValueException extends BlendeeException {
 	}
 
 	static final String buildMessage(Column column) {
-		return column.getName() + " (" + column.getID() + ") は検索に使用されていません";
+		return column.getName() + " (" + column.getId() + ") は検索に使用されていません";
 	}
 }

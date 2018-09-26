@@ -33,7 +33,7 @@ class StrictColumnRepository implements ColumnRepository {
 	private final Map<String, String[]> errorMessagesMap = new HashMap<>();
 
 	StrictColumnRepository(final ColumnRepository repository) {
-		final String[] ids = repository.getIDs();
+		final String[] ids = repository.getIds();
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
 			tableMap.put(id, repository.getTablePath(id));
@@ -60,7 +60,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public void renameID(String oldId, String newId, String... usingClassNames) {
+	public void renameId(String oldId, String newId, String... usingClassNames) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -122,7 +122,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public String[] getIDs() {
+	public String[] getIds() {
 		Set<String> ids = tableMap.keySet();
 		return ids.toArray(new String[ids.size()]);
 	}

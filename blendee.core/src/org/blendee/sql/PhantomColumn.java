@@ -90,8 +90,8 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public String getID() {
-		return getSubstanceWithCheck().getID();
+	public String getId() {
+		return getSubstanceWithCheck().getId();
 	}
 
 	@Override

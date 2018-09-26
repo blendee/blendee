@@ -118,7 +118,7 @@ final class ConcreteRelationship implements Relationship {
 
 	@Override
 	public int compareTo(Relationship target) {
-		return id.compareTo(target.getID());
+		return id.compareTo(target.getId());
 	}
 
 	@Override
@@ -171,7 +171,7 @@ final class ConcreteRelationship implements Relationship {
 	}
 
 	@Override
-	public String getID() {
+	public String getId() {
 		return id;
 	}
 

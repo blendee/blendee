@@ -93,7 +93,7 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public String getID() {
+	public String getId() {
 		throw new UnsupportedOperationException();
 	}
 

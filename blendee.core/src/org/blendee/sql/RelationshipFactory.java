@@ -23,7 +23,7 @@ public class RelationshipFactory implements ManagementSubject {
 
 	private final Map<TablePath, Relationship> relationshipCache = new HashMap<>();
 
-	private final Map<TablePath, String> pathIDMap = new HashMap<>();
+	private final Map<TablePath, String> pathIdMap = new HashMap<>();
 
 	/**
 	 * このクラスのコンストラクタです。<br>
@@ -39,7 +39,7 @@ public class RelationshipFactory implements ManagementSubject {
 	 */
 	public Relationship getInstance(TablePath path) {
 		synchronized (lock) {
-			if (pathIDMap.size() == 0) preparePathIDMap();
+			if (pathIdMap.size() == 0) preparePathIdMap();
 			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
 				relationship = createRelationship(path);
@@ -83,7 +83,7 @@ public class RelationshipFactory implements ManagementSubject {
 	public void clearCache() {
 		synchronized (lock) {
 			relationshipCache.clear();
-			pathIDMap.clear();
+			pathIdMap.clear();
 		}
 	}
 
@@ -97,7 +97,7 @@ public class RelationshipFactory implements ManagementSubject {
 		return new DecimalFormat(zeros.toString());
 	}
 
-	private void preparePathIDMap() {
+	private void preparePathIdMap() {
 		String[] schemaNames = ContextManager.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		int counter = 0;
 		for (String name : schemaNames) {
@@ -110,15 +110,15 @@ public class RelationshipFactory implements ManagementSubject {
 		for (String name : schemaNames) {
 			TablePath[] paths = MetadataUtilities.getTables(name);
 			for (TablePath path : paths) {
-				pathIDMap.put(path, "t" + format.format(counter));
+				pathIdMap.put(path, "t" + format.format(counter));
 				counter++;
 			}
 		}
 	}
 
 	private Relationship createRelationship(final TablePath path) {
-		final String pathID = pathIDMap.get(path);
-		if (pathID == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+		final String pathId = pathIdMap.get(path);
+		if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
 
 		List<TablePath> relationshipPath = new LinkedList<>();
 
@@ -127,7 +127,7 @@ public class RelationshipFactory implements ManagementSubject {
 			null,
 			null,
 			path,
-			pathID,
+			pathId,
 			relationshipPath,
 			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
 			new CollectionMap<>());

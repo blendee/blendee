@@ -37,8 +37,8 @@ public class RelationshipColumn implements Column {
 		this.metadata = metadata;
 		this.name = metadata.getName();
 		this.type = converter.convert(metadata.getType(), metadata.getTypeName());
-		id = relationship.getID() + "_c" + index;
-		complementedName = relationship.getID() + "." + metadata.getName();
+		id = relationship.getId() + "_c" + index;
+		complementedName = relationship.getId() + "." + metadata.getName();
 		hashCode = id.hashCode();
 	}
 
@@ -61,7 +61,7 @@ public class RelationshipColumn implements Column {
 		this.metadata = copyFrom.getColumnMetadata();
 		this.name = copyFrom.getName();
 		this.type = copyFrom.getType();
-		id = copyFrom.getID();
+		id = copyFrom.getId();
 		complementedName = copyFrom.getComplementedName();
 		hashCode = copyFrom.hashCode();
 	}
@@ -78,11 +78,11 @@ public class RelationshipColumn implements Column {
 
 	@Override
 	public int compareTo(Column target) {
-		return id.compareTo(target.getID());
+		return id.compareTo(target.getId());
 	}
 
 	@Override
-	public String getID() {
+	public String getId() {
 		return id;
 	}
 

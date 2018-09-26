@@ -139,7 +139,7 @@ public class RelationshipElement extends PropertySourceElement {
 	static String createName(Relationship relationship) {
 		return relationship.getTablePath()
 			+ "("
-			+ relationship.getID()
+			+ relationship.getId()
 			+ ")";
 	}
 

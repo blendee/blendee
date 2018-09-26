@@ -26,7 +26,7 @@ public class SelectClause extends ListClause<SelectClause> {
 	public void add(int order, Column... columns) {
 		clearCache();
 		for (Column column : columns) {
-			addInternal(order, column, "{0} AS " + column.getID());
+			addInternal(order, column, "{0} AS " + column.getId());
 		}
 	}
 

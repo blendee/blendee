@@ -39,7 +39,7 @@ class AnonymousRelationship implements Relationship, ComposedSQL {
 
 	@Override
 	public int compareTo(Relationship o) {
-		return alias.compareTo(o.getID());
+		return alias.compareTo(o.getId());
 	}
 
 	@Override
@@ -53,7 +53,7 @@ class AnonymousRelationship implements Relationship, ComposedSQL {
 	}
 
 	@Override
-	public String getID() {
+	public String getId() {
 		return alias;
 	}
 

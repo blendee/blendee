@@ -6,12 +6,12 @@ import org.eclipse.ui.PlatformUI;
 
 class Starter {
 
-	static void start(String viewID) {
+	static void start(String viewId) {
 		IWorkbenchPage page = PlatformUI.getWorkbench()
 			.getActiveWorkbenchWindow()
 			.getActivePage();
 		try {
-			page.showView(viewID);
+			page.showView(viewId);
 		} catch (PartInitException e) {
 			throw new RuntimeException(e);
 		}

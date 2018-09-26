@@ -22,7 +22,7 @@ public class UseColumnElement extends AbstractColumnElement {
 	}
 
 	private UseColumnElement(AnchorElement parent, Column column) {
-		super(parent.getID(), parent.getRepository(), column);
+		super(parent.getId(), parent.getRepository(), column);
 		this.parent = parent;
 	}
 

@@ -50,7 +50,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 	private static final ChangeTableAction changeTableAction = new ChangeTableAction();
 
-	private static final ChangeIDAction changeIDAction = new ChangeIDAction();
+	private static final ChangeIdAction changeIdAction = new ChangeIdAction();
 
 	private static final RemoveAction removeAction = new RemoveAction();
 
@@ -73,16 +73,16 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		}
 	};
 
-	private static final String timestampID = "TIMESTAMP";
+	private static final String timestampId = "TIMESTAMP";
 
-	private static final String errorID = "ERROR";
+	private static final String errorId = "ERROR";
 
-	private static final String modeID = "MODE";
+	private static final String modeId = "MODE";
 
 	private static final PropertyDescriptor[] descripters = {
-		new PropertyDescriptor(timestampID, "利用マーク除去日"),
-		new PropertyDescriptor(errorID, "エラー"),
-		new PropertyDescriptor(modeID, "表示モード") };
+		new PropertyDescriptor(timestampId, "利用マーク除去日"),
+		new PropertyDescriptor(errorId, "エラー"),
+		new PropertyDescriptor(modeId, "表示モード") };
 
 	private final EditorRootElement root;
 
@@ -225,8 +225,8 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		changeTableAction.element = this;
 		manager.add(changeTableAction);
 
-		changeIDAction.element = this;
-		manager.add(changeIDAction);
+		changeIdAction.element = this;
+		manager.add(changeIdAction);
 
 		manager.add(new Separator());
 
@@ -332,7 +332,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 			.setSelection(new StructuredSelection(element));
 	}
 
-	String getID() {
+	String getId() {
 		return id;
 	}
 
@@ -347,13 +347,13 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 
 	@Override
 	Object getMyPropertyValue(Object id) {
-		if (timestampID.equals(id))
+		if (timestampId.equals(id))
 			return DateFormat.getDateTimeInstance().format(
 				new Date(repository.getMarkClearedTimestamp(this.id)));
 
-		if (errorID.equals(id)) return (isValidAnchor()) ? "なし" : "あり";
+		if (errorId.equals(id)) return (isValidAnchor()) ? "なし" : "あり";
 
-		if (modeID.equals(id))
+		if (modeId.equals(id))
 			return useColumnMode ? "検索に使用するカラム一覧表示" : "ツリー表示";
 
 		throw new IllegalStateException();
@@ -452,11 +452,11 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 		}
 	}
 
-	private static class ChangeIDAction extends Action {
+	private static class ChangeIdAction extends Action {
 
 		private AnchorElement element;
 
-		private ChangeIDAction() {
+		private ChangeIdAction() {
 			String text = "ID の変更";
 			setText(text);
 			setToolTipText(text);
@@ -472,10 +472,10 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 				element.id,
 				idValidator);
 			if (dialog.open() == Window.OK) {
-				String newID = dialog.getValue();
-				if (element.id.equals(newID)) return;
-				element.repository.renameID(element.id, newID);
-				element.id = newID;
+				String newId = dialog.getValue();
+				if (element.id.equals(newId)) return;
+				element.repository.renameId(element.id, newId);
+				element.id = newId;
 				element.prepareName();
 				element.relationship = null;
 				QueryEditorView view = BlendeePlugin.getDefault().getQueryEditorView();

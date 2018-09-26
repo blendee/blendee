@@ -78,7 +78,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	void write(Map<String, TablePathSource> tablePathMap) {
 		try (PrintWriter writer = new PrintWriter(
 			new BufferedWriter(new OutputStreamWriter(repository.getOutputStream())))) {
-			String[] ids = getIDs();
+			String[] ids = getIds();
 			for (String id : ids) {
 				TablePathSource source = tablePathMap.get(id);
 				writer.println(source);

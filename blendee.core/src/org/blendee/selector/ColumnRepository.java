@@ -40,7 +40,7 @@ public interface ColumnRepository {
 	 * @param newId 新 ID
 	 * @param usingClassNames id が使用されているクラス
 	 */
-	void renameID(String oldId, String newId, String... usingClassNames);
+	void renameId(String oldId, String newId, String... usingClassNames);
 
 	/**
 	 * ID が持つ全カラムを返します。
@@ -138,7 +138,7 @@ public interface ColumnRepository {
 	 * このリポジトリが持つ全 ID を返します。
 	 * @return 全 ID
 	 */
-	String[] getIDs();
+	String[] getIds();
 
 	/**
 	 * パラメータで指定された ID にエラーがある場合、そのエラーメッセージを返します。
