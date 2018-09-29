@@ -18,14 +18,14 @@ import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
-import org.blendee.sql.SelectStatementBuilder;
-import org.blendee.support.QueryBuilderBehavior.PlaybackQuery;
+import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
 
 /**
  * 無名テーブルクラスです。
  * @author 千葉 哲嗣
  */
-public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>, RightTable<AnonymousTable.OnRightRel> {
+public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Void>, RightTable<AnonymousTable.OnRightRel> {
 
 	private static final TableFacadeContext<SelectCol> selectContext = (
 		relationship,
@@ -151,7 +151,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 		return behavior == null ? (behavior = new Behavior()) : behavior;
 	}
 
-	private class Behavior extends QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
+	private class Behavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private Behavior() {
 			super(new AnonymousFromClause(relationship));
@@ -192,17 +192,17 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 
 	/**
 	 * (inner) alias
-	 * @param inner {@link QueryBuilder}
+	 * @param inner {@link SelectStatement}
 	 * @param alias 表別名
 	 */
-	public AnonymousTable(QueryBuilder inner, String alias) {
+	public AnonymousTable(SelectStatement inner, String alias) {
 		relationship = new AnonymousRelationship(inner.query(), alias);
 	}
 
 	/**
 	 * SELECT 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable SELECT(SelectOfferFunction<SelectRel> function) {
 		behavior().SELECT(function);
@@ -212,7 +212,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * DISTINCT を使用した SELECT 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable SELECT_DISTINCT(SelectOfferFunction<SelectRel> function) {
 		behavior().SELECT_DISTINCT(function);
@@ -221,7 +221,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 
 	/**
 	 * COUNT(*) を使用した SELECT 句を記述します。
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable SELECT_COUNT() {
 		behavior().SELECT_COUNT();
@@ -231,7 +231,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * GROUP BY 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable GROUP_BY(GroupByOfferFunction<GroupByRel> function) {
 		behavior().GROUP_BY(function);
@@ -241,7 +241,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * WHERE 句を記述します。
 	 * @param consumers
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
 	public final AnonymousTable WHERE(Consumer<WhereRel>... consumers) {
@@ -261,7 +261,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * HAVING 句を記述します。
 	 * @param consumers
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
 	public final AnonymousTable HAVING(Consumer<HavingRel>... consumers) {
@@ -322,7 +322,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param sql UNION 対象
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable UNION(ComposedSQL sql) {
 		behavior().UNION(sql);
@@ -333,7 +333,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * UNION ALL するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param sql UNION ALL 対象
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable UNION_ALL(ComposedSQL sql) {
 		behavior().UNION_ALL(sql);
@@ -343,7 +343,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * ORDER BY 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public AnonymousTable ORDER_BY(OrderByOfferFunction<OrderByRel> function) {
 		behavior().ORDER_BY(function);
@@ -358,7 +358,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * 新規に GROUP BY 句をセットします。
 	 * @param clause 新 ORDER BY 句
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public AnonymousTable groupBy(GroupByClause clause) {
@@ -369,7 +369,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * 新規に ORDER BY 句をセットします。
 	 * @param clause 新 ORDER BY 句
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public AnonymousTable orderBy(OrderByClause clause) {
@@ -381,7 +381,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * 現時点の WHERE 句に新たな条件を AND 結合します。<br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
 	 * @param criteria AND 結合する新条件
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public AnonymousTable and(Criteria criteria) {
 		behavior().and(criteria);
@@ -392,7 +392,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	 * 現時点の WHERE 句に新たな条件を OR 結合します。<br>
 	 * OR 結合する対象がなければ、新条件としてセットされます。
 	 * @param criteria OR 結合する新条件
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public AnonymousTable or(Criteria criteria) {
 		behavior().or(criteria);
@@ -402,7 +402,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	/**
 	 * 生成された SQL 文を加工する {SQLDecorator} を設定します。
 	 * @param decorators {@link SQLDecorator}
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public AnonymousTable apply(SQLDecorator... decorators) {
 		behavior().apply(decorators);
@@ -488,13 +488,13 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 	}
 
 	@Override
-	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
+	public void joinTo(SQLQueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		careEmptySelect();//下でこのQueryが評価されてしまうのでSELECT句を補う
 		behavior().joinTo(builder, joinType, onCriteria);
 	}
 
 	@Override
-	public SelectStatementBuilder toSelectStatementBuilder() {
+	public SQLQueryBuilder toSQLQueryBuilder() {
 		careEmptySelect();
 		return behavior().buildBuilder();
 	}
@@ -673,7 +673,7 @@ public class AnonymousTable implements QueryBuilder, Query<Iterator<Void>, Void>
 		}
 
 		@Override
-		public QueryBuilder getRoot() {
+		public SelectStatement getRoot() {
 			return table;
 		}
 

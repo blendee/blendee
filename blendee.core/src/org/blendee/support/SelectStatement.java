@@ -2,7 +2,7 @@ package org.blendee.support;
 
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
-import org.blendee.sql.SelectStatementBuilder;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 
@@ -11,7 +11,7 @@ import org.blendee.sql.SQLDecorator;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface QueryBuilder {
+public interface SelectStatement {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -62,18 +62,18 @@ public interface QueryBuilder {
 	boolean rowMode();
 
 	/**
-	 * 引数の {@link SelectStatementBuilder} に自身のクエリ内容を JOIN させます。
+	 * 引数の {@link SQLQueryBuilder} に自身のクエリ内容を JOIN させます。
 	 * @param mainBuilder メイン側のクエリ
 	 * @param joinType 結合タイプ
 	 * @param onCriteria 結合条件
 	 */
-	void joinTo(SelectStatementBuilder mainBuilder, JoinType joinType, Criteria onCriteria);
+	void joinTo(SQLQueryBuilder mainBuilder, JoinType joinType, Criteria onCriteria);
 
 	/**
-	 * {@link SelectStatementBuilder} を生成します。
-	 * @return {@link SelectStatementBuilder}
+	 * {@link SQLQueryBuilder} を生成します。
+	 * @return {@link SQLQueryBuilder}
 	 */
-	SelectStatementBuilder toSelectStatementBuilder();
+	SQLQueryBuilder toSQLQueryBuilder();
 
 	/**
 	 * @param forSubquery true の場合、カラムにテーブルIDが付与される

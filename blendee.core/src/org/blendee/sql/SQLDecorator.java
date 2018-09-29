@@ -3,7 +3,7 @@ package org.blendee.sql;
 /**
  * SQL 文を各データベース向けに微調整したり拡張する機能を定義したインターフェイスです。
  * @author 千葉 哲嗣
- * @see SelectStatementBuilder#addDecorator(SQLDecorator...)
+ * @see SQLQueryBuilder#addDecorator(SQLDecorator...)
  */
 @FunctionalInterface
 public interface SQLDecorator {

@@ -18,7 +18,7 @@ public interface TableFacadeContext<T> {
 
 	/**
 	 * WHERE 句用
-	 * @param <O> {@link QueryBuilder} 実装
+	 * @param <O> {@link SelectStatement} 実装
 	 * @return WHERE 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<WhereColumn<O>> newWhereBuilder() {
@@ -30,7 +30,7 @@ public interface TableFacadeContext<T> {
 
 	/**
 	 * HAVING 句用
-	 * @param <O> {@link QueryBuilder} 実装
+	 * @param <O> {@link SelectStatement} 実装
 	 * @return HAVING 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<HavingColumn<O>> newHavingBuilder() {
@@ -42,7 +42,7 @@ public interface TableFacadeContext<T> {
 
 	/**
 	 * ON 句 (LEFT) 用
-	 * @param <O> {@link QueryBuilder} 実装
+	 * @param <O> {@link SelectStatement} 実装
 	 * @return ON 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnLeftColumn<O>> newOnLeftBuilder() {
@@ -54,7 +54,7 @@ public interface TableFacadeContext<T> {
 
 	/**
 	 * ON 句 (RIGHT) 用
-	 * @param <O> {@link QueryBuilder} 実装
+	 * @param <O> {@link SelectStatement} 実装
 	 * @return ON 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnRightColumn<O>> newOnRightBuilder() {

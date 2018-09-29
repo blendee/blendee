@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
-import org.blendee.sql.SelectStatementBuilder;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
@@ -231,13 +231,13 @@ public interface SelectRelationship {
 	 * @param subquery サブクエリ
 	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasableOffer any(QueryBuilder subquery) {
-		QueryBuilder root = getRoot();
+	default AliasableOffer any(SelectStatement subquery) {
+		SelectStatement root = getRoot();
 
 		root.quitRowMode();
 		root.forSubquery(true);
 
-		SelectStatementBuilder builder = subquery.toSelectStatementBuilder();
+		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
 
 		Column[] columns = { new PseudoColumn(getRelationship(), builder.sql(), false) };
@@ -311,7 +311,7 @@ public interface SelectRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return このインスタンスの大元の {@link QueryBuilder}
+	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
-	QueryBuilder getRoot();
+	SelectStatement getRoot();
 }

@@ -14,7 +14,7 @@ import org.blendee.sql.CriteriaFactory;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
- * {@link Query} との違いは、参照する側のテーブルの {@link QueryBuilder} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
+ * {@link Query} との違いは、参照する側のテーブルの {@link SelectStatement} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
  * @author 千葉 哲嗣
  * @param <O> One 一対多の一側の型
  * @param <M> Many 一対多の多側の型連鎖

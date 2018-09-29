@@ -11,7 +11,7 @@ import org.blendee.sql.CriteriaFactory;
  * @param <R> RIGHT
  * @param <Q> Query
  */
-public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationship, Q extends QueryBuilder> {
+public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationship, Q extends SelectStatement> {
 
 	private final JoinResource resource;
 
@@ -30,7 +30,7 @@ public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationshi
 
 	/**
 	 * @param consumers {@link BiConsumer}
-	 * @return {@link QueryBuilder}
+	 * @return {@link SelectStatement}
 	 */
 	@SafeVarargs
 	public final Q ON(BiConsumer<L, R>... consumers) {

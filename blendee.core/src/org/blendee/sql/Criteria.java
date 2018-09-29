@@ -12,8 +12,8 @@ import org.blendee.jdbc.BPreparedStatement;
  * SQL 文に含まれる条件句を表すクラスです。条件句とは、具体的には WHERE 句と HAVING 句をさしています。
  * @author 千葉 哲嗣
  * @see CriteriaFactory
- * @see SelectStatementBuilder#setWhereClause(Criteria)
- * @see SelectStatementBuilder#setHavingClause(Criteria)
+ * @see SQLQueryBuilder#setWhereClause(Criteria)
+ * @see SQLQueryBuilder#setHavingClause(Criteria)
  */
 public class Criteria extends Clause {
 

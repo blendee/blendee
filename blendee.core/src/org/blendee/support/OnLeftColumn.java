@@ -10,13 +10,13 @@ import org.blendee.sql.Column;
  */
 public class OnLeftColumn<O extends LogicalOperators<?>> extends OnColumn<O> {
 
-	private final QueryBuilder root;
+	private final SelectStatement root;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 */
 	@SuppressWarnings("javadoc")
-	public OnLeftColumn(QueryBuilder root, CriteriaContext context, Column column) {
+	public OnLeftColumn(SelectStatement root, CriteriaContext context, Column column) {
 		super(context, column);
 		this.root = root;
 	}

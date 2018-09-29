@@ -2,7 +2,7 @@ package org.blendee.develop.ormgen;
 
 import java.util.Map;
 
-import org.blendee.support.QueryBuilder;
+import org.blendee.support.SelectStatement;
 import org.blendee.support.Row;
 
 /**
@@ -69,7 +69,7 @@ public interface CodeFormatter {
 	}
 
 	/**
-	 * {@link QueryBuilder} の項目生成部分のコードを組み立てます。<br>
+	 * {@link SelectStatement} の項目生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
@@ -79,7 +79,7 @@ public interface CodeFormatter {
 	}
 
 	/**
-	 * {@link QueryBuilder} の項目生成部分のコードを組み立てます。<br>
+	 * {@link SelectStatement} の項目生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード
@@ -89,7 +89,7 @@ public interface CodeFormatter {
 	}
 
 	/**
-	 * {@link QueryBuilder} のリレーション生成部分のコードを組み立てます。<br>
+	 * {@link SelectStatement} のリレーション生成部分のコードを組み立てます。<br>
 	 * @param template テンプレート
 	 * @param arguments 引数
 	 * @return 生成後のコード

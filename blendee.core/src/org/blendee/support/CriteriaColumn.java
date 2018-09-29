@@ -55,7 +55,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(BigDecimal value) {
 		getContext()
@@ -67,7 +67,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(boolean value) {
 		getContext().addCriteria(
@@ -79,7 +79,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(double value) {
 		getContext().addCriteria(
@@ -91,7 +91,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(float value) {
 		getContext().addCriteria(
@@ -103,7 +103,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(int value) {
 		getContext().addCriteria(
@@ -115,7 +115,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(long value) {
 		getContext().addCriteria(
@@ -127,7 +127,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(String value) {
 		getContext().addCriteria(
@@ -139,7 +139,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(Timestamp value) {
 		getContext().addCriteria(
@@ -151,7 +151,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(UUID value) {
 		getContext().addCriteria(
@@ -163,7 +163,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(Bindable value) {
 		getContext().addCriteria(
@@ -175,7 +175,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} = {1}");
@@ -184,7 +184,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} = {1}");
@@ -193,10 +193,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの = 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O eq(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, subquery.toSelectStatementBuilder()));
+	public O eq(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -204,7 +204,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(BigDecimal value) {
 		compare(ComparisonOperator.NE, new BigDecimalBinder(value));
@@ -214,7 +214,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(boolean value) {
 		compare(ComparisonOperator.NE, new BooleanBinder(value));
@@ -224,7 +224,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(double value) {
 		compare(ComparisonOperator.NE, new DoubleBinder(value));
@@ -234,7 +234,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(float value) {
 		compare(ComparisonOperator.NE, new FloatBinder(value));
@@ -244,7 +244,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(int value) {
 		compare(ComparisonOperator.NE, new IntBinder(value));
@@ -254,7 +254,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(long value) {
 		compare(ComparisonOperator.NE, new LongBinder(value));
@@ -264,7 +264,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(String value) {
 		compare(ComparisonOperator.NE, new StringBinder(value));
@@ -274,7 +274,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(Timestamp value) {
 		compare(ComparisonOperator.NE, new TimestampBinder(value));
@@ -284,7 +284,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(UUID value) {
 		compare(ComparisonOperator.NE, new UUIDBinder(value));
@@ -294,7 +294,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(Bindable value) {
 		compare(ComparisonOperator.NE, value);
@@ -304,7 +304,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <> 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} <> {1}");
@@ -313,7 +313,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <> 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} <> {1}");
@@ -322,10 +322,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <> 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ne(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.NE, column, subquery.toSelectStatementBuilder()));
+	public O ne(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.NE, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -333,7 +333,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(BigDecimal value) {
 		compare(ComparisonOperator.LT, new BigDecimalBinder(value));
@@ -343,7 +343,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(boolean value) {
 		compare(ComparisonOperator.LT, new BooleanBinder(value));
@@ -353,7 +353,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(double value) {
 		compare(ComparisonOperator.LT, new DoubleBinder(value));
@@ -363,7 +363,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(float value) {
 		compare(ComparisonOperator.LT, new FloatBinder(value));
@@ -373,7 +373,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(int value) {
 		compare(ComparisonOperator.LT, new IntBinder(value));
@@ -383,7 +383,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(long value) {
 		compare(ComparisonOperator.LT, new LongBinder(value));
@@ -393,7 +393,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(String value) {
 		compare(ComparisonOperator.LT, new StringBinder(value));
@@ -403,7 +403,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(Timestamp value) {
 		compare(ComparisonOperator.LT, new TimestampBinder(value));
@@ -413,7 +413,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(UUID value) {
 		compare(ComparisonOperator.LT, new UUIDBinder(value));
@@ -423,7 +423,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(Bindable value) {
 		compare(ComparisonOperator.LT, value);
@@ -433,7 +433,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの < 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} < {1}");
@@ -442,7 +442,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの < 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} < {1}");
@@ -451,10 +451,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの < 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O lt(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LT, column, subquery.toSelectStatementBuilder()));
+	public O lt(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LT, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -462,7 +462,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(BigDecimal value) {
 		compare(ComparisonOperator.GT, new BigDecimalBinder(value));
@@ -472,7 +472,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(boolean value) {
 		compare(ComparisonOperator.GT, new BooleanBinder(value));
@@ -482,7 +482,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(double value) {
 		compare(ComparisonOperator.GT, new DoubleBinder(value));
@@ -492,7 +492,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(float value) {
 		compare(ComparisonOperator.GT, new FloatBinder(value));
@@ -502,7 +502,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(int value) {
 		compare(ComparisonOperator.GT, new IntBinder(value));
@@ -512,7 +512,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(long value) {
 		compare(ComparisonOperator.GT, new LongBinder(value));
@@ -522,7 +522,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(String value) {
 		compare(ComparisonOperator.GT, new StringBinder(value));
@@ -532,7 +532,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(Timestamp value) {
 		compare(ComparisonOperator.GT, new TimestampBinder(value));
@@ -542,7 +542,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(UUID value) {
 		compare(ComparisonOperator.GT, new UUIDBinder(value));
@@ -552,7 +552,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt; 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(Bindable value) {
 		compare(ComparisonOperator.GT, value);
@@ -562,7 +562,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの > 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} > {1}");
@@ -571,7 +571,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの > 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} > {1}");
@@ -580,10 +580,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの > 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O gt(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GT, column, subquery.toSelectStatementBuilder()));
+	public O gt(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GT, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -591,7 +591,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(BigDecimal value) {
 		compare(ComparisonOperator.LE, new BigDecimalBinder(value));
@@ -601,7 +601,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(boolean value) {
 		compare(ComparisonOperator.LE, new BooleanBinder(value));
@@ -611,7 +611,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(double value) {
 		compare(ComparisonOperator.LE, new DoubleBinder(value));
@@ -621,7 +621,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(float value) {
 		compare(ComparisonOperator.LE, new FloatBinder(value));
@@ -631,7 +631,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(int value) {
 		compare(ComparisonOperator.LE, new IntBinder(value));
@@ -641,7 +641,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(long value) {
 		compare(ComparisonOperator.LE, new LongBinder(value));
@@ -651,7 +651,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(String value) {
 		compare(ComparisonOperator.LE, new StringBinder(value));
@@ -661,7 +661,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(Timestamp value) {
 		compare(ComparisonOperator.LE, new TimestampBinder(value));
@@ -671,7 +671,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(UUID value) {
 		compare(ComparisonOperator.LE, new UUIDBinder(value));
@@ -681,7 +681,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &lt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(Bindable value) {
 		compare(ComparisonOperator.LE, value);
@@ -691,7 +691,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <= 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} <= {1}");
@@ -700,7 +700,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <= 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} <= {1}");
@@ -709,10 +709,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの <= 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O le(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LE, column, subquery.toSelectStatementBuilder()));
+	public O le(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LE, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -720,7 +720,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(BigDecimal value) {
 		compare(ComparisonOperator.GE, new BigDecimalBinder(value));
@@ -730,7 +730,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(boolean value) {
 		compare(ComparisonOperator.GE, new BooleanBinder(value));
@@ -740,7 +740,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(double value) {
 		compare(ComparisonOperator.GE, new DoubleBinder(value));
@@ -750,7 +750,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(float value) {
 		compare(ComparisonOperator.GE, new FloatBinder(value));
@@ -760,7 +760,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(int value) {
 		compare(ComparisonOperator.GE, new IntBinder(value));
@@ -770,7 +770,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(long value) {
 		compare(ComparisonOperator.GE, new LongBinder(value));
@@ -780,7 +780,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(String value) {
 		compare(ComparisonOperator.GE, new StringBinder(value));
@@ -790,7 +790,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(Timestamp value) {
 		compare(ComparisonOperator.GE, new TimestampBinder(value));
@@ -800,7 +800,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(UUID value) {
 		compare(ComparisonOperator.GE, new UUIDBinder(value));
@@ -810,7 +810,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの &gt;= 条件を追加します。
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(Bindable value) {
 		compare(ComparisonOperator.GE, value);
@@ -820,7 +820,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの >= 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(SelectColumn another) {
 		return addAnotherColumnCriteria(another.column(), "{0} >= {1}");
@@ -829,7 +829,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの >= 条件を追加します。
 	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} >= {1}");
@@ -838,10 +838,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの >= 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ge(QueryBuilder subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GE, column, subquery.toSelectStatementBuilder()));
+	public O ge(SelectStatement subquery) {
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GE, column, subquery.toSQLQueryBuilder()));
 
 		return logocalOperators();
 	}
@@ -851,7 +851,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @see ComparisonOperator
 	 * @param operator 比較演算子
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O compare(ComparisonOperator operator, Bindable value) {
 		getContext().addCriteria(
@@ -864,7 +864,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O LIKE(String value) {
 		getContext().addCriteria(
@@ -877,7 +877,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの LIKE 条件を追加します。
 	 * @see Match
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_LIKE(String value) {
 		getContext().addCriteria(
@@ -891,7 +891,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @see Match
 	 * @param type LIKE 検索の一致タイプ
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O LIKE(Match type, String value) {
 		getContext().addCriteria(
@@ -905,7 +905,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @see Match
 	 * @param type LIKE 検索の一致タイプ
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_LIKE(Match type, String value) {
 		getContext().addCriteria(
@@ -917,7 +917,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(String... values) {
 		getContext().addCriteria(
@@ -929,7 +929,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(Number... values) {
 		getContext().addCriteria(
@@ -941,7 +941,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(Timestamp... values) {
 		getContext().addCriteria(
@@ -953,7 +953,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(Bindable... values) {
 		getContext().addCriteria(
@@ -965,10 +965,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O IN(QueryBuilder subquery) {
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSelectStatementBuilder(), false, column()));
+	public O IN(SelectStatement subquery) {
+		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), false, column()));
 
 		return logocalOperators();
 	}
@@ -976,7 +976,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの NOT IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(String... values) {
 		getContext().addCriteria(
@@ -988,7 +988,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの NOT IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(Number... values) {
 		getContext().addCriteria(
@@ -1000,7 +1000,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの NOT IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(Timestamp... values) {
 		getContext().addCriteria(
@@ -1012,7 +1012,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの NOT IN 条件を追加します。
 	 * @param values 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(Bindable... values) {
 		getContext().addCriteria(
@@ -1024,10 +1024,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	/**
 	 * 条件句に、このカラムの IN 条件を追加します。
 	 * @param subquery 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O NOT_IN(QueryBuilder subquery) {
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSelectStatementBuilder(), true, column()));
+	public O NOT_IN(SelectStatement subquery) {
+		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), true, column()));
 
 		return logocalOperators();
 	}
@@ -1036,7 +1036,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O BETWEEN(Number v1, Number v2) {
 		getContext().addCriteria(
@@ -1049,7 +1049,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O BETWEEN(String v1, String v2) {
 		getContext().addCriteria(
@@ -1062,7 +1062,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O BETWEEN(Timestamp v1, Timestamp v2) {
 		getContext().addCriteria(
@@ -1075,7 +1075,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O BETWEEN(Binder v1, Binder v2) {
 		getContext().addCriteria(
@@ -1088,7 +1088,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_BETWEEN(Number v1, Number v2) {
 		getContext().addCriteria(
@@ -1101,7 +1101,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_BETWEEN(String v1, String v2) {
 		getContext().addCriteria(
@@ -1114,7 +1114,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_BETWEEN(Timestamp v1, Timestamp v2) {
 		getContext().addCriteria(
@@ -1127,7 +1127,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * 条件句に、このカラムの NOT BETWEEN 条件を追加します。
 	 * @param v1 from
 	 * @param v2 to
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_BETWEEN(Binder v1, Binder v2) {
 		getContext().addCriteria(
@@ -1138,7 +1138,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 
 	/**
 	 * 条件句に、このカラムの IS NULL 条件を追加します。
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IS_NULL() {
 		getContext().addCriteria(
@@ -1149,7 +1149,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 
 	/**
 	 * 条件句に、このカラムの IS NOT NULL 条件を追加します。
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IS_NOT_NULL() {
 		getContext().addCriteria(
@@ -1163,7 +1163,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @see CriteriaFactory#createCriteria(String, Column, Bindable)
 	 * @param clause 条件句の元になるテンプレート
 	 * @param value 検索条件の値
-	 * @return 連続呼び出し用 {@link QueryBuilder}
+	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O add(String clause, Bindable value) {
 		getContext().addCriteria(

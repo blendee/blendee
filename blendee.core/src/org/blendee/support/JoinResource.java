@@ -7,7 +7,7 @@ class JoinResource {
 
 	JoinType joinType;
 
-	QueryBuilder rightRoot;
+	SelectStatement rightRoot;
 
 	Criteria onCriteria;
 }

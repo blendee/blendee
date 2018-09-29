@@ -5,7 +5,7 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
 /**
  * SELECT 句を表すクラスです。
  * @author 千葉 哲嗣
- * @see SelectStatementBuilder#setSelectClause(SelectClause)
+ * @see SQLQueryBuilder#setSelectClause(SelectClause)
  */
 public class SelectClause extends ListClause<SelectClause> {
 

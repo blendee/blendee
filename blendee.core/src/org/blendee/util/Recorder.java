@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.blendee.support.Query;
-import org.blendee.support.QueryBuilder;
+import org.blendee.support.SelectStatement;
 
 /**
  * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化するためのクラスです。
@@ -19,7 +19,7 @@ public class Recorder {
 	private static final Map<Class<?>, Map<?, Query<?, ?>>> executorMapCache = new HashMap<>();
 
 	/**
-	 * {@link QueryBuilder} から {@link Query} を生成する処理を実行します。<br>
+	 * {@link SelectStatement} から {@link Query} を生成する処理を実行します。<br>
 	 * 既に一度 {@link Query} が生成されていた場合、新たに {@link Query} を生成せず、以前の {@link Query} を返します。<br>
 	 * 以前の {@link Query} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
 	 * @param supplier {@link Query} を生成する処理
@@ -44,7 +44,7 @@ public class Recorder {
 	}
 
 	/**
-	 * {@link QueryBuilder} から {@link Query} を生成する処理を実行します。<br>
+	 * {@link SelectStatement} から {@link Query} を生成する処理を実行します。<br>
 	 * 既に一度 {@link Query} が生成されていた場合、新たに {@link Query} を生成せず、以前の {@link Query} を返します。<br>
 	 * 以前の {@link Query} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。<br>
 	 * decision により、作成されるクエリを複数タイプキャッシュすることが可能です。<br>

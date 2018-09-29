@@ -19,7 +19,7 @@ public interface CriteriaRelationship {
 	 * この句に EXISTS 条件を追加します。
 	 * @param subquery サブクエリ
 	 */
-	default void EXISTS(QueryBuilder subquery) {
+	default void EXISTS(SelectStatement subquery) {
 		Exists.setExists(this, subquery, "EXISTS");
 	}
 
@@ -27,7 +27,7 @@ public interface CriteriaRelationship {
 	 * この句に NOT EXISTS 条件を追加します。
 	 * @param subquery サブクエリ
 	 */
-	default void NOT_EXISTS(QueryBuilder subquery) {
+	default void NOT_EXISTS(SelectStatement subquery) {
 		Exists.setExists(this, subquery, "NOT EXISTS");
 	}
 
@@ -84,7 +84,7 @@ public interface CriteriaRelationship {
 	 * この句にサブクエリ条件を追加します。
 	 * @param subquery 追加条件
 	 */
-	default void subquery(QueryBuilder subquery) {
+	default void subquery(SelectStatement subquery) {
 		subquery(false, subquery);
 	}
 
@@ -93,7 +93,7 @@ public interface CriteriaRelationship {
 	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
 	 */
-	default void subquery(QueryBuilder subquery, CriteriaColumn<?>... mainColumns) {
+	default void subquery(SelectStatement subquery, CriteriaColumn<?>... mainColumns) {
 		subquery(false, subquery, mainColumns);
 	}
 
@@ -102,8 +102,8 @@ public interface CriteriaRelationship {
 	 * @param notIn NOT IN の場合 true
 	 * @param subquery 追加条件
 	 */
-	default void subquery(boolean notIn, QueryBuilder subquery) {
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSelectStatementBuilder(), notIn, getRoot()));
+	default void subquery(boolean notIn, SelectStatement subquery) {
+		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, getRoot()));
 	}
 
 	/**
@@ -112,14 +112,14 @@ public interface CriteriaRelationship {
 	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
 	 */
-	default void subquery(boolean notIn, QueryBuilder subquery, CriteriaColumn<?>... mainColumns) {
+	default void subquery(boolean notIn, SelectStatement subquery, CriteriaColumn<?>... mainColumns) {
 		Column[] columns = new Column[mainColumns.length];
 
 		for (int i = 0; i < mainColumns.length; i++) {
 			columns[i] = mainColumns[i].column();
 		}
 
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSelectStatementBuilder(), notIn, columns));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, columns));
 	}
 
 	/**
@@ -130,9 +130,9 @@ public interface CriteriaRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return このインスタンスの大元の {@link QueryBuilder}
+	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
-	QueryBuilder getRoot();
+	SelectStatement getRoot();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

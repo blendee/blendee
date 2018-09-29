@@ -1060,7 +1060,7 @@ public class CriteriaFactory {
 		Criteria subquery) {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
-		SelectStatementBuilder builder = new SelectStatementBuilder(
+		SQLQueryBuilder builder = new SQLQueryBuilder(
 			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath()));
 		builder.setWhereClause(subquery);
 		SelectClause selectClause = new SelectClause();
@@ -1084,7 +1084,7 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubquery(
 		Column[] columns,
-		SelectStatementBuilder subquery,
+		SQLQueryBuilder subquery,
 		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 
@@ -1114,7 +1114,7 @@ public class CriteriaFactory {
 	 */
 	public static Criteria createSubqueryWithoutCheck(
 		Column[] columns,
-		SelectStatementBuilder subquery,
+		SQLQueryBuilder subquery,
 		boolean notIn) {
 		if (columns.length == 0) throw new SubqueryException("columns が空です");
 
@@ -1143,7 +1143,7 @@ public class CriteriaFactory {
 	public static Criteria createSubquery(
 		ComparisonOperator operator,
 		Column column,
-		SelectStatementBuilder subquery) {
+		SQLQueryBuilder subquery) {
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
 		String subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
 

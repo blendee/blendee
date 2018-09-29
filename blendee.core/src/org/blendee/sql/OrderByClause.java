@@ -11,7 +11,7 @@ import org.blendee.jdbc.TablePath;
 /**
  * SELECT 文の ORDER BY 句を表すクラスです。
  * @author 千葉 哲嗣
- * @see SelectStatementBuilder#setOrderByClause(OrderByClause)
+ * @see SQLQueryBuilder#setOrderByClause(OrderByClause)
  */
 public class OrderByClause extends ListClause<OrderByClause> {
 

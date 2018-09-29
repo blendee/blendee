@@ -1,7 +1,7 @@
 package org.blendee.support;
 
 /**
- * {@link QueryBuilder} 内で定義される AND, OR 保持クラス用のインターフェイス
+ * {@link SelectStatement} 内で定義される AND, OR 保持クラス用のインターフェイス
  * @param <T> AND, OR
  */
 public interface LogicalOperators<T> {

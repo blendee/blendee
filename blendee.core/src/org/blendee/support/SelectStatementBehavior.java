@@ -38,17 +38,17 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
-import org.blendee.sql.SelectStatementBuilder;
-import org.blendee.sql.SelectStatementBuilder.UnionOperator;
+import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.SQLQueryBuilder.UnionOperator;
 import org.blendee.sql.Union;
 import org.blendee.sql.binder.NullBinder;
 
 /**
- * {@link QueryBuilder} の内部処理を定義したヘルパークラスです。
+ * {@link SelectStatement} の内部処理を定義したヘルパークラスです。
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public abstract class QueryBuilderBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
+public abstract class SelectStatementBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
 
 	private final TablePath table;
 
@@ -80,11 +80,11 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 
 	private boolean forSubquery;
 
-	public QueryBuilderBehavior(TablePath table) {
+	public SelectStatementBehavior(TablePath table) {
 		this.table = table;
 	}
 
-	QueryBuilderBehavior(FromClause fromClause) {
+	SelectStatementBehavior(FromClause fromClause) {
 		this.fromClause = fromClause;
 		table = null;
 		rowMode = false;
@@ -258,19 +258,19 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 		function.apply(orderBy()).get().forEach(o -> o.offer());
 	}
 
-	public <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
 		return joinInternal(JoinType.INNER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> LEFT_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> LEFT_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinInternal(JoinType.LEFT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> RIGHT_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> RIGHT_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinInternal(JoinType.RIGHT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> FULL_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> FULL_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinInternal(JoinType.FULL_OUTER_JOIN, right, query);
 	}
 
@@ -667,7 +667,7 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 
 			String countSQL;
 			{
-				SelectStatementBuilder builder = new SelectStatementBuilder(new FromClause(optimizer.getTablePath()));
+				SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath()));
 				builder.setSelectClause(new SelectCountClause());
 				if (whereClause != null) builder.setWhereClause(whereClause);
 				countSQL = builder.sql();
@@ -696,7 +696,7 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 				rowMode);
 		}
 
-		SelectStatementBuilder builder = buildBuilder();
+		SQLQueryBuilder builder = buildBuilder();
 
 		String sql = builder.sql();
 
@@ -710,8 +710,8 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 			rowMode);
 	}
 
-	public SelectStatementBuilder buildBuilder() {
-		SelectStatementBuilder builder = buildBuilderWithoutSelectColumnsSupply();
+	public SQLQueryBuilder buildBuilder() {
+		SQLQueryBuilder builder = buildBuilderWithoutSelectColumnsSupply();
 
 		//builder同士JOINしてもなおSELECT句が空の場合
 		if (!builder.hasSelectColumns())
@@ -720,7 +720,7 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 		return builder;
 	}
 
-	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
+	public void joinTo(SQLQueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		builder.join(joinType, buildBuilderWithoutSelectColumnsSupply(), onCriteria);
 	}
 
@@ -744,8 +744,8 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 		return buildBuilder();
 	}
 
-	private SelectStatementBuilder buildBuilderWithoutSelectColumnsSupply() {
-		SelectStatementBuilder builder = new SelectStatementBuilder(false, getFromClause());
+	private SQLQueryBuilder buildBuilderWithoutSelectColumnsSupply() {
+		SQLQueryBuilder builder = new SQLQueryBuilder(false, getFromClause());
 
 		builder.forSubquery(forSubquery);
 
@@ -772,7 +772,7 @@ public abstract class QueryBuilderBehavior<S extends SelectRelationship, G exten
 		return fromClause;
 	}
 
-	private <R extends OnRightRelationship, Q extends QueryBuilder> OnClause<L, R, Q> joinInternal(
+	private <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> joinInternal(
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {

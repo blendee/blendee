@@ -25,14 +25,14 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
-import org.blendee.sql.SelectStatementBuilder;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
- * {@link Query} との違いは、参照する側のテーブルの {@link QueryBuilder} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
+ * {@link Query} との違いは、参照する側のテーブルの {@link SelectStatement} を使用し、参照される側を辿り、そこで検索することで {@link Row} を一対多で取得することができるようにするということです。
  * @author 千葉 哲嗣
  * @param <O> One 一対多の一側の型
  * @param <M> Many 一対多の多側の型連鎖
@@ -195,7 +195,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		SelectStatementBuilder builder = new SelectStatementBuilder(new FromClause(optimizer.getTablePath()));
+		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath()));
 
 		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
 

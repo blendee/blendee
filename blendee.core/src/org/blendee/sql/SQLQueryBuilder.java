@@ -12,7 +12,7 @@ import org.blendee.sql.FromClause.JoinType;
  * SQL の SELECT 文を生成するクラスです。
  * @author 千葉 哲嗣
  */
-public class SelectStatementBuilder implements ComposedSQL {
+public class SQLQueryBuilder implements ComposedSQL {
 
 	private final FromClause fromClause;
 
@@ -60,7 +60,7 @@ public class SelectStatementBuilder implements ComposedSQL {
 	 * {@link FromClause} が表すテーブルに対する SELECT 文を生成するインスタンスを生成します。
 	 * @param fromClause FROM 句
 	 */
-	public SelectStatementBuilder(FromClause fromClause) {
+	public SQLQueryBuilder(FromClause fromClause) {
 		this(true, fromClause);
 	}
 
@@ -69,7 +69,7 @@ public class SelectStatementBuilder implements ComposedSQL {
 	 * @param useSelectAsterisk デフォルトで SELCT * とするか
 	 * @param fromClause FROM 句
 	 */
-	public SelectStatementBuilder(boolean useSelectAsterisk, FromClause fromClause) {
+	public SQLQueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
 		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause();
 	}
@@ -218,7 +218,7 @@ public class SelectStatementBuilder implements ComposedSQL {
 	 * @param another 取り込まれる側
 	 * @param onCriteria ON 句
 	 */
-	public synchronized void join(JoinType joinType, SelectStatementBuilder another, Criteria onCriteria) {
+	public synchronized void join(JoinType joinType, SQLQueryBuilder another, Criteria onCriteria) {
 		if (unions.size() > 0 || another.unions.size() > 0)
 			throw new IllegalArgumentException("UNION されたクエリはマージできません");
 
@@ -368,11 +368,11 @@ public class SelectStatementBuilder implements ComposedSQL {
 
 		private final JoinType joinType;
 
-		private final SelectStatementBuilder another;
+		private final SQLQueryBuilder another;
 
 		private final Criteria onCriteria;
 
-		private JoinContainer(JoinType joinType, SelectStatementBuilder another, Criteria onCriteria) {
+		private JoinContainer(JoinType joinType, SQLQueryBuilder another, Criteria onCriteria) {
 			this.joinType = joinType;
 			this.another = another;
 			this.onCriteria = onCriteria;

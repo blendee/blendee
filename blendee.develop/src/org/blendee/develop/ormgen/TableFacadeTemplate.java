@@ -25,7 +25,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SelectStatementBuilder;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -48,7 +48,7 @@ import org.blendee.support.InstantOneToManyQuery;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByColumn;
 import org.blendee.support.OrderByRelationship;
-import org.blendee.support.QueryBuilder;
+import org.blendee.support.SelectStatement;
 import org.blendee.support.RightTable;
 import org.blendee.support.Row;
 import org.blendee.support.RowIterator;
@@ -56,8 +56,8 @@ import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadeColumn;
 import org.blendee.support.TableFacadeContext;
 import org.blendee.support.CriteriaContext;
-import org.blendee.support.QueryBuilderBehavior;
-import org.blendee.support.QueryBuilderBehavior.PlaybackQuery;
+import org.blendee.support.SelectStatementBehavior;
+import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
 import org.blendee.support.OnClause;
 import org.blendee.support.TableFacadeRelationship;
 import org.blendee.support.SelectOfferFunction;
@@ -79,7 +79,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	extends /*++[[PARENT]]++*//*--*/Object/*--*/
 	implements
 		TableFacade<Row>,
-		QueryBuilder,
+		SelectStatement,
 		Query</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Iterator, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Row>,
 		RightTable</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.OnRightRel> {
 
@@ -375,7 +375,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return behavior$ == null ? (behavior$ = new Behavior()) : behavior$;
 	}
 
-	private class Behavior extends QueryBuilderBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
+	private class Behavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private Behavior() {
 			super($TABLE);
@@ -425,7 +425,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * このクラスのインスタンスを生成します。<br>
 	 * インスタンスは ID として、引数で渡された id を使用します。<br>
 	 * フィールド定義の必要がなく、簡易に使用できますが、 ID は呼び出し側クラス内で一意である必要があります。
-	 * @param id {@link QueryBuilder} を使用するクラス内で一意の ID
+	 * @param id {@link SelectStatement} を使用するクラス内で一意の ID
 	 * @return このクラスのインスタンス
 	 */
 	public static /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ of(String id) {
@@ -534,7 +534,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
-	 * この {@link QueryBuilder} のテーブルを表す {@link TableFacadeRelationship} を参照するためのインスタンスです。
+	 * この {@link SelectStatement} のテーブルを表す {@link TableFacadeRelationship} を参照するためのインスタンスです。
 	 * @return rel
 	 */
 	public ExtRel<TableFacadeColumn, Void> rel() {
@@ -544,7 +544,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * SELECT 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT(
 		SelectOfferFunction<SelectRel> function) {
@@ -555,7 +555,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * DISTINCT を使用した SELECT 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_DISTINCT(
 		SelectOfferFunction<SelectRel> function) {
@@ -565,7 +565,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	/**
 	 * COUNT(*) を使用した SELECT 句を記述します。
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_COUNT() {
 		behavior().SELECT_COUNT();
@@ -575,7 +575,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * GROUP BY 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ GROUP_BY(
 		GroupByOfferFunction<GroupByRel> function) {
@@ -586,7 +586,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * WHERE 句を記述します。
 	 * @param consumers
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ WHERE(
@@ -608,7 +608,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * HAVING 句を記述します。
 	 * @param consumers
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
 	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ HAVING(
@@ -667,7 +667,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param sql UNION 対象
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(ComposedSQL sql) {
 		behavior().UNION(sql);
@@ -678,7 +678,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * UNION ALL するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param sql UNION ALL 対象
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(ComposedSQL sql) {
 		behavior().UNION_ALL(sql);
@@ -688,7 +688,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * ORDER BY 句を記述します。
 	 * @param function
-	 * @return この {@link QueryBuilder}
+	 * @return この {@link SelectStatement}
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ ORDER_BY(
 		OrderByOfferFunction<OrderByRel> function) {
@@ -704,7 +704,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * 新規に GROUP BY 句をセットします。
 	 * @param clause 新 ORDER BY 句
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupBy(GroupByClause clause) {
@@ -715,7 +715,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * 新規に ORDER BY 句をセットします。
 	 * @param clause 新 ORDER BY 句
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderBy(OrderByClause clause) {
@@ -727,7 +727,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現時点の WHERE 句に新たな条件を AND 結合します。<br>
 	 * AND 結合する対象がなければ、新条件としてセットされます。
 	 * @param criteria AND 結合する新条件
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ and(Criteria criteria) {
 		behavior().and(criteria);
@@ -738,7 +738,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現時点の WHERE 句に新たな条件を OR 結合します。<br>
 	 * OR 結合する対象がなければ、新条件としてセットされます。
 	 * @param criteria OR 結合する新条件
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ or(Criteria criteria) {
 		behavior().or(criteria);
@@ -748,7 +748,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * 生成された SQL 文を加工する {SQLDecorator} を設定します。
 	 * @param decorators {@link SQLDecorator}
-	 * @return {@link QueryBuilder} 自身
+	 * @return {@link SelectStatement} 自身
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
 		behavior().apply(decorators);
@@ -855,12 +855,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public void joinTo(SelectStatementBuilder builder, JoinType joinType, Criteria onCriteria) {
+	public void joinTo(SQLQueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		behavior().joinTo(builder, joinType, onCriteria);
 	}
 
 	@Override
-	public SelectStatementBuilder toSelectStatementBuilder() {
+	public SQLQueryBuilder toSQLQueryBuilder() {
 		return behavior().buildBuilder();
 	}
 
@@ -1109,7 +1109,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
-		public QueryBuilder getRoot() {
+		public SelectStatement getRoot() {
 			if (table$ != null) return table$;
 			return parent$.getRoot();
 		}
