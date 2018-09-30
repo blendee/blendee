@@ -68,7 +68,7 @@ import org.blendee.support.SelectRelationship;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
 import org.blendee.support.ValuesClause;
-import org.blendee.support.UpdateIntermediate;
+import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.DataManipulator;
 import org.blendee.support.annotation.Table;
 import org.blendee.support.annotation.Column;
@@ -989,8 +989,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return new DataManipulator();
 	}
 
-	public UpdateIntermediate UPDATE(UpdateOfferFunction<UpdateRel> function) {
-		return new UpdateIntermediate();
+	public UpdateStatementIntermediate UPDATE(UpdateOfferFunction<UpdateRel> function) {
+		return new UpdateStatementIntermediate();
 	}
 
 	public DataManipulator DELETE(Consumer<WhereRel>... consumers) {

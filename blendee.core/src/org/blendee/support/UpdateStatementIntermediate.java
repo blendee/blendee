@@ -3,9 +3,9 @@ package org.blendee.support;
 import java.util.function.BiConsumer;
 
 /**
- * VALUES 句
+ * UPDATE
  */
-public class UpdateIntermediate extends DataManipulator {
+public class UpdateStatementIntermediate extends DataManipulator {
 
 	/**
 	 * @param consumers {@link BiConsumer}
