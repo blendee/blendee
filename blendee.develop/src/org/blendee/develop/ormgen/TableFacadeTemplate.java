@@ -1048,16 +1048,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 /*++[[COLUMN_PART2]]++*/
 		}
 
-		/**
-		 * この {@link TableFacadeRelationship} が表すテーブルの Row を一とし、多をもつ検索結果を生成する {@link OneToManyQuery} を返します。
-		 * @return {@link OneToManyQuery}
-		 */
-		public OneToManyQuery<Row, M> intercept() {
-			if (table$ != null) throw new IllegalStateException(path$.getSchemaName() + " から直接使用することはできません");
-			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
-			return new InstantOneToManyQuery<>(this, getRoot().decorators());
-		}
-
 		@Override
 		public CriteriaContext getContext() {
 			if (context$ == null) return parent$.getContext();
@@ -1170,6 +1160,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			super(table$, builder$, context$);
 			/*--?--*/this.builder$ = builder$;/*--?--*/
 			/*--?--*/root$ = null;/*--?--*/
+		}
+
+		/**
+		 * この {@link TableFacadeRelationship} が表すテーブルの Row を一とし、多をもつ検索結果を生成する {@link OneToManyQuery} を返します。
+		 * @return {@link OneToManyQuery}
+		 */
+		public OneToManyQuery<Row, M> intercept() {
+			if (super.table$ != null) throw new IllegalStateException(super.path$.getSchemaName() + " から直接使用することはできません");
+			if (!getRoot().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			return new InstantOneToManyQuery<>(this, getRoot().decorators());
 		}
 
 /*++[[TABLE_RELATIONSHIP_PART]]++*/
