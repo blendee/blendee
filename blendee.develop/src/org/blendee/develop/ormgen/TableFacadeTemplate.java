@@ -61,10 +61,15 @@ import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
 import org.blendee.support.OnClause;
 import org.blendee.support.TableFacadeRelationship;
 import org.blendee.support.SelectOfferFunction;
+import org.blendee.support.InsertOfferFunction;
+import org.blendee.support.UpdateOfferFunction;
 import org.blendee.support.SelectColumn;
 import org.blendee.support.SelectRelationship;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
+import org.blendee.support.ValuesClause;
+import org.blendee.support.UpdateIntermediate;
+import org.blendee.support.DataManipulator;
 import org.blendee.support.annotation.Table;
 import org.blendee.support.annotation.Column;
 /*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
@@ -970,6 +975,28 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return getOnRightLogicalOperators().AND;
 	}
 
+	public ValuesClause INSERT(InsertOfferFunction<InsertRel> function) {
+		function.apply(new InsertRel(this));
+		return new ValuesClause();
+	}
+
+	public DataManipulator INSERT(InsertOfferFunction<InsertRel> function, SelectStatement select) {
+		function.apply(new InsertRel(this));
+		return new DataManipulator();
+	}
+
+	public DataManipulator INSERT(SelectStatement select) {
+		return new DataManipulator();
+	}
+
+	public UpdateIntermediate UPDATE(UpdateOfferFunction<UpdateRel> function) {
+		return new UpdateIntermediate();
+	}
+
+	public DataManipulator DELETE(Consumer<WhereRel>... consumers) {
+		return new DataManipulator();
+	}
+
 	@Override
 	public String toString() {
 		return behavior().toString();
@@ -1279,6 +1306,26 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder$,
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
+		}
+	}
+
+	/**
+	 * INSERT 用
+	 */
+	public static class InsertRel extends Rel<TableFacadeColumn, Void> {
+
+		private InsertRel(/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$) {
+			super(table$, TableFacadeContext.OTHER, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * UPDATE 用
+	 */
+	public static class UpdateRel extends Rel<TableFacadeColumn, Void> {
+
+		private UpdateRel(/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$) {
+			super(table$, TableFacadeContext.OTHER, CriteriaContext.NULL);
 		}
 	}
 
