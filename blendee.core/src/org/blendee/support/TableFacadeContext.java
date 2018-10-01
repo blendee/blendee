@@ -23,7 +23,7 @@ public interface TableFacadeContext<T> {
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<WhereColumn<O>> newWhereBuilder() {
 		return (relationship, name) -> new WhereColumn<>(
-			relationship.getRoot(),
+			relationship.getSelectStatement(),
 			relationship.getContext(),
 			relationship.getRelationship().getColumn(name));
 	}
@@ -35,7 +35,7 @@ public interface TableFacadeContext<T> {
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<HavingColumn<O>> newHavingBuilder() {
 		return (relationship, name) -> new HavingColumn<>(
-			relationship.getRoot(),
+			relationship.getSelectStatement(),
 			relationship.getContext(),
 			relationship.getRelationship().getColumn(name));
 	}
@@ -47,7 +47,7 @@ public interface TableFacadeContext<T> {
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnLeftColumn<O>> newOnLeftBuilder() {
 		return (relationship, name) -> new OnLeftColumn<>(
-			relationship.getRoot(),
+			relationship.getSelectStatement(),
 			relationship.getContext(),
 			relationship.getRelationship().getColumn(name));
 	}
@@ -59,7 +59,7 @@ public interface TableFacadeContext<T> {
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnRightColumn<O>> newOnRightBuilder() {
 		return (relationship, name) -> new OnRightColumn<>(
-			relationship.getRoot(),
+			relationship.getSelectStatement(),
 			relationship.getContext(),
 			relationship.getRelationship().getColumn(name));
 	}

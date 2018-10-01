@@ -30,7 +30,7 @@ public interface OnLeftRelationship extends CriteriaRelationship {
 		String template,
 		OnColumn<O> column) {
 		return new OnLeftColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, column.column()));
 	}
@@ -52,7 +52,7 @@ public interface OnLeftRelationship extends CriteriaRelationship {
 		}
 
 		return new OnLeftColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, columns));
 	}

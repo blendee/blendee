@@ -1,10 +1,13 @@
 package org.blendee.support;
 
+import org.blendee.selector.Optimizer;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
-import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.GroupByClause;
+import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
 
 /**
  * 自動生成される検索ツールの振る舞いを定義したインターフェイスです。<br>
@@ -18,6 +21,30 @@ public interface SelectStatement {
 	 * @return 検索条件を持つ場合、 true
 	 */
 	boolean hasWhereClause();
+
+	/**
+	 * 内部処理用なので直接使用しないこと。
+	 * @return 現在の検索に使用する {@link Optimizer}
+	 */
+	Optimizer getOptimizer();
+
+	/**
+	 * 内部処理用なので直接使用しないこと。
+	 * @return 現在の GROUP BY 句
+	 */
+	GroupByClause getGroupByClause();
+
+	/**
+	 * 内部処理用なので直接使用しないこと。
+	 * @return 現在の ORDER BY 句
+	 */
+	OrderByClause getOrderByClause();
+
+	/**
+	 * 内部処理用なので直接使用しないこと。
+	 * @return 現在の WHERE 句
+	 */
+	Criteria getWhereClause();
 
 	/**
 	 * この Query のルート {@link Relationship} を返します。

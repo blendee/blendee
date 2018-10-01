@@ -29,6 +29,7 @@ public class InsertDMLBuilder extends Updater {
 			columns.add(columnName);
 			placeHolders.add(getPlaceHolderOrFragment(columnName));
 		}
+
 		return "INSERT INTO "
 			+ getTablePath()
 			+ " ("

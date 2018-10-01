@@ -103,7 +103,7 @@ public interface CriteriaRelationship {
 	 * @param subquery 追加条件
 	 */
 	default void subquery(boolean notIn, SelectStatement subquery) {
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, getRoot()));
+		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, getSelectStatement()));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public interface CriteriaRelationship {
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
-	SelectStatement getRoot();
+	SelectStatement getSelectStatement();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

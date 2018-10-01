@@ -17,8 +17,8 @@ import org.blendee.sql.OrderByClause;
 import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
-import org.blendee.sql.SelectClause;
 import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.SelectClause;
 import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
 
 /**
@@ -355,6 +355,26 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 		return behavior().hasWhereClause();
 	}
 
+	@Override
+	public Optimizer getOptimizer() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public GroupByClause getGroupByClause() {
+		return behavior().getGroupByClause();
+	}
+
+	@Override
+	public OrderByClause getOrderByClause() {
+		return behavior().getOrderByClause();
+	}
+
+	@Override
+	public Criteria getWhereClause() {
+		return behavior().getWhereClause();
+	}
+
 	/**
 	 * 新規に GROUP BY 句をセットします。
 	 * @param clause 新 ORDER BY 句
@@ -643,26 +663,6 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 		}
 
 		@Override
-		public Optimizer getOptimizer() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public GroupByClause getGroupByClause() {
-			return table.behavior().getGroupByClause();
-		}
-
-		@Override
-		public OrderByClause getOrderByClause() {
-			return table.behavior().getOrderByClause();
-		}
-
-		@Override
-		public Criteria getWhereClause() {
-			return table.behavior().getWhereClause();
-		}
-
-		@Override
 		public TableFacadeRelationship getParent() {
 			throw new UnsupportedOperationException();
 		}
@@ -673,8 +673,13 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 		}
 
 		@Override
-		public SelectStatement getRoot() {
+		public SelectStatement getSelectStatement() {
 			return table;
+		}
+
+		@Override
+		public DataManipulationStatement getDataManipulationStatement() {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -746,6 +751,11 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 
 		private OrderByRel(AnonymousTable query, TableFacadeContext<OrderByCol> builder, CriteriaContext context) {
 			super(query, builder, context);
+		}
+
+		@Override
+		public OrderByClause getOrderByClause() {
+			return getSelectStatement().getOrderByClause();
 		}
 	}
 

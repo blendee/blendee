@@ -194,7 +194,7 @@ public interface SelectRelationship {
 	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(String template, AliasableOffer... selectColumns) {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
 		for (int i = 0; i < selectColumns.length; i++) {
@@ -210,7 +210,7 @@ public interface SelectRelationship {
 	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(String expression) {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), expression, false) };
 		return new ColumnExpression("{0}", columns);
 	}
@@ -221,7 +221,7 @@ public interface SelectRelationship {
 	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(Number number) {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
 		return new ColumnExpression("{0}", columns);
 	}
@@ -232,7 +232,7 @@ public interface SelectRelationship {
 	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(SelectStatement subquery) {
-		SelectStatement root = getRoot();
+		SelectStatement root = getSelectStatement();
 
 		root.quitRowMode();
 		root.forSubquery(true);
@@ -249,7 +249,7 @@ public interface SelectRelationship {
 	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asterisk() {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
 
 		SelectOffers offers = new SelectOffers();
@@ -264,7 +264,7 @@ public interface SelectRelationship {
 	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asterisk(TableFacadeRelationship relationship) {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
 
 		SelectOffers offers = new SelectOffers();
@@ -278,7 +278,7 @@ public interface SelectRelationship {
 	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asteriskAll() {
-		getRoot().quitRowMode();
+		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
 
 		SelectOffers offers = new SelectOffers();
@@ -313,5 +313,5 @@ public interface SelectRelationship {
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
-	SelectStatement getRoot();
+	SelectStatement getSelectStatement();
 }

@@ -25,9 +25,9 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
-import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -73,9 +73,10 @@ public class InstantOneToManyQuery<O extends Row, M>
 		root = getRoot(relation, route);
 
 		TableFacadeRelationship root = root();
-		order = convertOrderByClause(route, root.getOrderByClause());
+		SelectStatement select = root.getSelectStatement();
+		order = convertOrderByClause(route, select.getOrderByClause());
 		optimizer = convertOptimizer(route, root);
-		criteria = root.getWhereClause();
+		criteria = select.getWhereClause();
 
 		this.options = options;
 
@@ -131,7 +132,8 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private static Optimizer convertOptimizer(List<TableFacadeRelationship> route, TableFacadeRelationship root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
-		SelectClause select = root.getOptimizer().getOptimizedSelectClause();
+		Optimizer optimizer = root.getSelectStatement().getOptimizer();
+		SelectClause select = optimizer.getOptimizedSelectClause();
 		Arrays.stream(select.getColumns()).forEach(c -> selectColumns.add(c));
 		route.forEach(r -> {
 			for (Column column : r.getRelationship().getPrimaryKeyColumns()) {
@@ -139,8 +141,8 @@ public class InstantOneToManyQuery<O extends Row, M>
 			}
 		});
 
-		RuntimeOptimizer optimizer = new RuntimeOptimizer(root.getOptimizer().getTablePath());
-		selectColumns.forEach(c -> optimizer.add(c));
+		RuntimeOptimizer runtimeOptimizer = new RuntimeOptimizer(optimizer.getTablePath());
+		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
 		return optimizer;
 	}

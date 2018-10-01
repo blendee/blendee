@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -131,6 +132,15 @@ public abstract class Updater implements ComposedSQL {
 	 */
 	public String[] getColumnNames() {
 		return columns.toArray(new String[columns.size()]);
+	}
+
+	/**
+	 * 現在保持している {@link Binder} を返します。
+	 * @return {@link Binder}
+	 */
+	public Binder[] getBinders() {
+		Collection<Binder> binders = values.values();
+		return binders.toArray(new Binder[binders.size()]);
 	}
 
 	/**

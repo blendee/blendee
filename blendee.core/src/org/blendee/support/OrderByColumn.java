@@ -55,19 +55,19 @@ public class OrderByColumn implements Offerable, Offers<Offerable> {
 	public OrderByColumn(TableFacadeRelationship helper, String name) {
 		column = helper.getRelationship().getColumn(name);
 		ASC = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.ASC));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC));
 		DESC = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.DESC));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC));
 		ASC_NULLS_FIRST = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
 		ASC_NULLS_LAST = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
 		DESC_NULLS_FIRST = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
 		DESC_NULLS_LAST = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
 		NONE = new OrderByOffer(
-			order -> helper.getOrderByClause().add(order, column, Direction.NONE));
+			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.NONE));
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class SelectColumn extends AliasableOffer {
 	 */
 	@Override
 	public SelectOffer AS(String alias) {
-		relationship.getRoot().quitRowMode();
+		relationship.getSelectStatement().quitRowMode();
 		ColumnExpression expression = new ColumnExpression(column);
 		expression.AS(alias);
 		return expression;

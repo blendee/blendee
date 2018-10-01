@@ -87,7 +87,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 
 		int size = list.size();
 		return new HavingColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
 	}
@@ -108,7 +108,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 
 		int size = list.size();
 		return new HavingColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
 	}
@@ -133,7 +133,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 		String template,
 		HavingColumn<O> column) {
 		return new HavingColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, column.column()));
 	}
@@ -155,7 +155,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 		}
 
 		return new HavingColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, columns));
 	}

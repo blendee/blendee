@@ -30,7 +30,7 @@ public interface WhereRelationship extends CriteriaRelationship {
 		String template,
 		WhereColumn<O> column) {
 		return new WhereColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, column.column()));
 	}
@@ -52,7 +52,7 @@ public interface WhereRelationship extends CriteriaRelationship {
 		}
 
 		return new WhereColumn<>(
-			getRoot(),
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(template, columns));
 	}

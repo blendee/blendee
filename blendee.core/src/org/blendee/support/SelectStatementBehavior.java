@@ -781,7 +781,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		R rightJoint = right.joint();
 
 		JoinResource joinResource = new JoinResource();
-		joinResource.rightRoot = rightJoint.getRoot();
+		joinResource.rightRoot = rightJoint.getSelectStatement();
 		joinResource.joinType = joinType;
 
 		joinResources.add(joinResource);

@@ -2,10 +2,6 @@ package org.blendee.support;
 
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
-import org.blendee.selector.Optimizer;
-import org.blendee.sql.Criteria;
-import org.blendee.sql.GroupByClause;
-import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 
 /**
@@ -29,30 +25,6 @@ public interface TableFacadeRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return 現在の検索に使用する {@link Optimizer}
-	 */
-	Optimizer getOptimizer();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return 現在の GROUP BY 句
-	 */
-	GroupByClause getGroupByClause();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return 現在の ORDER BY 句
-	 */
-	OrderByClause getOrderByClause();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return 現在の WHERE 句
-	 */
-	Criteria getWhereClause();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスをメンバとして保持している親インスタンス
 	 */
 	TableFacadeRelationship getParent();
@@ -67,7 +39,13 @@ public interface TableFacadeRelationship {
 	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
-	SelectStatement getRoot();
+	SelectStatement getSelectStatement();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return このインスタンスの大元の {@link DataManipulationStatement}
+	 */
+	DataManipulationStatement getDataManipulationStatement();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
