@@ -667,7 +667,11 @@ public class DataObject
 		if (map == null) return null;
 		UpdateValue updateValue = map.get(columnName);
 		if (updateValue == null) return null;
-		return updateValue.getValue(columnName);
+		Binder result = updateValue.getValue(columnName);
+
+		if (result instanceof NullBinder) return null;
+
+		return result;
 	}
 
 	/**
