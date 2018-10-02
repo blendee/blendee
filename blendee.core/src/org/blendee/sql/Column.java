@@ -54,7 +54,7 @@ public interface Column extends Comparable<Column> {
 	 * このインスタンスが含まれる {@link Relationship} を {@link Consumer} に渡します。
 	 * @param consumer
 	 */
-	void consumeRelationship(Consumer<Relationship> consumer);
+	void setRelationship(Consumer<Relationship> consumer);
 
 	/**
 	 * このカラムの名称を返します。
@@ -128,9 +128,5 @@ public interface Column extends Comparable<Column> {
 	/**
 	 * @param sqlRoot
 	 */
-	default void checkForSQL(Relationship sqlRoot) {
-		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
-		if (!getRootRelationship().equals(sqlRoot))
-			throw new IllegalStateException(getComplementedName() + " は SQL 文の Relationship のツリーに含まれないカラムです");
-	}
+	default void prepareForSQL(Relationship sqlRoot) {}
 }

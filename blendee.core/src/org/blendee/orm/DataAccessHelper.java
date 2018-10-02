@@ -570,8 +570,8 @@ public class DataAccessHelper {
 		Optimizer optimizer,
 		Criteria criteria,
 		OrderByClause order) {
-		if (criteria != null) criteria.checkColumns(factory.getInstance(optimizer.getTablePath()));
-		if (order != null) order.checkColumns(factory.getInstance(optimizer.getTablePath()));
+		if (criteria != null) criteria.prepareColumns(factory.getInstance(optimizer.getTablePath()));
+		if (order != null) order.prepareColumns(factory.getInstance(optimizer.getTablePath()));
 	}
 
 	private static void insertInternal(

@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.blendee.internal.CollectionMap;
 import org.blendee.internal.Traversable;
 import org.blendee.internal.TraversableNode;
 import org.blendee.jdbc.ColumnMetadata;
@@ -39,8 +38,6 @@ final class ConcreteRelationship implements Relationship {
 
 	private final Column[] primaryKeyColumns;
 
-	private final CollectionMap<TablePath, ConcreteRelationship> convertMap;
-
 	private final DataTypeConverter converter;
 
 	private final List<TablePath> relationshipPath;
@@ -60,12 +57,8 @@ final class ConcreteRelationship implements Relationship {
 		TablePath path,
 		String id,
 		List<TablePath> relationshipPath,
-		DataTypeConverter converter,
-		CollectionMap<TablePath, ConcreteRelationship> convertMap) {
+		DataTypeConverter converter) {
 		this.path = path;
-
-		convertMap.put(path, this);
-		this.convertMap = convertMap;
 
 		if (root == null) {
 			this.root = this;
@@ -122,7 +115,7 @@ final class ConcreteRelationship implements Relationship {
 	}
 
 	@Override
-	public ConcreteRelationship[] getRelationships() {
+	public Relationship[] getRelationships() {
 		Traversable[] traversables = getSubNode().getTraversables();
 		ConcreteRelationship[] relations = new ConcreteRelationship[traversables.length];
 		for (int i = 0; i < traversables.length; i++) {
@@ -158,8 +151,7 @@ final class ConcreteRelationship implements Relationship {
 					element.getPrimaryKeyTable(),
 					id + "_" + relationshipFormat.format(i),
 					myRelationshipPath,
-					converter,
-					convertMap);
+					converter);
 				foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
 				String[] foreignKeyColumns = element.getForeignKeyColumnNames();
 				foreignKeyIdMap.put(createForeignKeyId(foreignKeyColumns), child);
@@ -263,12 +255,6 @@ final class ConcreteRelationship implements Relationship {
 		if (parent == null) return;
 		parent.addParentTo(parents);
 		parents.add(parent);
-	}
-
-	@Override
-	public ConcreteRelationship[] convert(TablePath path) {
-		Collection<ConcreteRelationship> list = convertMap.get(path);
-		return list.toArray(new ConcreteRelationship[list.size()]);
 	}
 
 	@Override

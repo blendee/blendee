@@ -1,21 +1,19 @@
 package org.blendee.sql;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
  * {@link Column} クラスのインスタンス取得を簡易にするために、仮の {@link Column} として使用できるクラスです。<br>
- * ただし、このクラスのインスタンスは一旦 {@link SQLQueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #checkForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
+ * ただし、このクラスのインスタンスは一旦 {@link SQLQueryBuilder} で本当の {@link Column} が確定するか、直接 {@link #prepareForSQL(Relationship)} を実行するまでは、ほとんどの機能は使用することができません。
  * @author 千葉 哲嗣
  */
 public class PhantomColumn implements Column {
 
 	private final Object lock = new Object();
-
-	private final TablePath path;
 
 	private final String name;
 
@@ -24,23 +22,11 @@ public class PhantomColumn implements Column {
 	private Column substance;
 
 	/**
-	 * このクラスのインスタンスを生成します。
-	 * @param path このカラムが属するテーブル
-	 * @param name カラム名
-	 */
-	public PhantomColumn(TablePath path, String name) {
-		this.path = path;
-		this.name = name;
-		phantomHashCode = Objects.hash(path, name);
-	}
-
-	/**
 	 * このクラスのインスタンスを生成します。<br>
 	 * 使用される {@link TablePath} は後に検索対象となる {@link Relationship} が持つものになります。
 	 * @param name カラム名
 	 */
 	public PhantomColumn(String name) {
-		this.path = null;
 		this.name = name;
 		phantomHashCode = name.hashCode();
 	}
@@ -67,9 +53,7 @@ public class PhantomColumn implements Column {
 		if (!(o instanceof PhantomColumn)) return false;
 		PhantomColumn target = (PhantomColumn) o;
 
-		if (path == null) return name.equals(target.name);
-
-		return path.equals(target.path) && name.equals(target.name);
+		return name.equals(target.name);
 	}
 
 	/**
@@ -83,10 +67,7 @@ public class PhantomColumn implements Column {
 		if (!(target instanceof PhantomColumn)) return -1;
 		PhantomColumn phantomColumnTarget = (PhantomColumn) target;
 
-		if (path == null) return name.compareTo(phantomColumnTarget.name);
-
-		int pathResult = path.compareTo(phantomColumnTarget.path);
-		return pathResult == 0 ? name.compareTo(phantomColumnTarget.name) : pathResult;
+		return name.compareTo(phantomColumnTarget.name);
 	}
 
 	@Override
@@ -115,8 +96,8 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public void consumeRelationship(Consumer<Relationship> consumer) {
-		getSubstanceWithCheck().consumeRelationship(consumer);
+	public void setRelationship(Consumer<Relationship> consumer) {
+		getSubstanceWithCheck().setRelationship(consumer);
 	}
 
 	@Override
@@ -151,7 +132,7 @@ public class PhantomColumn implements Column {
 
 	@Override
 	public Column replicate() {
-		return new PhantomColumn(path, name);
+		return new PhantomColumn(name);
 	}
 
 	/**
@@ -161,18 +142,13 @@ public class PhantomColumn implements Column {
 	 * @throws IllegalStateException このインスタンスに既に別のルートが決定しているとき
 	 */
 	@Override
-	public void checkForSQL(Relationship sqlRoot) {
+	public void prepareForSQL(Relationship sqlRoot) {
 		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
 		synchronized (lock) {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))
 				throw new IllegalStateException("このインスタンスは既に " + substance + " として使われています");
 
-			Relationship relation;
-			if (path == null) {
-				relation = RelationshipFactory.convert(sqlRoot, sqlRoot.getTablePath());
-			} else {
-				relation = RelationshipFactory.convert(sqlRoot, path);
-			}
+			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(sqlRoot.getTablePath());
 
 			substance = relation.getColumn(name);
 		}
@@ -194,7 +170,7 @@ public class PhantomColumn implements Column {
 
 	private Column getSubstanceWithCheck() {
 		synchronized (lock) {
-			if (substance == null) throw new UnsupportedOperationException();
+			if (substance == null) throw new IllegalStateException();
 			return substance;
 		}
 	}

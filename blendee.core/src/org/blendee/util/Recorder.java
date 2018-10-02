@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.blendee.sql.Reproducible;
 import org.blendee.support.Query;
 import org.blendee.support.SelectStatement;
 
@@ -14,9 +15,9 @@ import org.blendee.support.SelectStatement;
  */
 public class Recorder {
 
-	private static final Map<Class<?>, Query<?, ?>> executorCache = new HashMap<>();
+	private static final Map<Class<?>, Reproducible<?>> executorCache = new HashMap<>();
 
-	private static final Map<Class<?>, Map<?, Query<?, ?>>> executorMapCache = new HashMap<>();
+	private static final Map<Class<?>, Map<?, Reproducible<?>>> executorMapCache = new HashMap<>();
 
 	/**
 	 * {@link SelectStatement} から {@link Query} を生成する処理を実行します。<br>
@@ -27,12 +28,12 @@ public class Recorder {
 	 * @return {@link Query}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E extends Query<?, ?>> E play(Supplier<E> supplier, Object... playbackPlaceHolderValues) {
+	public static <E extends Reproducible<E>> E play(Supplier<E> supplier, Object... playbackPlaceHolderValues) {
 		Class<?> lambdaClass = supplier.getClass();
 
-		Query<?, ?> executor = null;
+		Reproducible<E> executor = null;
 		synchronized (executorCache) {
-			if ((executor = executorCache.get(lambdaClass)) == null) {
+			if ((executor = (Reproducible<E>) executorCache.get(lambdaClass)) == null) {
 				executor = supplier.get().reproduce(playbackPlaceHolderValues);
 				executorCache.put(lambdaClass, executor);
 
@@ -40,7 +41,7 @@ public class Recorder {
 			}
 		}
 
-		return (E) executor.reproduce(playbackPlaceHolderValues);
+		return executor.reproduce(playbackPlaceHolderValues);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public class Recorder {
 	 * @return {@link Query}
 	 */
 	@SuppressWarnings("unchecked")
-	public static <R, E extends Query<?, ?>> E play(
+	public static <R, E extends Reproducible<E>> E play(
 		Supplier<R> decision,
 		Function<R, E> supplier,
 		Function<R, Object[]> playbackPlaceHolderValuesSupplier) {
@@ -65,9 +66,9 @@ public class Recorder {
 
 		Object[] values = playbackPlaceHolderValuesSupplier.apply(result);
 
-		Query<?, ?> executor = null;
+		Reproducible<?> executor = null;
 		synchronized (executorMapCache) {
-			Map<R, Query<?, ?>> map = (Map<R, Query<?, ?>>) executorMapCache.get(lambdaClass);
+			Map<R, Reproducible<?>> map = (Map<R, Reproducible<?>>) executorMapCache.get(lambdaClass);
 
 			if (map == null) {
 				map = new HashMap<>();

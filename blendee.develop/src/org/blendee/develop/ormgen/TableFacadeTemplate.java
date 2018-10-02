@@ -25,59 +25,61 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.support.Query;
-import org.blendee.support.GroupByOfferFunction;
+import org.blendee.support.CriteriaContext;
+import org.blendee.support.DataManipulationStatement;
+import org.blendee.support.DataManipulationStatementBehavior;
+import org.blendee.support.DataManipulator;
+import org.blendee.support.DeleteStatementIntermediate;
 import org.blendee.support.GroupByColumn;
+import org.blendee.support.GroupByOfferFunction;
 import org.blendee.support.GroupByRelationship;
 import org.blendee.support.HavingColumn;
 import org.blendee.support.HavingRelationship;
+import org.blendee.support.InsertColumn;
+import org.blendee.support.InsertOfferFunction;
+import org.blendee.support.InsertRelationship;
+import org.blendee.support.InsertStatementIntermediate;
+import org.blendee.support.InstantOneToManyQuery;
 /*++[[IMPORTS]]++*/
 import org.blendee.support.LogicalOperators;
+import org.blendee.support.OnClause;
 import org.blendee.support.OnLeftColumn;
 import org.blendee.support.OnLeftRelationship;
 import org.blendee.support.OnRightColumn;
 import org.blendee.support.OnRightRelationship;
 import org.blendee.support.OneToManyQuery;
-import org.blendee.support.InstantOneToManyQuery;
-import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByColumn;
+import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByRelationship;
-import org.blendee.support.SelectStatement;
-import org.blendee.support.DataManipulationStatement;
+import org.blendee.support.Query;
 import org.blendee.support.RightTable;
 import org.blendee.support.Row;
 import org.blendee.support.RowIterator;
+import org.blendee.support.SelectColumn;
+import org.blendee.support.SelectOfferFunction;
+import org.blendee.support.SelectRelationship;
+import org.blendee.support.SelectStatement;
+import org.blendee.support.SelectStatementBehavior;
+import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadeColumn;
 import org.blendee.support.TableFacadeContext;
-import org.blendee.support.CriteriaContext;
-import org.blendee.support.SelectStatementBehavior;
-import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
-import org.blendee.support.DataManipulationStatementBehavior;
-import org.blendee.support.OnClause;
 import org.blendee.support.TableFacadeRelationship;
-import org.blendee.support.SelectOfferFunction;
-import org.blendee.support.InsertOfferFunction;
-import org.blendee.support.UpdateOfferFunction;
-import org.blendee.support.SelectColumn;
-import org.blendee.support.InsertColumn;
-import org.blendee.support.SelectRelationship;
+import org.blendee.support.UpdateColumn;
+import org.blendee.support.UpdateRelationship;
+import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
-import org.blendee.support.InsertRelationship;
-import org.blendee.support.InsertStatementIntermediate;
-import org.blendee.support.UpdateStatementIntermediate;
-import org.blendee.support.DataManipulator;
-import org.blendee.support.annotation.Table;
 import org.blendee.support.annotation.Column;
-/*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
 /*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
+/*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
+import org.blendee.support.annotation.Table;
 
 /**
  * 自動生成されたテーブル操作クラスです。
@@ -247,6 +249,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private static final TableFacadeContext<OrderByCol> orderByContext$ = (relationship, name) -> new OrderByCol(relationship, name);
 
 	private static final TableFacadeContext<InsertCol> insertContext$ = (relationship, name) -> new InsertCol(relationship, name);
+
+	private static final TableFacadeContext<UpdateCol> updateContext$ = (relationship, name) -> new UpdateCol(relationship, name);
 
 	private static final TableFacadeContext<WhereColumn<WhereLogicalOperators>> whereContext$ =  TableFacadeContext.newWhereBuilder();
 
@@ -435,7 +439,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return dmsBehavior$ == null ? (dmsBehavior$ = new DMSBehavior()) : dmsBehavior$;
 	}
 
-	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, WhereRel> {
+	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
 
 		public DMSBehavior() {
 			super($TABLE);
@@ -446,6 +450,13 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			return new InsertRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				insertContext$);
+		}
+
+		@Override
+		protected UpdateRel newUpdate() {
+			return new UpdateRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				updateContext$);
 		}
 
 		@Override
@@ -1051,13 +1062,21 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return dmsBehavior().INSERT(select);
 	}
 
-	public UpdateStatementIntermediate UPDATE(UpdateOfferFunction<UpdateRel> function) {
-		return new UpdateStatementIntermediate(null);
+	/**
+	 * UPDATE 文を生成します。
+	 * @param consumer
+	 * @return {@link UpdateStatementIntermediate}
+	 */
+	public UpdateStatementIntermediate<WhereRel> UPDATE(Consumer<UpdateRel> consumer) {
+		return dmsBehavior().UPDATE(consumer);
 	}
 
-	@SafeVarargs
-	public final DataManipulator DELETE(Consumer<WhereRel>... consumers) {
-		return dmsBehavior().DELETE(consumers);
+	/**
+	 * DELETE 文を生成します。
+	 * @return {@link DeleteStatementIntermediate}
+	 */
+	public final DeleteStatementIntermediate<WhereRel> DELETE() {
+		return new DeleteStatementIntermediate<>(dmsBehavior());
 	}
 
 	@Override
@@ -1371,10 +1390,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * UPDATE 用
 	 */
-	public static class UpdateRel extends Rel<TableFacadeColumn, Void> {
+	public static class UpdateRel extends Rel<UpdateCol, Void> implements UpdateRelationship {
 
-		private UpdateRel(/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$) {
-			super(table$, TableFacadeContext.OTHER, CriteriaContext.NULL);
+		private UpdateRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<UpdateCol> builder$) {
+			super(table$, builder$, CriteriaContext.NULL);
 		}
 	}
 
@@ -1414,6 +1435,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	public static class InsertCol extends InsertColumn {
 
 		private InsertCol(TableFacadeRelationship relationship, String name) {
+			super(relationship, name);
+		}
+	}
+
+	/**
+	 * UPDATE 文用
+	 */
+	public static class UpdateCol extends UpdateColumn {
+
+		private UpdateCol(TableFacadeRelationship relationship, String name) {
 			super(relationship, name);
 		}
 	}

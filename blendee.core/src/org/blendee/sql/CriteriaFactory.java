@@ -1153,17 +1153,13 @@ public class CriteriaFactory {
 
 	private static String buildInClause(int length) {
 		return "{0} IN ("
-			+ String.join(
-				", ",
-				Stream.generate(() -> "?").limit(length).collect(Collectors.toList()))
+			+ Stream.generate(() -> "?").limit(length).collect(Collectors.joining(", "))
 			+ ")";
 	}
 
 	private static String buildNotInClause(int length) {
 		return "{0} NOT IN ("
-			+ String.join(
-				", ",
-				Stream.generate(() -> "?").limit(length).collect(Collectors.toList()))
+			+ Stream.generate(() -> "?").limit(length).collect(Collectors.joining(", "))
 			+ ")";
 	}
 

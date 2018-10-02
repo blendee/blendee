@@ -107,7 +107,7 @@ public class RelationshipColumn implements Column {
 	}
 
 	@Override
-	public void consumeRelationship(Consumer<Relationship> consumer) {
+	public void setRelationship(Consumer<Relationship> consumer) {
 		consumer.accept(relationship);
 	}
 

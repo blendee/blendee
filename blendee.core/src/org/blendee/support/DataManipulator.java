@@ -1,59 +1,25 @@
 package org.blendee.support;
 
-import java.util.Objects;
-
-import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.sql.Binder;
+import org.blendee.sql.Reproducible;
 
-public class DataManipulator implements ComposedSQL {
+/**
+ * SQL によるデータ操作を実行するためのインターフェイスです。
+ * @author 千葉 哲嗣
+ */
+public interface DataManipulator extends ComposedSQL, Reproducible<DataManipulator> {
 
-	private final ComposedSQL base;
+	/**
+	 * データ操作を実行します。
+	 * @return データ操作件数
+	 */
+	int execute();
 
-	public DataManipulator(String sql, Binder[] binders) {
-		Objects.requireNonNull(sql);
-		Objects.requireNonNull(binders);
-
-		base = new ComposedSQL() {
-
-			@Override
-			public int complement(int done, BPreparedStatement statement) {
-				for (Binder binder : binders) {
-					binder.bind(++done, statement);
-				}
-
-				return done;
-			}
-
-			@Override
-			public String sql() {
-				return sql;
-			}
-		};
-	}
-
-	public DataManipulator(ComposedSQL base) {
-		Objects.requireNonNull(base);
-		this.base = base;
-	}
-
-	public int execute() {
-		return BlendeeManager.getConnection().executeAndGet(this, s -> s.executeUpdate());
-	}
-
-	public void execute(BatchStatement statement) {
+	/**
+	 * @param statement
+	 */
+	default void execute(BatchStatement statement) {
 		statement.addBatch(this);
-	}
-
-	@Override
-	public int complement(int done, BPreparedStatement statement) {
-		return base.complement(done, statement);
-	}
-
-	@Override
-	public String sql() {
-		return base.sql();
 	}
 }

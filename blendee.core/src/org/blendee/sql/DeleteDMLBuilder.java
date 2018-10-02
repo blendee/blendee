@@ -39,7 +39,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	 */
 	public void setCriteria(Criteria criteria) {
 		this.criteria = criteria.replicate();
-		this.criteria.checkColumns(factory.getInstance(path));
+		this.criteria.prepareColumns(factory.getInstance(path));
 	}
 
 	@Override

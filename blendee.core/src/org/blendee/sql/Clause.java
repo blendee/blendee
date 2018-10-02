@@ -31,8 +31,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 */
 	public String toString(boolean joining) {
 		if (joined == joining && cache != null) return cache;
-		String[] columnNames = toString(joining, getColumns());
-		cache = " " + getKeyword() + " " + SQLFragmentFormat.execute(getTemplate(), columnNames);
+		cache = " " + getKeyword() + " " + SQLFragmentFormat.execute(getTemplate(), toString(joining, getColumns()));
 		joined = joining;
 		return cache;
 	}
@@ -52,9 +51,9 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 * @throws IllegalStateException 結合できないテーブルのカラムを使用している場合
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいなカラム指定がされている場合
 	 */
-	public void checkColumns(Relationship root) {
+	public final void prepareColumns(Relationship root) {
 		List<Column> columns = getColumnsInternal();
-		columns.forEach(c -> c.checkForSQL(root));
+		columns.forEach(c -> c.prepareForSQL(root));
 	}
 
 	/**
@@ -85,7 +84,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	void join(FromClause fromClause) {
 		Column[] columns = getColumns();
 		for (int i = 0; i < columns.length; i++) {
-			columns[i].consumeRelationship(r -> fromClause.join(LEFT_OUTER_JOIN, r));
+			columns[i].setRelationship(r -> fromClause.join(LEFT_OUTER_JOIN, r));
 		}
 	}
 

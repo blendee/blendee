@@ -68,9 +68,9 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public void consumeRelationship(Consumer<Relationship> consumer) {
+	public void setRelationship(Consumer<Relationship> consumer) {
 		for (Column column : columns) {
-			column.consumeRelationship(consumer);
+			column.setRelationship(consumer);
 		}
 	}
 

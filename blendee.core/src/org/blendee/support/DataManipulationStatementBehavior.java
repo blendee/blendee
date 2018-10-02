@@ -13,13 +13,16 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.UpdateDMLBuilder;
 
 @SuppressWarnings("javadoc")
-public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, W extends WhereRelationship> implements DataManipulationStatement {
+public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, U extends UpdateRelationship, W extends WhereRelationship> implements DataManipulationStatement {
 
 	private final TablePath table;
 
 	private List<Column> insertColumns;
+
+	private List<SetElement> setElements;
 
 	private Criteria whereClause;
 
@@ -31,7 +34,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	public InsertStatementIntermediate INSERT(InsertOfferFunction<I> function) {
 		function.apply(newInsert()).get().forEach(o -> o.offer());
-		return new InsertStatementIntermediate(table, insertColumns());
+		return new InsertStatementIntermediate(table, getInsertColumns());
 	}
 
 	public DataManipulator INSERT(InsertOfferFunction<I> function, SelectStatement select) {
@@ -42,13 +45,13 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 		String sql = "INSERT INTO "
 			+ table
 			+ " ("
-			+ String.join(", ", insertColumns.stream().map(c -> c.getName()).collect(Collectors.toList()))
+			+ insertColumns.stream().map(c -> c.getName()).collect(Collectors.joining(", "))
 			+ ") "
 			+ builder.sql();
 
 		List<Binder> binders = new ComplementerValues(builder).binders();
 
-		return new DataManipulator(sql, binders.toArray(new Binder[binders.size()]));
+		return new PlaybackDataManipulator(sql, binders);
 	}
 
 	public DataManipulator INSERT(SelectStatement select) {
@@ -61,16 +64,32 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 		List<Binder> binders = new ComplementerValues(builder).binders();
 
-		return new DataManipulator(sql, binders.toArray(new Binder[binders.size()]));
+		return new PlaybackDataManipulator(sql, binders);
+	}
+
+	public UpdateStatementIntermediate<W> UPDATE(Consumer<U> consumer) {
+		consumer.accept(newUpdate());
+		return new UpdateStatementIntermediate<>(this);
 	}
 
 	@Override
 	public void addInsertColumns(Column column) {
-		insertColumns().add(column);
+		getInsertColumns().add(column);
 	}
 
+	@Override
+	public void addSetElement(SetElement element) {
+		getSetElements().add(element);
+	}
+
+	protected abstract I newInsert();
+
+	protected abstract U newUpdate();
+
+	protected abstract LogicalOperators<W> newWhereOperators();
+
 	@SafeVarargs
-	public final DataManipulator DELETE(Consumer<W>... consumers) {
+	final void WHERE(Consumer<W>... consumers) {
 		//二重に呼ばれた際の処置
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
@@ -89,26 +108,42 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 				CriteriaContext.setContextCriteria(current);
 			}
 		}
+	}
 
+	DataManipulator createDeleteDataManipulator() {
 		DeleteDMLBuilder builder = new DeleteDMLBuilder(table);
 		builder.setCriteria(whereClause());
 
 		List<Binder> binders = new ComplementerValues(builder).binders();
 
-		return new DataManipulator(builder.sql(), binders.toArray(new Binder[binders.size()]));
+		return new PlaybackDataManipulator(builder.sql(), binders);
 	}
 
-	public LogicalOperators<W> whereOperators() {
+	DataManipulator createUpdateDataManipulator() {
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(table);
+		builder.setCriteria(whereClause());
+
+		getSetElements().forEach(e -> {
+			e.appendTo(builder);
+		});
+
+		List<Binder> binders = new ComplementerValues(builder).binders();
+
+		return new PlaybackDataManipulator(builder.sql(), binders);
+	}
+
+	private LogicalOperators<W> whereOperators() {
 		return whereOperators == null ? (whereOperators = newWhereOperators()) : whereOperators;
 	}
 
-	protected abstract I newInsert();
-
-	protected abstract LogicalOperators<W> newWhereOperators();
-
-	private List<Column> insertColumns() {
+	private List<Column> getInsertColumns() {
 		if (insertColumns == null) insertColumns = new LinkedList<>();
 		return insertColumns;
+	}
+
+	private List<SetElement> getSetElements() {
+		if (setElements == null) setElements = new LinkedList<>();
+		return setElements;
 	}
 
 	private Criteria whereClause() {

@@ -42,7 +42,7 @@ public class PseudoColumn implements Column {
 	}
 
 	@Override
-	public void consumeRelationship(Consumer<Relationship> consumer) {
+	public void setRelationship(Consumer<Relationship> consumer) {
 		consumer.accept(relationship);
 	}
 

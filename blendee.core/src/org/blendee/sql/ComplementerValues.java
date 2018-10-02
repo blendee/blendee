@@ -26,7 +26,7 @@ import org.blendee.jdbc.PreparedStatementComplementer;
  * {@link BPreparedStatement} にセットする値を持つ入れ物クラスです。
  * @author 千葉 哲嗣
  */
-public class ComplementerValues implements ChainPreparedStatementComplementer {
+public class ComplementerValues implements ChainPreparedStatementComplementer, Reproducible<ComplementerValues> {
 
 	// 不変オブジェクトであること!!
 
@@ -208,6 +208,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer {
 	 * @param placeHolderValues 新しいプレースホルダ値
 	 * @return 複製
 	 */
+	@Override
 	public ComplementerValues reproduce(Object... placeHolderValues) {
 		List<Binder> binders = new LinkedList<>();
 

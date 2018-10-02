@@ -124,14 +124,6 @@ public interface Relationship extends Traversable, Comparable<Relationship> {
 	void addParentTo(Collection<Relationship> parents);
 
 	/**
-	 * この Relationship が含まれるツリーに、パラメータのテーブルがある場合、それに対応する Relationship を返します。<br>
-	 * このツリーに path に対応する Relationship がない場合は、長さ 0 の配列、複数件ある場合は、全ての Relationship を持つ配列を返します。
-	 * @param path 変換したい {@link TablePath}
-	 * @return 変換された {@link Relationship} の配列
-	 */
-	Relationship[] convert(TablePath path);
-
-	/**
 	 * この {@link Relationship} の文字列表現を返します。
 	 * @return 基本的には table id
 	 */

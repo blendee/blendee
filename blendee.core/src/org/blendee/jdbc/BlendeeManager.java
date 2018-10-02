@@ -128,7 +128,11 @@ public class BlendeeManager implements ManagementSubject {
 	public Metadata getMetadata() {
 		synchronized (lock) {
 			if (metadata == null) {
-				metadata = config.getMetadataFactory().createMetadata();
+				if (config.usesMetadataCache()) {
+					metadata = new CacheMetadata(config.getMetadataFactory().createMetadata());
+				} else {
+					metadata = config.getMetadataFactory().createMetadata();
+				}
 			}
 
 			return metadata;

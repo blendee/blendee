@@ -324,16 +324,12 @@ public class SQLQueryBuilder implements ComposedSQL {
 	private void prepareFrom() {
 		fromClause.clearRelationships();
 
-		boolean forSubquery = fromClause.forSubquery();
-
-		if (!forSubquery) {
-			Relationship root = fromClause.getRoot();
-			selectClause.checkColumns(root);
-			whereClause.checkColumns(root);
-			groupClause.checkColumns(root);
-			havingClause.checkColumns(root);
-			orderClause.checkColumns(root);
-		}
+		Relationship root = fromClause.getRoot();
+		selectClause.prepareColumns(root);
+		whereClause.prepareColumns(root);
+		groupClause.prepareColumns(root);
+		havingClause.prepareColumns(root);
+		orderClause.prepareColumns(root);
 
 		selectClause.join(fromClause);
 		whereClause.join(fromClause);

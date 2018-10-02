@@ -108,26 +108,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 			throw new IllegalStateException("同一ルートではないので、結合できません");
 		}
-		cache = null;
-		Set<Relationship> set = new HashSet<>();
-		relationship.addParentTo(set);
-		set.add(relationship);
-		for (Relationship element : set) {
-			localRelationships.add(new RelationshipContainer(type, element));
-		}
-	}
 
-	/**
-	 * この FROM 句のテーブルをルートにした {@link Relationship} と結合します。
-	 * @param type 結合方式
-	 * @param path このインスタンスのルートのツリーに含まれる {@link TablePath}
-	 * @throws IllegalStateException 結合できないテーブルを使用している場合
-	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
-	 */
-	@SuppressWarnings("unlikely-arg-type")
-	public void join(JoinType type, TablePath path) {
-		Relationship relationship = RelationshipFactory.convert(root, path);
-		if (localRelationships.contains(relationship)) return;
 		cache = null;
 		Set<Relationship> set = new HashSet<>();
 		relationship.addParentTo(set);
@@ -150,7 +131,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 		onCriteria.getColumnsInternal().forEach(c -> {
 			Relationship targetRoot = c.getRootRelationship();
-			c.consumeRelationship(target -> {
+			c.setRelationship(target -> {
 				if (targetRoot.equals(root))
 					localRelationships.add(new RelationshipContainer(JoinType.LEFT_OUTER_JOIN, target));
 			});

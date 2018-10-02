@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,15 +74,16 @@ public abstract class Updater implements ComposedSQL {
 	 * SQL 文に挿入する項目名と、プレースホルダをもつ SQL の断片を追加します。<br>
 	 * 追加された順に SQL 文に反映されます。
 	 * @param columnName テーブルの項目名
-	 * @param fragment SQLの断片、たとえば TO_CHAR(?,'FM099') など
-	 * @param bindable バインド可能な値
+	 * @param fragment SQLの断片、たとえば TO_CHAR(?, 'FM099') など
+	 * @param bindables バインド可能な値
 	 */
 	public void addBindableSQLFragment(
 		String columnName,
 		String fragment,
-		Bindable bindable) {
+		Bindable... bindables) {
 		addSQLFragment(columnName, fragment);
-		values.put(columnName, bindable.toBinder());
+
+		Arrays.stream(bindables).forEach(b -> values.put(columnName, b.toBinder()));
 	}
 
 	/**

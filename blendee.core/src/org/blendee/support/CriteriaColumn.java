@@ -186,6 +186,15 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
+	public O eq(UpdateColumn another) {
+		return addAnotherColumnCriteria(another.column(), "{0} = {1}");
+	}
+
+	/**
+	 * 条件句に、このカラムの = 条件を追加します。
+	 * @param another 他方のカラム
+	 * @return 連続呼び出し用 {@link SelectStatement}
+	 */
 	public O eq(CriteriaColumn<?> another) {
 		return addAnotherColumnCriteria(another.column, "{0} = {1}");
 	}

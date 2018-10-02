@@ -3,10 +3,8 @@ package org.blendee.sql;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.blendee.internal.CollectionMap;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.ManagementSubject;
@@ -47,33 +45,6 @@ public class RelationshipFactory implements ManagementSubject {
 			}
 
 			return relationship;
-		}
-	}
-
-	/**
-	 * target を、 root のツリーに含まれる {@link Relationship} に変換します。
-	 * @param root 含まれるべきツリーのルート
-	 * @param target 対象
-	 * @return 変換された {@link Relationship}
-	 * @throws IllegalStateException 結合できないテーブルを使用している場合
-	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいな指定がされている場合
-	 */
-	public static Relationship convert(Relationship root, TablePath target) {
-		//問題となるカラムが含まれる Relationship を元になる SQL 文の Relationship ツリーから取得
-		Relationship[] converted = root.convert(target);
-		if (converted.length == 1) {
-			//Relationship が一つの場合は、それが正解なので return
-			return converted[0];
-		} else if (converted.length == 0) {
-			//Relationship が 0 の場合は、結合できないテーブルを使用しているのでエラー
-			throw new IllegalStateException(
-				target + " は、 " + root + " Relationship のツリー内に含まれていません。");
-		} else {
-			//Relationship が複数件の場合は、ツリー内に同一テーブルが複数あるため、あいまいな
-			//指定がされているということでエラー
-			//解決方法は、元になる SQL 文の Relationship ツリーから取得した Relationship を使用すること
-			throw new IllegalStateException(
-				target + " は、" + root + "  Relationship のツリー内に複数存在するため、特定できません。");
 		}
 	}
 
@@ -120,16 +91,13 @@ public class RelationshipFactory implements ManagementSubject {
 		final String pathId = pathIdMap.get(path);
 		if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
 
-		List<TablePath> relationshipPath = new LinkedList<>();
-
 		return new ConcreteRelationship(
 			null,
 			null,
 			null,
 			path,
 			pathId,
-			relationshipPath,
-			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter(),
-			new CollectionMap<>());
+			new LinkedList<>(),
+			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter());
 	}
 }

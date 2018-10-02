@@ -13,16 +13,17 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
+import org.blendee.sql.Reproducible;
 
 /**
- * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
+ * 検索条件と並び替え条件を保持した、実際に検索を行うためのインターフェイスです。<br>
  * {@link SelectStatement} クラスのインスタンスは、複数のスレッドから同時にアクセスされることを前提としているため、トランザクションごとに、設定された条件はクリアされてしまいます。<br>
  * 一処理内で、同じ条件で複数回検索を実行したい場合を考慮し、検索実行時状態を保存しておくのが、このクラスのインスタンスの役割です。
  * @param <I> Iterator
  * @param <R> Row
  * @author 千葉 哲嗣
  */
-public interface Query<I extends Iterator<R>, R> extends ComposedSQL {
+public interface Query<I extends Iterator<R>, R> extends ComposedSQL, Reproducible<Query<I, R>> {
 
 	/**
 	 * このインスタンスが持つ検索条件と並び替え条件を使用して、検索を実行します。<br>
@@ -121,11 +122,4 @@ public interface Query<I extends Iterator<R>, R> extends ComposedSQL {
 	default ResultSetIterator aggregate() {
 		return new ResultSetIterator(this);
 	}
-
-	/**
-	 * 新しいプレースホルダの値を持つ複製を作成します。
-	 * @param placeHolderValues 新しいプレースホルダの値
-	 * @return 複製
-	 */
-	Query<I, R> reproduce(Object... placeHolderValues);
 }
