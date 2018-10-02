@@ -109,6 +109,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
+	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+
 /*++[[COLUMN_NAMES_PART]]++*/
 /*==ColumnNamesPart==*/
 	/**
@@ -174,20 +176,17 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final DataObject data$;
 
-		private final Relationship relationship$;
+		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 
 		private Row() {
-			relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 			data$ = new DataObject(relationship$);
 		}
 
 		private Row(DataObject data) {
-			relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 			this.data$ = data;
 		}
 
 		private Row(Result result) {
-			relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 			this.data$ = ColumnNameDataObjectBuilder.build(result, relationship$, ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
 		}
 
@@ -821,7 +820,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public Relationship getRootRealtionship() {
-		return ContextManager.get(RelationshipFactory.class).getInstance(getTablePath());
+		return $relationship;
 	}
 
 	@Override
@@ -1170,7 +1169,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				return parent$.getRelationship().find(fkName$);
 			}
 
-			return ContextManager.get(RelationshipFactory.class).getInstance(table$.getTablePath());
+			return table$.$relationship;
 		}
 
 		@Override
