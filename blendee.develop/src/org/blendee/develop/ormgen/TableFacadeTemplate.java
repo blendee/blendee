@@ -31,6 +31,7 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
+import org.blendee.sql.AliasTablePath;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.DataManipulationStatement;
 import org.blendee.support.DataManipulationStatementBehavior;
@@ -77,6 +78,7 @@ import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
 import org.blendee.support.annotation.Column;
+import org.blendee.support.AliasRoundrobin;
 /*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
 /*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
 import org.blendee.support.annotation.Table;
@@ -107,9 +109,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * この定数クラスのテーブルを指す {@link TablePath}
 	 */
-	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
+	public static final TablePath __$TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+	private final AliasTablePath $table = AliasRoundrobin.publish(__$TABLE);
+
+	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($table);
 
 /*++[[COLUMN_NAMES_PART]]++*/
 /*==ColumnNamesPart==*/
@@ -176,7 +180,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final DataObject data$;
 
-		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance(__$TABLE);
 
 		private Row() {
 			data$ = new DataObject(relationship$);
@@ -197,7 +201,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public TablePath tablePath() {
-			return $TABLE;
+			return __$TABLE;
 		}
 
 /*++[[ROW_PROPERTY_ACCESSOR_PART]]++*/
@@ -392,7 +396,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private SelectBehavior() {
-			super($TABLE);
+			super($table);
 		}
 
 		@Override
@@ -441,7 +445,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
 
 		public DMSBehavior() {
-			super($TABLE);
+			super($table);
 		}
 
 		@Override
@@ -495,7 +499,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
 		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $TABLE, using));
+			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $table, using));
 	}
 
 	@Override
@@ -505,7 +509,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public TablePath getTablePath() {
-		return $TABLE;
+		return $table;
 	}
 
 	/**
@@ -1107,8 +1111,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final String fkName$;
 
-		private final TablePath path$;
-
 /*++[[COLUMN_PART1]]++*/
 /*==ColumnPart1==*/
 		/**
@@ -1123,18 +1125,15 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @param builder$ builder
 		 * @param parent$ parent
 		 * @param fkName$ fkName
-		 * @param path$ path
 		 */
 		public Rel(
 			TableFacadeContext<T> builder$,
 			TableFacadeRelationship parent$,
-			String fkName$,
-			TablePath path$) {
+			String fkName$) {
 			table$ = null;
 			context$ = null;
 			this.parent$ = parent$;
 			this.fkName$ = fkName$;
-			this.path$ = path$;
 
 /*++[[COLUMN_PART2]]++*/
 /*==ColumnPart2==*/this./*++[[COLUMN]]++*//*--*/columnName/*--*/ = builder$.buildColumn(
@@ -1150,7 +1149,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
-			path$ = $TABLE;
 
 			/*--*/columnName = null;/*--*/
 /*++[[COLUMN_PART2]]++*/
@@ -1175,11 +1173,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		@Override
 		public TableFacadeRelationship getParent() {
 			return parent$;
-		}
-
-		@Override
-		public TablePath getTablePath() {
-			return path$;
 		}
 
 		@Override
@@ -1222,25 +1215,20 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		/*--?--*/private final TableFacadeContext<T> builder$;/*--?--*/
 
-		/*--?--*/private final TablePath root$;/*--?--*/
-
 		/**
 		 * 直接使用しないでください。
 		 * @param builder$ builder
 		 * @param parent$ parent
 		 * @param fkName$ fkName
 		 * @param path$ path
-		 * @param root$ root
 		 */
 		public ExtRel(
 			TableFacadeContext<T> builder$,
 			TableFacadeRelationship parent$,
 			String fkName$,
-			TablePath path$,
-			TablePath root$) {
-			super(builder$, parent$, fkName$, path$);
+			TablePath path$) {
+			super(builder$, parent$, fkName$);
 			/*--?--*/this.builder$ = builder$;/*--?--*/
-			/*--?--*/this.root$ = root$;/*--?--*/
 		}
 
 		private ExtRel(
@@ -1249,7 +1237,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
 			/*--?--*/this.builder$ = builder$;/*--?--*/
-			/*--?--*/root$ = null;/*--?--*/
 		}
 
 		/**
@@ -1257,7 +1244,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @return {@link OneToManyQuery}
 		 */
 		public OneToManyQuery<Row, M> intercept() {
-			if (super.table$ != null) throw new IllegalStateException(super.path$.getSchemaName() + " から直接使用することはできません");
+			if (super.table$ != null) throw new IllegalStateException("このインスタンスでは直接使用することはできません");
 			if (!getSelectStatement().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
 		}
@@ -1275,8 +1262,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				builder$,
 				this,
 				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/,
-				/*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/$TABLE,
-				root$ != null ? root$ : super.path$);
+				/*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/__$TABLE);
 		}
 /*==TableRelationshipPart==*/
 	}

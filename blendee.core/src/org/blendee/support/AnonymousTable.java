@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
@@ -664,11 +663,6 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 
 		@Override
 		public TableFacadeRelationship getParent() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public TablePath getTablePath() {
 			throw new UnsupportedOperationException();
 		}
 

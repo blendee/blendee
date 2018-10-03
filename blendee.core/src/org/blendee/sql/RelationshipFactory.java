@@ -1,8 +1,6 @@
 package org.blendee.sql;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.blendee.jdbc.BlendeeManager;
@@ -36,16 +34,28 @@ public class RelationshipFactory implements ManagementSubject {
 	 * @return ツリーのルート要素
 	 */
 	public Relationship getInstance(TablePath path) {
+		if (path instanceof AliasTablePath) return getInstance((AliasTablePath) path);
+
 		synchronized (lock) {
 			if (pathIdMap.size() == 0) preparePathIdMap();
 			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
-				relationship = createRelationship(path);
+				relationship = createRelationship(path, null);
 				relationshipCache.put(path, relationship);
 			}
 
 			return relationship;
 		}
+	}
+
+	/**
+	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。<br>
+	 * キャッシュを行いません。
+	 * @param path ルートとなるテーブル
+	 * @return ツリーのルート要素
+	 */
+	public Relationship getInstance(AliasTablePath path) {
+		return createRelationship(path, path.getAlias());
 	}
 
 	/**
@@ -58,16 +68,6 @@ public class RelationshipFactory implements ManagementSubject {
 		}
 	}
 
-	static DecimalFormat createDigitFormat(int max) {
-		int digit = String.valueOf(max).length();
-		StringBuilder zeros = new StringBuilder();
-		for (int i = 0; i < digit; i++) {
-			zeros.append('0');
-		}
-
-		return new DecimalFormat(zeros.toString());
-	}
-
 	private void preparePathIdMap() {
 		String[] schemaNames = ContextManager.get(BlendeeManager.class).getConfigure().getSchemaNames();
 		int counter = 0;
@@ -76,20 +76,24 @@ public class RelationshipFactory implements ManagementSubject {
 			counter += paths.length;
 		}
 
-		DecimalFormat format = createDigitFormat(counter);
 		counter = 0;
 		for (String name : schemaNames) {
 			TablePath[] paths = MetadataUtilities.getTables(name);
 			for (TablePath path : paths) {
-				pathIdMap.put(path, "t" + format.format(counter));
+				pathIdMap.put(path, "t" + counter);
 				counter++;
 			}
 		}
 	}
 
-	private Relationship createRelationship(final TablePath path) {
-		final String pathId = pathIdMap.get(path);
-		if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+	private Relationship createRelationship(final TablePath path, String alias) {
+		String pathId;
+		if (alias == null) {
+			pathId = pathIdMap.get(path);
+			if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+		} else {
+			pathId = alias;
+		}
 
 		return new ConcreteRelationship(
 			null,
@@ -97,7 +101,6 @@ public class RelationshipFactory implements ManagementSubject {
 			null,
 			path,
 			pathId,
-			new LinkedList<>(),
 			ContextManager.get(BlendeeManager.class).getConfigure().getDataTypeConverter());
 	}
 }

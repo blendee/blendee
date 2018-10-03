@@ -1,11 +1,8 @@
 package org.blendee.sql;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.blendee.internal.Traversable;
@@ -40,8 +37,6 @@ final class ConcreteRelationship implements Relationship {
 
 	private final DataTypeConverter converter;
 
-	private final List<TablePath> relationshipPath;
-
 	private final Object lock = new Object();
 
 	private TraversableNode node;
@@ -56,7 +51,6 @@ final class ConcreteRelationship implements Relationship {
 		CrossReference reference,
 		TablePath path,
 		String id,
-		List<TablePath> relationshipPath,
 		DataTypeConverter converter) {
 		this.path = path;
 
@@ -70,16 +64,13 @@ final class ConcreteRelationship implements Relationship {
 		this.reference = reference;
 		this.id = id;
 
-		this.relationshipPath = relationshipPath;
-
 		this.converter = converter;
 
 		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
 		columns = new Column[metadatas.length];
-		DecimalFormat columnFormat = RelationshipFactory.createDigitFormat(metadatas.length);
 		for (int i = 0; i < metadatas.length; i++) {
 			ColumnMetadata metadata = metadatas[i];
-			Column column = new RelationshipColumn(this, metadata, converter, columnFormat.format(i));
+			Column column = new RelationshipColumn(this, metadata, converter, String.valueOf(i));
 			columns[i] = column;
 			columnMap.put(metadata.getName(), column);
 		}
@@ -132,12 +123,7 @@ final class ConcreteRelationship implements Relationship {
 
 			node = new TraversableNode();
 
-			List<TablePath> myRelationshipPath = new LinkedList<>(relationshipPath);
-			myRelationshipPath.add(path);
-
 			CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
-
-			DecimalFormat relationshipFormat = RelationshipFactory.createDigitFormat(references.length);
 
 			foreignKeyNameMap = new HashMap<>();
 			foreignKeyIdMap = new HashMap<>();
@@ -149,8 +135,7 @@ final class ConcreteRelationship implements Relationship {
 					this,
 					element,
 					element.getPrimaryKeyTable(),
-					id + "_" + relationshipFormat.format(i),
-					myRelationshipPath,
+					id + "_" + i,
 					converter);
 				foreignKeyNameMap.put(MetadataUtilities.regularize(element.getForeignKeyName()), child);
 				String[] foreignKeyColumns = element.getForeignKeyColumnNames();

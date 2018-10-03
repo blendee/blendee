@@ -1,6 +1,5 @@
 package org.blendee.support;
 
-import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.Relationship;
 
@@ -28,12 +27,6 @@ public interface TableFacadeRelationship {
 	 * @return このインスタンスをメンバとして保持している親インスタンス
 	 */
 	TableFacadeRelationship getParent();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return このインスタンスが表す {@link TablePath}
-	 */
-	TablePath getTablePath();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

@@ -123,8 +123,9 @@ public class TablePath implements Comparable<TablePath> {
 
 	/**
 	 * 大文字、小文字を意識しないようにする比較用の文字列
+	 * @return 識別用 ID
 	 */
-	private String id() {
+	protected String id() {
 		return toString().toUpperCase();
 	}
 }
