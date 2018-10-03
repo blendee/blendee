@@ -109,9 +109,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * この定数クラスのテーブルを指す {@link TablePath}
 	 */
-	public static final TablePath __$TABLE = new TablePath(SCHEMA, TABLE);
+	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final AliasTablePath $table = AliasRoundrobin.publish(__$TABLE);
+	private final AliasTablePath $table = AliasRoundrobin.publish($TABLE);
 
 	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($table);
 
@@ -180,7 +180,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final DataObject data$;
 
-		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance(__$TABLE);
+		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 
 		private Row() {
 			data$ = new DataObject(relationship$);
@@ -201,7 +201,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public TablePath tablePath() {
-			return __$TABLE;
+			return $TABLE;
 		}
 
 /*++[[ROW_PROPERTY_ACCESSOR_PART]]++*/
@@ -1262,7 +1262,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				builder$,
 				this,
 				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/,
-				/*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/__$TABLE);
+				/*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/$TABLE);
 		}
 /*==TableRelationshipPart==*/
 	}
