@@ -1,5 +1,9 @@
 package org.blendee.jdbc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
 /**
@@ -27,4 +31,23 @@ public interface BLogger {
 	 * @param level 出力レベル
 	 */
 	void flush(Level level);
+
+	/**
+	 * {@link Throwable} のスタックトレースをログに出力します。
+	 * @param t Throwable
+	 */
+	default void log(Throwable t) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream;
+		try {
+			stream = new PrintStream(out, false, StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException uee) {
+			throw new Error(uee);
+		}
+
+		t.printStackTrace(stream);
+		stream.flush();
+
+		println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+	}
 }

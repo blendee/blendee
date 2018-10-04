@@ -1,9 +1,5 @@
 package org.blendee.jdbc;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.sql.DataTruncation;
 import java.sql.SQLException;
 
@@ -21,7 +17,8 @@ public class DefaultErrorConverter implements ErrorConverter {
 	 */
 	@Override
 	public BlendeeException convert(SQLException e) {
-		BLogger logger = ContextManager.get(BlendeeManager.class).getConfigure().getLogger();
+		BLogger logger = BlendeeManager.get().getConfigure().getLogger();
+
 		if (e instanceof DataTruncation) {
 			DataTruncation warning = (DataTruncation) e;
 			String prefix = "data truncation: ";
@@ -32,18 +29,7 @@ public class DefaultErrorConverter implements ErrorConverter {
 			logger.println(prefix + "transfer size: " + warning.getTransferSize());
 		}
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PrintStream stream;
-		try {
-			stream = new PrintStream(out, false, StandardCharsets.UTF_8.name());
-		} catch (UnsupportedEncodingException uee) {
-			throw new Error(uee);
-		}
-
-		e.printStackTrace(stream);
-		stream.flush();
-
-		logger.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		logger.log(e);
 
 		throw new BlendeeException(e);
 	}

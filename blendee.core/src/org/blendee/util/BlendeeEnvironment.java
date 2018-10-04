@@ -1,6 +1,5 @@
 package org.blendee.util;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -296,7 +295,7 @@ public class BlendeeEnvironment {
 				try {
 					if (top) transaction.rollback();
 				} catch (Throwable tt) {
-					tt.printStackTrace(getPrintStream());
+					BlendeeManager.get().getConfigure().getLogger().log(tt);
 				}
 
 				throw t;
@@ -314,28 +313,14 @@ public class BlendeeEnvironment {
 		}
 	}
 
-	private static PrintStream stream = System.err;
-
 	private static void doFinally(Runnable mainFunction, Runnable finallyFunction) {
 		try {
 			mainFunction.run();
 		} catch (Throwable t) {
-			t.printStackTrace(getPrintStream());
+			BlendeeManager.get().getConfigure().getLogger().log(t);
 		} finally {
 			finallyFunction.run();
 		}
-	}
-
-	/**
-	 * TODO なんとかする
-	 * @param stream {@link PrintStream}
-	 */
-	public static synchronized void setPrintStream(PrintStream stream) {
-		BlendeeEnvironment.stream = stream;
-	}
-
-	private static synchronized PrintStream getPrintStream() {
-		return stream;
 	}
 
 	/**
