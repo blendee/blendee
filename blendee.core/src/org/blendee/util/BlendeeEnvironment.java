@@ -201,6 +201,8 @@ public class BlendeeEnvironment {
 
 			BlendeeConstants.AUTO_CLOSE_INTERVAL_MILLIS.extract(initValues).ifPresent(millis -> init.setAutoCloseIntervalMillis(millis));
 
+			BlendeeConstants.LOGGER_CLASS.extract(initValues).ifPresent(clazz -> init.setLoggerClass(clazz));
+
 			BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));
 
 			BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
