@@ -15,6 +15,8 @@ public class DeleteDMLBuilder implements ComposedSQL {
 
 	private final TablePath path;
 
+	private final String alias;
+
 	private Criteria criteria = CriteriaFactory.create();
 
 	/**
@@ -23,6 +25,16 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	 */
 	public DeleteDMLBuilder(TablePath path) {
 		this.path = path;
+		alias = "";
+	}
+
+	/**
+	 * パラメータのテーブルを対象にするインスタンスを生成します。
+	 * @param path DELETE 対象テーブル
+	 */
+	public DeleteDMLBuilder(RuntimeTablePath path) {
+		this.path = path;
+		alias = " " + path.getAlias();
 	}
 
 	/**
@@ -50,7 +62,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	@Override
 	public String sql() {
 		criteria.setKeyword("WHERE");
-		return "DELETE FROM " + path + criteria.toString(false);
+		return "DELETE FROM " + path + alias + criteria.toString(false);
 	}
 
 	@Override

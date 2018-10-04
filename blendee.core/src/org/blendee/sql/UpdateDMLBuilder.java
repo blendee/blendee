@@ -17,12 +17,24 @@ public class UpdateDMLBuilder extends Updater {
 
 	private Criteria criteria = CriteriaFactory.create();
 
+	private final String alias;
+
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path UPDATE 対象テーブル
 	 */
 	public UpdateDMLBuilder(TablePath path) {
 		super(path);
+		alias = "";
+	}
+
+	/**
+	 * パラメータのテーブルを対象にするインスタンスを生成します。
+	 * @param path UPDATE 対象テーブル
+	 */
+	public UpdateDMLBuilder(RuntimeTablePath path) {
+		super(path);
+		alias = " " + path.getAlias();
 	}
 
 	@Override
@@ -56,7 +68,8 @@ public class UpdateDMLBuilder extends Updater {
 			String columnName = columnNames[i];
 			list.add(columnName + " = " + getPlaceHolderOrFragment(columnName));
 		}
+
 		criteria.setKeyword("WHERE");
-		return "UPDATE " + getTablePath() + " SET " + String.join(", ", list) + criteria.toString(false);
+		return "UPDATE " + getTablePath() + alias + " SET " + String.join(", ", list) + criteria.toString(false);
 	}
 }

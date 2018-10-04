@@ -9,11 +9,11 @@ import org.blendee.jdbc.wrapperbase.BatchStatementBase;
  */
 class LoggingBatchStatement extends BatchStatementBase {
 
-	private final Logger logger;
+	private final SQLLogger logger;
 
 	private final BatchStatement base;
 
-	LoggingBatchStatement(BatchStatement statement, Logger logger) {
+	LoggingBatchStatement(BatchStatement statement, SQLLogger logger) {
 		Objects.requireNonNull(statement);
 		Objects.requireNonNull(logger);
 		base = statement;
@@ -51,13 +51,13 @@ class LoggingBatchStatement extends BatchStatementBase {
 
 		private final String sql;
 
-		private final Logger logger;
+		private final SQLLogger logger;
 
 		private final PreparedStatementComplementer base;
 
 		private LoggingComplementer(
 			String sql,
-			Logger logger,
+			SQLLogger logger,
 			PreparedStatementComplementer base) {
 			this.sql = sql;
 			this.logger = logger;

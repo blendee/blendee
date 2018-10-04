@@ -7,7 +7,7 @@ import org.blendee.sql.Column;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class UpdateColumn extends SetElement {
+public class UpdateColumn extends SetElement implements ColumnSupplier {
 
 	private final Column column;
 
@@ -22,7 +22,8 @@ public class UpdateColumn extends SetElement {
 		addColumn(column);
 	}
 
-	Column column() {
+	@Override
+	public Column column() {
 		return column;
 	}
 }

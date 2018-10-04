@@ -193,8 +193,6 @@ public class BlendeeEnvironment {
 				}
 			});
 
-			BlendeeConstants.ENABLE_LOG.extract(initValues).ifPresent(flag -> init.enableLog(flag));
-
 			BlendeeConstants.USE_AUTO_COMMIT.extract(initValues).ifPresent(flag -> init.setUseAutoCommit(flag));
 
 			BlendeeConstants.USE_LAZY_TRANSACTION.extract(initValues).ifPresent(flag -> init.setUseLazyTransaction(flag));

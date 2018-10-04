@@ -38,6 +38,7 @@ public interface CriteriaRelationship {
 	 */
 	default CriteriaColumn<?> any(String template) {
 		return new CriteriaColumn<LogicalOperators<?>>(
+			getSelectStatement(),
 			getContext(),
 			new MultiColumn(getRelationship(), template)) {
 

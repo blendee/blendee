@@ -17,7 +17,7 @@ public class HavingColumn<O extends LogicalOperators<?>> extends CriteriaColumn<
 	 */
 	@SuppressWarnings("javadoc")
 	public HavingColumn(SelectStatement root, CriteriaContext context, Column column) {
-		super(context, column);
+		super(root, context, column);
 		this.root = root;
 	}
 

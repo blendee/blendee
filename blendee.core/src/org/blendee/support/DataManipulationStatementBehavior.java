@@ -5,20 +5,20 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
+import org.blendee.sql.RuntimeTablePath;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 
 @SuppressWarnings("javadoc")
 public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, U extends UpdateRelationship, W extends WhereRelationship> implements DataManipulationStatement {
 
-	private final TablePath table;
+	private final RuntimeTablePath table;
 
 	private List<Column> insertColumns;
 
@@ -28,7 +28,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	private LogicalOperators<W> whereOperators;
 
-	public DataManipulationStatementBehavior(TablePath table) {
+	public DataManipulationStatementBehavior(RuntimeTablePath table) {
 		this.table = table;
 	}
 

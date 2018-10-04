@@ -17,7 +17,7 @@ public class OnLeftColumn<O extends LogicalOperators<?>> extends OnColumn<O> {
 	 */
 	@SuppressWarnings("javadoc")
 	public OnLeftColumn(SelectStatement root, CriteriaContext context, Column column) {
-		super(context, column);
+		super(root, context, column);
 		this.root = root;
 	}
 

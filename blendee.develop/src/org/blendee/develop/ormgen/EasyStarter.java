@@ -3,10 +3,10 @@ package org.blendee.develop.ormgen;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.blendee.jdbc.Transaction;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.BlendeeManager;
+import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Initializer;
+import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.jdbc.impl.JDBCTransaction;
 
@@ -31,15 +31,13 @@ public class EasyStarter {
 	 * @param schemaNames 使用するスキーマ名
 	 * @param userName ユーザー名
 	 * @param password パスワード
-	 * @param develop 開発環境かどうか
 	 */
 	public static void start(
 		String jdbcDriverClassName,
 		String url,
 		String[] schemaNames,
 		String userName,
-		String password,
-		boolean develop) {
+		String password) {
 		try {
 			Class.forName(jdbcDriverClassName);
 		} catch (Exception e) {
@@ -55,7 +53,6 @@ public class EasyStarter {
 		Initializer init = new Initializer();
 		for (String schemaName : schemaNames)
 			init.addSchemaName(schemaName);
-		init.enableLog(develop);
 		init.setTransactionFactoryClass(EasyTransactionFactory.class);
 		ContextManager.get(BlendeeManager.class).initialize(init);
 	}

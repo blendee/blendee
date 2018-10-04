@@ -11,6 +11,7 @@ import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.CriteriaFactory.ComparisonOperator;
 import org.blendee.sql.CriteriaFactory.Match;
 import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
 import org.blendee.sql.binder.DoubleBinder;
@@ -33,7 +34,10 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 
 	private final Column column;
 
-	CriteriaColumn(CriteriaContext context, Column column) {
+	private final SelectStatement root;
+
+	CriteriaColumn(SelectStatement root, CriteriaContext context, Column column) {
+		this.root = root;
 		this.context = context;
 		this.column = column;
 	}
@@ -177,16 +181,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O eq(SelectColumn another) {
-		return addAnotherColumnCriteria(another.column(), "{0} = {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの = 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O eq(UpdateColumn another) {
+	public O eq(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} = {1}");
 	}
 
@@ -205,9 +200,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.EQ);
 	}
 
 	/**
@@ -315,7 +308,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ne(SelectColumn another) {
+	public O ne(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} <> {1}");
 	}
 
@@ -334,9 +327,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.NE, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.NE);
 	}
 
 	/**
@@ -444,7 +435,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O lt(SelectColumn another) {
+	public O lt(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} < {1}");
 	}
 
@@ -463,9 +454,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LT, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.LT);
 	}
 
 	/**
@@ -573,7 +562,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O gt(SelectColumn another) {
+	public O gt(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} > {1}");
 	}
 
@@ -592,9 +581,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GT, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.GT);
 	}
 
 	/**
@@ -702,7 +689,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O le(SelectColumn another) {
+	public O le(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} <= {1}");
 	}
 
@@ -721,9 +708,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.LE, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.LE);
 	}
 
 	/**
@@ -831,7 +816,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ge(SelectColumn another) {
+	public O ge(ColumnSupplier another) {
 		return addAnotherColumnCriteria(another.column(), "{0} >= {1}");
 	}
 
@@ -850,9 +835,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(SelectStatement subquery) {
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.GE, column, subquery.toSQLQueryBuilder()));
-
-		return logocalOperators();
+		return addSubQuery(subquery, ComparisonOperator.GE);
 	}
 
 	/**
@@ -1177,6 +1160,16 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	public O add(String clause, Bindable value) {
 		getContext().addCriteria(
 			CriteriaFactory.createCriteria(clause, column(), value));
+
+		return logocalOperators();
+	}
+
+	private O addSubQuery(SelectStatement subquery, ComparisonOperator operator) {
+		root.forSubquery(true);
+
+		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
+		builder.forSubquery(true);
+		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, builder));
 
 		return logocalOperators();
 	}

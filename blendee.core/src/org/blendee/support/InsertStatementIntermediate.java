@@ -12,7 +12,8 @@ import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.binder.NullBinder;
 
 /**
- * VALUES 句
+ * INSERT 文中間形態です。
+ * @author 千葉 哲嗣
  */
 public class InsertStatementIntermediate {
 
@@ -20,6 +21,7 @@ public class InsertStatementIntermediate {
 
 	private final List<Column> columns;
 
+	@SuppressWarnings("javadoc")
 	public InsertStatementIntermediate(TablePath table, List<Column> columns) {
 		this.table = table;
 		this.columns = new ArrayList<>(columns);

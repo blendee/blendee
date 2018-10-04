@@ -17,7 +17,7 @@ public class WhereColumn<O extends LogicalOperators<?>> extends CriteriaColumn<O
 	 */
 	@SuppressWarnings("javadoc")
 	public WhereColumn(SelectStatement root, CriteriaContext context, Column column) {
-		super(context, column);
+		super(root, context, column);
 		this.root = root;
 	}
 

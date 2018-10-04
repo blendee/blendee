@@ -1,5 +1,9 @@
 package org.blendee.jdbc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.DataTruncation;
 import java.sql.SQLException;
 
@@ -17,17 +21,29 @@ public class DefaultErrorConverter implements ErrorConverter {
 	 */
 	@Override
 	public BlendeeException convert(SQLException e) {
+		BLogger logger = ContextManager.get(BlendeeManager.class).getConfigure().getLogger();
 		if (e instanceof DataTruncation) {
 			DataTruncation warning = (DataTruncation) e;
 			String prefix = "data truncation: ";
-			System.err.println(prefix + "index: " + warning.getIndex());
-			System.err.println(prefix + "parameter: " + warning.getParameter());
-			System.err.println(prefix + "read: " + warning.getRead());
-			System.err.println(prefix + "data size: " + warning.getDataSize());
-			System.err.println(prefix + "transfer size: " + warning.getTransferSize());
+			logger.println(prefix + "index: " + warning.getIndex());
+			logger.println(prefix + "parameter: " + warning.getParameter());
+			logger.println(prefix + "read: " + warning.getRead());
+			logger.println(prefix + "data size: " + warning.getDataSize());
+			logger.println(prefix + "transfer size: " + warning.getTransferSize());
 		}
 
-		e.printStackTrace();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream;
+		try {
+			stream = new PrintStream(out, false, StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException uee) {
+			throw new Error(uee);
+		}
+
+		e.printStackTrace(stream);
+		stream.flush();
+
+		logger.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 
 		throw new BlendeeException(e);
 	}

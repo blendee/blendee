@@ -14,7 +14,7 @@ public abstract class OnColumn<O extends LogicalOperators<?>> extends CriteriaCo
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 */
 	@SuppressWarnings("javadoc")
-	protected OnColumn(CriteriaContext context, Column column) {
-		super(context, column);
+	protected OnColumn(SelectStatement root, CriteriaContext context, Column column) {
+		super(root, context, column);
 	}
 }

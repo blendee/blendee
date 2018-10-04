@@ -57,4 +57,9 @@ public class SelectCountClause extends SelectClause {
 	public int hashCode() {
 		return System.identityHashCode(this);
 	}
+
+	@Override
+	boolean isValid() {
+		return true;
+	}
 }

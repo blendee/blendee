@@ -34,7 +34,7 @@ public class RelationshipFactory implements ManagementSubject {
 	 * @return ツリーのルート要素
 	 */
 	public Relationship getInstance(TablePath path) {
-		if (path instanceof AliasTablePath) return getInstance((AliasTablePath) path);
+		if (path instanceof RuntimeTablePath) return getInstance((RuntimeTablePath) path);
 
 		synchronized (lock) {
 			if (pathIdMap.size() == 0) preparePathIdMap();
@@ -54,7 +54,7 @@ public class RelationshipFactory implements ManagementSubject {
 	 * @param path ルートとなるテーブル
 	 * @return ツリーのルート要素
 	 */
-	public Relationship getInstance(AliasTablePath path) {
+	public Relationship getInstance(RuntimeTablePath path) {
 		return createRelationship(path, path.getAlias());
 	}
 

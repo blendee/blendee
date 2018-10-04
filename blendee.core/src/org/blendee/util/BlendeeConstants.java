@@ -7,8 +7,10 @@ import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
 import org.blendee.jdbc.DefaultErrorConverter;
+import org.blendee.jdbc.DefaultLogger;
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
+import org.blendee.jdbc.BLogger;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.AnchorOptimizerFactory;
@@ -30,13 +32,6 @@ public interface BlendeeConstants {
 	public static final ParsableOptionKey<String[]> SCHEMA_NAMES = new ParsableOptionKey<>(
 		"schema-names",
 		TO_STRING_ARRAY);
-
-	/**
-	 * default: false
-	 * (Boolean) ENABLE_LOG
-	 * @see Initializer#enableLog(boolean)
-	 */
-	public static final ParsableOptionKey<Boolean> ENABLE_LOG = new ParsableOptionKey<>("enable-log", TO_BOOLEAN);
 
 	/**
 	 * default: false
@@ -108,6 +103,15 @@ public interface BlendeeConstants {
 	 */
 	public static final ParsableOptionKey<Class<? extends TransactionFactory>> TRANSACTION_FACTORY_CLASS = new ParsableOptionKey<>(
 		"transaction-factory-class",
+		TO_CLASS);
+
+	/**
+	 * default: {@link DefaultLogger}
+	 * (Class&lt;Logger&gt;) LOGGER_CLASS
+	 * @see Initializer#setLoggerClass(Class)
+	 */
+	public static final ParsableOptionKey<Class<? extends BLogger>> LOGGER_CLASS = new ParsableOptionKey<>(
+		"logger-class",
 		TO_CLASS);
 
 	/**

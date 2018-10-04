@@ -15,6 +15,7 @@ import org.blendee.internal.Queue;
 import org.blendee.internal.QueueElement;
 import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.RuntimeTablePath;
 import org.blendee.sql.Column;
 
 /**
@@ -58,11 +59,11 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized TablePath getTablePath(String id) {
+	public synchronized TablePath getTablePath(String id, RuntimeTablePath tablePath) {
 		TablePathContainer container = addIds.get(id);
 		if (container != null) return container.path;
 		if (removeIds.contains(id)) return null;
-		return repository.getTablePath(id);
+		return repository.getTablePath(id, tablePath);
 	}
 
 	@Override
@@ -95,10 +96,10 @@ public class CommandColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized Column[] getColumns(String id) {
+	public synchronized Column[] getColumns(String id, RuntimeTablePath tablePath) {
 		if (getTablePath(id) == null) return Column.EMPTY_ARRAY;
 		Set<Column> columns = new HashSet<>();
-		columns.addAll(Arrays.asList(repository.getColumns(id)));
+		columns.addAll(Arrays.asList(repository.getColumns(id, tablePath)));
 		columns.removeAll(removeColumns.get(id).stream().map(c -> c.column).collect(Collectors.toList()));
 		columns.addAll(addColumns.get(id).stream().map(c -> c.column).collect(Collectors.toList()));
 		Column[] result = columns.toArray(new Column[columns.size()]);

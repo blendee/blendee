@@ -1,6 +1,7 @@
 package org.blendee.jdbc;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 import org.blendee.jdbc.wrapperbase.ConnectionBase;
 
@@ -9,11 +10,13 @@ import org.blendee.jdbc.wrapperbase.ConnectionBase;
  */
 class LoggingConnection extends ConnectionBase implements StatementWrapper {
 
-	private final Logger logger;
+	static final Level level = Level.INFO;
+
+	private final SQLLogger logger;
 
 	private final BConnection base;
 
-	LoggingConnection(BConnection conn, Logger logger) {
+	LoggingConnection(BConnection conn, SQLLogger logger) {
 		Objects.requireNonNull(logger);
 		base = conn;
 		conn.setStatementWrapper(this);

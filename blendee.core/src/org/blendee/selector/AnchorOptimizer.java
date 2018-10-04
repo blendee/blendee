@@ -6,6 +6,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.RuntimeTablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.ValueExtractors;
@@ -55,9 +56,30 @@ public class AnchorOptimizer implements Optimizer {
 		}
 	}
 
+	AnchorOptimizer(
+		AnchorOptimizerFactory factory,
+		String id,
+		RuntimeTablePath hint,
+		Class<?> using,
+		boolean canAddNewEntries) {
+		Objects.requireNonNull(factory);
+		Objects.requireNonNull(id);
+
+		this.hint = hint;
+		this.canAddNewEntries = canAddNewEntries;
+		this.id = id;
+		this.using = using;
+
+		if (canAddNewEntries) {
+			repository = factory.createColumnRepository();
+		} else {
+			repository = new StrictColumnRepository(factory.createColumnRepository(), hint);
+		}
+	}
+
 	@Override
 	public TablePath getTablePath() {
-		TablePath path = repository.getTablePath(id);
+		TablePath path = repository.getTablePath(id, runtimeHint());
 		if (path == null) {
 			if (canAddNewEntries && hint != null) {
 				repository.add(id, hint, using.getName());
@@ -102,7 +124,11 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	private Column[] getColumns() {
-		return repository.getColumns(id);
+		return repository.getColumns(id, runtimeHint());
+	}
+
+	private RuntimeTablePath runtimeHint() {
+		return hint instanceof RuntimeTablePath ? (RuntimeTablePath) hint : null;
 	}
 
 	private static class InitialSelectClause extends SelectClause {

@@ -31,7 +31,7 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.sql.AliasTablePath;
+import org.blendee.sql.RuntimeTablePath;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.DataManipulationStatement;
 import org.blendee.support.DataManipulationStatementBehavior;
@@ -78,7 +78,6 @@ import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
 import org.blendee.support.annotation.Column;
-import org.blendee.support.AliasRoundrobin;
 /*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
 /*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
 import org.blendee.support.annotation.Table;
@@ -111,7 +110,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final AliasTablePath $table = AliasRoundrobin.publish($TABLE);
+	private final RuntimeTablePath $table = RuntimeTablePath.getInstance($TABLE);
 
 	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($table);
 

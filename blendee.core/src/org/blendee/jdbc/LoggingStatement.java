@@ -9,11 +9,11 @@ import org.blendee.jdbc.wrapperbase.StatementBase;
  */
 class LoggingStatement extends StatementBase {
 
-	private final Logger logger;
+	private final SQLLogger logger;
 
 	private final BStatement base;
 
-	LoggingStatement(BStatement statement, Logger logger) {
+	LoggingStatement(BStatement statement, SQLLogger logger) {
 		Objects.requireNonNull(statement);
 		Objects.requireNonNull(logger);
 

@@ -1,6 +1,5 @@
 package org.blendee.jdbc;
 
-import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +23,8 @@ public final class Configure {
 
 	private final Class<? extends MetadataFactory> metadataFactoryClass;
 
+	private final Class<? extends BLogger> loggerClass;
+
 	private final String[] schemaNames;
 
 	private final boolean useAutoCommit;
@@ -34,10 +35,6 @@ public final class Configure {
 
 	private final int autoCloseIntervalMillis;
 
-	private final boolean enableLog;
-
-	private final PrintStream logOutput;
-
 	private final Pattern logStackTracePattern;
 
 	private final int maxStatementsPerConnection;
@@ -47,6 +44,8 @@ public final class Configure {
 	private MetadataFactory metadataFactory;
 
 	private TransactionFactory transactionFactory;
+
+	private BLogger logger;
 
 	private ErrorConverter errorConverter;
 
@@ -59,13 +58,12 @@ public final class Configure {
 		Class<? extends ErrorConverter> errorConverterClass,
 		Class<? extends DataTypeConverter> dataTypeConverterClass,
 		Class<? extends MetadataFactory> metadataFactoryClass,
+		Class<? extends BLogger> loggerClass,
 		String[] schemaNames,
 		boolean useAutoCommit,
 		boolean useLazyTransaction,
 		boolean useMetadataCache,
 		int autoCloseIntervalMillis,
-		boolean enableLog,
-		PrintStream logOutput,
 		Pattern logStackTracePattern,
 		int maxStatementsPerConnection,
 		Map<OptionKey<?>, ?> options) {
@@ -73,13 +71,12 @@ public final class Configure {
 		this.errorConverterClass = errorConverterClass;
 		this.dataTypeConverterClass = dataTypeConverterClass;
 		this.metadataFactoryClass = metadataFactoryClass;
+		this.loggerClass = loggerClass;
 		this.schemaNames = schemaNames.clone();
 		this.useAutoCommit = useAutoCommit;
 		this.useLazyTransaction = useLazyTransaction;
 		this.useMetadataCache = useMetadataCache;
 		this.autoCloseIntervalMillis = autoCloseIntervalMillis;
-		this.enableLog = enableLog;
-		this.logOutput = logOutput;
 		this.logStackTracePattern = logStackTracePattern;
 		this.maxStatementsPerConnection = maxStatementsPerConnection;
 		this.options = Collections.unmodifiableMap(options);
@@ -125,6 +122,16 @@ public final class Configure {
 	public MetadataFactory getMetadataFactory() {
 		check();
 		return getMetadataFactoryWithoutCheck();
+	}
+
+	/**
+	 * この設定で使用している {@link BLogger} を返します。
+	 * @return この設定で使用している {@link BLogger}
+	 * @throws IllegalStateException 古い設定を使用している場合
+	 */
+	public BLogger getLogger() {
+		check();
+		return getLoggerWithoutCheck();
 	}
 
 	/**
@@ -193,26 +200,6 @@ public final class Configure {
 	}
 
 	/**
-	 * Blendee が実行する SQL 文を出力するかどうかを検査します。
-	 * @return SQL 文を出力するかどうか
-	 * @throws IllegalStateException 古い設定を使用している場合
-	 */
-	public boolean enablesLog() {
-		check();
-		return enableLog;
-	}
-
-	/**
-	 * Blendee が生成する SQL 文を出力する先を返します。
-	 * @return SQL 文を出力する先
-	 * @throws IllegalStateException 古い設定を使用している場合
-	 */
-	public PrintStream getLogOutput() {
-		check();
-		return logOutput;
-	}
-
-	/**
 	 * SQL 文生成箇所のスタックトレースをフィルタするパターンを返します。
 	 * @return スタックトレースをフィルタするパターン
 	 * @throws IllegalStateException 古い設定を使用している場合
@@ -268,12 +255,9 @@ public final class Configure {
 		return metadataFactory;
 	}
 
-	boolean enablesLogWithoutCheck() {
-		return enableLog;
-	}
-
-	PrintStream getLogOutputWithoutCheck() {
-		return logOutput;
+	synchronized BLogger getLoggerWithoutCheck() {
+		if (!initialized) initialize();
+		return logger;
 	}
 
 	Pattern getLogStackTracePatternWithoutCheck() {
@@ -287,6 +271,7 @@ public final class Configure {
 		transactionFactory = createInstance(transactionFactoryClass);
 		errorConverter = createInstance(errorConverterClass);
 		dataTypeConverter = createInstance(dataTypeConverterClass);
+		logger = createInstance(loggerClass);
 
 		initialized = true;
 	}

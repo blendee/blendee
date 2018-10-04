@@ -1,10 +1,10 @@
 package org.blendee.jdbc;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.blendee.internal.U;
@@ -26,6 +26,8 @@ public final class Initializer {
 
 	private Class<? extends MetadataFactory> metadataFactoryClass = DefaultMetadataFactory.class;
 
+	private Class<? extends BLogger> loggerClass = DefaultLogger.class;
+
 	private boolean useAutoCommit = false;
 
 	private boolean useLazyTransaction = false;
@@ -33,10 +35,6 @@ public final class Initializer {
 	private boolean useMetadataCache = true;
 
 	private int autoCloseIntervalMillis = 0;
-
-	private boolean enableLog = false;
-
-	private PrintStream logOutput = System.out;
 
 	private Pattern logStackTracePattern = Pattern.compile("^(?!org\\.blendee\\.)");
 
@@ -55,7 +53,7 @@ public final class Initializer {
 	public synchronized void setTransactionFactoryClass(
 		Class<? extends TransactionFactory> transactionFactoryClass) {
 		if (freeze) throw new IllegalStateException();
-		if (transactionFactoryClass == null) throw new NullPointerException();
+		Objects.requireNonNull(transactionFactoryClass);
 		this.transactionFactoryClass = transactionFactoryClass;
 	}
 
@@ -67,7 +65,7 @@ public final class Initializer {
 	public synchronized void setErrorConverterClass(
 		Class<? extends ErrorConverter> errorConverterClass) {
 		if (freeze) throw new IllegalStateException();
-		if (errorConverterClass == null) throw new NullPointerException();
+		Objects.requireNonNull(errorConverterClass);
 		this.errorConverterClass = errorConverterClass;
 	}
 
@@ -79,7 +77,7 @@ public final class Initializer {
 	public synchronized void setDataTypeConverterClass(
 		Class<? extends DataTypeConverter> dataTypeConverterClass) {
 		if (freeze) throw new IllegalStateException();
-		if (dataTypeConverterClass == null) throw new NullPointerException();
+		Objects.requireNonNull(dataTypeConverterClass);
 		this.dataTypeConverterClass = dataTypeConverterClass;
 	}
 
@@ -91,8 +89,20 @@ public final class Initializer {
 	public synchronized void setMetadataFactoryClass(
 		Class<? extends MetadataFactory> metadataFactoryClass) {
 		if (freeze) throw new IllegalStateException();
-		if (metadataFactoryClass == null) throw new NullPointerException();
+		Objects.requireNonNull(metadataFactoryClass);
 		this.metadataFactoryClass = metadataFactoryClass;
+	}
+
+	/**
+	 * Blendee が使用する {@link BLogger} を設定します。
+	 * @param loggerClass {@link BLogger} を実装したクラス
+	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
+	 */
+	public synchronized void setLoggerClass(
+		Class<? extends BLogger> loggerClass) {
+		if (freeze) throw new IllegalStateException();
+		Objects.requireNonNull(loggerClass);
+		this.loggerClass = loggerClass;
 	}
 
 	/**
@@ -152,29 +162,7 @@ public final class Initializer {
 	}
 
 	/**
-	 * Blendee が実行する SQL 文を、 {@link Initializer#setLogOutput(PrintStream)} で定義した出力先に出力するかどうかを設定します。
-	 * @param enableLog SQL 文を出力するかどうか
-	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
-	 */
-	public synchronized void enableLog(boolean enableLog) {
-		if (freeze) throw new IllegalStateException();
-		this.enableLog = enableLog;
-	}
-
-	/**
-	 * Blendee が生成する SQL 文の出力する先を設定します。<br>
-	 * なにも設定されない場合は {@link System#out} が使用されます。
-	 * @param logOutput SQL文の出力する先
-	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
-	 */
-	public synchronized void setLogOutput(PrintStream logOutput) {
-		if (freeze) throw new IllegalStateException();
-		if (logOutput == null) throw new NullPointerException();
-		this.logOutput = logOutput;
-	}
-
-	/**
-	 * {@link Initializer#enableLog(boolean)} に true を設定した場合に出力されるSQL文生成箇所のスタックトレースをフィルタしたい場合に、そのパターンを設定します。
+	 * ログに出力されるSQL文生成箇所のスタックトレースをフィルタしたい場合に、そのパターンを設定します。
 	 * @param logStackTracePattern スタックトレースをフィルタするパターン
 	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
 	 */
@@ -214,13 +202,12 @@ public final class Initializer {
 			errorConverterClass,
 			dataTypeConverterClass,
 			metadataFactoryClass,
+			loggerClass,
 			schemaNames.toArray(new String[schemaNames.size()]),
 			useAutoCommit,
 			useLazyTransaction,
 			useMetadataCache,
 			autoCloseIntervalMillis,
-			enableLog,
-			logOutput,
 			logStackTracePattern,
 			maxStatementsPerConnection,
 			options);

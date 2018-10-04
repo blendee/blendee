@@ -105,7 +105,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 	 * @return SELECT 句にカラムが設定されているかどうか
 	 */
 	public synchronized boolean hasSelectColumns() {
-		return selectClause.getColumnsSize() > 0;
+		return selectClause.isValid();
 	}
 
 	/**

@@ -537,9 +537,28 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 		private final Column[] selectedColumns;
 
-		private final SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
+		private final SelectedValuesConverter converter;
 
 		private final boolean rowMode;
+
+		private PlaybackQuery(
+			String sql,
+			String countSQL,
+			String fetchSQL,
+			ComplementerValues values,
+			Relationship relationship,
+			Column[] selectedColumns,
+			SelectedValuesConverter converter,
+			boolean rowMode) {
+			this.sql = sql;
+			this.countSQL = countSQL;
+			this.fetchSQL = fetchSQL;
+			this.values = values;
+			this.relationship = relationship;
+			this.selectedColumns = selectedColumns;
+			this.converter = converter;
+			this.rowMode = rowMode;
+		}
 
 		private PlaybackQuery(
 			String sql,
@@ -555,6 +574,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
+			converter = new SimpleSelectedValuesConverter();
 			this.rowMode = rowMode;
 		}
 
@@ -645,6 +665,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				values.reproduce(placeHolderValues),
 				relationship,
 				selectedColumns,
+				converter,
 				rowMode);
 		}
 	}
@@ -693,6 +714,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				new ComplementerValues(composedSQL),
 				ContextManager.get(RelationshipFactory.class).getInstance(table),
 				selector.getSelectClause().getColumns(),
+				optimizer,
 				rowMode);
 		}
 

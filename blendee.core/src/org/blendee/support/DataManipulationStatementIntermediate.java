@@ -4,6 +4,11 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.BPreparedStatement;
 
+/**
+ * データ操作文の中間形態を表すものの基底インターフェイスです。
+ * @author 千葉 哲嗣
+ * @param <W> WHERE
+ */
 public interface DataManipulationStatementIntermediate<W extends WhereRelationship> extends DataManipulator {
 
 	/**

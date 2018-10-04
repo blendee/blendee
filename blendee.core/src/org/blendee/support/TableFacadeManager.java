@@ -17,10 +17,16 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 
+/**
+ * {@link TableFacade} を使用した各種操作を実装するクラスです。
+ * @author 千葉 哲嗣
+ * @param <T> {@link Row}
+ */
 public class TableFacadeManager<T extends Row> {
 
 	private final TableFacade<T> tableFacade;
 
+	@SuppressWarnings("javadoc")
 	public TableFacadeManager(TableFacade<T> tableFacade) {
 		this.tableFacade = tableFacade;
 	}

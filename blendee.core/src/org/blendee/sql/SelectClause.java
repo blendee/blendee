@@ -116,4 +116,8 @@ public class SelectClause extends ListClause<SelectClause> {
 	String getKeyword() {
 		return "SELECT";
 	}
+
+	boolean isValid() {
+		return getColumnsSize() > 0;
+	}
 }
