@@ -1,2 +1,2 @@
 # blendee
-Lightweight ORM framework
+Lightweight SQL editor and ORM framework

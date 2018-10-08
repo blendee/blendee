@@ -1,2 +1,2 @@
 # blendee.plugin
-Lightweight ORM framework [eclipse plugin]
+Lightweight SQL editor and ORM framework [eclipse plugin]

@@ -1,2 +1,2 @@
 # blendee.develop
-Lightweight ORM framework [development tools]
+Lightweight SQL editor and ORM framework [development tools]
