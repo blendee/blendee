@@ -19,11 +19,13 @@ public class InsertStatementIntermediate {
 
 	private final TablePath table;
 
+	private final SQLDecorators decorators;
+
 	private final List<Column> columns;
 
-	@SuppressWarnings("javadoc")
-	public InsertStatementIntermediate(TablePath table, List<Column> columns) {
+	InsertStatementIntermediate(TablePath table, SQLDecorators decorators, List<Column> columns) {
 		this.table = table;
+		this.decorators = decorators;
 		this.columns = new ArrayList<>(columns);
 	}
 
@@ -47,6 +49,8 @@ public class InsertStatementIntermediate {
 				builder.add(c.getName(), new NullBinder(c.getColumnMetadata().getType()));
 			}
 		}
+
+		builder.addDecorator(decorators.decorators());
 
 		return new PlaybackDataManipulator(builder.sql(), builder.getBinders());
 	}

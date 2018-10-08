@@ -11,8 +11,6 @@ public class DeleteStatementIntermediate<W extends WhereRelationship> implements
 
 	private final DataManipulationStatementBehavior<?, ?, W> behavior;
 
-	private DataManipulator defaultDataManipulator;
-
 	/**
 	 * @param behavior {@link DataManipulationStatementBehavior}
 	 */
@@ -32,11 +30,7 @@ public class DeleteStatementIntermediate<W extends WhereRelationship> implements
 	}
 
 	@Override
-	public DataManipulator getDefaultDataManipulator() {
-		if (defaultDataManipulator == null) {
-			defaultDataManipulator = behavior.createDeleteDataManipulator();
-		}
-
-		return defaultDataManipulator;
+	public DataManipulator dataManipulator() {
+		return behavior.createDeleteDataManipulator();
 	}
 }

@@ -88,10 +88,12 @@ public abstract class Updater implements ComposedSQL {
 
 	/**
 	 * DML に対する微調整をするための {@link SQLDecorator} をセットします。
-	 * @param decorator SQL 文を調整する {@link SQLDecorator}
+	 * @param decorators SQL 文を調整する {@link SQLDecorator}
 	 */
-	public void addDecorator(SQLDecorator decorator) {
-		decorators.add(decorator);
+	public void addDecorator(SQLDecorator... decorators) {
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
+		}
 	}
 
 	@Override

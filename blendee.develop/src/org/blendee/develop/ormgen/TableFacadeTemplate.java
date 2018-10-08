@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
@@ -77,6 +79,7 @@ import org.blendee.support.UpdateRelationship;
 import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
+import org.blendee.support.SQLDecorators;
 import org.blendee.support.annotation.Column;
 /*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
 /*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
@@ -92,6 +95,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	implements
 		TableFacade<Row>,
 		SelectStatement,
+		SQLDecorators,
 		Query</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Iterator, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Row>,
 		RightTable</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.OnRightRel> {
 
@@ -113,6 +117,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private final RuntimeTablePath $table = RuntimeTablePath.getInstance($TABLE);
 
 	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($table);
+
+	private final List<SQLDecorator> decorators = new LinkedList<SQLDecorator>();
 
 /*++[[COLUMN_NAMES_PART]]++*/
 /*==ColumnNamesPart==*/
@@ -395,7 +401,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private SelectBehavior() {
-			super($table);
+			super($table, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -444,7 +450,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
 
 		public DMSBehavior() {
-			super($table);
+			super($table, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -796,8 +802,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param decorators {@link SQLDecorator}
 	 * @return {@link SelectStatement} 自身
 	 */
+	@Override
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
-		selectBehavior().apply(decorators);
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
+		}
+
 		return this;
 	}
 
@@ -848,7 +858,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return selectBehavior().decorators();
+		return decorators.toArray(new SQLDecorator[decorators.size()]);
 	}
 
 	@Override
@@ -936,7 +946,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
-	 * 現在保持している WHERE 句をリセットします。
+	 * 現在保持している SELECT 文の WHERE 句をリセットします。
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetWhere() {
@@ -999,11 +1009,38 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * 現在保持している INSERT 文のカラムをリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetInsert() {
+		dmsBehavior().resetInsert();
+		return this;
+	}
+
+	/**
+	 * 現在保持している UPDATE 文の更新要素をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetUpdate() {
+		dmsBehavior().resetUpdate();
+		return this;
+	}
+
+	/**
+	 * 現在保持している SET 文の更新要素をリセットします。
+	 * @return このインスタンス
+	 */
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDelete() {
+		dmsBehavior().resetDelete();
+		return this;
+	}
+
+	/**
 	 * 現在保持している {@link SQLDecorator} をリセットします。
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
-		selectBehavior().resetDecorators();
+		decorators.clear();
 		return this;
 	}
 
@@ -1013,6 +1050,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ reset() {
 		selectBehavior().reset();
+		dmsBehavior().reset();
+		resetDecorators();
 		return this;
 	}
 
@@ -1046,6 +1085,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * INSERT 文を生成します。<br>
+	 * このインスタンスが現時点で保持しているカラムを使用します。<br>
+	 * 以前使用した VALUES の値はクリアされています。
+	 * @return {@link InsertStatementIntermediate}
+	 */
+	public InsertStatementIntermediate INSERT() {
+		return dmsBehavior().INSERT();
+	}
+
+	/**
 	 * INSERT 文を生成します。
 	 * @param function function
 	 * @param select select
@@ -1074,11 +1123,19 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * UPDATE 文を生成します。
+	 * @return {@link UpdateStatementIntermediate}
+	 */
+	public UpdateStatementIntermediate<WhereRel> UPDATE() {
+		return dmsBehavior().UPDATE();
+	}
+
+	/**
 	 * DELETE 文を生成します。
 	 * @return {@link DeleteStatementIntermediate}
 	 */
 	public final DeleteStatementIntermediate<WhereRel> DELETE() {
-		return new DeleteStatementIntermediate<>(dmsBehavior());
+		return dmsBehavior().DELETE();
 	}
 
 	@Override

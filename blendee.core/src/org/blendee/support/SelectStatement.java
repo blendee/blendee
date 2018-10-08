@@ -6,7 +6,6 @@ import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 
 /**
@@ -14,7 +13,7 @@ import org.blendee.sql.SQLQueryBuilder;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface SelectStatement {
+public interface SelectStatement extends SQLDecorators {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -106,12 +105,6 @@ public interface SelectStatement {
 	 * @param forSubquery true の場合、カラムにテーブルIDが付与される
 	 */
 	void forSubquery(boolean forSubquery);
-
-	/**
-	 * 内部で保持している {@link SQLDecorator} を返します。
-	 * @return {@link SQLDecorator}
-	 */
-	SQLDecorator[] decorators();
 
 	/**
 	 * {@link Query} を生成し、返します。

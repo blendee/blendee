@@ -20,26 +20,26 @@ public interface DataManipulationStatementIntermediate<W extends WhereRelationsh
 
 	@Override
 	default String sql() {
-		return getDefaultDataManipulator().sql();
+		return dataManipulator().sql();
 	}
 
 	@Override
 	default int complement(int done, BPreparedStatement statement) {
-		return getDefaultDataManipulator().complement(done, statement);
+		return dataManipulator().complement(done, statement);
 	}
 
 	@Override
 	default DataManipulator reproduce(Object... placeHolderValues) {
-		return getDefaultDataManipulator().reproduce(placeHolderValues);
+		return dataManipulator().reproduce(placeHolderValues);
 	}
 
 	@Override
 	default int execute() {
-		return getDefaultDataManipulator().execute();
+		return dataManipulator().execute();
 	}
 
 	/**
-	 * @return WHERE がない {@link DataManipulator}
+	 * @return 現時点での {@link DataManipulator}
 	 */
-	DataManipulator getDefaultDataManipulator();
+	DataManipulator dataManipulator();
 }

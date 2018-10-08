@@ -1,5 +1,8 @@
 package org.blendee.sql;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
@@ -16,6 +19,8 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	private final TablePath path;
 
 	private final String alias;
+
+	private final List<SQLDecorator> decorators = new LinkedList<>();
 
 	private Criteria criteria = CriteriaFactory.create();
 
@@ -54,6 +59,16 @@ public class DeleteDMLBuilder implements ComposedSQL {
 		this.criteria.prepareColumns(factory.getInstance(path));
 	}
 
+	/**
+	 * DML に対する微調整をするための {@link SQLDecorator} をセットします。
+	 * @param decorators SQL 文を調整する {@link SQLDecorator}
+	 */
+	public void addDecorator(SQLDecorator... decorators) {
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return sql();
@@ -62,7 +77,13 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	@Override
 	public String sql() {
 		criteria.setKeyword("WHERE");
-		return "DELETE FROM " + path + alias + criteria.toString(false);
+		String sql = "DELETE FROM " + path + alias + criteria.toString(false);
+
+		for (SQLDecorator decorator : decorators) {
+			sql = decorator.decorate(sql);
+		}
+
+		return sql;
 	}
 
 	@Override

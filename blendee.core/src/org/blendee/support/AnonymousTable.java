@@ -1,6 +1,8 @@
 package org.blendee.support;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -142,6 +144,8 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 		}
 	}
 
+	private final List<SQLDecorator> decorators = new LinkedList<SQLDecorator>();
+
 	private OnRightLogicalOperators onRightOperators;
 
 	private Behavior behavior;
@@ -153,7 +157,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	private class Behavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private Behavior() {
-			super(new AnonymousFromClause(relationship));
+			super(new AnonymousFromClause(relationship), AnonymousTable.this);
 		}
 
 		@Override
@@ -423,8 +427,12 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	 * @param decorators {@link SQLDecorator}
 	 * @return {@link SelectStatement} 自身
 	 */
+	@Override
 	public AnonymousTable apply(SQLDecorator... decorators) {
-		behavior().apply(decorators);
+		for (SQLDecorator decorator : decorators) {
+			this.decorators.add(decorator);
+		}
+
 		return this;
 	}
 
@@ -455,7 +463,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return behavior().decorators();
+		return decorators.toArray(new SQLDecorator[decorators.size()]);
 	}
 
 	@Override
@@ -591,7 +599,17 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	 * @return このインスタンス
 	 */
 	public AnonymousTable resetDecorators() {
-		behavior().resetDecorators();
+		decorators.clear();
+		return this;
+	}
+
+	/**
+	 * 現在保持している条件、並び順をリセットします。
+	 * @return このインスタンス
+	 */
+	public AnonymousTable reset() {
+		behavior.reset();
+		resetDecorators();
 		return this;
 	}
 

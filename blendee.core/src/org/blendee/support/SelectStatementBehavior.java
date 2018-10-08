@@ -34,12 +34,11 @@ import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.SQLQueryBuilder.UnionOperator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
-import org.blendee.sql.SQLQueryBuilder;
-import org.blendee.sql.SQLQueryBuilder.UnionOperator;
 import org.blendee.sql.Union;
 import org.blendee.sql.binder.NullBinder;
 
@@ -74,20 +73,22 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	private final List<JoinResource> joinResources = new ArrayList<>();
 
-	private final List<SQLDecorator> decorators = new ArrayList<>();
+	private final SQLDecorators decorators;
 
 	private ComposedSQL sql;
 
 	private boolean forSubquery;
 
-	public SelectStatementBehavior(TablePath table) {
+	public SelectStatementBehavior(TablePath table, SQLDecorators decorators) {
 		this.table = table;
+		this.decorators = decorators;
 	}
 
-	SelectStatementBehavior(FromClause fromClause) {
+	SelectStatementBehavior(FromClause fromClause, SQLDecorators decorators) {
 		this.fromClause = fromClause;
 		table = null;
 		rowMode = false;
+		this.decorators = decorators;
 	}
 
 	protected abstract S newSelect();
@@ -340,17 +341,6 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		}
 	}
 
-	public void apply(SQLDecorator[] decorators) {
-		for (SQLDecorator decorator : decorators) {
-			this.decorators.add(decorator);
-		}
-	}
-
-	public SQLDecorator[] decorators() {
-		if (decorators.size() == 0) return SQLDecorator.EMPTY_ARRAY;
-		return decorators.toArray(new SQLDecorator[decorators.size()]);
-	}
-
 	public void quitRowMode() {
 		rowMode = false;
 	}
@@ -480,10 +470,6 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		joinResources.clear();
 	}
 
-	public void resetDecorators() {
-		decorators.clear();
-	}
-
 	/**
 	 * 現在保持している条件、並び順をリセットします。
 	 */
@@ -496,7 +482,6 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		joinResources.clear();
 		unions.clear();
 		orderByClause = null;
-		decorators.clear();
 		rowMode = true;
 		sql = null;
 		forSubquery = false;
@@ -678,7 +663,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				optimizer,
 				whereClause,
 				orderByClause,
-				decorators());
+				decorators.decorators());
 
 			selector.forSubquery(forSubquery);
 
@@ -700,7 +685,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 					optimizer,
 					createFetchCriteria(table),
 					null,
-					decorators());
+					decorators.decorators());
 
 				fetchSelector.forSubquery(forSubquery);
 
@@ -756,7 +741,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				getOptimizer(),
 				whereClause,
 				orderByClause,
-				decorators());
+				decorators.decorators());
 
 			selector.forSubquery(forSubquery);
 
@@ -782,7 +767,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 
-		builder.addDecorator(decorators());
+		builder.addDecorator(decorators.decorators());
 
 		joinResources.forEach(r -> r.rightRoot.joinTo(builder, r.joinType, r.onCriteria));
 
