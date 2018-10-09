@@ -1169,7 +1169,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
-		getContext().addCriteria(CriteriaFactory.createSubquery(ComparisonOperator.EQ, column, builder));
+		getContext().addCriteria(CriteriaFactory.createSubquery(operator, column, builder));
 
 		return logocalOperators();
 	}

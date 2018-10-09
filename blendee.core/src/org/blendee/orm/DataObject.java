@@ -285,7 +285,7 @@ public class DataObject
 	 * @return カラムの値
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
-	public Binder getBinder(String columnName) {
+	public Binder getValue(String columnName) {
 		Binder binder = getUpdateValue(columnName);
 		if (binder != null) return binder;
 		return values.getBinder(relationship.getColumn(columnName));
@@ -485,7 +485,7 @@ public class DataObject
 		for (Column column : relationship.getColumns()) {
 			String name = column.getName();
 			if (updateValues.containsKey(name)) continue;
-			setValueForcibly(name, getBinder(name));
+			setValueForcibly(name, getValue(name));
 		}
 	}
 

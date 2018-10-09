@@ -173,7 +173,7 @@ public class GenericRow extends java.lang.Object implements Row {
 	 * @return カラムの値
 	 */
 	public Binder getBinder(String columnName) {
-		return data.getBinder(columnName);
+		return data.getValue(columnName);
 	}
 
 	/**

@@ -27,14 +27,14 @@
             class="org.blendee.plugin.views.QueryEditorView"
             icon="icons/blendee.png"
             category="org.blendee.plugin"
-            name="Blendee Query Editor"
+            name="Blendee Select Editor"
             id="org.blendee.plugin.queryEditorView"/>
       <view
             category="org.blendee.plugin"
             class="org.blendee.plugin.views.ClassBuilderView"
             icon="icons/blendee.png"
             id="org.blendee.plugin.classBuilderView"
-            name="Blendee ORM Generator">
+            name="Blendee Generator">
       </view>
    </extension>
    <extension
@@ -86,13 +86,13 @@
             <command
                   commandId="org.blendee.plugin.restartQueryEditor"
                   icon="icons/blendee.png"
-                  label="Query Editor を起動する"
+                  label="Select Editor を起動する"
                   style="push">
             </command>
             <command
                   commandId="org.blendee.plugin.restartORMGenerator"
                   icon="icons/blendee.png"
-                  label="ORM Generator を起動する"
+                  label="Generator を起動する"
                   style="push">
             </command>
          </menu>

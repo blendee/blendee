@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.develop.ormgen/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.develop/*--*/;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -228,7 +228,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @return [[TYPE]]
 		 */
 		public /*++[[RETURN_TYPE]]++*/ /*--*/String/*--*/get/*++[[METHOD]]++*/() {
-			Binder binder = data$.getBinder("[[COLUMN]]");
+			Binder binder = data$.getValue("[[COLUMN]]");
 			return /*++[[PREFIX]]++*/(/*++[[TYPE]]++*//*--*/String/*--*/) binder.getValue()/*++[[SUFFIX]]++*/;
 		}
 
