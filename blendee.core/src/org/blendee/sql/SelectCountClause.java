@@ -17,6 +17,7 @@ public class SelectCountClause extends SelectClause {
 	 * @param alias 別名
 	 */
 	public SelectCountClause(String alias) {
+		super(QueryIdFactory.getInstance());
 		Objects.requireNonNull(alias);
 		clause = clauseBase + "AS " + alias.trim() + " ";
 	}
@@ -25,11 +26,12 @@ public class SelectCountClause extends SelectClause {
 	 * 別名無しのコンストラクタです。
 	 */
 	public SelectCountClause() {
+		super(QueryIdFactory.getInstance());
 		clause = clauseBase;
 	}
 
 	@Override
-	protected SelectClause createNewInstance() {
+	protected SelectClause createNewInstance(QueryId id) {
 		return this;
 	}
 

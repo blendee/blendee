@@ -32,6 +32,7 @@ import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLQueryBuilder;
@@ -50,6 +51,10 @@ import org.blendee.sql.binder.NullBinder;
 public abstract class SelectStatementBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
 
 	private final TablePath table;
+
+	private final QueryId id;
+
+	private CriteriaFactory factory;
 
 	private boolean rowMode = true;
 
@@ -79,13 +84,15 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	private boolean forSubquery;
 
-	public SelectStatementBehavior(TablePath table, SQLDecorators decorators) {
+	public SelectStatementBehavior(TablePath table, QueryId id, SQLDecorators decorators) {
 		this.table = table;
+		this.id = id;
 		this.decorators = decorators;
 	}
 
 	SelectStatementBehavior(FromClause fromClause, SQLDecorators decorators) {
 		this.fromClause = fromClause;
+		id = fromClause.getQueryId();
 		table = null;
 		rowMode = false;
 		this.decorators = decorators;
@@ -148,7 +155,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 		if (rowMode) {
 			if (optimizerForSelect == null)
-				optimizerForSelect = new RuntimeOptimizer(table);
+				optimizerForSelect = new RuntimeOptimizer(table, id);
 
 			offers.get().forEach(c -> c.accept(optimizerForSelect));
 
@@ -156,7 +163,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		}
 
 		if (selectClause == null)
-			selectClause = new SelectClause();
+			selectClause = new SelectClause(id);
 
 		offers.get().forEach(c -> c.accept(selectClause));
 	}
@@ -171,7 +178,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 		Offers<ColumnExpression> offers = function.apply(select());
 
-		SelectDistinctClause mySelectClause = new SelectDistinctClause();
+		SelectDistinctClause mySelectClause = new SelectDistinctClause(id);
 		offers.get().forEach(c -> c.accept(mySelectClause));
 		selectClause = mySelectClause;
 	}
@@ -205,7 +212,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
 			for (Consumer<W> consumer : consumers) {
-				Criteria contextCriteria = CriteriaFactory.create();
+				Criteria contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(whereOperators().defaultOperator());
@@ -234,7 +241,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
 			for (Consumer<H> consumer : consumers) {
-				Criteria contextCriteria = CriteriaFactory.create();
+				Criteria contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(havingOperators().defaultOperator());
@@ -275,14 +282,14 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		return joinInternal(JoinType.FULL_OUTER_JOIN, right, query);
 	}
 
-	public void UNION(ComposedSQL query) {
+	public void UNION(SelectStatement select) {
 		quitRowMode();
-		unions.add(new Union(UnionOperator.UNION, query));
+		unions.add(new Union(UnionOperator.UNION, select.query()));
 	}
 
-	public void UNION_ALL(ComposedSQL query) {
+	public void UNION_ALL(SelectStatement select) {
 		quitRowMode();
-		unions.add(new Union(UnionOperator.UNION_ALL, query));
+		unions.add(new Union(UnionOperator.UNION_ALL, select.query()));
 	}
 
 	public void and(Criteria whereClause) {
@@ -302,7 +309,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		//二重に呼ばれた際の処置
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria criteria = CriteriaFactory.create();
+			Criteria criteria = factory().create();
 			CriteriaContext.setContextCriteria(criteria);
 
 			consumer.accept(whereOperators().defaultOperator());
@@ -326,7 +333,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		//二重に呼ばれた際の処置
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria criteria = CriteriaFactory.create();
+			Criteria criteria = factory().create();
 			CriteriaContext.setContextCriteria(criteria);
 
 			consumer.accept(havingOperators().defaultOperator());
@@ -359,7 +366,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	public Optimizer getOptimizer() {
 		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(table);
+		optimizer = new SimpleOptimizer(table, id);
 		return optimizer;
 	}
 
@@ -386,7 +393,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	 * @return GROUP BY
 	 */
 	public GroupByClause getGroupByClause() {
-		if (groupByClause == null) groupByClause = new GroupByClause();
+		if (groupByClause == null) groupByClause = new GroupByClause(id);
 		return groupByClause;
 	}
 
@@ -412,7 +419,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	 * @return ORDER BY
 	 */
 	public OrderByClause getOrderByClause() {
-		if (orderByClause == null) orderByClause = new OrderByClause();
+		if (orderByClause == null) orderByClause = new OrderByClause(id);
 		return orderByClause;
 	}
 
@@ -659,7 +666,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		if (rowMode) {
 			Optimizer optimizer = getOptimizer();
 
-			Selector selector = new DataAccessHelper().getSelector(
+			Selector selector = new DataAccessHelper(id).getSelector(
 				optimizer,
 				whereClause,
 				orderByClause,
@@ -673,7 +680,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 			String countSQL;
 			{
-				SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath()));
+				SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
 				builder.setSelectClause(new SelectCountClause());
 				if (whereClause != null) builder.setWhereClause(whereClause);
 				countSQL = builder.sql();
@@ -681,7 +688,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 			String fetchSQL;
 			{
-				Selector fetchSelector = new DataAccessHelper().getSelector(
+				Selector fetchSelector = new DataAccessHelper(id).getSelector(
 					optimizer,
 					createFetchCriteria(table),
 					null,
@@ -737,7 +744,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	private ComposedSQL createComposedSQL() {
 		if (rowMode) {
-			Selector selector = new DataAccessHelper().getSelector(
+			Selector selector = new DataAccessHelper(id).getSelector(
 				getOptimizer(),
 				whereClause,
 				orderByClause,
@@ -775,7 +782,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	}
 
 	private FromClause getFromClause() {
-		if (fromClause == null) fromClause = new FromClause(table);
+		if (fromClause == null) fromClause = new FromClause(table, id);
 		return fromClause;
 	}
 
@@ -801,20 +808,26 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	}
 
 	private Criteria whereClause() {
-		if (whereClause == null) whereClause = CriteriaFactory.create();
+		if (whereClause == null) whereClause = factory().create();
 		return whereClause;
 	}
 
 	private Criteria havingClause() {
-		if (havingClause == null) havingClause = CriteriaFactory.create();
+		if (havingClause == null) havingClause = factory().create();
 		return havingClause;
 	}
 
-	private static Criteria createFetchCriteria(TablePath tablePath) {
-		Criteria criteria = CriteriaFactory.create();
+	private CriteriaFactory factory() {
+		if (factory == null) factory = new CriteriaFactory(id);
+		return factory;
+	}
+
+	private Criteria createFetchCriteria(TablePath tablePath) {
+		CriteriaFactory factory = factory();
+		Criteria criteria = factory.create();
 
 		for (Column column : ContextManager.get(RelationshipFactory.class).getInstance(tablePath).getPrimaryKeyColumns()) {
-			criteria.and(CriteriaFactory.create(column, new NullBinder(column.getColumnMetadata().getType())));
+			criteria.and(factory.create(column, new NullBinder(column.getColumnMetadata().getType())));
 		}
 
 		return criteria;

@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
-import org.blendee.sql.RuntimeTablePath;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
@@ -19,7 +20,9 @@ import org.blendee.sql.UpdateDMLBuilder;
 @SuppressWarnings("javadoc")
 public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, U extends UpdateRelationship, W extends WhereRelationship> implements DataManipulationStatement {
 
-	private final RuntimeTablePath table;
+	private final TablePath table;
+
+	private final QueryId id;
 
 	private final SQLDecorators decorators;
 
@@ -31,8 +34,11 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	private LogicalOperators<W> whereOperators;
 
-	public DataManipulationStatementBehavior(RuntimeTablePath table, SQLDecorators decorators) {
+	private CriteriaFactory factory;
+
+	public DataManipulationStatementBehavior(TablePath table, QueryId id, SQLDecorators decorators) {
 		this.table = table;
+		this.id = id;
 		this.decorators = decorators;
 	}
 
@@ -138,7 +144,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
 			for (Consumer<W> consumer : consumers) {
-				Criteria contextCriteria = CriteriaFactory.create();
+				Criteria contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(whereOperators().defaultOperator());
@@ -215,7 +221,12 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 	}
 
 	private Criteria whereClause() {
-		if (whereClause == null) whereClause = CriteriaFactory.create();
+		if (whereClause == null) whereClause = factory().create();
 		return whereClause;
+	}
+
+	private CriteriaFactory factory() {
+		if (factory == null) factory = new CriteriaFactory(id);
+		return factory;
 	}
 }

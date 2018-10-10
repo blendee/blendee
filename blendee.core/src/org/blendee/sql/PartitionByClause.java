@@ -6,9 +6,14 @@ package org.blendee.sql;
  */
 public class PartitionByClause extends ListClause<PartitionByClause> {
 
+	@SuppressWarnings("javadoc")
+	public PartitionByClause(QueryId id) {
+		super(id);
+	}
+
 	@Override
-	protected PartitionByClause createNewInstance() {
-		return new PartitionByClause();
+	protected PartitionByClause createNewInstance(QueryId id) {
+		return new PartitionByClause(id);
 	}
 
 	@Override

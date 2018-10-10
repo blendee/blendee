@@ -24,13 +24,13 @@ public class SQLQueryBuilder implements ComposedSQL {
 
 	private SelectClause selectClause;
 
-	private Criteria whereClause = CriteriaFactory.create();
+	private Criteria whereClause;
 
-	private GroupByClause groupClause = new GroupByClause();
+	private GroupByClause groupClause;
 
-	private Criteria havingClause = CriteriaFactory.create();
+	private Criteria havingClause;
 
-	private OrderByClause orderClause = new OrderByClause();
+	private OrderByClause orderClause;
 
 	private String query;
 
@@ -71,7 +71,16 @@ public class SQLQueryBuilder implements ComposedSQL {
 	 */
 	public SQLQueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
-		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause();
+
+		QueryId id = fromClause.getQueryId();
+
+		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause(id);
+		groupClause = new GroupByClause(id);
+		orderClause = new OrderByClause(id);
+
+		CriteriaFactory factory = new CriteriaFactory(id);
+		whereClause = factory.create();
+		havingClause = factory.create();
 	}
 
 	/**
@@ -353,6 +362,10 @@ public class SQLQueryBuilder implements ComposedSQL {
 	}
 
 	private class SelectAsteriskClause extends SelectClause {
+
+		private SelectAsteriskClause() {
+			super(QueryIdFactory.getInstance());
+		}
 
 		@Override
 		public String toString(boolean joining) {

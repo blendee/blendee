@@ -52,20 +52,6 @@ public class RelationshipColumn implements Column {
 		hashCode = 0;
 	}
 
-	/**
-	 * コピーコンストラクタ
-	 * @param copyFrom コピー元
-	 */
-	RelationshipColumn(Column copyFrom) {
-		this.relationship = copyFrom.getRelationship();
-		this.metadata = copyFrom.getColumnMetadata();
-		this.name = copyFrom.getName();
-		this.type = copyFrom.getType();
-		id = copyFrom.getId();
-		complementedName = copyFrom.getComplementedName();
-		hashCode = copyFrom.hashCode();
-	}
-
 	@Override
 	public int hashCode() {
 		return hashCode;
@@ -88,12 +74,12 @@ public class RelationshipColumn implements Column {
 
 	@Override
 	public String toString() {
-		return complementedName;
+		return name;
 	}
 
 	@Override
-	public Criteria getCriteria(Bindable bindable) {
-		return CriteriaFactory.create(this, bindable);
+	public Criteria getCriteria(QueryId id, Bindable bindable) {
+		return new CriteriaFactory(id).create(this, bindable);
 	}
 
 	@Override
@@ -127,8 +113,8 @@ public class RelationshipColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName() {
-		return complementedName;
+	public String getComplementedName(QueryId id) {
+		return id.toComplementedColumnString(complementedName);
 	}
 
 	@Override

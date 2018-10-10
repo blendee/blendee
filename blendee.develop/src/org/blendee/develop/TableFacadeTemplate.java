@@ -33,7 +33,8 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.sql.RuntimeTablePath;
+import org.blendee.sql.QueryId;
+import org.blendee.sql.QueryIdFactory;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.DataManipulationStatement;
 import org.blendee.support.DataManipulationStatementBehavior;
@@ -114,11 +115,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final RuntimeTablePath $table = RuntimeTablePath.getInstance($TABLE);
+	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
 
-	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($table);
-
-	private final List<SQLDecorator> decorators = new LinkedList<SQLDecorator>();
+	private final List<SQLDecorator> $decorators = new LinkedList<SQLDecorator>();
 
 /*++[[COLUMN_NAMES_PART]]++*/
 /*==ColumnNamesPart==*/
@@ -392,16 +391,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private OnRightLogicalOperators onRightOperators$;
 
+	private QueryId $id;
+
 	private SelectBehavior selectBehavior$;
 
 	private SelectBehavior selectBehavior() {
 		return selectBehavior$ == null ? (selectBehavior$ = new SelectBehavior()) : selectBehavior$;
 	}
 
+	@Override
+	public QueryId getQueryId() {
+		return $id == null ? ($id = QueryIdFactory.getRuntimeInstance()) : $id;
+	}
+
 	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private SelectBehavior() {
-			super($table, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super($TABLE, getQueryId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -450,7 +456,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
 
 		public DMSBehavior() {
-			super($table, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super($TABLE, getQueryId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -504,7 +510,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
 		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, $table, using));
+			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getQueryId(), $TABLE, using));
 	}
 
 	@Override
@@ -514,7 +520,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public TablePath getTablePath() {
-		return $table;
+		return $TABLE;
 	}
 
 	/**
@@ -559,7 +565,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		OrderByClause order,
 		SQLDecorator... options) {
 		return select(
-			new SimpleOptimizer(getTablePath()),
+			new SimpleOptimizer(getTablePath(), getQueryId()),
 			criteria,
 			order,
 			options);
@@ -718,22 +724,22 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param sql UNION 対象
+	 * @param select UNION 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(ComposedSQL sql) {
-		selectBehavior().UNION(sql);
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(SelectStatement select) {
+		selectBehavior().UNION(select);
 		return this;
 	}
 
 	/**
 	 * UNION ALL するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param sql UNION ALL 対象
+	 * @param select UNION ALL 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(ComposedSQL sql) {
-		selectBehavior().UNION_ALL(sql);
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(SelectStatement select) {
+		selectBehavior().UNION_ALL(select);
 		return this;
 	}
 
@@ -805,7 +811,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@Override
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
-			this.decorators.add(decorator);
+			this.$decorators.add(decorator);
 		}
 
 		return this;
@@ -858,7 +864,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return decorators.toArray(new SQLDecorator[decorators.size()]);
+		return $decorators.toArray(new SQLDecorator[$decorators.size()]);
 	}
 
 	@Override
@@ -1040,7 +1046,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
-		decorators.clear();
+		$decorators.clear();
 		return this;
 	}
 

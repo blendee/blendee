@@ -29,6 +29,7 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
+import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -693,7 +694,7 @@ public class DataObject
 			}
 		}
 
-		builder.setCriteria(PartialData.createCriteria(primaryKeyColumns, getPrimaryKeyBinders()));
+		builder.setCriteria(PartialData.createCriteria(QueryIdFactory.getInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
 
 		statement.process(builder);
 		int result = statement.execute();

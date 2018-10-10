@@ -3,7 +3,6 @@ package org.blendee.sql;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -81,8 +80,8 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(Bindable bindable) {
-		return getSubstanceWithCheck().getCriteria(bindable);
+	public Criteria getCriteria(QueryId id, Bindable bindable) {
+		return getSubstanceWithCheck().getCriteria(id, bindable);
 	}
 
 	@Override
@@ -116,8 +115,8 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName() {
-		return getSubstanceWithCheck().getComplementedName();
+	public String getComplementedName(QueryId id) {
+		return getSubstanceWithCheck().getComplementedName(id);
 	}
 
 	@Override
@@ -148,9 +147,7 @@ public class PhantomColumn implements Column {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))
 				throw new IllegalStateException("このインスタンスは既に " + substance + " として使われています");
 
-			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(sqlRoot.getTablePath());
-
-			substance = relation.getColumn(name);
+			substance = sqlRoot.getColumn(name);
 		}
 	}
 

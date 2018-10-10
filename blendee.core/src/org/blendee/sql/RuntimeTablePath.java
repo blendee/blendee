@@ -1,5 +1,6 @@
 package org.blendee.sql;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -15,11 +16,15 @@ public class RuntimeTablePath extends TablePath {
 
 	private static final Object lock = new Object();
 
+	private static final String aliasPrefix = "r";
+
+	private static final int threshold = 100;
+
 	private static long next = 0;
 
 	private static final WeakHashMap<RuntimeTablePath, String> pathMap = new WeakHashMap<>();
 
-	private static final List<String> allAliases = new LinkedList<>();
+	private static final List<String> allAliases = new ArrayList<>();
 
 	private static final LinkedList<String> aliasPool = new LinkedList<>();
 
@@ -33,17 +38,14 @@ public class RuntimeTablePath extends TablePath {
 	 */
 	public static RuntimeTablePath getInstance(TablePath table) {
 		synchronized (lock) {
-			List<String> remain = new LinkedList<>(allAliases);
-			remain.removeAll(pathMap.values());
-			aliasPool.addAll(remain);
-
-			String alias;
-			if (aliasPool.size() == 0) {
-				alias = "r" + next++;
-				allAliases.add(alias);
-			} else {
-				alias = aliasPool.pop();
+			int allSize = allAliases.size();
+			if (allSize == 0 || allSize < threshold) {
+				newAlias();
+			} else if (aliasPool.size() == 0) {
+				preparePool();
 			}
+
+			String alias = aliasPool.pop();
 
 			RuntimeTablePath path = new RuntimeTablePath(table, alias);
 
@@ -51,6 +53,24 @@ public class RuntimeTablePath extends TablePath {
 
 			return path;
 		}
+	}
+
+	private static void newAlias() {
+		String alias = aliasPrefix + next++;
+		allAliases.add(alias);
+		aliasPool.add(alias);
+	}
+
+	private static void preparePool() {
+		List<String> remain = new ArrayList<>(allAliases);
+		remain.removeAll(pathMap.values());
+
+		if (remain.size() == 0) {
+			newAlias();
+			return;
+		}
+
+		aliasPool.addAll(remain);
 	}
 
 	/**

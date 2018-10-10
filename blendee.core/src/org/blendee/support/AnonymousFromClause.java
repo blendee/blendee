@@ -3,13 +3,14 @@ package org.blendee.support;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.sql.FromClause;
+import org.blendee.sql.QueryId;
 
 class AnonymousFromClause extends FromClause implements ComposedSQL {
 
 	private final AnonymousRelationship relationship;
 
-	AnonymousFromClause(AnonymousRelationship relationship) {
-		super(relationship);
+	AnonymousFromClause(AnonymousRelationship relationship, QueryId id) {
+		super(relationship, id);
 		this.relationship = relationship;
 	}
 

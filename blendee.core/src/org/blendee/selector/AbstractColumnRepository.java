@@ -19,7 +19,6 @@ import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.RuntimeTablePath;
 
 /**
  * @author 千葉 哲嗣
@@ -33,14 +32,12 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	private boolean changed = false;
 
 	@Override
-	public synchronized Column[] getColumns(String id, RuntimeTablePath tablePath) {
+	public synchronized Column[] getColumns(String id) {
 		TablePathSource table = tablePathMap.get(id);
 		if (table == null) return Column.EMPTY_ARRAY;
 
 		TablePath path = table.getTablePath();
 		if (!path.exists()) return Column.EMPTY_ARRAY;
-
-		path = select(path, tablePath);
 
 		Collection<ColumnSource> columns = table.getColumnSources();
 		if (columns.size() == 0) return Column.EMPTY_ARRAY;
@@ -54,17 +51,6 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 
 		Collections.sort(list);
 		return list.toArray(new Column[list.size()]);
-	}
-
-	private static final TablePath select(TablePath stored, RuntimeTablePath runtime) {
-		if (runtime != null) {
-			if (!stored.equals(runtime))
-				throw new IllegalStateException();
-
-			return runtime;
-		}
-
-		return stored;
 	}
 
 	@Override
@@ -180,13 +166,10 @@ abstract class AbstractColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public synchronized TablePath getTablePath(String id, RuntimeTablePath tablePath) {
+	public synchronized TablePath getTablePath(String id) {
 		TablePathSource source = tablePathMap.get(id);
 		if (source == null) return null;
-
-		TablePath path = source.getTablePath();
-		return select(path, tablePath);
-
+		return source.getTablePath();
 	}
 
 	@Override

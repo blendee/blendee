@@ -5,6 +5,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLQueryBuilder;
 
@@ -26,6 +27,9 @@ public interface SelectStatement extends SQLDecorators {
 	 * @return 現在の検索に使用する {@link Optimizer}
 	 */
 	Optimizer getOptimizer();
+
+	@SuppressWarnings("javadoc")
+	QueryId getQueryId();
 
 	/**
 	 * 内部処理用なので直接使用しないこと。

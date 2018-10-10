@@ -26,10 +26,12 @@ import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.QueryId;
+import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
@@ -57,13 +59,33 @@ public class DataAccessHelper {
 
 	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
 
+	private final QueryId id;
+
 	private final boolean useCache;
+
+	/**
+	 * インスタンスを生成します。
+	 * @param id
+	 */
+	public DataAccessHelper(QueryId id) {
+		this(id, false);
+	}
+
+	/**
+	 * インスタンスを生成します。
+	 * @param id
+	 * @param useCache select 文をキャッシュするかどうか
+	 */
+	public DataAccessHelper(QueryId id, boolean useCache) {
+		this.id = id;
+		this.useCache = useCache;
+	}
 
 	/**
 	 * インスタンスを生成します。
 	 */
 	public DataAccessHelper() {
-		this(false);
+		this(QueryIdFactory.getInstance(), false);
 	}
 
 	/**
@@ -71,7 +93,7 @@ public class DataAccessHelper {
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
 	public DataAccessHelper(boolean useCache) {
-		this.useCache = useCache;
+		this(QueryIdFactory.getInstance(), useCache);
 	}
 
 	/**
@@ -90,7 +112,7 @@ public class DataAccessHelper {
 		checkArgument(optimizer, primaryKey);
 		DataObjectIterator iterator = select(
 			optimizer,
-			primaryKey.getCriteria(),
+			primaryKey.getCriteria(id),
 			null,
 			options,
 			false);
@@ -127,7 +149,7 @@ public class DataAccessHelper {
 		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
 
 		checkArgument(optimizer, primaryKey);
-		getSelector(optimizer, primaryKey.getCriteria(), null, options);
+		getSelector(optimizer, primaryKey.getCriteria(id), null, options);
 	}
 
 	/**
@@ -190,7 +212,7 @@ public class DataAccessHelper {
 	 * @return パラメータの条件にマッチする件数
 	 */
 	public int count(TablePath path, Criteria criteria) {
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(path));
+		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(path, id));
 		builder.setSelectClause(new SelectCountClause());
 		if (criteria != null) builder.setWhereClause(criteria);
 		BConnection connection = BlendeeManager.getConnection();
@@ -615,10 +637,10 @@ public class DataAccessHelper {
 		builder.add(updatable);
 
 		String[] depends = sequencer.getDependsColumnNames();
-		Criteria criteria = CriteriaFactory.create();
+		Criteria criteria = new CriteriaFactory(id).create();
 		Relationship relationship = factory.getInstance(path);
 		for (String columnName : depends) {
-			criteria.and(CriteriaFactory.create(relationship.getColumn(columnName), map.get(columnName)));
+			criteria.and(new CriteriaFactory(id).create(relationship.getColumn(columnName), map.get(columnName)));
 		}
 
 		String targetColumnName = sequencer.getTargetColumnName();

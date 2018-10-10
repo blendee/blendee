@@ -14,10 +14,11 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.WindowFunction;
 
@@ -46,9 +47,10 @@ public class Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
+	 * @param id
 	 */
-	public Selector(TablePath path) {
-		this(new SimpleOptimizer(path));
+	public Selector(TablePath path, QueryId id) {
+		this(new SimpleOptimizer(path, id));
 	}
 
 	/**
@@ -58,7 +60,7 @@ public class Selector {
 	public Selector(Optimizer optimizer) {
 		TablePath path = optimizer.getTablePath();
 		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
-		builder = new SQLQueryBuilder(new FromClause(path));
+		builder = new SQLQueryBuilder(new FromClause(path, optimizer.getQueryId()));
 		this.optimizer = optimizer;
 	}
 

@@ -6,9 +6,9 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.Searchable;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.Updater;
 
@@ -16,7 +16,7 @@ import org.blendee.sql.Updater;
  * テーブルとその中の複数のカラムと、それらの値を持つ物を定義した基底クラスです。
  * @author 千葉 哲嗣
  */
-public class PartialData implements Searchable, Updatable {
+public class PartialData implements Updatable {
 
 	/**
 	 * このインスタンスの属するテーブル。
@@ -78,25 +78,26 @@ public class PartialData implements Searchable, Updatable {
 	/**
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルは、このインスタンスが持つテーブルになります。
+	 * @param id
 	 * @return 検索条件
 	 */
-	public Criteria getCriteria() {
-		return getCriteria(ContextManager.get(RelationshipFactory.class).getInstance(path));
+	public Criteria getCriteria(QueryId id) {
+		return getCriteria(ContextManager.get(RelationshipFactory.class).getInstance(path), id);
 	}
 
 	/**
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルはパラメータとして受け取ります。
 	 * @param relationship 検索条件のテーブル
+	 * @param id
 	 * @return 検索条件
 	 */
-	@Override
-	public Criteria getCriteria(Relationship relationship) {
+	public Criteria getCriteria(Relationship relationship, QueryId id) {
 		Column[] columns = new Column[columnNames.length];
 		for (int i = 0; i < columnNames.length; i++) {
 			columns[i] = relationship.getColumn(columnNames[i]);
 		}
-		return createCriteria(columns, bindables);
+		return createCriteria(id, columns, bindables);
 	}
 
 	@Override
@@ -106,12 +107,12 @@ public class PartialData implements Searchable, Updatable {
 		}
 	}
 
-	static Criteria createCriteria(Column[] columns, Bindable[] bindables) {
+	static Criteria createCriteria(QueryId id, Column[] columns, Bindable[] bindables) {
 		Column column = columns[0];
-		Criteria criteria = column.getCriteria(bindables[0]);
+		Criteria criteria = column.getCriteria(id, bindables[0]);
 		for (int i = 1; i < columns.length; i++) {
 			column = columns[i];
-			criteria.and(column.getCriteria(bindables[i]));
+			criteria.and(column.getCriteria(id, bindables[i]));
 		}
 
 		return criteria;

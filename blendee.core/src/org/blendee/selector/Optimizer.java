@@ -1,6 +1,7 @@
 package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -15,6 +16,9 @@ public interface Optimizer extends SelectedValuesConverter {
 	 * @return 対象となるテーブル
 	 */
 	TablePath getTablePath();
+
+	@SuppressWarnings("javadoc")
+	QueryId getQueryId();
 
 	/**
 	 * 検索に使用する SELECT 句です。

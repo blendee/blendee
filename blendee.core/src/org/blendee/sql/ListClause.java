@@ -21,6 +21,11 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	final List<ListQueryBlock> blocks = new LinkedList<>();
 
+	@SuppressWarnings("javadoc")
+	protected ListClause(QueryId id) {
+		super(id);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -47,7 +52,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	@Override
 	public T replicate() {
-		T clone = createNewInstance();
+		T clone = createNewInstance(queryId);
 		blocks.forEach(b -> clone.blocks.add(b.replicate()));
 		return clone;
 	}
@@ -57,7 +62,6 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param columns 新しいカラム
 	 */
 	public void add(Column... columns) {
-		clearCache();
 		for (Column column : columns) {
 			add(column);
 		}
@@ -68,7 +72,6 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param columnNames 新しいカラム
 	 */
 	public void add(String... columnNames) {
-		clearCache();
 		for (String columnName : columnNames) {
 			add(new PhantomColumn(columnName));
 		}
@@ -84,9 +87,10 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	}
 
 	/**
+	 * @param id {@link QueryId}
 	 * @return サブクラスのインスタンス
 	 */
-	protected abstract T createNewInstance();
+	protected abstract T createNewInstance(QueryId id);
 
 	/**
 	 * この句にカラムとテンプレートのブロックを追加します。
@@ -123,7 +127,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param template テンプレート
 	 */
 	protected void addInternal(int order, Column column, String template) {
-		ListQueryBlock block = new ListQueryBlock(order);
+		ListQueryBlock block = new ListQueryBlock(queryId, order);
 		block.addColumn(column);
 		block.addTemplate(template);
 		addBlock(block);
@@ -153,7 +157,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	List<Column> getColumnsInternal() {
 		List<Column> columns = new LinkedList<>();
 
-		blocks.forEach(b -> columns.addAll(b.getColumns()));
+		blocks.forEach(b -> columns.addAll(b.getColumns(queryId)));
 
 		return columns;
 	}

@@ -9,6 +9,11 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
  */
 public class SelectClause extends ListClause<SelectClause> {
 
+	@SuppressWarnings("javadoc")
+	public SelectClause(QueryId id) {
+		super(id);
+	}
+
 	/**
 	 * この SELECT 句に新しいカラムをエイリアス付きで追加します。
 	 * @param columns 追加するカラム
@@ -24,9 +29,8 @@ public class SelectClause extends ListClause<SelectClause> {
 	 * @param columns 追加するカラム
 	 */
 	public void add(int order, Column... columns) {
-		clearCache();
 		for (Column column : columns) {
-			addInternal(order, column, "{0} AS " + column.getId());
+			addInternal(order, column, "{0} AS " + queryId.toComplementedColumnString(column.getId()));
 		}
 	}
 
@@ -72,9 +76,7 @@ public class SelectClause extends ListClause<SelectClause> {
 		String template,
 		Column[] columns,
 		ChainPreparedStatementComplementer complementer) {
-		clearCache();
-
-		ListQueryBlock block = new ListQueryBlock(order);
+		ListQueryBlock block = new ListQueryBlock(queryId, order);
 
 		for (Column column : columns)
 			block.addColumn(column);
@@ -103,13 +105,12 @@ public class SelectClause extends ListClause<SelectClause> {
 	 * @param alias 別名
 	 */
 	public void add(WindowFunction function, String alias) {
-		clearCache();
 		add(function.getTemplate() + " AS " + alias, function.getColumns());
 	}
 
 	@Override
-	protected SelectClause createNewInstance() {
-		return new SelectClause();
+	protected SelectClause createNewInstance(QueryId id) {
+		return new SelectClause(id);
 	}
 
 	@Override

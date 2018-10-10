@@ -3,6 +3,7 @@ package org.blendee.selector;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 
@@ -16,9 +17,10 @@ public class SynchronizedSelector extends Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
+	 * @param id
 	 */
-	public SynchronizedSelector(TablePath path) {
-		super(path);
+	public SynchronizedSelector(TablePath path, QueryId id) {
+		super(path, id);
 	}
 
 	/**

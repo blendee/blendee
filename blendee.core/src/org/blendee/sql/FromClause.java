@@ -69,29 +69,37 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 	private final Relationship root;
 
+	private final QueryId id;
+
 	private final Set<RelationshipContainer> localRelationships = new LinkedHashSet<>();
 
 	private final List<JointContainer> joints = new LinkedList<>();
 
 	private boolean forSubquery;
 
-	private String cache;
-
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
 	 * @param path テーブルのルート
+	 * @param id
 	 */
-	public FromClause(TablePath path) {
-		this(ContextManager.get(RelationshipFactory.class).getInstance(path));
+	public FromClause(TablePath path, QueryId id) {
+		this(ContextManager.get(RelationshipFactory.class).getInstance(path), id);
 	}
 
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
 	 * @param root テーブルのルート
+	 * @param id
 	 */
-	public FromClause(Relationship root) {
+	public FromClause(Relationship root, QueryId id) {
 		this.root = root;
+		this.id = id;
 		localRelationships.add(new RelationshipContainer(root));
+	}
+
+	@SuppressWarnings("javadoc")
+	public QueryId getQueryId() {
+		return id;
 	}
 
 	/**
@@ -109,7 +117,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			throw new IllegalStateException("同一ルートではないので、結合できません");
 		}
 
-		cache = null;
 		Set<Relationship> set = new HashSet<>();
 		relationship.addParentTo(set);
 		set.add(relationship);
@@ -125,7 +132,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @param onCriteria この FROM 句のテーブルと another の ON に使用する条件句
 	 */
 	public void join(JoinType type, FromClause another, Criteria onCriteria) {
-		cache = null;
 		joints.add(
 			new JointContainer(type, another, onCriteria));
 
@@ -168,16 +174,16 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 	@Override
 	public String toString() {
-		if (cache != null) return cache;
+		String string;
 		if (!isJoined()) {
-			cache = " FROM " + root.getTablePath();
+			string = " FROM " + root.getTablePath();
 		} else {
 			LinkedList<String> result = process();
-			result.addFirst(root.toString());
-			cache = " FROM " + String.join(" ", result);
+			result.addFirst(id.toString(root));
+			string = " FROM " + String.join(" ", result);
 		}
 
-		return cache;
+		return string;
 	}
 
 	/**
@@ -185,7 +191,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @return copy
 	 */
 	protected FromClause replicate() {
-		FromClause clone = new FromClause(root.getTablePath());
+		FromClause clone = new FromClause(root.getTablePath(), id);
 
 		//中身はImmutableなのでそのままコピー
 		clone.localRelationships.addAll(localRelationships);
@@ -195,7 +201,6 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	}
 
 	void clearRelationships() {
-		cache = null;
 		localRelationships.clear();
 		localRelationships.add(new RelationshipContainer(root));
 	}
@@ -230,31 +235,33 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		return clause;
 	}
 
-	private static String processPart(
+	private String processPart(
 		JoinType type,
 		Relationship relationship,
 		Column[] left,
 		Column[] right) {
-		Criteria criteria = CriteriaFactory.create();
+		Criteria criteria = new CriteriaFactory(id).create();
+		CriteriaFactory factory = new CriteriaFactory(id);
 		for (int i = 0; i < left.length; i++) {
-			criteria.and(CriteriaFactory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, Bindable.EMPTY_ARRAY));
+			criteria.and(factory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, Bindable.EMPTY_ARRAY));
 		}
 
 		return type
 			+ " "
-			+ relationship
+			+ id.toString(relationship)
 			+ " ON ("
 			+ criteria.toString(true).trim()
 			+ ")";
 	}
 
-	private static String processPart(
+	private String processPart(
+		QueryId anotherId,
 		JoinType type,
 		Relationship relationship,
 		Criteria onCriteria) {
 		return type
 			+ " "
-			+ relationship
+			+ anotherId.toString(relationship)
 			+ " ON ("
 			+ onCriteria.toString(true).trim()
 			+ ")";
@@ -263,7 +270,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	/**
 	 * Immutable
 	 */
-	private static class RelationshipContainer implements Comparable<RelationshipContainer> {
+	private class RelationshipContainer implements Comparable<RelationshipContainer> {
 
 		private final JoinType type;
 
@@ -313,6 +320,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 				left[i] = parentRelationship.getColumn(foreignKeyColumnNames[i]);
 				right[i] = relationship.getColumn(primaryKeyColumnNames[i]);
 			}
+
 			list.add(processPart(type, relationship, left, right));
 		}
 	}
@@ -320,7 +328,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	/**
 	 * Immutable
 	 */
-	private static class JointContainer {
+	private class JointContainer {
 
 		private final JoinType type;
 
@@ -335,7 +343,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		}
 
 		private void append(List<String> list) {
-			list.add(processPart(type, another.root, onCriteria));
+			list.add(processPart(another.getQueryId(), type, another.root, onCriteria));
 			list.addAll(another.process());
 		}
 

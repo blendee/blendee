@@ -4,6 +4,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
@@ -16,20 +17,30 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 
 	private final Relationship root;
 
-	private final SelectClause select = new SelectClause();
+	private final QueryId id;
+
+	private final SelectClause select;
 
 	/**
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。<br>
 	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
 	 * @param path SELECT 句に使用するカラムを持つテーブル
+	 * @param id
 	 */
-	public SimpleOptimizer(TablePath path) {
+	public SimpleOptimizer(TablePath path, QueryId id) {
 		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
+		this.id = id;
+		select = new SelectClause(id);
 	}
 
 	@Override
 	public TablePath getTablePath() {
 		return root.getTablePath();
+	}
+
+	@Override
+	public QueryId getQueryId() {
+		return id;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 
@@ -47,8 +48,8 @@ public class WithValues {
 		return this;
 	}
 
-	Criteria createCriteria(String clause) {
-		return CriteriaFactory.createCriteria(
+	Criteria createCriteria(QueryId id, String clause) {
+		return new CriteriaFactory(id).createCriteria(
 			clause,
 			columns.toArray(new Column[columns.size()]),
 			binders.toArray(new Binder[binders.size()]));

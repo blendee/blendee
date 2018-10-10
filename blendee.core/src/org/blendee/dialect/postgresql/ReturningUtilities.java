@@ -13,6 +13,7 @@ import org.blendee.orm.DataObject;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.InsertDMLBuilder;
+import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
 import org.blendee.support.Row;
@@ -79,7 +80,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(DataObject data, Consumer<Result> consumer, String... columnNames) {
-		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(), consumer, columnNames);
+		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(QueryIdFactory.getInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(Row row, Consumer<Result> consumer, String... columnNames) {
-		update(row.tablePath(), row, row.primaryKey().getCriteria(), consumer, columnNames);
+		update(row.tablePath(), row, row.primaryKey().getCriteria(QueryIdFactory.getInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -132,7 +133,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(DataObject data, Consumer<Result> consumer, String... columnNames) {
-		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(), consumer, columnNames);
+		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(QueryIdFactory.getInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -142,7 +143,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(Row row, Consumer<Result> consumer, String... columnNames) {
-		delete(row.tablePath(), row.primaryKey().getCriteria(), consumer, columnNames);
+		delete(row.tablePath(), row.primaryKey().getCriteria(QueryIdFactory.getInstance()), consumer, columnNames);
 	}
 
 	/**

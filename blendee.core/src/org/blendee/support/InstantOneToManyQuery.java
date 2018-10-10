@@ -25,6 +25,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
@@ -43,6 +44,8 @@ public class InstantOneToManyQuery<O extends Row, M>
 	private final TableFacadeRelationship self;
 
 	private final TableFacadeRelationship root;
+
+	private final QueryId id;
 
 	private final Optimizer optimizer;
 
@@ -72,10 +75,12 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 		root = getRoot(relation, route);
 
+		id = root.getSelectStatement().getQueryId();
+
 		TableFacadeRelationship root = root();
 		SelectStatement select = root.getSelectStatement();
-		order = convertOrderByClause(route, select.getOrderByClause());
-		optimizer = convertOptimizer(route, root);
+		order = convertOrderByClause(id, route, select.getOrderByClause());
+		optimizer = convertOptimizer(id, route, root);
 		criteria = select.getWhereClause();
 
 		this.options = options;
@@ -130,7 +135,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return getRoot(parent, relations);
 	}
 
-	private static Optimizer convertOptimizer(List<TableFacadeRelationship> route, TableFacadeRelationship root) {
+	private static Optimizer convertOptimizer(QueryId id, List<TableFacadeRelationship> route, TableFacadeRelationship root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
 		Optimizer optimizer = root.getSelectStatement().getOptimizer();
 		SelectClause select = optimizer.getOptimizedSelectClause();
@@ -141,17 +146,17 @@ public class InstantOneToManyQuery<O extends Row, M>
 			}
 		});
 
-		RuntimeOptimizer runtimeOptimizer = new RuntimeOptimizer(optimizer.getTablePath());
+		RuntimeOptimizer runtimeOptimizer = new RuntimeOptimizer(optimizer.getTablePath(), id);
 		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
 		return optimizer;
 	}
 
-	private static OrderByClause convertOrderByClause(List<TableFacadeRelationship> route, OrderByClause order) {
+	private static OrderByClause convertOrderByClause(QueryId id, List<TableFacadeRelationship> route, OrderByClause order) {
 		LinkedList<TableFacadeRelationship> relations = new LinkedList<>(route);
 		relations.removeLast();
 
-		OrderByClause newOrder = new OrderByClause();
+		OrderByClause newOrder = new OrderByClause(id);
 
 		List<DirectionalColumn> list = Arrays.asList(order.getDirectionalColumns());
 
@@ -182,13 +187,13 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return newOrder;
 	}
 
-	private static SelectClause createCountClause(Column[] columns) {
+	private static SelectClause createCountClause(QueryId id, Column[] columns) {
 		List<String> parts = new LinkedList<>();
 		for (int i = 0; i < columns.length; i++) {
 			parts.add("{" + i + "}");
 		}
 
-		SelectClause select = new SelectClause();
+		SelectClause select = new SelectClause(id);
 
 		select.add("COUNT(DISTINCT(" + String.join(", ", parts) + "))", columns);
 
@@ -197,9 +202,10 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath()));
+		QueryId id = optimizer.getQueryId();
+		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
 
-		builder.setSelectClause(createCountClause(self.getRelationship().getPrimaryKeyColumns()));
+		builder.setSelectClause(createCountClause(id, self.getRelationship().getPrimaryKeyColumns()));
 
 		if (criteria != null) builder.setWhereClause(criteria);
 
@@ -226,6 +232,11 @@ public class InstantOneToManyQuery<O extends Row, M>
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
 		return composedSQL().complement(done, statement);
+	}
+
+	@Override
+	QueryId queryId() {
+		return id;
 	}
 
 	private ComposedSQL composedSQL() {

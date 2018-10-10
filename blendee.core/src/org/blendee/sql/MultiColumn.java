@@ -84,9 +84,9 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName() {
+	public String getComplementedName(QueryId id) {
 		List<String> strings = Arrays.stream(columns)
-			.map(c -> c.getComplementedName())
+			.map(c -> c.getComplementedName(id))
 			.collect(Collectors.toList());
 
 		return SQLFragmentFormat.execute(template, strings.toArray(new String[strings.size()]));
@@ -98,7 +98,7 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(Bindable bindable) {
+	public Criteria getCriteria(QueryId id, Bindable bindable) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -143,7 +143,7 @@ public class MultiColumn implements Column {
 
 	@Override
 	public String toString() {
-		return getComplementedName();
+		return getName();
 	}
 
 	@Override

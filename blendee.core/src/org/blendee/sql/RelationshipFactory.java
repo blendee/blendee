@@ -34,28 +34,19 @@ public class RelationshipFactory implements ManagementSubject {
 	 * @return ツリーのルート要素
 	 */
 	public Relationship getInstance(TablePath path) {
-		if (path instanceof RuntimeTablePath) return getInstance((RuntimeTablePath) path);
-
 		synchronized (lock) {
 			if (pathIdMap.size() == 0) preparePathIdMap();
 			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
-				relationship = createRelationship(path, null);
+				String pathId = pathIdMap.get(path);
+				if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+
+				relationship = createRelationship(path, pathId);
 				relationshipCache.put(path, relationship);
 			}
 
 			return relationship;
 		}
-	}
-
-	/**
-	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。<br>
-	 * キャッシュを行いません。
-	 * @param path ルートとなるテーブル
-	 * @return ツリーのルート要素
-	 */
-	public Relationship getInstance(RuntimeTablePath path) {
-		return createRelationship(path, path.getAlias());
 	}
 
 	/**
@@ -86,15 +77,7 @@ public class RelationshipFactory implements ManagementSubject {
 		}
 	}
 
-	private Relationship createRelationship(final TablePath path, String alias) {
-		String pathId;
-		if (alias == null) {
-			pathId = pathIdMap.get(path);
-			if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
-		} else {
-			pathId = alias;
-		}
-
+	private Relationship createRelationship(final TablePath path, String pathId) {
 		return new ConcreteRelationship(
 			null,
 			null,

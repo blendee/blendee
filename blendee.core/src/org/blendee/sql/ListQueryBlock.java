@@ -3,6 +3,7 @@ package org.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -14,6 +15,8 @@ import org.blendee.sql.ListClause.WholeCounter;
  * @author 千葉 哲嗣
  */
 class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStatementComplementer {
+
+	private final QueryId id;
 
 	private final int order;
 
@@ -29,11 +32,13 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 
 	private ComplementerValues complementer;
 
-	ListQueryBlock(int order) {
+	ListQueryBlock(QueryId id, int order) {
+		this.id = id;
 		this.order = order;
 	}
 
-	ListQueryBlock() {
+	ListQueryBlock(QueryId id) {
+		this.id = id;
 		this.order = ListClause.DEFAULT_ORDER;
 	}
 
@@ -63,7 +68,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	public ListQueryBlock replicate() {
-		ListQueryBlock clone = new ListQueryBlock(order);
+		ListQueryBlock clone = new ListQueryBlock(id, order);
 		clone.templates.addAll(templates);
 		columns.forEach(c -> clone.columns.add(c.replicate()));
 
@@ -94,8 +99,10 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 		this.complementer = new ComplementerValues(complementer);
 	}
 
-	List<Column> getColumns() {
-		return columns;
+	List<Column> getColumns(QueryId base) {
+		if (id.equals(base)) return columns;
+
+		return columns.stream().map(c -> new QueryIdColumn(c, id)).collect(Collectors.toList());
 	}
 
 	String getTemplate(WholeCounter counter) {

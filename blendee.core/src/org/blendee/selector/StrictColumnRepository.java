@@ -12,7 +12,6 @@ import org.blendee.internal.CollectionMap;
 import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
-import org.blendee.sql.RuntimeTablePath;
 
 /**
  * @author 千葉 哲嗣
@@ -33,24 +32,20 @@ class StrictColumnRepository implements ColumnRepository {
 
 	private final Map<String, String[]> errorMessagesMap = new HashMap<>();
 
-	StrictColumnRepository(final ColumnRepository repository, RuntimeTablePath tablePath) {
+	StrictColumnRepository(final ColumnRepository repository) {
 		final String[] ids = repository.getIds();
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
-			tableMap.put(id, repository.getTablePath(id, tablePath));
-			Column[] columns = repository.getColumns(id, tablePath);
+			tableMap.put(id, repository.getTablePath(id));
+			Column[] columns = repository.getColumns(id);
 			columnMap.get(id).addAll(Arrays.asList(columns));
 			usingMap.get(id).addAll(Arrays.asList(repository.getUsingClassNames(id)));
 			errorMessagesMap.put(id, repository.getErrorMessages(id));
 		}
 	}
 
-	StrictColumnRepository(final ColumnRepository repository) {
-		this(repository, null);
-	}
-
 	@Override
-	public TablePath getTablePath(String id, RuntimeTablePath tablePath) {
+	public TablePath getTablePath(String id) {
 		return tableMap.get(id);
 	}
 
@@ -70,7 +65,7 @@ class StrictColumnRepository implements ColumnRepository {
 	}
 
 	@Override
-	public Column[] getColumns(String id, RuntimeTablePath tablePath) {
+	public Column[] getColumns(String id) {
 		Collection<Column> columns = columnMap.get(id);
 		return columns.toArray(new Column[columns.size()]);
 	}

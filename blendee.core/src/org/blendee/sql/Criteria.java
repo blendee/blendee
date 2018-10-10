@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.blendee.jdbc.BPreparedStatement;
 
@@ -64,13 +65,15 @@ public class Criteria extends Clause {
 
 	private String keyword = "";
 
-	Criteria(String clause, Column[] columns, Binder[] binders) {
+	Criteria(QueryId id, String clause, Column[] columns, Binder[] binders) {
+		super(id);
 		this.clause = clause;
 		this.columns.addAll(Arrays.asList(columns));
 		this.binders.addAll(Arrays.asList(binders));
 	}
 
-	private Criteria() {
+	private Criteria(QueryId id) {
+		super(id);
 		clause = null;
 	}
 
@@ -104,7 +107,6 @@ public class Criteria extends Clause {
 	 * @return このインスタンス
 	 */
 	public Criteria reverse() {
-		clearCache();
 		clause = "NOT (" + clause + ")";
 		current = null;
 		return this;
@@ -183,7 +185,7 @@ public class Criteria extends Clause {
 			}
 		}
 
-		Criteria clone = new Criteria(clause, replicateColumns, replicateBinders);
+		Criteria clone = new Criteria(queryId, clause, replicateColumns, replicateBinders);
 		clone.current = current;
 		clone.keyword = keyword;
 		return clone;
@@ -209,14 +211,19 @@ public class Criteria extends Clause {
 	/**
 	 * このインスタンスが表す条件に、新たな条件を追加します。
 	 * @param operator 論理演算子 AND OR
-	 * @param target 追加する条件
+	 * @param another 追加する条件
 	 */
-	void append(LogicalOperator operator, Criteria target) {
-		target = strip(target);
+	void append(LogicalOperator operator, Criteria another) {
+		Criteria target = strip(another);
 		if (target == null) return;
-		clearCache();
 		clause = target.delegateProcess(operator, current, clause, columns.size());
-		columns.addAll(target.columns);
+
+		if (queryId.equals(target.queryId)) {
+			columns.addAll(target.columns);
+		} else {
+			columns.addAll(target.columns.stream().map(c -> new QueryIdColumn(c, target.queryId)).collect(Collectors.toList()));
+		}
+
 		binders.addAll(target.binders);
 		current = operator;
 	}
@@ -269,7 +276,9 @@ public class Criteria extends Clause {
 
 		private Criteria inclusion;
 
-		ProxyCriteria() {}
+		ProxyCriteria(QueryId id) {
+			super(id);
+		}
 
 		@Override
 		public String toString() {
@@ -323,7 +332,7 @@ public class Criteria extends Clause {
 
 		@Override
 		public Criteria replicate() {
-			if (inclusion == null) return new ProxyCriteria();
+			if (inclusion == null) return new ProxyCriteria(queryId);
 			return inclusion.replicate();
 		}
 

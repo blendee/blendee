@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
-import org.blendee.jdbc.TablePath;
 
 /**
  * SELECT 文の ORDER BY 句を表すクラスです。
@@ -14,6 +12,13 @@ import org.blendee.jdbc.TablePath;
  * @see SQLQueryBuilder#setOrderByClause(OrderByClause)
  */
 public class OrderByClause extends ListClause<OrderByClause> {
+
+	/**
+	 * @param id
+	 */
+	public OrderByClause(QueryId id) {
+		super(id);
+	}
 
 	/**
 	 * ソートする方向を表す列挙型です。
@@ -71,22 +76,6 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	private final List<DirectionalColumn> added = new LinkedList<>();
 
 	private boolean canGetDirectionalColumns = true;
-
-	/**
-	 * パラメータで示されたテーブルの主キーで ORDER 句を生成します。
-	 * @param path 対象テーブル
-	 * @param direction 方向
-	 * @return 生成されたインスタンス
-	 */
-	public static OrderByClause createPrimaryKeyOrder(
-		TablePath path,
-		Direction direction) {
-		Column[] columns = ContextManager.get(RelationshipFactory.class).getInstance(path).getPrimaryKeyColumns();
-		OrderByClause clause = new OrderByClause();
-		for (Column column : columns)
-			clause.add(column, direction);
-		return clause;
-	}
 
 	/**
 	 * 順方向でこの ORDER 句にカラムを追加します。
@@ -164,9 +153,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(String template, Direction direction, Column... columns) {
-		clearCache();
-
-		ListQueryBlock block = new ListQueryBlock();
+		ListQueryBlock block = new ListQueryBlock(queryId);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}
@@ -187,9 +174,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(int order, String template, Direction direction, Column... columns) {
-		clearCache();
-
-		ListQueryBlock block = new ListQueryBlock(order);
+		ListQueryBlock block = new ListQueryBlock(queryId, order);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}
@@ -215,7 +200,6 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @param column 追加するカラム
 	 */
 	public void add(int order, DirectionalColumn column) {
-		clearCache();
 		addInternal(order, column.column, "{0}" + column.direction);
 		added.add(column);
 	}
@@ -232,8 +216,8 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	}
 
 	@Override
-	protected OrderByClause createNewInstance() {
-		return new OrderByClause();
+	protected OrderByClause createNewInstance(QueryId id) {
+		return new OrderByClause(id);
 	}
 
 	/**

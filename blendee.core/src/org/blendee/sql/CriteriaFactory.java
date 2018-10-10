@@ -62,8 +62,8 @@ public class CriteriaFactory {
 			expression = "{0} " + operator + " ?";
 		}
 
-		private Criteria create(Column column, Bindable bindable) {
-			return createCriteria(expression, new Column[] { column }, new Bindable[] { bindable });
+		private Criteria create(QueryId id, Column column, Bindable bindable) {
+			return createCriteria(id, expression, new Column[] { column }, new Bindable[] { bindable });
 		}
 
 		@Override
@@ -121,8 +121,8 @@ public class CriteriaFactory {
 			}
 
 			@Override
-			Criteria create(String clause, Column column, String value) {
-				return createCriteria(clause, column, new StringBinder(value));
+			Criteria create(QueryId id, String clause, Column column, String value) {
+				return createCriteria(id, clause, column, new StringBinder(value));
 			}
 		};
 
@@ -130,22 +130,24 @@ public class CriteriaFactory {
 
 		abstract String decorate(String value);
 
-		private Criteria create(Column column, String value) {
-			return create("{0} LIKE ?", column, value);
+		private Criteria create(QueryId id, Column column, String value) {
+			return create(id, "{0} LIKE ?", column, value);
 		}
 
-		private Criteria createNot(Column column, String value) {
-			return create("{0} NOT LIKE ?", column, value);
+		private Criteria createNot(QueryId id, Column column, String value) {
+			return create(id, "{0} NOT LIKE ?", column, value);
 		}
 
-		Criteria create(String clause, Column column, String value) {
+		Criteria create(QueryId id, String clause, Column column, String value) {
 			Matcher matcher = pattern.matcher(value);
 			if (!matcher.find()) return createCriteria(
+				id,
 				clause,
 				column,
 				new StringBinder(decorate(value)));
 
 			return createCriteria(
+				id,
 				clause + " ESCAPE '!'",
 				column,
 				new StringBinder(decorate(matcher.replaceAll("!$1"))));
@@ -173,12 +175,17 @@ public class CriteriaFactory {
 			this.expression = "{0} " + expression;
 		}
 
-		private Criteria create(Column column) {
-			return createCriteria(expression, new Column[] { column });
+		private Criteria create(QueryId id, Column column) {
+			return createCriteria(id, expression, new Column[] { column });
 		}
 	}
 
-	private CriteriaFactory() {}
+	private final QueryId id;
+
+	@SuppressWarnings("javadoc")
+	public CriteriaFactory(QueryId id) {
+		this.id = id;
+	}
 
 	/**
 	 * = を使用した簡単な条件句を生成します。
@@ -186,8 +193,8 @@ public class CriteriaFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(Column column, Bindable bindable) {
-		return ComparisonOperator.EQ.create(column, bindable);
+	public Criteria create(Column column, Bindable bindable) {
+		return ComparisonOperator.EQ.create(id, column, bindable);
 	}
 
 	/**
@@ -196,8 +203,8 @@ public class CriteriaFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(Column column, String value) {
-		return ComparisonOperator.EQ.create(column, new StringBinder(value));
+	public Criteria create(Column column, String value) {
+		return ComparisonOperator.EQ.create(id, column, new StringBinder(value));
 	}
 
 	/**
@@ -206,8 +213,8 @@ public class CriteriaFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(Column column, Number value) {
-		return ComparisonOperator.EQ.create(column, BindableConverter.convert(value)[0]);
+	public Criteria create(Column column, Number value) {
+		return ComparisonOperator.EQ.create(id, column, BindableConverter.convert(value)[0]);
 	}
 
 	/**
@@ -216,8 +223,8 @@ public class CriteriaFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(String columnName, Bindable bindable) {
-		return ComparisonOperator.EQ.create(new PhantomColumn(columnName), bindable);
+	public Criteria create(String columnName, Bindable bindable) {
+		return ComparisonOperator.EQ.create(id, new PhantomColumn(columnName), bindable);
 	}
 
 	/**
@@ -226,8 +233,9 @@ public class CriteriaFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(String columnName, String value) {
+	public Criteria create(String columnName, String value) {
 		return ComparisonOperator.EQ.create(
+			id,
 			new PhantomColumn(columnName),
 			new StringBinder(value));
 	}
@@ -238,8 +246,9 @@ public class CriteriaFactory {
 	 * @param value 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(String columnName, Number value) {
+	public Criteria create(String columnName, Number value) {
 		return ComparisonOperator.EQ.create(
+			id,
 			new PhantomColumn(columnName),
 			BindableConverter.convert(value)[0]);
 	}
@@ -251,11 +260,11 @@ public class CriteriaFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(
+	public Criteria create(
 		ComparisonOperator operator,
 		Column column,
 		Bindable bindable) {
-		return operator.create(column, bindable);
+		return operator.create(id, column, bindable);
 	}
 
 	/**
@@ -265,11 +274,11 @@ public class CriteriaFactory {
 	 * @param bindable 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(
+	public Criteria create(
 		ComparisonOperator operator,
 		String columnName,
 		Bindable bindable) {
-		return operator.create(new PhantomColumn(columnName), bindable);
+		return operator.create(id, new PhantomColumn(columnName), bindable);
 	}
 
 	/**
@@ -278,7 +287,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		Column column,
 		String... values) {
 		return createCriteria(
@@ -293,7 +302,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		Column column,
 		Number... values) {
 		return createCriteria(
@@ -308,7 +317,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		Column column,
 		Timestamp... values) {
 		return createCriteria(
@@ -323,7 +332,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		Column column,
 		Bindable... values) {
 		return createCriteria(
@@ -338,7 +347,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		String columnName,
 		String... values) {
 		return createCriteria(
@@ -353,7 +362,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		String columnName,
 		Number... values) {
 		return createCriteria(
@@ -368,7 +377,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		String columnName,
 		Timestamp... values) {
 		return createCriteria(
@@ -383,7 +392,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createInCriteria(
+	public Criteria createInCriteria(
 		String columnName,
 		Bindable... values) {
 		return createCriteria(
@@ -398,7 +407,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		Column column,
 		String... values) {
 		return createCriteria(
@@ -413,7 +422,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		Column column,
 		Number... values) {
 		return createCriteria(
@@ -428,7 +437,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		Column column,
 		Timestamp... values) {
 		return createCriteria(
@@ -443,7 +452,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		Column column,
 		Bindable... values) {
 		return createCriteria(
@@ -458,7 +467,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		String columnName,
 		String... values) {
 		return createCriteria(
@@ -473,7 +482,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		String columnName,
 		Number... values) {
 		return createCriteria(
@@ -488,7 +497,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		String columnName,
 		Timestamp... values) {
 		return createCriteria(
@@ -503,7 +512,7 @@ public class CriteriaFactory {
 	 * @param values 比較する値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotInCriteria(
+	public Criteria createNotInCriteria(
 		String columnName,
 		Bindable... values) {
 		return createCriteria(
@@ -523,7 +532,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		Column column,
 		String value1,
 		String value2) {
@@ -542,7 +551,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		Column column,
 		Number value1,
 		Number value2) {
@@ -559,7 +568,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		Column column,
 		Timestamp value1,
 		Timestamp value2) {
@@ -576,7 +585,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		Column column,
 		Bindable value1,
 		Bindable value2) {
@@ -593,7 +602,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		String columnName,
 		String value1,
 		String value2) {
@@ -610,7 +619,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		String columnName,
 		Number value1,
 		Number value2) {
@@ -627,7 +636,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		String columnName,
 		Timestamp value1,
 		Timestamp value2) {
@@ -644,7 +653,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createBetweenCriteria(
+	public Criteria createBetweenCriteria(
 		String columnName,
 		Bindable value1,
 		Bindable value2) {
@@ -661,7 +670,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		Column column,
 		String value1,
 		String value2) {
@@ -680,7 +689,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		Column column,
 		Number value1,
 		Number value2) {
@@ -697,7 +706,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		Column column,
 		Timestamp value1,
 		Timestamp value2) {
@@ -714,7 +723,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		Column column,
 		Bindable value1,
 		Bindable value2) {
@@ -731,7 +740,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		String columnName,
 		String value1,
 		String value2) {
@@ -748,7 +757,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		String columnName,
 		Number value1,
 		Number value2) {
@@ -765,7 +774,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		String columnName,
 		Timestamp value1,
 		Timestamp value2) {
@@ -782,7 +791,7 @@ public class CriteriaFactory {
 	 * @param value2 to
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotBetweenCriteria(
+	public Criteria createNotBetweenCriteria(
 		String columnName,
 		Bindable value1,
 		Bindable value2) {
@@ -799,11 +808,11 @@ public class CriteriaFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createLikeCriteria(
+	public Criteria createLikeCriteria(
 		Match type,
 		Column column,
 		String value) {
-		return type.create(column, value);
+		return type.create(id, column, value);
 	}
 
 	/**
@@ -813,11 +822,11 @@ public class CriteriaFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotLikeCriteria(
+	public Criteria createNotLikeCriteria(
 		Match type,
 		Column column,
 		String value) {
-		return type.createNot(column, value);
+		return type.createNot(id, column, value);
 	}
 
 	/**
@@ -827,11 +836,11 @@ public class CriteriaFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createLikeCriteria(
+	public Criteria createLikeCriteria(
 		Match type,
 		String columnName,
 		String value) {
-		return type.create(new PhantomColumn(columnName), value);
+		return type.create(id, new PhantomColumn(columnName), value);
 	}
 
 	/**
@@ -841,11 +850,11 @@ public class CriteriaFactory {
 	 * @param value '%'を含まない値
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createNotLikeCriteria(
+	public Criteria createNotLikeCriteria(
 		Match type,
 		String columnName,
 		String value) {
-		return type.createNot(new PhantomColumn(columnName), value);
+		return type.createNot(id, new PhantomColumn(columnName), value);
 	}
 
 	/**
@@ -853,8 +862,8 @@ public class CriteriaFactory {
 	 * @param column 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createIsNullCriteria(Column column) {
-		return NullComparisonOperator.IS_NULL.create(column);
+	public Criteria createIsNullCriteria(Column column) {
+		return NullComparisonOperator.IS_NULL.create(id, column);
 	}
 
 	/**
@@ -862,8 +871,8 @@ public class CriteriaFactory {
 	 * @param columnName 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createIsNullCriteria(String columnName) {
-		return NullComparisonOperator.IS_NULL.create(new PhantomColumn(columnName));
+	public Criteria createIsNullCriteria(String columnName) {
+		return NullComparisonOperator.IS_NULL.create(id, new PhantomColumn(columnName));
 	}
 
 	/**
@@ -871,8 +880,8 @@ public class CriteriaFactory {
 	 * @param column 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createIsNotNullCriteria(Column column) {
-		return NullComparisonOperator.IS_NOT_NULL.create(column);
+	public Criteria createIsNotNullCriteria(Column column) {
+		return NullComparisonOperator.IS_NOT_NULL.create(id, column);
 	}
 
 	/**
@@ -880,8 +889,8 @@ public class CriteriaFactory {
 	 * @param columnName 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria createIsNotNullCriteria(String columnName) {
-		return NullComparisonOperator.IS_NOT_NULL.create(new PhantomColumn(columnName));
+	public Criteria createIsNotNullCriteria(String columnName) {
+		return NullComparisonOperator.IS_NOT_NULL.create(id, new PhantomColumn(columnName));
 	}
 
 	/**
@@ -890,10 +899,10 @@ public class CriteriaFactory {
 	 * @param column 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(
+	public Criteria create(
 		NullComparisonOperator type,
 		Column column) {
-		return type.create(column);
+		return type.create(id, column);
 	}
 
 	/**
@@ -902,18 +911,18 @@ public class CriteriaFactory {
 	 * @param columnName 対象となるカラム
 	 * @return 作成されたインスタンス
 	 */
-	public static Criteria create(
+	public Criteria create(
 		NullComparisonOperator type,
 		String columnName) {
-		return type.create(new PhantomColumn(columnName));
+		return type.create(id, new PhantomColumn(columnName));
 	}
 
 	/**
 	 * 空の条件句を生成します。
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria create() {
-		return new ProxyCriteria();
+	public Criteria create() {
+		return new ProxyCriteria(id);
 	}
 
 	/**
@@ -923,8 +932,20 @@ public class CriteriaFactory {
 	 * @param columns 対象となるカラム
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(String clause, Column[] columns) {
-		return new Criteria(clause, columns, Binder.EMPTY_ARRAY);
+	public Criteria createCriteria(String clause, Column[] columns) {
+		return new Criteria(id, clause, columns, Binder.EMPTY_ARRAY);
+	}
+
+	/**
+	 * 条件句のテンプレートとそれに埋め込むカラムから条件句を生成します。<br>
+	 * このテンプレートにはプレースホルダを含めることはできません。
+	 * @param id
+	 * @param clause 条件句のテンプレート
+	 * @param columns 対象となるカラム
+	 * @return 生成されたインスタンス
+	 */
+	public static Criteria createCriteria(QueryId id, String clause, Column[] columns) {
+		return new Criteria(id, clause, columns, Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -934,10 +955,10 @@ public class CriteriaFactory {
 	 * @param columnNames 対象となるカラム
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(
+	public Criteria createCriteria(
 		String clause,
 		String[] columnNames) {
-		return new Criteria(clause, PhantomColumn.convert(columnNames), Binder.EMPTY_ARRAY);
+		return new Criteria(id, clause, PhantomColumn.convert(columnNames), Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -946,8 +967,8 @@ public class CriteriaFactory {
 	 * @param clause 条件句
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(String clause) {
-		return new Criteria(clause, Column.EMPTY_ARRAY, Binder.EMPTY_ARRAY);
+	public Criteria createCriteria(String clause) {
+		return new Criteria(id, clause, Column.EMPTY_ARRAY, Binder.EMPTY_ARRAY);
 	}
 
 	/**
@@ -957,11 +978,27 @@ public class CriteriaFactory {
 	 * @param bindable プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(
+	public Criteria createCriteria(
 		String clause,
 		Column column,
 		Bindable bindable) {
 		return createCriteria(clause, new Column[] { column }, new Bindable[] { bindable });
+	}
+
+	/**
+	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
+	 * @param id
+	 * @param clause プレースホルダを含む条件句のテンプレート
+	 * @param column 対象となるカラム
+	 * @param bindable プレースホルダに設定する値
+	 * @return 生成されたインスタンス
+	 */
+	public static Criteria createCriteria(
+		QueryId id,
+		String clause,
+		Column column,
+		Bindable bindable) {
+		return createCriteria(id, clause, new Column[] { column }, new Bindable[] { bindable });
 	}
 
 	/**
@@ -971,7 +1008,7 @@ public class CriteriaFactory {
 	 * @param bindable プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(
+	public Criteria createCriteria(
 		String clause,
 		String columnName,
 		Bindable bindable) {
@@ -988,7 +1025,7 @@ public class CriteriaFactory {
 	 * @param bindables プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(
+	public Criteria createCriteria(
 		String clause,
 		Column[] columns,
 		Bindable[] bindables) {
@@ -997,7 +1034,28 @@ public class CriteriaFactory {
 			binders[i] = bindables[i].toBinder();
 		}
 
-		return new Criteria(clause, columns, binders);
+		return new Criteria(id, clause, columns, binders);
+	}
+
+	/**
+	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
+	 * @param id
+	 * @param clause プレースホルダを含む条件句のテンプレート
+	 * @param columns 対象となるカラム
+	 * @param bindables プレースホルダに設定する値
+	 * @return 生成されたインスタンス
+	 */
+	public static Criteria createCriteria(
+		QueryId id,
+		String clause,
+		Column[] columns,
+		Bindable[] bindables) {
+		Binder[] binders = new Binder[bindables.length];
+		for (int i = 0; i < bindables.length; i++) {
+			binders[i] = bindables[i].toBinder();
+		}
+
+		return new Criteria(id, clause, columns, binders);
 	}
 
 	/**
@@ -1007,7 +1065,7 @@ public class CriteriaFactory {
 	 * @param bindables プレースホルダに設定する値
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(
+	public Criteria createCriteria(
 		String clause,
 		String[] columnNames,
 		Bindable[] bindables) {
@@ -1031,7 +1089,7 @@ public class CriteriaFactory {
 	 * @return 生成されたインスタンス
 	 * @throws SubqueryException mainRelationship と subQueryRelationship が異なるテーブルを指す場合
 	 */
-	public static Criteria createSubquery(
+	public Criteria createSubquery(
 		Relationship mainRelationship,
 		Relationship subqueryRelationship,
 		Criteria subquery) {
@@ -1054,16 +1112,16 @@ public class CriteriaFactory {
 	 * @throws SubqueryException サブクエリ側のカラムが属する {@link Relationship} のルートが異なる場合
 	 * @throws SubqueryException サブクエリ用条件内のカラムが属する {@link Relationship} のルートが、サブクエリ側のカラムが属すると異なる場合
 	 */
-	public static Criteria createSubquery(
+	public Criteria createSubquery(
 		Column[] columns,
 		Column[] subqueryColumns,
 		Criteria subquery) {
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns が空です");
 
 		SQLQueryBuilder builder = new SQLQueryBuilder(
-			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath()));
+			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath(), id));
 		builder.setWhereClause(subquery);
-		SelectClause selectClause = new SelectClause();
+		SelectClause selectClause = new SelectClause(id);
 		for (Column column : subqueryColumns) {
 			selectClause.add(column);
 		}
@@ -1082,7 +1140,7 @@ public class CriteriaFactory {
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
 	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
 	 */
-	public static Criteria createSubquery(
+	public Criteria createSubquery(
 		Column[] columns,
 		SQLQueryBuilder subquery,
 		boolean notIn) {
@@ -1112,7 +1170,7 @@ public class CriteriaFactory {
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
 	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
 	 */
-	public static Criteria createSubqueryWithoutCheck(
+	public Criteria createSubqueryWithoutCheck(
 		Column[] columns,
 		SQLQueryBuilder subquery,
 		boolean notIn) {
@@ -1127,7 +1185,7 @@ public class CriteriaFactory {
 		String subqueryString = "(" + String.join(", ", columnPartList) + ") " + (notIn ? "NOT IN" : "IN") + " (" + subquery.sql() + ")";
 
 		List<Binder> binders = new ComplementerValues(subquery).binders();
-		return new Criteria(subqueryString, columns, binders.toArray(new Binder[binders.size()]));
+		return new Criteria(id, subqueryString, columns, binders.toArray(new Binder[binders.size()]));
 	}
 
 	/**
@@ -1140,7 +1198,7 @@ public class CriteriaFactory {
 	 * @throws SubqueryException 主となるクエリ側のカラム数とサブクエリ側の select 句のカラムの数が異なる場合
 	 * @throws SubqueryException サブクエリ側の select 句のカラムが主キーに含まれない場合
 	 */
-	public static Criteria createSubquery(
+	public Criteria createSubquery(
 		ComparisonOperator operator,
 		Column column,
 		SQLQueryBuilder subquery) {
@@ -1148,7 +1206,7 @@ public class CriteriaFactory {
 		String subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
 
 		List<Binder> binders = new ComplementerValues(subquery).binders();
-		return new Criteria(subqueryString, new Column[] { column }, binders.toArray(new Binder[binders.size()]));
+		return new Criteria(id, subqueryString, new Column[] { column }, binders.toArray(new Binder[binders.size()]));
 	}
 
 	private static String buildInClause(int length) {

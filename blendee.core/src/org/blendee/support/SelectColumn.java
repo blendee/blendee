@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.blendee.sql.Column;
+import org.blendee.sql.QueryId;
 
 /**
  * SELECT 句に新しい要素を追加するクラスです。<br>
@@ -30,7 +31,7 @@ public class SelectColumn extends AliasableOffer {
 	@Override
 	public List<ColumnExpression> get() {
 		List<ColumnExpression> list = new LinkedList<>();
-		list.add(new ColumnExpression(column));
+		list.add(new ColumnExpression(relationship.getQueryId(), column));
 
 		return list;
 	}
@@ -44,7 +45,7 @@ public class SelectColumn extends AliasableOffer {
 	@Override
 	public SelectOffer AS(String alias) {
 		relationship.getSelectStatement().quitRowMode();
-		ColumnExpression expression = new ColumnExpression(column);
+		ColumnExpression expression = new ColumnExpression(relationship.getQueryId(), column);
 		expression.AS(alias);
 		return expression;
 	}
@@ -52,5 +53,10 @@ public class SelectColumn extends AliasableOffer {
 	@Override
 	public Column column() {
 		return column;
+	}
+
+	@Override
+	public QueryId queryId() {
+		return relationship.getQueryId();
 	}
 }

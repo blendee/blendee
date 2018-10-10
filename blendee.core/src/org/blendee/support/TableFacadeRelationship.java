@@ -1,6 +1,7 @@
 package org.blendee.support;
 
 import org.blendee.orm.DataObject;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
 
 /**
@@ -33,6 +34,11 @@ public interface TableFacadeRelationship {
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
 	SelectStatement getSelectStatement();
+
+	@SuppressWarnings("javadoc")
+	default QueryId getQueryId() {
+		return getSelectStatement().getQueryId();
+	}
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

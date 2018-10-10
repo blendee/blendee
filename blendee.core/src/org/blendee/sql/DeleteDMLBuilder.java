@@ -22,7 +22,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 
 	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private Criteria criteria = CriteriaFactory.create();
+	private Criteria criteria = new CriteriaFactory(QueryIdFactory.getInstance()).create();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
@@ -40,14 +40,6 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	public DeleteDMLBuilder(RuntimeTablePath path) {
 		this.path = path;
 		alias = " " + path.getAlias();
-	}
-
-	/**
-	 * {@link Searchable} から、コンストラクタで渡したテーブルをルートにした WHERE 句を設定します。
-	 * @param searchable {@link Searchable}
-	 */
-	public void setSearchable(Searchable searchable) {
-		setCriteria(searchable.getCriteria(factory.getInstance(path)));
 	}
 
 	/**

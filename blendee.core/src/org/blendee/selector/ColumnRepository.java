@@ -1,7 +1,6 @@
 package org.blendee.selector;
 
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.RuntimeTablePath;
 import org.blendee.sql.Column;
 
 /**
@@ -17,18 +16,7 @@ public interface ColumnRepository {
 	 * @param id ID
 	 * @return 対応するテーブル
 	 */
-	default TablePath getTablePath(String id) {
-		return getTablePath(id, null);
-	}
-
-	/**
-	 * ID に対応するテーブルを返します。<br>
-	 * リポジトリに ID が存在しない場合は null を返します。
-	 * @param id ID
-	 * @param tablePath テーブル
-	 * @return 対応するテーブル
-	 */
-	TablePath getTablePath(String id, RuntimeTablePath tablePath);
+	TablePath getTablePath(String id);
 
 	/**
 	 * ID と、それに対応するテーブルをリポジトリに登録します。<br>
@@ -59,17 +47,7 @@ public interface ColumnRepository {
 	 * @param id ID
 	 * @return ID が持つ全カラム
 	 */
-	default Column[] getColumns(String id) {
-		return getColumns(id, null);
-	}
-
-	/**
-	 * ID が持つ全カラムを返します。
-	 * @param id ID
-	 * @param tablePath テーブル
-	 * @return ID が持つ全カラム
-	 */
-	Column[] getColumns(String id, RuntimeTablePath tablePath);
+	Column[] getColumns(String id);
 
 	/**
 	 * パラメータの ID に新たなカラムを追加します。<br>

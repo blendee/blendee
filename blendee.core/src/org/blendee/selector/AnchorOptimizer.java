@@ -6,8 +6,8 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.RuntimeTablePath;
 import org.blendee.sql.Column;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
@@ -24,6 +24,8 @@ public class AnchorOptimizer implements Optimizer {
 
 	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
+	private final QueryId queryId;
+
 	private final String id;
 
 	private final Class<?> using;
@@ -37,12 +39,15 @@ public class AnchorOptimizer implements Optimizer {
 
 	AnchorOptimizer(
 		AnchorOptimizerFactory factory,
+		QueryId queryId,
 		String id,
 		TablePath hint,
 		Class<?> using,
 		boolean canAddNewEntries) {
 		Objects.requireNonNull(factory);
 		Objects.requireNonNull(id);
+
+		this.queryId = queryId;
 
 		this.hint = hint;
 		this.canAddNewEntries = canAddNewEntries;
@@ -56,30 +61,9 @@ public class AnchorOptimizer implements Optimizer {
 		}
 	}
 
-	AnchorOptimizer(
-		AnchorOptimizerFactory factory,
-		String id,
-		RuntimeTablePath hint,
-		Class<?> using,
-		boolean canAddNewEntries) {
-		Objects.requireNonNull(factory);
-		Objects.requireNonNull(id);
-
-		this.hint = hint;
-		this.canAddNewEntries = canAddNewEntries;
-		this.id = id;
-		this.using = using;
-
-		if (canAddNewEntries) {
-			repository = factory.createColumnRepository();
-		} else {
-			repository = new StrictColumnRepository(factory.createColumnRepository(), hint);
-		}
-	}
-
 	@Override
 	public TablePath getTablePath() {
-		TablePath path = repository.getTablePath(id, runtimeHint());
+		TablePath path = repository.getTablePath(id);
 		if (path == null) {
 			if (canAddNewEntries && hint != null) {
 				repository.add(id, hint, using.getName());
@@ -93,17 +77,22 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	@Override
+	public QueryId getQueryId() {
+		return queryId;
+	}
+
+	@Override
 	public SelectClause getOptimizedSelectClause() {
 		Column[] columns = getColumns();
 
 		if (columns.length == 0) {
-			if (canAddNewEntries) return new InitialSelectClause();
+			if (canAddNewEntries) return new InitialSelectClause(queryId);
 
 			// canAddNewEntries されていないのに 検索項目が 0 件のものはエラーとする
 			throw new IllegalStateException("この optimizer は項目が一つもありません");
 		}
 
-		SelectClause clause = new SelectClause();
+		SelectClause clause = new SelectClause(queryId);
 		for (int i = 0; i < columns.length; i++) {
 			clause.add(columns[i]);
 		}
@@ -124,14 +113,14 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	private Column[] getColumns() {
-		return repository.getColumns(id, runtimeHint());
-	}
-
-	private RuntimeTablePath runtimeHint() {
-		return hint instanceof RuntimeTablePath ? (RuntimeTablePath) hint : null;
+		return repository.getColumns(id);
 	}
 
 	private static class InitialSelectClause extends SelectClause {
+
+		private InitialSelectClause(QueryId id) {
+			super(id);
+		}
 
 		@Override
 		public String toString(boolean joining) {
@@ -140,8 +129,8 @@ public class AnchorOptimizer implements Optimizer {
 		}
 
 		@Override
-		protected SelectClause createNewInstance() {
-			return new InitialSelectClause();
+		protected SelectClause createNewInstance(QueryId id) {
+			return new InitialSelectClause(id);
 		}
 	}
 

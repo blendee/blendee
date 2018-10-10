@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
-import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.QueryId;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
 
 /**
@@ -40,7 +41,7 @@ public interface SelectRelationship {
 	 * @return SELECT 句
 	 */
 	default SelectOffer ls(SelectOffer... offers) {
-		SelectOffers visitor = new SelectOffers();
+		SelectOffers visitor = new SelectOffers(getSelectStatement().getQueryId());
 		for (SelectOffer offer : offers) {
 			offer.get().forEach(c -> visitor.add(c));
 		}
@@ -57,8 +58,9 @@ public interface SelectRelationship {
 
 			@Override
 			public List<ColumnExpression> get() {
+				QueryId id = getSelectStatement().getQueryId();
 				return Arrays.stream(getRelationship().getColumns())
-					.map(c -> new ColumnExpression(c))
+					.map(c -> new ColumnExpression(id, c))
 					.collect(Collectors.toList());
 			}
 		};
@@ -74,8 +76,9 @@ public interface SelectRelationship {
 
 			@Override
 			public List<ColumnExpression> get() {
+				QueryId id = getSelectStatement().getQueryId();
 				return Arrays.stream(relationship.getRelationship().getColumns())
-					.map(c -> new ColumnExpression(c))
+					.map(c -> new ColumnExpression(id, c))
 					.collect(Collectors.toList());
 			}
 		};
@@ -122,7 +125,7 @@ public interface SelectRelationship {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COUNT() {
-		return new ColumnExpression(COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false));
+		return new ColumnExpression(getSelectStatement().getQueryId(), COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false));
 	}
 
 	/**
@@ -156,7 +159,7 @@ public interface SelectRelationship {
 		}
 
 		for (Object value : values) {
-			all.add(new ColumnExpression("{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+			all.add(new ColumnExpression(getSelectStatement().getQueryId(), "{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
 		}
 
 		int size = all.size();
@@ -177,7 +180,7 @@ public interface SelectRelationship {
 		all.add(column);
 
 		for (Object value : values) {
-			all.add(new ColumnExpression("{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+			all.add(new ColumnExpression(getSelectStatement().getQueryId(), "{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
 		}
 
 		int size = all.size();
@@ -201,7 +204,7 @@ public interface SelectRelationship {
 			columns[i] = selectColumns[i].column();
 		}
 
-		return new ColumnExpression(template, columns);
+		return new ColumnExpression(getSelectStatement().getQueryId(), template, columns);
 	}
 
 	/**
@@ -212,7 +215,7 @@ public interface SelectRelationship {
 	default AliasableOffer any(String expression) {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), expression, false) };
-		return new ColumnExpression("{0}", columns);
+		return new ColumnExpression(getSelectStatement().getQueryId(), "{0}", columns);
 	}
 
 	/**
@@ -223,7 +226,7 @@ public interface SelectRelationship {
 	default AliasableOffer any(Number number) {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), number.toString(), false) };
-		return new ColumnExpression("{0}", columns);
+		return new ColumnExpression(getSelectStatement().getQueryId(), "{0}", columns);
 	}
 
 	/**
@@ -241,7 +244,7 @@ public interface SelectRelationship {
 		builder.forSubquery(true);
 
 		Column[] columns = { new PseudoColumn(getRelationship(), builder.sql(), false) };
-		return new ColumnExpression("({0})", columns, builder);
+		return new ColumnExpression(getSelectStatement().getQueryId(), "({0})", columns, builder);
 	}
 
 	/**
@@ -252,8 +255,10 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
 
-		SelectOffers offers = new SelectOffers();
-		offers.add(new ColumnExpression("{0}", columns));
+		QueryId id = getSelectStatement().getQueryId();
+
+		SelectOffers offers = new SelectOffers(id);
+		offers.add(new ColumnExpression(id, "{0}", columns));
 
 		return offers;
 	}
@@ -267,8 +272,10 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
 
-		SelectOffers offers = new SelectOffers();
-		offers.add(new ColumnExpression("{0}", columns));
+		QueryId id = getSelectStatement().getQueryId();
+
+		SelectOffers offers = new SelectOffers(id);
+		offers.add(new ColumnExpression(id, "{0}", columns));
 
 		return offers;
 	}
@@ -281,8 +288,10 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
 
-		SelectOffers offers = new SelectOffers();
-		offers.add(new ColumnExpression("{0}", columns));
+		QueryId id = getSelectStatement().getQueryId();
+
+		SelectOffers offers = new SelectOffers(id);
+		offers.add(new ColumnExpression(id, "{0}", columns));
 
 		return offers;
 	}
@@ -294,7 +303,7 @@ public interface SelectRelationship {
 	 * @return {@link GroupByColumn}
 	 */
 	default SelectOffer order(int order, SelectOffer offer) {
-		SelectOffers offers = new SelectOffers();
+		SelectOffers offers = new SelectOffers(getSelectStatement().getQueryId());
 		offer.get().forEach(c -> {
 			c.order(order);
 			offers.add(c);

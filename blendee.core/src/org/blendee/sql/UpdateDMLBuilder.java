@@ -15,7 +15,7 @@ public class UpdateDMLBuilder extends Updater {
 
 	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
 
-	private Criteria criteria = CriteriaFactory.create();
+	private Criteria criteria = new CriteriaFactory(QueryIdFactory.getInstance()).create();
 
 	private final String alias;
 
@@ -41,14 +41,6 @@ public class UpdateDMLBuilder extends Updater {
 	public int complement(int done, BPreparedStatement statement) {
 		done = super.complement(done, statement);
 		return criteria.complement(done, statement);
-	}
-
-	/**
-	 * {@link Searchable} から、コンストラクタで渡したテーブルをルートにした WHERE 句を設定します。
-	 * @param searchable {@link Searchable}
-	 */
-	public void setSearchable(Searchable searchable) {
-		setCriteria(searchable.getCriteria(factory.getInstance(getTablePath())));
 	}
 
 	/**

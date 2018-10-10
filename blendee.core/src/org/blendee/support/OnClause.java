@@ -37,7 +37,7 @@ public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationshi
 		//二重に呼ばれた際の処置
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria contextCriteria = CriteriaFactory.create();
+			Criteria contextCriteria = new CriteriaFactory(queryBuilder.getQueryId()).create();
 			CriteriaContext.setContextCriteria(contextCriteria);
 
 			for (BiConsumer<L, R> consumer : consumers) {

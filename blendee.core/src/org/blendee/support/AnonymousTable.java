@@ -16,6 +16,8 @@ import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.PseudoColumn;
+import org.blendee.sql.QueryId;
+import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
@@ -51,6 +53,8 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 
 	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext = TableFacadeContext
 		.newOnRightBuilder();
+
+	private final QueryId id = QueryIdFactory.getInstance();
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
@@ -157,7 +161,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	private class Behavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private Behavior() {
-			super(new AnonymousFromClause(relationship), AnonymousTable.this);
+			super(new AnonymousFromClause(relationship, id), AnonymousTable.this);
 		}
 
 		@Override
@@ -324,22 +328,22 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param sql UNION 対象
+	 * @param select UNION 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public AnonymousTable UNION(ComposedSQL sql) {
-		behavior().UNION(sql);
+	public AnonymousTable UNION(SelectStatement select) {
+		behavior().UNION(select);
 		return this;
 	}
 
 	/**
 	 * UNION ALL するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param sql UNION ALL 対象
+	 * @param select UNION ALL 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public AnonymousTable UNION_ALL(ComposedSQL sql) {
-		behavior().UNION_ALL(sql);
+	public AnonymousTable UNION_ALL(SelectStatement select) {
+		behavior().UNION_ALL(select);
 		return this;
 	}
 
@@ -635,6 +639,11 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	}
 
 	@Override
+	public QueryId getQueryId() {
+		return id;
+	}
+
+	@Override
 	public String toString() {
 		careEmptySelect();
 		return behavior().toString();
@@ -643,7 +652,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	private void careEmptySelect() {
 		SelectClause select = behavior().getSelectClause();
 		if (select == null || select.getColumnsSize() == 0) {
-			select = new SelectClause();
+			select = new SelectClause(QueryIdFactory.getInstance());
 			select.add("{0}", new PseudoColumn(relationship, "*", true));
 			behavior().setSelectClause(select);
 		}

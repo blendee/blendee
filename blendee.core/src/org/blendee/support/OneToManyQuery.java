@@ -11,6 +11,7 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
+import org.blendee.sql.QueryId;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
@@ -35,6 +36,8 @@ public abstract class OneToManyQuery<O extends Row, M>
 	TableFacadeRelationship self() {
 		return self;
 	}
+
+	abstract QueryId queryId();
 
 	/**
 	 * 検索を実行します。
@@ -65,9 +68,9 @@ public abstract class OneToManyQuery<O extends Row, M>
 		if (columns.length != primaryKeyMembers.length)
 			throw new IllegalArgumentException("primaryKeyMembers の数が正しくありません");
 
-		Criteria criteria = CriteriaFactory.create();
+		Criteria criteria = new CriteriaFactory(queryId()).create();
 		for (int i = 0; i < columns.length; i++) {
-			criteria.and(columns[i].getCriteria(primaryKeyMembers[i]));
+			criteria.and(columns[i].getCriteria(queryId(), primaryKeyMembers[i]));
 		}
 
 		List<TableFacadeRelationship> route = route();

@@ -12,9 +12,13 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
  */
 public abstract class Clause implements ChainPreparedStatementComplementer {
 
-	private String cache;
+	@SuppressWarnings("javadoc")
+	protected final QueryId queryId;
 
-	private boolean joined = false;
+	@SuppressWarnings("javadoc")
+	protected Clause(QueryId queryId) {
+		this.queryId = queryId;
+	}
 
 	/**
 	 * SQL 文の句を生成します。
@@ -30,10 +34,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 * @return SQL 文の句
 	 */
 	public String toString(boolean joining) {
-		if (joined == joining && cache != null) return cache;
-		cache = " " + getKeyword() + " " + SQLFragmentFormat.execute(getTemplate(), toString(joining, getColumns()));
-		joined = joining;
-		return cache;
+		return " " + getKeyword() + " " + SQLFragmentFormat.execute(getTemplate(), toString(joining, getColumns()));
 	}
 
 	/**
@@ -68,13 +69,6 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 */
 	public abstract Clause replicate();
 
-	/**
-	 * 一度生成したときのキャッシュを空にします。
-	 */
-	protected void clearCache() {
-		cache = null;
-	}
-
 	abstract String getTemplate();
 
 	abstract String getKeyword();
@@ -88,12 +82,12 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 		}
 	}
 
-	private static String[] toString(boolean joining, Column[] columns) {
+	private String[] toString(boolean joining, Column[] columns) {
 		int length = columns.length;
 		String[] columnNames = new String[length];
 		for (int i = 0; i < length; i++) {
 			if (joining) {
-				columnNames[i] = columns[i].getComplementedName();
+				columnNames[i] = columns[i].getComplementedName(queryId);
 			} else {
 				columnNames[i] = columns[i].getName();
 			}

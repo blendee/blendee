@@ -20,7 +20,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void EXISTS(SelectStatement subquery) {
-		Exists.setExists(this, subquery, "EXISTS");
+		Exists.setExists(getSelectStatement().getQueryId(), this, subquery, "EXISTS");
 	}
 
 	/**
@@ -28,7 +28,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void NOT_EXISTS(SelectStatement subquery) {
-		Exists.setExists(this, subquery, "NOT EXISTS");
+		Exists.setExists(getSelectStatement().getQueryId(), this, subquery, "NOT EXISTS");
 	}
 
 	/**
@@ -70,7 +70,7 @@ public interface CriteriaRelationship {
 		WithValues values = new WithValues();
 		consumer.accept(values);
 
-		getContext().addCriteria(values.createCriteria(template));
+		getContext().addCriteria(values.createCriteria(getSelectStatement().getQueryId(), template));
 	}
 
 	/**
@@ -78,11 +78,11 @@ public interface CriteriaRelationship {
 	 * @param expression カラムの文字列表現
 	 */
 	default void with(String expression) {
-		getContext().addCriteria(CriteriaFactory.createCriteria(expression));
+		getContext().addCriteria(new CriteriaFactory(getSelectStatement().getQueryId()).createCriteria(expression));
 	}
 
 	/**
-	 * この句にサブクエリ条件を追加します。
+	 * この句に IN サブクエリ条件を追加します。
 	 * @param subquery 追加条件
 	 */
 	default void subquery(SelectStatement subquery) {
@@ -90,7 +90,7 @@ public interface CriteriaRelationship {
 	}
 
 	/**
-	 * この句にサブクエリ条件を追加します。
+	 * この句に IN サブクエリ条件を追加します。
 	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
 	 */
@@ -99,7 +99,7 @@ public interface CriteriaRelationship {
 	}
 
 	/**
-	 * この句にサブクエリ条件を追加します。
+	 * この句に IN サブクエリ条件を追加します。
 	 * @param notIn NOT IN の場合 true
 	 * @param subquery 追加条件
 	 */
@@ -108,7 +108,7 @@ public interface CriteriaRelationship {
 	}
 
 	/**
-	 * この句にサブクエリ条件を追加します。
+	 * この句に IN サブクエリ条件を追加します。
 	 * @param notIn NOT IN の場合 true
 	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
@@ -120,7 +120,7 @@ public interface CriteriaRelationship {
 			columns[i] = mainColumns[i].column();
 		}
 
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, columns));
+		getContext().addCriteria(Subquery.createCriteria(getSelectStatement().getQueryId(), subquery.toSQLQueryBuilder(), notIn, columns));
 	}
 
 	/**

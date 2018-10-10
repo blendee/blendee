@@ -3,6 +3,7 @@ package org.blendee.selector;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ManagementSubject;
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.QueryId;
 
 /**
  * {@link AnchorOptimizer} を生成するためのファクトリクラスです。
@@ -56,11 +57,13 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
+	 * @param queryId
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id) {
+	public AnchorOptimizer getInstance(String id, QueryId queryId) {
 		return new AnchorOptimizer(
 			this,
+			queryId,
 			id,
 			null,
 			getUsingClass(new Throwable().getStackTrace()[0]),
@@ -70,12 +73,14 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
+	 * @param queryId
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, TablePath hint) {
+	public AnchorOptimizer getInstance(String id, QueryId queryId, TablePath hint) {
 		return new AnchorOptimizer(
 			this,
+			queryId,
 			id,
 			hint,
 			getUsingClass(new Throwable().getStackTrace()[0]),
@@ -85,22 +90,24 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
+	 * @param queryId
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, Class<?> using) {
-		return new AnchorOptimizer(this, id, null, using, canAddNewEntries());
+	public AnchorOptimizer getInstance(String id, QueryId queryId, Class<?> using) {
+		return new AnchorOptimizer(this, queryId, id, null, using, canAddNewEntries());
 	}
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
+	 * @param queryId
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, TablePath hint, Class<?> using) {
-		return new AnchorOptimizer(this, id, hint, using, canAddNewEntries());
+	public AnchorOptimizer getInstance(String id, QueryId queryId, TablePath hint, Class<?> using) {
+		return new AnchorOptimizer(this, queryId, id, hint, using, canAddNewEntries());
 	}
 
 	private static Class<?> getUsingClass(StackTraceElement first) {
