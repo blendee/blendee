@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * {@link SelectStatement} に SELECT 句を設定するための関数型インターフェイスです。
@@ -28,9 +28,9 @@ public interface SelectOfferFunction<R extends SelectRelationship> {
 
 		private final List<ColumnExpression> expressions = new LinkedList<>();
 
-		private final QueryId id;
+		private final RuntimeId id;
 
-		SelectOffers(QueryId id) {
+		SelectOffers(RuntimeId id) {
 			this.id = id;
 		}
 

@@ -1,6 +1,5 @@
 package org.blendee.selector;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -8,6 +7,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.sql.Column;
@@ -17,8 +17,7 @@ import org.blendee.sql.Column;
  * @author 千葉 哲嗣
  * @see Selector#select()
  */
-public class SelectedValuesIterator
-	implements AutoCloseable, Iterable<SelectedValues>, Iterator<SelectedValues> {
+public class SelectedValuesIterator implements AutoCloseableIterator<SelectedValues> {
 
 	private final BStatement statement;
 
@@ -43,11 +42,6 @@ public class SelectedValuesIterator
 		this.result = result;
 		this.columns = columns;
 		this.converter = converter;
-	}
-
-	@Override
-	public Iterator<SelectedValues> iterator() {
-		return this;
 	}
 
 	/**

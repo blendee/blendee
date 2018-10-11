@@ -8,7 +8,7 @@ import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.ListClause;
 import org.blendee.sql.MultiColumn;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SelectClause;
 
 /**
@@ -18,7 +18,7 @@ import org.blendee.sql.SelectClause;
  */
 public class ColumnExpression extends AliasableOffer {
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final StringBuilder expression = new StringBuilder();
 
@@ -31,7 +31,7 @@ public class ColumnExpression extends AliasableOffer {
 	/**
 	 * @param column {@link Column}
 	 */
-	ColumnExpression(QueryId id, Column column) {
+	ColumnExpression(RuntimeId id, Column column) {
 		this.id = id;
 		this.columns = new Column[] { column };
 		complementer = null;
@@ -41,14 +41,14 @@ public class ColumnExpression extends AliasableOffer {
 	 * @param expression テンプレート
 	 * @param columns {@link Column}
 	 */
-	ColumnExpression(QueryId id, String expression, Column... columns) {
+	ColumnExpression(RuntimeId id, String expression, Column... columns) {
 		this.id = id;
 		this.expression.append(expression);
 		this.columns = columns;
 		complementer = null;
 	}
 
-	ColumnExpression(QueryId id, String expression, Column[] columns, ChainPreparedStatementComplementer complementer) {
+	ColumnExpression(RuntimeId id, String expression, Column[] columns, ChainPreparedStatementComplementer complementer) {
 		this.id = id;
 		this.columns = columns;
 		this.expression.append(expression);
@@ -84,7 +84,7 @@ public class ColumnExpression extends AliasableOffer {
 	}
 
 	@Override
-	public QueryId queryId() {
+	public RuntimeId queryId() {
 		return id;
 	}
 

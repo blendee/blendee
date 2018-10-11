@@ -16,7 +16,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	/**
 	 * @param id
 	 */
-	public OrderByClause(QueryId id) {
+	public OrderByClause(RuntimeId id) {
 		super(id);
 	}
 
@@ -216,7 +216,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	}
 
 	@Override
-	protected OrderByClause createNewInstance(QueryId id) {
+	protected OrderByClause createNewInstance(RuntimeId id) {
 		return new OrderByClause(id);
 	}
 

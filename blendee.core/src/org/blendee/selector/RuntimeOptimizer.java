@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SelectClause;
 
@@ -16,7 +16,7 @@ public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements O
 
 	private final TablePath path;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final SelectClause select;
 
@@ -25,7 +25,7 @@ public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements O
 	 * @param path 対象テーブル
 	 * @param id
 	 */
-	public RuntimeOptimizer(TablePath path, QueryId id) {
+	public RuntimeOptimizer(TablePath path, RuntimeId id) {
 		this.path = Objects.requireNonNull(path);
 		this.id = Objects.requireNonNull(id);
 		select = new SelectClause(id);
@@ -58,7 +58,7 @@ public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements O
 	}
 
 	@Override
-	public QueryId getQueryId() {
+	public RuntimeId getQueryId() {
 		return id;
 	}
 

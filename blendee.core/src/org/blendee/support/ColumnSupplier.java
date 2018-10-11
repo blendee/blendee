@@ -1,7 +1,7 @@
 package org.blendee.support;
 
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * {@link Column} を内部に保持するものを表すインターフェイスです。
@@ -15,5 +15,5 @@ public interface ColumnSupplier {
 	Column column();
 
 	@SuppressWarnings("javadoc")
-	QueryId queryId();
+	RuntimeId queryId();
 }

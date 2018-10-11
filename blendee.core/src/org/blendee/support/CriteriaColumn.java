@@ -11,8 +11,8 @@ import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.CriteriaFactory.ComparisonOperator;
 import org.blendee.sql.CriteriaFactory.Match;
 import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdColumn;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdColumn;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
@@ -1179,11 +1179,11 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 		return logocalOperators();
 	}
 
-	private O addAnotherColumnCriteria(QueryId id, Column another, String template) {
+	private O addAnotherColumnCriteria(RuntimeId id, Column another, String template) {
 		getContext().addCriteria(
 			factory.createCriteria(
 				template,
-				new Column[] { column(), new QueryIdColumn(another, id) },
+				new Column[] { column(), new RuntimeIdColumn(another, id) },
 				Bindable.EMPTY_ARRAY));
 
 		return logocalOperators();

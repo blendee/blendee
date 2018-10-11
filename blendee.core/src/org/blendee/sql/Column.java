@@ -35,7 +35,7 @@ public interface Column extends Comparable<Column> {
 	 * @param bindable 比較値
 	 * @return 生成された条件句
 	 */
-	default Criteria getCriteria(QueryId id, Bindable bindable) {
+	default Criteria getCriteria(RuntimeId id, Bindable bindable) {
 		return new CriteriaFactory(id).create(this, bindable);
 	}
 
@@ -80,7 +80,7 @@ public interface Column extends Comparable<Column> {
 	 * @param id
 	 * @return テーブル別名を含むカラム名
 	 */
-	String getComplementedName(QueryId id);
+	String getComplementedName(RuntimeId id);
 
 	/**
 	 * このカラムと同じカラムを、他の {@link Relationship} のツリーから探します。

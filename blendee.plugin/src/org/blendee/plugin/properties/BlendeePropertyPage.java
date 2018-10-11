@@ -295,8 +295,8 @@ public class BlendeePropertyPage
 
 		/*---------------------------------------------------*/
 		ClassFieldEditor managerParentClassEditor = new ClassFieldEditor(
-			Constants.ROW_MANAGER_PARENT_CLASS,
-			"自動生成 RowManager の親クラス",
+			Constants.TABLE_FACADE_PARENT_CLASS,
+			"自動生成 TableFacade の親クラス",
 			element.getProject(),
 			getFieldEditorParent()) {
 
@@ -425,7 +425,7 @@ public class BlendeePropertyPage
 
 		changed |= checkAndSetValue(store, properties, Constants.METADATA_FACTORY_CLASS);
 
-		changed |= checkAndSetValue(store, properties, Constants.ROW_MANAGER_PARENT_CLASS);
+		changed |= checkAndSetValue(store, properties, Constants.TABLE_FACADE_PARENT_CLASS);
 
 		changed |= checkAndSetValue(store, properties, Constants.ROW_PARENT_CLASS);
 
@@ -517,8 +517,8 @@ public class BlendeePropertyPage
 			store.getString(Constants.METADATA_FACTORY_CLASS));
 
 		store.setDefault(
-			Constants.ROW_MANAGER_PARENT_CLASS,
-			store.getString(Constants.ROW_MANAGER_PARENT_CLASS));
+			Constants.TABLE_FACADE_PARENT_CLASS,
+			store.getString(Constants.TABLE_FACADE_PARENT_CLASS));
 
 		store.setDefault(
 			Constants.ROW_PARENT_CLASS,

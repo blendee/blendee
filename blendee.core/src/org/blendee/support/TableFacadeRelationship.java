@@ -1,7 +1,7 @@
 package org.blendee.support;
 
 import org.blendee.orm.DataObject;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 
 /**
@@ -36,7 +36,7 @@ public interface TableFacadeRelationship {
 	SelectStatement getSelectStatement();
 
 	@SuppressWarnings("javadoc")
-	default QueryId getQueryId() {
+	default RuntimeId getQueryId() {
 		return getSelectStatement().getQueryId();
 	}
 

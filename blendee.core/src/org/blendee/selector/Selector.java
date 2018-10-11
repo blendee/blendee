@@ -7,14 +7,13 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -49,7 +48,7 @@ public class Selector {
 	 * @param path ルートテーブル
 	 * @param id
 	 */
-	public Selector(TablePath path, QueryId id) {
+	public Selector(TablePath path, RuntimeId id) {
 		this(new SimpleOptimizer(path, id));
 	}
 
@@ -59,7 +58,7 @@ public class Selector {
 	 */
 	public Selector(Optimizer optimizer) {
 		TablePath path = optimizer.getTablePath();
-		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
+		root = RelationshipFactory.getInstance().getInstance(path);
 		builder = new SQLQueryBuilder(new FromClause(path, optimizer.getQueryId()));
 		this.optimizer = optimizer;
 	}

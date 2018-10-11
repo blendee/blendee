@@ -3,7 +3,7 @@ package org.blendee.support;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 
 /**
@@ -35,7 +35,7 @@ class Subquery {
 	 * @param mainQueryColumn メインクエリ側のカラム
 	 * @return {@link Criteria} となったサブクエリ
 	 */
-	static Criteria createCriteria(QueryId main, SQLQueryBuilder builder, boolean notIn, Column... mainQueryColumn) {
+	static Criteria createCriteria(RuntimeId main, SQLQueryBuilder builder, boolean notIn, Column... mainQueryColumn) {
 		return new CriteriaFactory(main)
 			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
 			.createSubqueryWithoutCheck(

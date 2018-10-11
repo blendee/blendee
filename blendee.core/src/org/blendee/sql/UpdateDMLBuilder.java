@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -13,9 +12,9 @@ import org.blendee.jdbc.TablePath;
  */
 public class UpdateDMLBuilder extends Updater {
 
-	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = RelationshipFactory.getInstance();
 
-	private Criteria criteria = new CriteriaFactory(QueryIdFactory.getInstance()).create();
+	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.getInstance()).create();
 
 	private final String alias;
 
@@ -31,10 +30,11 @@ public class UpdateDMLBuilder extends Updater {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path UPDATE 対象テーブル
+	 * @param id
 	 */
-	public UpdateDMLBuilder(RuntimeTablePath path) {
+	public UpdateDMLBuilder(TablePath path, RuntimeId id) {
 		super(path);
-		alias = " " + path.getAlias();
+		alias = " " + id.toAlias(factory.getInstance(path));
 	}
 
 	@Override

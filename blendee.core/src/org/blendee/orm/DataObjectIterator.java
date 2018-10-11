@@ -1,12 +1,12 @@
 package org.blendee.orm;
 
-import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.SelectedValuesIterator;
 import org.blendee.sql.Criteria;
@@ -20,8 +20,7 @@ import org.blendee.sql.SQLDecorator;
  * @see DataAccessHelper#getDataObjects(Optimizer, Criteria, OrderByClause, SQLDecorator...)
  * @see DataAccessHelper#regetDataObjects(Optimizer)
  */
-public class DataObjectIterator
-	implements AutoCloseable, Iterable<DataObject>, Iterator<DataObject> {
+public class DataObjectIterator implements Iterable<DataObject>, AutoCloseableIterator<DataObject> {
 
 	private final Relationship relationship;
 
@@ -36,11 +35,6 @@ public class DataObjectIterator
 		this.relationship = relationship;
 		this.iterator = iterator;
 		this.readonly = readonly;
-	}
-
-	@Override
-	public Iterator<DataObject> iterator() {
-		return this;
 	}
 
 	/**

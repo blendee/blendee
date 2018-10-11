@@ -1,12 +1,12 @@
 package org.blendee.support;
 
-import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 
@@ -16,7 +16,7 @@ import org.blendee.orm.DataObjectIterator;
  * @param <R> 要素
  */
 public abstract class RowIterator<R extends Row>
-	implements AutoCloseable, Iterable<R>, Iterator<R> {
+	implements AutoCloseableIterator<R> {
 
 	private final DataObjectIterator iterator;
 
@@ -26,11 +26,6 @@ public abstract class RowIterator<R extends Row>
 	 */
 	public RowIterator(DataObjectIterator iterator) {
 		this.iterator = iterator;
-	}
-
-	@Override
-	public Iterator<R> iterator() {
-		return this;
 	}
 
 	/**

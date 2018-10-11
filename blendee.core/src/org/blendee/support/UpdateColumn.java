@@ -1,7 +1,7 @@
 package org.blendee.support;
 
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * UPDATE 文に新しい要素を追加するクラスです。<br>
@@ -12,7 +12,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 
 	private final Column column;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -32,7 +32,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 	}
 
 	@Override
-	public QueryId queryId() {
+	public RuntimeId queryId() {
 		return id;
 	}
 }

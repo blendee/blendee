@@ -7,7 +7,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
@@ -24,7 +24,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
-	private final QueryId queryId;
+	private final RuntimeId queryId;
 
 	private final String id;
 
@@ -39,7 +39,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	AnchorOptimizer(
 		AnchorOptimizerFactory factory,
-		QueryId queryId,
+		RuntimeId queryId,
 		String id,
 		TablePath hint,
 		Class<?> using,
@@ -77,7 +77,7 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	@Override
-	public QueryId getQueryId() {
+	public RuntimeId getQueryId() {
 		return queryId;
 	}
 
@@ -118,7 +118,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	private static class InitialSelectClause extends SelectClause {
 
-		private InitialSelectClause(QueryId id) {
+		private InitialSelectClause(RuntimeId id) {
 			super(id);
 		}
 
@@ -129,7 +129,7 @@ public class AnchorOptimizer implements Optimizer {
 		}
 
 		@Override
-		protected SelectClause createNewInstance(QueryId id) {
+		protected SelectClause createNewInstance(RuntimeId id) {
 			return new InitialSelectClause(id);
 		}
 	}

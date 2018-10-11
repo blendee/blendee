@@ -11,7 +11,6 @@ import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;
@@ -26,8 +25,8 @@ import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -55,11 +54,11 @@ public class DataAccessHelper {
 
 	private static final ThreadLocal<StatementFacade> threadStatement = new ThreadLocal<StatementFacade>();
 
-	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = RelationshipFactory.getInstance();
 
 	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final boolean useCache;
 
@@ -67,7 +66,7 @@ public class DataAccessHelper {
 	 * インスタンスを生成します。
 	 * @param id
 	 */
-	public DataAccessHelper(QueryId id) {
+	public DataAccessHelper(RuntimeId id) {
 		this(id, false);
 	}
 
@@ -76,7 +75,7 @@ public class DataAccessHelper {
 	 * @param id
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
-	public DataAccessHelper(QueryId id, boolean useCache) {
+	public DataAccessHelper(RuntimeId id, boolean useCache) {
 		this.id = id;
 		this.useCache = useCache;
 	}
@@ -85,7 +84,7 @@ public class DataAccessHelper {
 	 * インスタンスを生成します。
 	 */
 	public DataAccessHelper() {
-		this(QueryIdFactory.getInstance(), false);
+		this(RuntimeIdFactory.getInstance(), false);
 	}
 
 	/**
@@ -93,7 +92,7 @@ public class DataAccessHelper {
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
 	public DataAccessHelper(boolean useCache) {
-		this(QueryIdFactory.getInstance(), useCache);
+		this(RuntimeIdFactory.getInstance(), useCache);
 	}
 
 	/**

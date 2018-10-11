@@ -72,7 +72,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 	public SQLQueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
 
-		QueryId id = fromClause.getQueryId();
+		RuntimeId id = fromClause.getQueryId();
 
 		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause(id);
 		groupClause = new GroupByClause(id);
@@ -364,7 +364,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 	private class SelectAsteriskClause extends SelectClause {
 
 		private SelectAsteriskClause() {
-			super(QueryIdFactory.getInstance());
+			super(RuntimeIdFactory.getInstance());
 		}
 
 		@Override

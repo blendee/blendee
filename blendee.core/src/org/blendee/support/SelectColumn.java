@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * SELECT 句に新しい要素を追加するクラスです。<br>
@@ -56,7 +56,7 @@ public class SelectColumn extends AliasableOffer {
 	}
 
 	@Override
-	public QueryId queryId() {
+	public RuntimeId queryId() {
 		return relationship.getQueryId();
 	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.orm.DataObject;
 import org.blendee.sql.Relationship;
 
@@ -17,7 +18,7 @@ import org.blendee.sql.Relationship;
  * @param <O> One {@link Many} の要素
  * @param <M> Many {@link Many} の要素を一とした場合の、一対多の多側の型連鎖
  */
-public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>>, Iterator<One<O, M>> {
+public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseableIterator<One<O, M>> {
 
 	private final DataObjectManager manager;
 
@@ -87,11 +88,6 @@ public class Many<O extends Row, M> implements AutoCloseable, Iterable<One<O, M>
 		}
 
 		return true;
-	}
-
-	@Override
-	public Many<O, M> iterator() {
-		return this;
 	}
 
 	/**

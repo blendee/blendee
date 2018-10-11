@@ -3,7 +3,7 @@ package org.blendee.selector;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SelectClause;
 
@@ -19,7 +19,7 @@ public class SynchronizedSelector extends Selector {
 	 * @param path ルートテーブル
 	 * @param id
 	 */
-	public SynchronizedSelector(TablePath path, QueryId id) {
+	public SynchronizedSelector(TablePath path, RuntimeId id) {
 		super(path, id);
 	}
 

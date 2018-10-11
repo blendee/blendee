@@ -62,7 +62,7 @@ public class CriteriaFactory {
 			expression = "{0} " + operator + " ?";
 		}
 
-		private Criteria create(QueryId id, Column column, Bindable bindable) {
+		private Criteria create(RuntimeId id, Column column, Bindable bindable) {
 			return createCriteria(id, expression, new Column[] { column }, new Bindable[] { bindable });
 		}
 
@@ -121,7 +121,7 @@ public class CriteriaFactory {
 			}
 
 			@Override
-			Criteria create(QueryId id, String clause, Column column, String value) {
+			Criteria create(RuntimeId id, String clause, Column column, String value) {
 				return createCriteria(id, clause, column, new StringBinder(value));
 			}
 		};
@@ -130,15 +130,15 @@ public class CriteriaFactory {
 
 		abstract String decorate(String value);
 
-		private Criteria create(QueryId id, Column column, String value) {
+		private Criteria create(RuntimeId id, Column column, String value) {
 			return create(id, "{0} LIKE ?", column, value);
 		}
 
-		private Criteria createNot(QueryId id, Column column, String value) {
+		private Criteria createNot(RuntimeId id, Column column, String value) {
 			return create(id, "{0} NOT LIKE ?", column, value);
 		}
 
-		Criteria create(QueryId id, String clause, Column column, String value) {
+		Criteria create(RuntimeId id, String clause, Column column, String value) {
 			Matcher matcher = pattern.matcher(value);
 			if (!matcher.find()) return createCriteria(
 				id,
@@ -175,15 +175,15 @@ public class CriteriaFactory {
 			this.expression = "{0} " + expression;
 		}
 
-		private Criteria create(QueryId id, Column column) {
+		private Criteria create(RuntimeId id, Column column) {
 			return createCriteria(id, expression, new Column[] { column });
 		}
 	}
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	@SuppressWarnings("javadoc")
-	public CriteriaFactory(QueryId id) {
+	public CriteriaFactory(RuntimeId id) {
 		this.id = id;
 	}
 
@@ -944,7 +944,7 @@ public class CriteriaFactory {
 	 * @param columns 対象となるカラム
 	 * @return 生成されたインスタンス
 	 */
-	public static Criteria createCriteria(QueryId id, String clause, Column[] columns) {
+	public static Criteria createCriteria(RuntimeId id, String clause, Column[] columns) {
 		return new Criteria(id, clause, columns, Binder.EMPTY_ARRAY);
 	}
 
@@ -994,7 +994,7 @@ public class CriteriaFactory {
 	 * @return 生成されたインスタンス
 	 */
 	public static Criteria createCriteria(
-		QueryId id,
+		RuntimeId id,
 		String clause,
 		Column column,
 		Bindable bindable) {
@@ -1046,7 +1046,7 @@ public class CriteriaFactory {
 	 * @return 生成されたインスタンス
 	 */
 	public static Criteria createCriteria(
-		QueryId id,
+		RuntimeId id,
 		String clause,
 		Column[] columns,
 		Bindable[] bindables) {

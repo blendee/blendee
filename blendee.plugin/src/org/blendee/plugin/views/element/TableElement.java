@@ -119,7 +119,7 @@ public class TableElement extends PropertySourceElement {
 		TableFacadeGenerator generator = new TableFacadeGenerator(
 			BlendeeManager.get().getMetadata(),
 			baseFragment.getElementName(),
-			plugin.getRowManagerParentClass(),
+			plugin.getTableFacadeParentClass(),
 			plugin.getRowParentClass(),
 			plugin.getCodeFormatter(),
 			plugin.useNumberClass(),

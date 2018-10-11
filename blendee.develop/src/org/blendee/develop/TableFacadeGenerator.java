@@ -24,7 +24,6 @@ import javax.lang.model.SourceVersion;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
 import org.blendee.jdbc.PrimaryKeyMetadata;
@@ -71,7 +70,7 @@ public class TableFacadeGenerator {
 
 	private final String rootPackageName;
 
-	private final Class<?> managerSuperclass;
+	private final Class<?> tableFacadeSuperclass;
 
 	private final Class<?> rowSuperclass;
 
@@ -150,7 +149,7 @@ public class TableFacadeGenerator {
 	 * インスタンスを生成します。
 	 * @param metadata テーブルを読み込む対象となるデータベースの {@link Metadata}
 	 * @param rootPackageName 各自動生成クラスが属するパッケージの親パッケージ
-	 * @param managerSuperclass RowManager クラスの親クラス
+	 * @param tableFacadeSuperclass TableFacade クラスの親クラス
 	 * @param rowSuperclass Row クラスの親クラス
 	 * @param codeFormatter {@link CodeFormatter}
 	 * @param useNumberClass Row クラスの数値型項目を {@link Number} で統一する
@@ -159,14 +158,14 @@ public class TableFacadeGenerator {
 	public TableFacadeGenerator(
 		Metadata metadata,
 		String rootPackageName,
-		Class<?> managerSuperclass,
+		Class<?> tableFacadeSuperclass,
 		Class<?> rowSuperclass,
 		CodeFormatter codeFormatter,
 		boolean useNumberClass,
 		boolean useNullGuard) {
 		this.metadata = Objects.requireNonNull(metadata);
 		this.rootPackageName = Objects.requireNonNull(rootPackageName);
-		this.managerSuperclass = managerSuperclass != null ? managerSuperclass : Object.class;
+		this.tableFacadeSuperclass = tableFacadeSuperclass != null ? tableFacadeSuperclass : Object.class;
 		this.rowSuperclass = rowSuperclass != null ? rowSuperclass : Object.class;
 
 		this.codeFormatter = codeFormatter == null ? defaultCodeFormatter : codeFormatter;
@@ -201,7 +200,7 @@ public class TableFacadeGenerator {
 		TablePath[] tables = metadata.getTables(schemaName);
 		for (TablePath table : tables) {
 
-			Relationship relation = ContextManager.get(RelationshipFactory.class).getInstance(table);
+			Relationship relation = RelationshipFactory.getInstance().getInstance(table);
 
 			String tableName = relation.getTablePath().getTableName();
 
@@ -445,7 +444,7 @@ public class TableFacadeGenerator {
 		args.put("SCHEMA", schemaName);
 		args.put("TABLE", tableName);
 		args.put("IMPORTS", String.join(U.LINE_SEPARATOR, importPart));
-		args.put("PARENT", managerSuperclass.getName());
+		args.put("PARENT", tableFacadeSuperclass.getName());
 		args.put("COLUMN_NAMES_PART", columnNamesPart);
 		args.put("PRIMARY_KEY_PART", primaryKeyPart);
 		args.put("FOREIGN_KEYS_PART", foreignKeysPart);

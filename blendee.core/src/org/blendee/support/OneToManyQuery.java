@@ -11,7 +11,7 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * 検索条件と並び替え条件を保持した、実際に検索を行うためのクラスです。<br>
@@ -37,7 +37,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 		return self;
 	}
 
-	abstract QueryId queryId();
+	abstract RuntimeId queryId();
 
 	/**
 	 * 検索を実行します。

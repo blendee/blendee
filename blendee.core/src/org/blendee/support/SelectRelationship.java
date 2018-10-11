@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.support.SelectOfferFunction.SelectOffers;
@@ -58,7 +58,7 @@ public interface SelectRelationship {
 
 			@Override
 			public List<ColumnExpression> get() {
-				QueryId id = getSelectStatement().getQueryId();
+				RuntimeId id = getSelectStatement().getQueryId();
 				return Arrays.stream(getRelationship().getColumns())
 					.map(c -> new ColumnExpression(id, c))
 					.collect(Collectors.toList());
@@ -76,7 +76,7 @@ public interface SelectRelationship {
 
 			@Override
 			public List<ColumnExpression> get() {
-				QueryId id = getSelectStatement().getQueryId();
+				RuntimeId id = getSelectStatement().getQueryId();
 				return Arrays.stream(relationship.getRelationship().getColumns())
 					.map(c -> new ColumnExpression(id, c))
 					.collect(Collectors.toList());
@@ -255,7 +255,7 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
 
-		QueryId id = getSelectStatement().getQueryId();
+		RuntimeId id = getSelectStatement().getQueryId();
 
 		SelectOffers offers = new SelectOffers(id);
 		offers.add(new ColumnExpression(id, "{0}", columns));
@@ -272,7 +272,7 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
 
-		QueryId id = getSelectStatement().getQueryId();
+		RuntimeId id = getSelectStatement().getQueryId();
 
 		SelectOffers offers = new SelectOffers(id);
 		offers.add(new ColumnExpression(id, "{0}", columns));
@@ -288,7 +288,7 @@ public interface SelectRelationship {
 		getSelectStatement().quitRowMode();
 		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
 
-		QueryId id = getSelectStatement().getQueryId();
+		RuntimeId id = getSelectStatement().getQueryId();
 
 		SelectOffers offers = new SelectOffers(id);
 		offers.add(new ColumnExpression(id, "{0}", columns));

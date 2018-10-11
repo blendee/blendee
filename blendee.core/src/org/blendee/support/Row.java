@@ -5,7 +5,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.PrimaryKey;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.Updater;
 
@@ -70,7 +70,7 @@ public interface Row extends Updatable {
 	default boolean delete() {
 		int result = new DataAccessHelper().delete(
 			tablePath(),
-			primaryKey().getCriteria(QueryIdFactory.getInstance()));
+			primaryKey().getCriteria(RuntimeIdFactory.getInstance()));
 		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
 		return result == 1;
 	}
@@ -83,7 +83,7 @@ public interface Row extends Updatable {
 		new DataAccessHelper().delete(
 			statement,
 			tablePath(),
-			primaryKey().getCriteria(QueryIdFactory.getInstance()));
+			primaryKey().getCriteria(RuntimeIdFactory.getInstance()));
 	}
 
 	/**

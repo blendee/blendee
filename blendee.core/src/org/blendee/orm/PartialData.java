@@ -1,12 +1,11 @@
 package org.blendee.orm;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.Updatable;
@@ -81,8 +80,8 @@ public class PartialData implements Updatable {
 	 * @param id
 	 * @return 検索条件
 	 */
-	public Criteria getCriteria(QueryId id) {
-		return getCriteria(ContextManager.get(RelationshipFactory.class).getInstance(path), id);
+	public Criteria getCriteria(RuntimeId id) {
+		return getCriteria(RelationshipFactory.getInstance().getInstance(path), id);
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class PartialData implements Updatable {
 	 * @param id
 	 * @return 検索条件
 	 */
-	public Criteria getCriteria(Relationship relationship, QueryId id) {
+	public Criteria getCriteria(Relationship relationship, RuntimeId id) {
 		Column[] columns = new Column[columnNames.length];
 		for (int i = 0; i < columnNames.length; i++) {
 			columns[i] = relationship.getColumn(columnNames[i]);
@@ -107,7 +106,7 @@ public class PartialData implements Updatable {
 		}
 	}
 
-	static Criteria createCriteria(QueryId id, Column[] columns, Bindable[] bindables) {
+	static Criteria createCriteria(RuntimeId id, Column[] columns, Bindable[] bindables) {
 		Column column = columns[0];
 		Criteria criteria = column.getCriteria(id, bindables[0]);
 		for (int i = 1; i < columns.length; i++) {

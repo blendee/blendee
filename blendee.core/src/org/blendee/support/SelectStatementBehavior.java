@@ -11,7 +11,6 @@ import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -32,7 +31,7 @@ import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLQueryBuilder;
@@ -52,7 +51,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	private final TablePath table;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private CriteriaFactory factory;
 
@@ -84,7 +83,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	private boolean forSubquery;
 
-	public SelectStatementBehavior(TablePath table, QueryId id, SQLDecorators decorators) {
+	public SelectStatementBehavior(TablePath table, RuntimeId id, SQLDecorators decorators) {
 		this.table = table;
 		this.id = id;
 		this.decorators = decorators;
@@ -704,7 +703,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				countSQL,
 				fetchSQL,
 				new ComplementerValues(composedSQL),
-				ContextManager.get(RelationshipFactory.class).getInstance(table),
+				RelationshipFactory.getInstance().getInstance(table),
 				selector.getSelectClause().getColumns(),
 				optimizer,
 				rowMode);
@@ -826,7 +825,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		CriteriaFactory factory = factory();
 		Criteria criteria = factory.create();
 
-		for (Column column : ContextManager.get(RelationshipFactory.class).getInstance(tablePath).getPrimaryKeyColumns()) {
+		for (Column column : RelationshipFactory.getInstance().getInstance(tablePath).getPrimaryKeyColumns()) {
 			criteria.and(factory.create(column, new NullBinder(column.getColumnMetadata().getType())));
 		}
 

@@ -9,7 +9,7 @@ import org.blendee.internal.U;
  * {@link BResultSet} を {@link Iterator} として使用するためのクラスです。
  * @author 千葉 哲嗣
  */
-public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, AutoCloseable {
+public class ResultSetIterator implements AutoCloseableIterator<Result>, Iterable<Result> {
 
 	private final BStatement statement;
 
@@ -38,11 +38,6 @@ public class ResultSetIterator implements Iterator<Result>, Iterable<Result>, Au
 		BConnection connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql, complementer);
 		result = statement.executeQuery();
-	}
-
-	@Override
-	public Iterator<Result> iterator() {
-		return this;
 	}
 
 	@Override

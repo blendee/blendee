@@ -16,8 +16,8 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.UpdateDMLBuilder;
 
@@ -71,7 +71,7 @@ public class PrimaryKey extends PartialData {
 	}
 
 	@Override
-	public Criteria getCriteria(Relationship relationship, QueryId id) {
+	public Criteria getCriteria(Relationship relationship, RuntimeId id) {
 		return createCriteria(id, relationship.getPrimaryKeyColumns(), bindables);
 	}
 
@@ -211,7 +211,7 @@ public class PrimaryKey extends PartialData {
 				builder.addSQLFragment(columnName, "NULL");
 			}
 
-			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria(QueryIdFactory.getInstance()));
+			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria(RuntimeIdFactory.getInstance()));
 
 			try (BStatement statement = BlendeeManager
 				.getConnection()
@@ -247,7 +247,7 @@ public class PrimaryKey extends PartialData {
 			if (references.length == 0) break;
 			copy(reference.getForeignKeyTable(), from, to);
 			switchAllReferences(references, from, to);
-			DataAccessHelper.deleteInternal(from.path, from.getCriteria(QueryIdFactory.getInstance()));
+			DataAccessHelper.deleteInternal(from.path, from.getCriteria(RuntimeIdFactory.getInstance()));
 			return;
 		}
 		update(reference, from, to);
@@ -269,7 +269,7 @@ public class PrimaryKey extends PartialData {
 		sql.append(String.join(", ", columnNames));
 		sql.append(" FROM ");
 		sql.append(foreignKeyTable);
-		final Criteria criteria = from.getCriteria(QueryIdFactory.getInstance());
+		final Criteria criteria = from.getCriteria(RuntimeIdFactory.getInstance());
 		sql.append(criteria.toString(false));
 
 		try (BStatement statement = BlendeeManager
@@ -291,7 +291,7 @@ public class PrimaryKey extends PartialData {
 		PartialData from,
 		PartialData to) {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
-		builder.setCriteria(from.getCriteria(QueryIdFactory.getInstance()));
+		builder.setCriteria(from.getCriteria(RuntimeIdFactory.getInstance()));
 		builder.add(to);
 		try (BStatement statement = BlendeeManager
 			.getConnection()

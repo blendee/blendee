@@ -33,8 +33,8 @@ import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.DataManipulationStatement;
 import org.blendee.support.DataManipulationStatementBehavior;
@@ -115,7 +115,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final Relationship $relationship = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+	private final Relationship $relationship = RelationshipFactory.getInstance().getInstance($TABLE);
 
 	private final List<SQLDecorator> $decorators = new LinkedList<SQLDecorator>();
 
@@ -184,7 +184,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final DataObject data$;
 
-		private final Relationship relationship$ = ContextManager.get(RelationshipFactory.class).getInstance($TABLE);
+		private final Relationship relationship$ = RelationshipFactory.getInstance().getInstance($TABLE);
 
 		private Row() {
 			data$ = new DataObject(relationship$);
@@ -391,7 +391,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private OnRightLogicalOperators onRightOperators$;
 
-	private QueryId $id;
+	private RuntimeId $id;
 
 	private SelectBehavior selectBehavior$;
 
@@ -400,8 +400,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public QueryId getQueryId() {
-		return $id == null ? ($id = QueryIdFactory.getRuntimeInstance()) : $id;
+	public RuntimeId getQueryId() {
+		return $id == null ? ($id = RuntimeIdFactory.getRuntimeInstance()) : $id;
 	}
 
 	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {

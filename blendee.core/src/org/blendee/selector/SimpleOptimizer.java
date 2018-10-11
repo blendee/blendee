@@ -1,10 +1,9 @@
 package org.blendee.selector;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SelectClause;
@@ -17,7 +16,7 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 
 	private final Relationship root;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final SelectClause select;
 
@@ -27,8 +26,8 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	 * @param path SELECT 句に使用するカラムを持つテーブル
 	 * @param id
 	 */
-	public SimpleOptimizer(TablePath path, QueryId id) {
-		root = ContextManager.get(RelationshipFactory.class).getInstance(path);
+	public SimpleOptimizer(TablePath path, RuntimeId id) {
+		root = RelationshipFactory.getInstance().getInstance(path);
 		this.id = id;
 		select = new SelectClause(id);
 	}
@@ -39,7 +38,7 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	}
 
 	@Override
-	public QueryId getQueryId() {
+	public RuntimeId getQueryId() {
 		return id;
 	}
 

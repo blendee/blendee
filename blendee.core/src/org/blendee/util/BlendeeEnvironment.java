@@ -385,7 +385,7 @@ public class BlendeeEnvironment {
 
 			manager.clearMetadataCache();
 
-			ContextManager.get(RelationshipFactory.class).clearCache();
+			RelationshipFactory.getInstance().clearCache();
 		} finally {
 			ContextManager.releaseContext();
 		}

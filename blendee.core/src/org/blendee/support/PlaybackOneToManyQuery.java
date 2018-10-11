@@ -13,7 +13,7 @@ import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * 再実行可能な {@link OneToManyQuery} クラスです。<br>
@@ -126,7 +126,7 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	QueryId queryId() {
+	RuntimeId queryId() {
 		return root.getSelectStatement().getQueryId();
 	}
 }

@@ -78,7 +78,7 @@ public class RelationshipColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(QueryId id, Bindable bindable) {
+	public Criteria getCriteria(RuntimeId id, Bindable bindable) {
 		return new CriteriaFactory(id).create(this, bindable);
 	}
 
@@ -113,8 +113,8 @@ public class RelationshipColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName(QueryId id) {
-		return id.toComplementedColumnString(complementedName);
+	public String getComplementedName(RuntimeId id) {
+		return id.toComplementedColumnName(complementedName);
 	}
 
 	@Override

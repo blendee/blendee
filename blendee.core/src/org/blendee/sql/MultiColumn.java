@@ -84,7 +84,7 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName(QueryId id) {
+	public String getComplementedName(RuntimeId id) {
 		List<String> strings = Arrays.stream(columns)
 			.map(c -> c.getComplementedName(id))
 			.collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class MultiColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(QueryId id, Bindable bindable) {
+	public Criteria getCriteria(RuntimeId id, Bindable bindable) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -65,14 +65,14 @@ public class Criteria extends Clause {
 
 	private String keyword = "";
 
-	Criteria(QueryId id, String clause, Column[] columns, Binder[] binders) {
+	Criteria(RuntimeId id, String clause, Column[] columns, Binder[] binders) {
 		super(id);
 		this.clause = clause;
 		this.columns.addAll(Arrays.asList(columns));
 		this.binders.addAll(Arrays.asList(binders));
 	}
 
-	private Criteria(QueryId id) {
+	private Criteria(RuntimeId id) {
 		super(id);
 		clause = null;
 	}
@@ -221,7 +221,7 @@ public class Criteria extends Clause {
 		if (queryId.equals(target.queryId)) {
 			columns.addAll(target.columns);
 		} else {
-			columns.addAll(target.columns.stream().map(c -> new QueryIdColumn(c, target.queryId)).collect(Collectors.toList()));
+			columns.addAll(target.columns.stream().map(c -> new RuntimeIdColumn(c, target.queryId)).collect(Collectors.toList()));
 		}
 
 		binders.addAll(target.binders);
@@ -276,7 +276,7 @@ public class Criteria extends Clause {
 
 		private Criteria inclusion;
 
-		ProxyCriteria(QueryId id) {
+		ProxyCriteria(RuntimeId id) {
 			super(id);
 		}
 

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.NullPrimaryKeyException;
@@ -36,7 +35,7 @@ public class GenericRow extends java.lang.Object implements Row {
 	 */
 	public GenericRow(TablePath tablePath) {
 		this.tablePath = tablePath;
-		relationship = ContextManager.get(RelationshipFactory.class).getInstance(tablePath);
+		relationship = RelationshipFactory.getInstance().getInstance(tablePath);
 		data = new DataObject(relationship);
 	}
 
@@ -46,7 +45,7 @@ public class GenericRow extends java.lang.Object implements Row {
 	 */
 	public GenericRow(DataObject data) {
 		tablePath = data.getRelationship().getTablePath();
-		relationship = ContextManager.get(RelationshipFactory.class).getInstance(tablePath);
+		relationship = RelationshipFactory.getInstance().getInstance(tablePath);
 		this.data = data;
 	}
 

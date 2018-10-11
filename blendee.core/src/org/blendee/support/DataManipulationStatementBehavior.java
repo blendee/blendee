@@ -12,7 +12,7 @@ import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
@@ -22,7 +22,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	private final TablePath table;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final SQLDecorators decorators;
 
@@ -36,7 +36,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	private CriteriaFactory factory;
 
-	public DataManipulationStatementBehavior(TablePath table, QueryId id, SQLDecorators decorators) {
+	public DataManipulationStatementBehavior(TablePath table, RuntimeId id, SQLDecorators decorators) {
 		this.table = table;
 		this.id = id;
 		this.decorators = decorators;
@@ -161,7 +161,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 	}
 
 	DataManipulator createDeleteDataManipulator() {
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(table);
+		DeleteDMLBuilder builder = new DeleteDMLBuilder(table, id);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());
@@ -172,7 +172,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 	}
 
 	DataManipulator createUpdateDataManipulator() {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(table);
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(table, id);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());

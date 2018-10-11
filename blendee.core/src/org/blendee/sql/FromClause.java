@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.TablePath;
 
@@ -69,7 +68,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 
 	private final Relationship root;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final Set<RelationshipContainer> localRelationships = new LinkedHashSet<>();
 
@@ -82,8 +81,8 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @param path テーブルのルート
 	 * @param id
 	 */
-	public FromClause(TablePath path, QueryId id) {
-		this(ContextManager.get(RelationshipFactory.class).getInstance(path), id);
+	public FromClause(TablePath path, RuntimeId id) {
+		this(RelationshipFactory.getInstance().getInstance(path), id);
 	}
 
 	/**
@@ -91,14 +90,14 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @param root テーブルのルート
 	 * @param id
 	 */
-	public FromClause(Relationship root, QueryId id) {
+	public FromClause(Relationship root, RuntimeId id) {
 		this.root = root;
 		this.id = id;
 		localRelationships.add(new RelationshipContainer(root));
 	}
 
 	@SuppressWarnings("javadoc")
-	public QueryId getQueryId() {
+	public RuntimeId getQueryId() {
 		return id;
 	}
 
@@ -255,7 +254,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	}
 
 	private String processPart(
-		QueryId anotherId,
+		RuntimeId anotherId,
 		JoinType type,
 		Relationship relationship,
 		Criteria onCriteria) {

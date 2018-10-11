@@ -7,12 +7,12 @@ package org.blendee.sql;
 public class SelectDistinctClause extends SelectClause {
 
 	@SuppressWarnings("javadoc")
-	public SelectDistinctClause(QueryId id) {
+	public SelectDistinctClause(RuntimeId id) {
 		super(id);
 	}
 
 	@Override
-	protected SelectClause createNewInstance(QueryId id) {
+	protected SelectClause createNewInstance(RuntimeId id) {
 		return new SelectDistinctClause(id);
 	}
 

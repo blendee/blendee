@@ -18,7 +18,6 @@ import org.blendee.internal.TraversableNode;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
 import org.blendee.jdbc.BatchStatement;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
 import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
@@ -29,7 +28,7 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.SQLDecorator;
@@ -688,13 +687,13 @@ public class DataObject
 		if (!relationship.isRoot()) {
 			//root でないと、 Criteria を作る際に、チェックに引っかかるので
 			//root の Relationship のカラムに変換しておく
-			Relationship root = ContextManager.get(RelationshipFactory.class).getInstance(relationship.getTablePath());
+			Relationship root = RelationshipFactory.getInstance().getInstance(relationship.getTablePath());
 			for (int i = 0; i < primaryKeyColumns.length; i++) {
 				primaryKeyColumns[i] = root.getColumn(primaryKeyColumns[i].getName());
 			}
 		}
 
-		builder.setCriteria(PartialData.createCriteria(QueryIdFactory.getInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
+		builder.setCriteria(PartialData.createCriteria(RuntimeIdFactory.getInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
 
 		statement.process(builder);
 		int result = statement.execute();

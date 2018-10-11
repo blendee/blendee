@@ -13,10 +13,10 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
 public abstract class Clause implements ChainPreparedStatementComplementer {
 
 	@SuppressWarnings("javadoc")
-	protected final QueryId queryId;
+	protected final RuntimeId queryId;
 
 	@SuppressWarnings("javadoc")
-	protected Clause(QueryId queryId) {
+	protected Clause(RuntimeId queryId) {
 		this.queryId = queryId;
 	}
 

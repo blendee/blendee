@@ -3,7 +3,7 @@ package org.blendee.selector;
 import org.blendee.internal.U;
 import org.blendee.jdbc.ManagementSubject;
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 
 /**
  * {@link AnchorOptimizer} を生成するためのファクトリクラスです。
@@ -60,7 +60,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param queryId
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, QueryId queryId) {
+	public AnchorOptimizer getInstance(String id, RuntimeId queryId) {
 		return new AnchorOptimizer(
 			this,
 			queryId,
@@ -77,7 +77,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, QueryId queryId, TablePath hint) {
+	public AnchorOptimizer getInstance(String id, RuntimeId queryId, TablePath hint) {
 		return new AnchorOptimizer(
 			this,
 			queryId,
@@ -94,7 +94,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, QueryId queryId, Class<?> using) {
+	public AnchorOptimizer getInstance(String id, RuntimeId queryId, Class<?> using) {
 		return new AnchorOptimizer(this, queryId, id, null, using, canAddNewEntries());
 	}
 
@@ -106,7 +106,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, QueryId queryId, TablePath hint, Class<?> using) {
+	public AnchorOptimizer getInstance(String id, RuntimeId queryId, TablePath hint, Class<?> using) {
 		return new AnchorOptimizer(this, queryId, id, hint, using, canAddNewEntries());
 	}
 

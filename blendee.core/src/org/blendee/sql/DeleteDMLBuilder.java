@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -14,7 +13,7 @@ import org.blendee.jdbc.TablePath;
  */
 public class DeleteDMLBuilder implements ComposedSQL {
 
-	private final RelationshipFactory factory = ContextManager.get(RelationshipFactory.class);
+	private final RelationshipFactory factory = RelationshipFactory.getInstance();
 
 	private final TablePath path;
 
@@ -22,7 +21,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 
 	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private Criteria criteria = new CriteriaFactory(QueryIdFactory.getInstance()).create();
+	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.getInstance()).create();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
@@ -36,10 +35,11 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path DELETE 対象テーブル
+	 * @param id
 	 */
-	public DeleteDMLBuilder(RuntimeTablePath path) {
+	public DeleteDMLBuilder(TablePath path, RuntimeId id) {
 		this.path = path;
-		alias = " " + path.getAlias();
+		alias = " " + id.toAlias(factory.getInstance(path));
 	}
 
 	/**

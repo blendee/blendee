@@ -22,6 +22,14 @@ public class RelationshipFactory implements ManagementSubject {
 	private final Map<TablePath, String> pathIdMap = new HashMap<>();
 
 	/**
+	 * 現在のコンテキストのインスタンスを返します。
+	 * @return {@link RelationshipFactory}
+	 */
+	public static RelationshipFactory getInstance() {
+		return ContextManager.get(RelationshipFactory.class);
+	}
+
+	/**
 	 * このクラスのコンストラクタです。<br>
 	 * {@link ContextManager} 管理対象です。
 	 * @see ContextManager#get(Class)

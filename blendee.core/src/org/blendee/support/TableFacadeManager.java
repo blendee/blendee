@@ -14,7 +14,7 @@ import org.blendee.selector.Optimizer;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.QueryIdFactory;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 
@@ -40,7 +40,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, String... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), QueryIdFactory.getInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getInstance()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), QueryIdFactory.getInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getInstance()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), QueryIdFactory.getRuntimeInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getRuntimeInstance()), options, primaryKeyMembers);
 	}
 
 	/**

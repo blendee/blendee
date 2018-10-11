@@ -6,12 +6,12 @@ import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 
 class Exists {
 
-	static void setExists(QueryId main, CriteriaRelationship relationship, SelectStatement subquery, String keyword) {
+	static void setExists(RuntimeId main, CriteriaRelationship relationship, SelectStatement subquery, String keyword) {
 		relationship.getSelectStatement().forSubquery(true);
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();

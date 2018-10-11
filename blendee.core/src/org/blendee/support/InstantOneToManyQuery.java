@@ -25,7 +25,7 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
-import org.blendee.sql.QueryId;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
@@ -45,7 +45,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private final TableFacadeRelationship root;
 
-	private final QueryId id;
+	private final RuntimeId id;
 
 	private final Optimizer optimizer;
 
@@ -135,7 +135,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return getRoot(parent, relations);
 	}
 
-	private static Optimizer convertOptimizer(QueryId id, List<TableFacadeRelationship> route, TableFacadeRelationship root) {
+	private static Optimizer convertOptimizer(RuntimeId id, List<TableFacadeRelationship> route, TableFacadeRelationship root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
 		Optimizer optimizer = root.getSelectStatement().getOptimizer();
 		SelectClause select = optimizer.getOptimizedSelectClause();
@@ -152,7 +152,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return optimizer;
 	}
 
-	private static OrderByClause convertOrderByClause(QueryId id, List<TableFacadeRelationship> route, OrderByClause order) {
+	private static OrderByClause convertOrderByClause(RuntimeId id, List<TableFacadeRelationship> route, OrderByClause order) {
 		LinkedList<TableFacadeRelationship> relations = new LinkedList<>(route);
 		relations.removeLast();
 
@@ -187,7 +187,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return newOrder;
 	}
 
-	private static SelectClause createCountClause(QueryId id, Column[] columns) {
+	private static SelectClause createCountClause(RuntimeId id, Column[] columns) {
 		List<String> parts = new LinkedList<>();
 		for (int i = 0; i < columns.length; i++) {
 			parts.add("{" + i + "}");
@@ -202,7 +202,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		QueryId id = optimizer.getQueryId();
+		RuntimeId id = optimizer.getQueryId();
 		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
 
 		builder.setSelectClause(createCountClause(id, self.getRelationship().getPrimaryKeyColumns()));
@@ -235,7 +235,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	QueryId queryId() {
+	RuntimeId queryId() {
 		return id;
 	}
 

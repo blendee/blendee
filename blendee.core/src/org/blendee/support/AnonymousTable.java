@@ -1,11 +1,11 @@
 package org.blendee.support;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataObject;
@@ -16,9 +16,9 @@ import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.PseudoColumn;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
@@ -28,7 +28,7 @@ import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
  * 無名テーブルクラスです。
  * @author 千葉 哲嗣
  */
-public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Void>, RightTable<AnonymousTable.OnRightRel> {
+public class AnonymousTable implements SelectStatement, Query<AutoCloseableIterator<Void>, Void>, RightTable<AnonymousTable.OnRightRel> {
 
 	private static final TableFacadeContext<SelectCol> selectContext = (
 		relationship,
@@ -54,7 +54,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext = TableFacadeContext
 		.newOnRightBuilder();
 
-	private final QueryId id = QueryIdFactory.getInstance();
+	private final RuntimeId id = RuntimeIdFactory.getInstance();
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
@@ -471,7 +471,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	}
 
 	@Override
-	public Iterator<Void> execute() {
+	public AutoCloseableIterator<Void> execute() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -639,7 +639,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	}
 
 	@Override
-	public QueryId getQueryId() {
+	public RuntimeId getQueryId() {
 		return id;
 	}
 
@@ -652,7 +652,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	private void careEmptySelect() {
 		SelectClause select = behavior().getSelectClause();
 		if (select == null || select.getColumnsSize() == 0) {
-			select = new SelectClause(QueryIdFactory.getInstance());
+			select = new SelectClause(RuntimeIdFactory.getInstance());
 			select.add("{0}", new PseudoColumn(relationship, "*", true));
 			behavior().setSelectClause(select);
 		}
@@ -841,7 +841,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 	/**
 	 * Query
 	 */
-	public class AnonymousQuery implements Query<Iterator<Void>, Void> {
+	public class AnonymousQuery implements Query<AutoCloseableIterator<Void>, Void> {
 
 		private final PlaybackQuery inner;
 
@@ -850,7 +850,7 @@ public class AnonymousTable implements SelectStatement, Query<Iterator<Void>, Vo
 		}
 
 		@Override
-		public Iterator<Void> execute() {
+		public AutoCloseableIterator<Void> execute() {
 			throw new UnsupportedOperationException();
 		}
 

@@ -1,10 +1,10 @@
 package org.blendee.support;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
@@ -23,7 +23,7 @@ import org.blendee.sql.Reproducible;
  * @param <R> Row
  * @author 千葉 哲嗣
  */
-public interface Query<I extends Iterator<R>, R> extends ComposedSQL, Reproducible<Query<I, R>> {
+public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQL, Reproducible<Query<I, R>> {
 
 	/**
 	 * このインスタンスが持つ検索条件と並び替え条件を使用して、検索を実行します。<br>
@@ -31,6 +31,37 @@ public interface Query<I extends Iterator<R>, R> extends ComposedSQL, Reproducib
 	 * @return 検索結果
 	 */
 	I execute();
+
+	/**
+	 * 検索を実行します。
+	 * @param action {@link Consumer}
+	 */
+	default void execute(Consumer<I> action) {
+		try (I iterator = execute()) {
+			action.accept(iterator);
+		}
+	}
+
+	/**
+	 * 検索を実行します。
+	 * @param action {@link Consumer}
+	 * @return 任意の型の戻り値
+	 */
+	default <T> T executeAndGet(Function<I, T> action) {
+		try (I iterator = execute()) {
+			return action.apply(iterator);
+		}
+	}
+
+	/**
+	 * 検索を実行します。
+	 * @param action {@link Consumer}
+	 */
+	default void forEach(Consumer<R> action) {
+		try (I iterator = execute()) {
+			iterator.forEach(action);
+		}
+	}
 
 	/**
 	 * このインスタンスが持つ検索条件を使用して、検索を実行します。<br>
@@ -90,27 +121,27 @@ public interface Query<I extends Iterator<R>, R> extends ComposedSQL, Reproducib
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param consumer {@link Consumer}
+	 * @param action {@link Consumer}
 	 */
-	default void aggregate(Consumer<BResultSet> consumer) {
+	default void aggregate(Consumer<BResultSet> action) {
 		BConnection connection = BlendeeManager.getConnection();
 		try (BStatement statement = connection.getStatement(this)) {
 			try (BResultSet result = statement.executeQuery()) {
-				consumer.accept(result);
+				action.accept(result);
 			}
 		}
 	}
 
 	/**
 	 * 集合関数を含む検索を実行します。
-	 * @param function {@link Function}
+	 * @param action {@link Function}
 	 * @return 任意の型の戻り値
 	 */
-	default <T> T aggregateAndGet(Function<BResultSet, T> function) {
+	default <T> T aggregateAndGet(Function<BResultSet, T> action) {
 		BConnection connection = BlendeeManager.getConnection();
 		try (BStatement statement = connection.getStatement(this)) {
 			try (BResultSet result = statement.executeQuery()) {
-				return function.apply(result);
+				return action.apply(result);
 			}
 		}
 	}

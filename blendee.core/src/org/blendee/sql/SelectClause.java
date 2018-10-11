@@ -10,7 +10,7 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
 public class SelectClause extends ListClause<SelectClause> {
 
 	@SuppressWarnings("javadoc")
-	public SelectClause(QueryId id) {
+	public SelectClause(RuntimeId id) {
 		super(id);
 	}
 
@@ -30,7 +30,7 @@ public class SelectClause extends ListClause<SelectClause> {
 	 */
 	public void add(int order, Column... columns) {
 		for (Column column : columns) {
-			addInternal(order, column, "{0} AS " + queryId.toComplementedColumnString(column.getId()));
+			addInternal(order, column, "{0} AS " + queryId.toComplementedColumnName(column.getId()));
 		}
 	}
 
@@ -109,7 +109,7 @@ public class SelectClause extends ListClause<SelectClause> {
 	}
 
 	@Override
-	protected SelectClause createNewInstance(QueryId id) {
+	protected SelectClause createNewInstance(RuntimeId id) {
 		return new SelectClause(id);
 	}
 

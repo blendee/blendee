@@ -72,7 +72,7 @@ public class BlendeePlugin extends AbstractUIPlugin {
 
 	private String outputPackage;
 
-	private Class<?> managerParentClass;
+	private Class<?> tableFacadeParentClass;
 
 	private Class<?> rowParentClass;
 
@@ -199,8 +199,8 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		return factory;
 	}
 
-	public Class<?> getRowManagerParentClass() {
-		return managerParentClass;
+	public Class<?> getTableFacadeParentClass() {
+		return tableFacadeParentClass;
 	}
 
 	public Class<?> getRowParentClass() {
@@ -427,11 +427,11 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		}
 
 		try {
-			String managerParentClassName = properties.getProperty(Constants.ROW_MANAGER_PARENT_CLASS);
-			if (U.presents(managerParentClassName)) {
-				managerParentClass = Class.forName(managerParentClassName, false, loader);
+			String tableFacadeParentClassName = properties.getProperty(Constants.TABLE_FACADE_PARENT_CLASS);
+			if (U.presents(tableFacadeParentClassName)) {
+				tableFacadeParentClass = Class.forName(tableFacadeParentClassName, false, loader);
 			} else {
-				managerParentClass = null;
+				tableFacadeParentClass = null;
 			}
 
 			String rowParentClassName = properties.getProperty(Constants.ROW_PARENT_CLASS);

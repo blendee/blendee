@@ -7,12 +7,12 @@ package org.blendee.sql;
 public class GroupByClause extends ListClause<GroupByClause> {
 
 	@SuppressWarnings("javadoc")
-	public GroupByClause(QueryId id) {
+	public GroupByClause(RuntimeId id) {
 		super(id);
 	}
 
 	@Override
-	protected GroupByClause createNewInstance(QueryId id) {
+	protected GroupByClause createNewInstance(RuntimeId id) {
 		return new GroupByClause(id);
 	}
 

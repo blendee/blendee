@@ -16,10 +16,10 @@ import org.blendee.plugin.views.QueryEditorView;
 import org.blendee.selector.CommandColumnRepository;
 import org.blendee.sql.Column;
 import org.blendee.sql.FromClause;
-import org.blendee.sql.QueryId;
-import org.blendee.sql.QueryIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
 import org.blendee.util.Blendee;
@@ -578,7 +578,7 @@ public class AnchorElement extends PropertySourceElement implements Comparable<A
 				Blendee.execute(t -> {
 					Column[] columns = element.repository.getColumns(element.id);
 
-					QueryId id = QueryIdFactory.getRuntimeInstance();
+					RuntimeId id = RuntimeIdFactory.getRuntimeInstance();
 
 					SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(path, id));
 					SelectClause selectClause = new SelectClause(id);

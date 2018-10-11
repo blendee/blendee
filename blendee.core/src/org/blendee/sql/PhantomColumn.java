@@ -80,7 +80,7 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(QueryId id, Bindable bindable) {
+	public Criteria getCriteria(RuntimeId id, Bindable bindable) {
 		return getSubstanceWithCheck().getCriteria(id, bindable);
 	}
 
@@ -115,7 +115,7 @@ public class PhantomColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName(QueryId id) {
+	public String getComplementedName(RuntimeId id) {
 		return getSubstanceWithCheck().getComplementedName(id);
 	}
 

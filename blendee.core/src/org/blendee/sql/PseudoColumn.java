@@ -52,9 +52,9 @@ public class PseudoColumn implements Column {
 	}
 
 	@Override
-	public String getComplementedName(QueryId id) {
+	public String getComplementedName(RuntimeId id) {
 		if (!addsTableId) return expression;
-		return id.toComplementedColumnString(relationship.getId() + "." + expression);
+		return id.toComplementedColumnName(relationship.getId() + "." + expression);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class PseudoColumn implements Column {
 	}
 
 	@Override
-	public Criteria getCriteria(QueryId id, Bindable bindable) {
+	public Criteria getCriteria(RuntimeId id, Bindable bindable) {
 		throw new UnsupportedOperationException();
 	}
 

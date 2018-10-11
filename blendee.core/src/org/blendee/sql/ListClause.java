@@ -22,7 +22,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	final List<ListQueryBlock> blocks = new LinkedList<>();
 
 	@SuppressWarnings("javadoc")
-	protected ListClause(QueryId id) {
+	protected ListClause(RuntimeId id) {
 		super(id);
 	}
 
@@ -87,10 +87,10 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	}
 
 	/**
-	 * @param id {@link QueryId}
+	 * @param id {@link RuntimeId}
 	 * @return サブクラスのインスタンス
 	 */
-	protected abstract T createNewInstance(QueryId id);
+	protected abstract T createNewInstance(RuntimeId id);
 
 	/**
 	 * この句にカラムとテンプレートのブロックを追加します。
