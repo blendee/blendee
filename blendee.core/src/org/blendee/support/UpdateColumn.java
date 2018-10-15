@@ -22,7 +22,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 	public UpdateColumn(TableFacadeRelationship helper, String name) {
 		super(helper);
 		this.column = helper.getRelationship().getColumn(name);
-		this.id = helper.getQueryId();
+		this.id = helper.getRuntimeId();
 		addColumn(column);
 	}
 
@@ -32,7 +32,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 	}
 
 	@Override
-	public RuntimeId queryId() {
+	public RuntimeId runtimeId() {
 		return id;
 	}
 }

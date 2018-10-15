@@ -24,7 +24,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
-	private final RuntimeId queryId;
+	private final RuntimeId runtimeId;
 
 	private final String id;
 
@@ -39,7 +39,7 @@ public class AnchorOptimizer implements Optimizer {
 
 	AnchorOptimizer(
 		AnchorOptimizerFactory factory,
-		RuntimeId queryId,
+		RuntimeId runtimeId,
 		String id,
 		TablePath hint,
 		Class<?> using,
@@ -47,7 +47,7 @@ public class AnchorOptimizer implements Optimizer {
 		Objects.requireNonNull(factory);
 		Objects.requireNonNull(id);
 
-		this.queryId = queryId;
+		this.runtimeId = runtimeId;
 
 		this.hint = hint;
 		this.canAddNewEntries = canAddNewEntries;
@@ -77,8 +77,8 @@ public class AnchorOptimizer implements Optimizer {
 	}
 
 	@Override
-	public RuntimeId getQueryId() {
-		return queryId;
+	public RuntimeId getRuntimeId() {
+		return runtimeId;
 	}
 
 	@Override
@@ -86,13 +86,13 @@ public class AnchorOptimizer implements Optimizer {
 		Column[] columns = getColumns();
 
 		if (columns.length == 0) {
-			if (canAddNewEntries) return new InitialSelectClause(queryId);
+			if (canAddNewEntries) return new InitialSelectClause(runtimeId);
 
 			// canAddNewEntries されていないのに 検索項目が 0 件のものはエラーとする
 			throw new IllegalStateException("この optimizer は項目が一つもありません");
 		}
 
-		SelectClause clause = new SelectClause(queryId);
+		SelectClause clause = new SelectClause(runtimeId);
 		for (int i = 0; i < columns.length; i++) {
 			clause.add(columns[i]);
 		}

@@ -115,9 +115,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
 
-	private final Relationship $relationship = RelationshipFactory.getInstance().getInstance($TABLE);
+	private final Relationship relationship$ = RelationshipFactory.getInstance().getInstance($TABLE);
 
-	private final List<SQLDecorator> $decorators = new LinkedList<SQLDecorator>();
+	private final List<SQLDecorator> decorators$ = new LinkedList<SQLDecorator>();
 
 /*++[[COLUMN_NAMES_PART]]++*/
 /*==ColumnNamesPart==*/
@@ -184,10 +184,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final DataObject data$;
 
-		private final Relationship relationship$ = RelationshipFactory.getInstance().getInstance($TABLE);
+		private final Relationship rowRel$ = RelationshipFactory.getInstance().getInstance($TABLE);
 
 		private Row() {
-			data$ = new DataObject(relationship$);
+			data$ = new DataObject(rowRel$);
 		}
 
 		private Row(DataObject data) {
@@ -195,7 +195,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		private Row(Result result) {
-			this.data$ = ColumnNameDataObjectBuilder.build(result, relationship$, ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
+			this.data$ = ColumnNameDataObjectBuilder.build(result, rowRel$, ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
 		}
 
 		@Override
@@ -217,7 +217,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		public void set/*++[[METHOD]]++*/(/*++[[TYPE]]++*//*--*/Object/*--*/ value) {
 			/*++[[NULL_CHECK]]++*/ValueExtractor valueExtractor = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
-				relationship$.getColumn("[[COLUMN]]").getType());
+				rowRel$.getColumn("[[COLUMN]]").getType());
 			data$.setValue("[[COLUMN]]", valueExtractor.extractAsBinder(value));
 		}
 
@@ -391,7 +391,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private OnRightLogicalOperators onRightOperators$;
 
-	private RuntimeId $id;
+	private RuntimeId id$;
 
 	private SelectBehavior selectBehavior$;
 
@@ -400,14 +400,14 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public RuntimeId getQueryId() {
-		return $id == null ? ($id = RuntimeIdFactory.getRuntimeInstance()) : $id;
+	public RuntimeId getRuntimeId() {
+		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
 	}
 
 	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private SelectBehavior() {
-			super($TABLE, getQueryId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super($TABLE, getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -456,7 +456,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
 
 		public DMSBehavior() {
-			super($TABLE, getQueryId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super($TABLE, getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -510,7 +510,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
 		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getQueryId(), $TABLE, using));
+			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getRuntimeId(), $TABLE, using));
 	}
 
 	@Override
@@ -565,7 +565,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		OrderByClause order,
 		SQLDecorator... options) {
 		return select(
-			new SimpleOptimizer(getTablePath(), getQueryId()),
+			new SimpleOptimizer(getTablePath(), getRuntimeId()),
 			criteria,
 			order,
 			options);
@@ -811,7 +811,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@Override
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
-			this.$decorators.add(decorator);
+			this.decorators$.add(decorator);
 		}
 
 		return this;
@@ -839,7 +839,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public Relationship getRootRealtionship() {
-		return $relationship;
+		return relationship$;
 	}
 
 	@Override
@@ -864,7 +864,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public SQLDecorator[] decorators() {
-		return $decorators.toArray(new SQLDecorator[$decorators.size()]);
+		return decorators$.toArray(new SQLDecorator[decorators$.size()]);
 	}
 
 	@Override
@@ -1046,7 +1046,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return このインスタンス
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
-		$decorators.clear();
+		decorators$.clear();
 		return this;
 	}
 
@@ -1229,7 +1229,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				return parent$.getRelationship().find(fkName$);
 			}
 
-			return table$.$relationship;
+			return table$.relationship$;
 		}
 
 		@Override

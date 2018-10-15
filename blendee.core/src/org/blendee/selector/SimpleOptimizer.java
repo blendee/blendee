@@ -24,7 +24,7 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。<br>
 	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
 	 * @param path SELECT 句に使用するカラムを持つテーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public SimpleOptimizer(TablePath path, RuntimeId id) {
 		root = RelationshipFactory.getInstance().getInstance(path);
@@ -38,7 +38,7 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	}
 
 	@Override
-	public RuntimeId getQueryId() {
+	public RuntimeId getRuntimeId() {
 		return id;
 	}
 

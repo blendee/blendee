@@ -6,7 +6,9 @@ package org.blendee.sql;
  */
 public class SelectDistinctClause extends SelectClause {
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * @param id {@link RuntimeId}
+	 */
 	public SelectDistinctClause(RuntimeId id) {
 		super(id);
 	}

@@ -75,7 +75,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 		root = getRoot(relation, route);
 
-		id = root.getSelectStatement().getQueryId();
+		id = root.getSelectStatement().getRuntimeId();
 
 		TableFacadeRelationship root = root();
 		SelectStatement select = root.getSelectStatement();
@@ -202,7 +202,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL toCountSQL() {
-		RuntimeId id = optimizer.getQueryId();
+		RuntimeId id = optimizer.getRuntimeId();
 		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
 
 		builder.setSelectClause(createCountClause(id, self.getRelationship().getPrimaryKeyColumns()));
@@ -235,7 +235,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	RuntimeId queryId() {
+	RuntimeId runtimeId() {
 		return id;
 	}
 

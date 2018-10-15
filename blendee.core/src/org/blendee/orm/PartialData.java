@@ -77,7 +77,7 @@ public class PartialData implements Updatable {
 	/**
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルは、このインスタンスが持つテーブルになります。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @return 検索条件
 	 */
 	public Criteria getCriteria(RuntimeId id) {
@@ -88,7 +88,7 @@ public class PartialData implements Updatable {
 	 * このインスタンス持つ全カラムとその値を AND で結合した検索条件を生成し、返します。<br>
 	 * 検索条件のテーブルはパラメータとして受け取ります。
 	 * @param relationship 検索条件のテーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @return 検索条件
 	 */
 	public Criteria getCriteria(Relationship relationship, RuntimeId id) {

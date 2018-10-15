@@ -158,9 +158,10 @@ public class BlendeePlugin extends AbstractUIPlugin {
 			try {
 				setProject((IJavaProject) project.getNature(JavaCore.NATURE_ID));
 			} catch (Exception e) {
+				e = strip(e);
+				e.printStackTrace();
 				currentProject = null;
 				MessageDialog.openError(null, Constants.TITLE, cause(e).getMessage());
-				e.printStackTrace();
 			}
 		}
 	}
@@ -550,6 +551,14 @@ public class BlendeePlugin extends AbstractUIPlugin {
 		Properties properties = storage.loadProperties();
 		properties.put(FileColumnRepositoryFactory.COLUMN_REPOSITORY_FILE_KEY, file);
 		storage.storeProperties(properties);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Throwable> T strip(Throwable t) {
+		Throwable cause = t.getCause();
+		if (cause == null) return (T) t;
+
+		return strip(cause);
 	}
 
 	private static File getPropertiesFile(IJavaProject project) throws IOException {

@@ -88,7 +88,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
 	 * @param root テーブルのルート
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public FromClause(Relationship root, RuntimeId id) {
 		this.root = root;
@@ -96,8 +96,11 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		localRelationships.add(new RelationshipContainer(root));
 	}
 
-	@SuppressWarnings("javadoc")
-	public RuntimeId getQueryId() {
+	/**
+	 * このインスタンスが持つ {@link RuntimeId} を返します。
+	 * @return {@link RuntimeId}
+	 */
+	public RuntimeId getRuntimeId() {
 		return id;
 	}
 
@@ -342,7 +345,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		}
 
 		private void append(List<String> list) {
-			list.add(processPart(another.getQueryId(), type, another.root, onCriteria));
+			list.add(processPart(another.getRuntimeId(), type, another.root, onCriteria));
 			list.addAll(another.process());
 		}
 

@@ -14,6 +14,9 @@ public interface ColumnSupplier {
 	 */
 	Column column();
 
-	@SuppressWarnings("javadoc")
-	RuntimeId queryId();
+	/**
+	 * このインスタンスが持つ {@link RuntimeId} を返します。
+	 * @return {@link RuntimeId}
+	 */
+	RuntimeId runtimeId();
 }

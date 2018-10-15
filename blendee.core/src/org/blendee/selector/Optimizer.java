@@ -17,8 +17,11 @@ public interface Optimizer extends SelectedValuesConverter {
 	 */
 	TablePath getTablePath();
 
-	@SuppressWarnings("javadoc")
-	RuntimeId getQueryId();
+	/**
+	 * このクラスのインスタンスが持つ {@link RuntimeId} です。
+	 * @return {@link RuntimeId}
+	 */
+	RuntimeId getRuntimeId();
 
 	/**
 	 * 検索に使用する SELECT 句です。

@@ -35,7 +35,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path DELETE 対象テーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public DeleteDMLBuilder(TablePath path, RuntimeId id) {
 		this.path = path;

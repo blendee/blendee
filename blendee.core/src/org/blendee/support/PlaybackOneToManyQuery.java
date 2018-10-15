@@ -126,7 +126,7 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	RuntimeId queryId() {
-		return root.getSelectStatement().getQueryId();
+	RuntimeId runtimeId() {
+		return root.getSelectStatement().getRuntimeId();
 	}
 }

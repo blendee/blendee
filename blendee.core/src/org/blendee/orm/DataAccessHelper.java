@@ -64,7 +64,7 @@ public class DataAccessHelper {
 
 	/**
 	 * インスタンスを生成します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public DataAccessHelper(RuntimeId id) {
 		this(id, false);
@@ -72,7 +72,7 @@ public class DataAccessHelper {
 
 	/**
 	 * インスタンスを生成します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
 	public DataAccessHelper(RuntimeId id, boolean useCache) {

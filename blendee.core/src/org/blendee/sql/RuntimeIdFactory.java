@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
-import org.blendee.jdbc.TablePath;
-
-@SuppressWarnings("javadoc")
+/**
+ * {@link RuntimeId} 生成用ファクトリクラスです。
+ * @author 千葉 哲嗣
+ */
 public class RuntimeIdFactory {
 
 	private static final Object lock = new Object();
@@ -28,9 +29,8 @@ public class RuntimeIdFactory {
 	private static final RuntimeId stubInstance = new StubRuntimeId();
 
 	/**
-	 * ベースになる {@link TablePath} をもとにインスタンスを生成します。<br>
+	 * インスタンスを生成します。<br>
 	 * エイリアスは一時的にこのインスタンスで確保され、このインスタンスが破棄されると再利用されます。
-	 * @param table base
 	 * @return instance
 	 */
 	public static RuntimeId getRuntimeInstance() {
@@ -52,6 +52,11 @@ public class RuntimeIdFactory {
 		}
 	}
 
+	/**
+	 * スタブインスタンスを返します。<br>
+	 * スタブインスタンスは、 ID 文字列を持ちません。
+	 * @return スタブインスタンス
+	 */
 	public static RuntimeId getInstance() {
 		return stubInstance;
 	}
@@ -78,11 +83,6 @@ public class RuntimeIdFactory {
 
 		private final String id;
 
-		/**
-		 * ベースになる {@link TablePath} をもとにインスタンスを生成します。
-		 * @param table base
-		 * @param id 指定 ID
-		 */
 		private ConcreteRuntimeId(String id) {
 			Objects.requireNonNull(id);
 			this.id = id;

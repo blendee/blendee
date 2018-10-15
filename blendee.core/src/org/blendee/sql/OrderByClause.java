@@ -153,7 +153,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(String template, Direction direction, Column... columns) {
-		ListQueryBlock block = new ListQueryBlock(queryId);
+		ListQueryBlock block = new ListQueryBlock(runtimeId);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}
@@ -174,7 +174,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(int order, String template, Direction direction, Column... columns) {
-		ListQueryBlock block = new ListQueryBlock(queryId, order);
+		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}

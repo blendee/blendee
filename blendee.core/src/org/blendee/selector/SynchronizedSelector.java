@@ -17,7 +17,7 @@ public class SynchronizedSelector extends Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public SynchronizedSelector(TablePath path, RuntimeId id) {
 		super(path, id);

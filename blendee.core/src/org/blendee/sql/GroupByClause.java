@@ -6,7 +6,9 @@ package org.blendee.sql;
  */
 public class GroupByClause extends ListClause<GroupByClause> {
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * @param id {@link RuntimeId}
+	 */
 	public GroupByClause(RuntimeId id) {
 		super(id);
 	}
@@ -22,7 +24,7 @@ public class GroupByClause extends ListClause<GroupByClause> {
 	 * @param column カラム
 	 */
 	public void add(int order, Column column) {
-		ListQueryBlock block = new ListQueryBlock(queryId, order);
+		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
 		block.addColumn(column);
 		block.addTemplate("{0}");
 		addBlock(block);

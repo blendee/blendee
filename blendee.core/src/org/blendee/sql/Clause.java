@@ -12,12 +12,16 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
  */
 public abstract class Clause implements ChainPreparedStatementComplementer {
 
-	@SuppressWarnings("javadoc")
-	protected final RuntimeId queryId;
+	/**
+	 * {@link RuntimeId}
+	 */
+	protected final RuntimeId runtimeId;
 
-	@SuppressWarnings("javadoc")
-	protected Clause(RuntimeId queryId) {
-		this.queryId = queryId;
+	/**
+	 * @param runtimeId {@link RuntimeId}
+	 */
+	protected Clause(RuntimeId runtimeId) {
+		this.runtimeId = runtimeId;
 	}
 
 	/**
@@ -87,7 +91,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 		String[] columnNames = new String[length];
 		for (int i = 0; i < length; i++) {
 			if (joining) {
-				columnNames[i] = columns[i].getComplementedName(queryId);
+				columnNames[i] = columns[i].getComplementedName(runtimeId);
 			} else {
 				columnNames[i] = columns[i].getName();
 			}

@@ -35,9 +35,12 @@ public interface TableFacadeRelationship {
 	 */
 	SelectStatement getSelectStatement();
 
-	@SuppressWarnings("javadoc")
-	default RuntimeId getQueryId() {
-		return getSelectStatement().getQueryId();
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return {@link RuntimeId}
+	 */
+	default RuntimeId getRuntimeId() {
+		return getSelectStatement().getRuntimeId();
 	}
 
 	/**

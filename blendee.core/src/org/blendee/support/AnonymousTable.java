@@ -639,7 +639,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
-	public RuntimeId getQueryId() {
+	public RuntimeId getRuntimeId() {
 		return id;
 	}
 

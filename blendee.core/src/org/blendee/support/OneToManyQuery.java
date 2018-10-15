@@ -37,7 +37,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 		return self;
 	}
 
-	abstract RuntimeId queryId();
+	abstract RuntimeId runtimeId();
 
 	/**
 	 * 検索を実行します。
@@ -68,9 +68,9 @@ public abstract class OneToManyQuery<O extends Row, M>
 		if (columns.length != primaryKeyMembers.length)
 			throw new IllegalArgumentException("primaryKeyMembers の数が正しくありません");
 
-		Criteria criteria = new CriteriaFactory(queryId()).create();
+		Criteria criteria = new CriteriaFactory(runtimeId()).create();
 		for (int i = 0; i < columns.length; i++) {
-			criteria.and(columns[i].getCriteria(queryId(), primaryKeyMembers[i]));
+			criteria.and(columns[i].getCriteria(runtimeId(), primaryKeyMembers[i]));
 		}
 
 		List<TableFacadeRelationship> route = route();

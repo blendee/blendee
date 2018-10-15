@@ -20,7 +20,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void EXISTS(SelectStatement subquery) {
-		Exists.setExists(getSelectStatement().getQueryId(), this, subquery, "EXISTS");
+		Exists.setExists(getSelectStatement().getRuntimeId(), this, subquery, "EXISTS");
 	}
 
 	/**
@@ -28,7 +28,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void NOT_EXISTS(SelectStatement subquery) {
-		Exists.setExists(getSelectStatement().getQueryId(), this, subquery, "NOT EXISTS");
+		Exists.setExists(getSelectStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
 	}
 
 	/**
@@ -70,7 +70,7 @@ public interface CriteriaRelationship {
 		WithValues values = new WithValues();
 		consumer.accept(values);
 
-		getContext().addCriteria(values.createCriteria(getSelectStatement().getQueryId(), template));
+		getContext().addCriteria(values.createCriteria(getSelectStatement().getRuntimeId(), template));
 	}
 
 	/**
@@ -78,7 +78,7 @@ public interface CriteriaRelationship {
 	 * @param expression カラムの文字列表現
 	 */
 	default void with(String expression) {
-		getContext().addCriteria(new CriteriaFactory(getSelectStatement().getQueryId()).createCriteria(expression));
+		getContext().addCriteria(new CriteriaFactory(getSelectStatement().getRuntimeId()).createCriteria(expression));
 	}
 
 	/**
@@ -120,7 +120,7 @@ public interface CriteriaRelationship {
 			columns[i] = mainColumns[i].column();
 		}
 
-		getContext().addCriteria(Subquery.createCriteria(getSelectStatement().getQueryId(), subquery.toSQLQueryBuilder(), notIn, columns));
+		getContext().addCriteria(Subquery.createCriteria(getSelectStatement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
 	}
 
 	/**

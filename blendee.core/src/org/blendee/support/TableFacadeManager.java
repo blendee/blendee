@@ -105,7 +105,7 @@ public class TableFacadeManager<T extends Row> {
 	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, String... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getQueryId()).getDataObject(
+			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				options.get());
@@ -126,7 +126,7 @@ public class TableFacadeManager<T extends Row> {
 	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getQueryId()).getDataObject(
+			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				options.get());
@@ -167,7 +167,7 @@ public class TableFacadeManager<T extends Row> {
 	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getQueryId()).getDataObject(
+			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
 				optimizer,
 				new PrimaryKey(getTablePath(), primaryKeyMembers),
 				options.get());

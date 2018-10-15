@@ -91,7 +91,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	SelectStatementBehavior(FromClause fromClause, SQLDecorators decorators) {
 		this.fromClause = fromClause;
-		id = fromClause.getQueryId();
+		id = fromClause.getRuntimeId();
 		table = null;
 		rowMode = false;
 		this.decorators = decorators;

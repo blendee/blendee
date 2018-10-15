@@ -9,9 +9,9 @@ import org.blendee.sql.CriteriaFactory;
  * ON 句
  * @param <L> LEFT
  * @param <R> RIGHT
- * @param <Q> Query
+ * @param <S> SelectStatement
  */
-public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationship, Q extends SelectStatement> {
+public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationship, S extends SelectStatement> {
 
 	private final JoinResource resource;
 
@@ -19,13 +19,13 @@ public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationshi
 
 	private final R right;
 
-	private final Q queryBuilder;
+	private final S selectStatement;
 
-	OnClause(JoinResource resource, L left, R right, Q queryBuilder) {
+	OnClause(JoinResource resource, L left, R right, S selectStatement) {
 		this.resource = resource;
 		this.left = left;
 		this.right = right;
-		this.queryBuilder = queryBuilder;
+		this.selectStatement = selectStatement;
 	}
 
 	/**
@@ -33,11 +33,11 @@ public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationshi
 	 * @return {@link SelectStatement}
 	 */
 	@SafeVarargs
-	public final Q ON(BiConsumer<L, R>... consumers) {
+	public final S ON(BiConsumer<L, R>... consumers) {
 		//二重に呼ばれた際の処置
 		Criteria current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria contextCriteria = new CriteriaFactory(queryBuilder.getQueryId()).create();
+			Criteria contextCriteria = new CriteriaFactory(selectStatement.getRuntimeId()).create();
 			CriteriaContext.setContextCriteria(contextCriteria);
 
 			for (BiConsumer<L, R> consumer : consumers) {
@@ -53,6 +53,6 @@ public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationshi
 			}
 		}
 
-		return queryBuilder;
+		return selectStatement;
 	}
 }

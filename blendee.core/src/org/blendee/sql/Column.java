@@ -31,7 +31,7 @@ public interface Column extends Comparable<Column> {
 
 	/**
 	 * このインスタンスがさし示すカラムの値とパラメータの値が等しいものという条件句を生成します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @param bindable 比較値
 	 * @return 生成された条件句
 	 */
@@ -77,7 +77,7 @@ public interface Column extends Comparable<Column> {
 
 	/**
 	 * テーブル別名を含むカラム名を返します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @return テーブル別名を含むカラム名
 	 */
 	String getComplementedName(RuntimeId id);

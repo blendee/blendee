@@ -441,9 +441,10 @@ public class BlendeePropertyPage
 
 		try {
 			if (changed) BlendeePlugin.getDefault().storePersistentProperties(element, properties);
-		} catch (JavaProjectException e) {
-			e.printStackTrace();
-			MessageDialog.openError(null, Constants.TITLE, e.getMessage());
+		} catch (Throwable t) {
+			t = BlendeePlugin.strip(t);
+			t.printStackTrace();
+			MessageDialog.openError(null, Constants.TITLE, t.getMessage());
 			return false;
 		}
 

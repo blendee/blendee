@@ -5,13 +5,20 @@ import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
 
-@SuppressWarnings("javadoc")
+/**
+ * {@link RuntimeId} を付与されたカラムを表します。
+ * @author 千葉 哲嗣
+ */
 public class RuntimeIdColumn implements Column {
 
 	private final Column base;
 
 	private final RuntimeId id;
 
+	/**
+	 * @param base 元となる {@link Column}
+	 * @param id {@link RuntimeId}
+	 */
 	public RuntimeIdColumn(Column base, RuntimeId id) {
 		this.base = base;
 		this.id = id;

@@ -987,7 +987,7 @@ public class CriteriaFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param column 対象となるカラム
 	 * @param bindable プレースホルダに設定する値

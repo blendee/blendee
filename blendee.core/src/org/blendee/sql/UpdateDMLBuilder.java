@@ -30,7 +30,7 @@ public class UpdateDMLBuilder extends Updater {
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path UPDATE 対象テーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public UpdateDMLBuilder(TablePath path, RuntimeId id) {
 		super(path);

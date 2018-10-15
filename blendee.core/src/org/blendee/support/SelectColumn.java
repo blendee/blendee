@@ -31,7 +31,7 @@ public class SelectColumn extends AliasableOffer {
 	@Override
 	public List<ColumnExpression> get() {
 		List<ColumnExpression> list = new LinkedList<>();
-		list.add(new ColumnExpression(relationship.getQueryId(), column));
+		list.add(new ColumnExpression(relationship.getRuntimeId(), column));
 
 		return list;
 	}
@@ -45,7 +45,7 @@ public class SelectColumn extends AliasableOffer {
 	@Override
 	public SelectOffer AS(String alias) {
 		relationship.getSelectStatement().quitRowMode();
-		ColumnExpression expression = new ColumnExpression(relationship.getQueryId(), column);
+		ColumnExpression expression = new ColumnExpression(relationship.getRuntimeId(), column);
 		expression.AS(alias);
 		return expression;
 	}
@@ -56,7 +56,7 @@ public class SelectColumn extends AliasableOffer {
 	}
 
 	@Override
-	public RuntimeId queryId() {
-		return relationship.getQueryId();
+	public RuntimeId runtimeId() {
+		return relationship.getRuntimeId();
 	}
 }

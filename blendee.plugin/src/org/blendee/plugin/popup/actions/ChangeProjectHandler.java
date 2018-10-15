@@ -2,7 +2,6 @@ package org.blendee.plugin.popup.actions;
 
 import org.blendee.internal.U;
 import org.blendee.plugin.BlendeePlugin;
-import org.blendee.plugin.BlendeePlugin.JavaProjectException;
 import org.blendee.plugin.Constants;
 import org.blendee.plugin.views.QueryEditorView;
 import org.eclipse.core.commands.AbstractHandler;
@@ -53,11 +52,13 @@ public class ChangeProjectHandler extends AbstractHandler {
 
 		try {
 			BlendeePlugin.getDefault().setProjectAndRefresh(project);
-		} catch (JavaProjectException e) {
+		} catch (Throwable t) {
+			t = BlendeePlugin.strip(t);
+			t.printStackTrace();
 			MessageDialog.openError(
 				null,
 				Constants.TITLE,
-				"設定に問題があります" + U.LINE_SEPARATOR + e.getMessage());
+				"設定に問題があります" + U.LINE_SEPARATOR + t.getMessage());
 		}
 
 		return null;

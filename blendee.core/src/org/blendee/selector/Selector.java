@@ -46,7 +46,7 @@ public class Selector {
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
 	 * {@link Optimizer} は {@link SimpleOptimizer} が使用されます。
 	 * @param path ルートテーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public Selector(TablePath path, RuntimeId id) {
 		this(new SimpleOptimizer(path, id));
@@ -59,7 +59,7 @@ public class Selector {
 	public Selector(Optimizer optimizer) {
 		TablePath path = optimizer.getTablePath();
 		root = RelationshipFactory.getInstance().getInstance(path);
-		builder = new SQLQueryBuilder(new FromClause(path, optimizer.getQueryId()));
+		builder = new SQLQueryBuilder(new FromClause(path, optimizer.getRuntimeId()));
 		this.optimizer = optimizer;
 	}
 

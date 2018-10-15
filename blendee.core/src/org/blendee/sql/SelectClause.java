@@ -9,7 +9,9 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
  */
 public class SelectClause extends ListClause<SelectClause> {
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * @param id {@link RuntimeId}
+	 */
 	public SelectClause(RuntimeId id) {
 		super(id);
 	}
@@ -30,7 +32,7 @@ public class SelectClause extends ListClause<SelectClause> {
 	 */
 	public void add(int order, Column... columns) {
 		for (Column column : columns) {
-			addInternal(order, column, "{0} AS " + queryId.toComplementedColumnName(column.getId()));
+			addInternal(order, column, "{0} AS " + runtimeId.toComplementedColumnName(column.getId()));
 		}
 	}
 
@@ -76,7 +78,7 @@ public class SelectClause extends ListClause<SelectClause> {
 		String template,
 		Column[] columns,
 		ChainPreparedStatementComplementer complementer) {
-		ListQueryBlock block = new ListQueryBlock(queryId, order);
+		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
 
 		for (Column column : columns)
 			block.addColumn(column);

@@ -5,8 +5,8 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 
 /**
@@ -28,8 +28,10 @@ public interface SelectStatement extends SQLDecorators {
 	 */
 	Optimizer getOptimizer();
 
-	@SuppressWarnings("javadoc")
-	RuntimeId getQueryId();
+	/**
+	 * @return {@link RuntimeId}
+	 */
+	RuntimeId getRuntimeId();
 
 	/**
 	 * 内部処理用なので直接使用しないこと。

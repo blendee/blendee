@@ -57,13 +57,13 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param queryId
+	 * @param runtimeId
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, RuntimeId queryId) {
+	public AnchorOptimizer getInstance(String id, RuntimeId runtimeId) {
 		return new AnchorOptimizer(
 			this,
-			queryId,
+			runtimeId,
 			id,
 			null,
 			getUsingClass(new Throwable().getStackTrace()[0]),
@@ -73,14 +73,14 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param queryId
+	 * @param runtimeId
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, RuntimeId queryId, TablePath hint) {
+	public AnchorOptimizer getInstance(String id, RuntimeId runtimeId, TablePath hint) {
 		return new AnchorOptimizer(
 			this,
-			queryId,
+			runtimeId,
 			id,
 			hint,
 			getUsingClass(new Throwable().getStackTrace()[0]),
@@ -90,24 +90,24 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param queryId
+	 * @param runtimeId {@link RuntimeId}
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, RuntimeId queryId, Class<?> using) {
-		return new AnchorOptimizer(this, queryId, id, null, using, canAddNewEntries());
+	public AnchorOptimizer getInstance(String id, RuntimeId runtimeId, Class<?> using) {
+		return new AnchorOptimizer(this, runtimeId, id, null, using, canAddNewEntries());
 	}
 
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param queryId
+	 * @param runtimeId
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス
 	 */
-	public AnchorOptimizer getInstance(String id, RuntimeId queryId, TablePath hint, Class<?> using) {
-		return new AnchorOptimizer(this, queryId, id, hint, using, canAddNewEntries());
+	public AnchorOptimizer getInstance(String id, RuntimeId runtimeId, TablePath hint, Class<?> using) {
+		return new AnchorOptimizer(this, runtimeId, id, hint, using, canAddNewEntries());
 	}
 
 	private static Class<?> getUsingClass(StackTraceElement first) {

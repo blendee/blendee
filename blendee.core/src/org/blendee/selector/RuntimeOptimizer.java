@@ -58,7 +58,7 @@ public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements O
 	}
 
 	@Override
-	public RuntimeId getQueryId() {
+	public RuntimeId getRuntimeId() {
 		return id;
 	}
 

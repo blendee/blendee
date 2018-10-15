@@ -84,7 +84,7 @@ public class ColumnExpression extends AliasableOffer {
 	}
 
 	@Override
-	public RuntimeId queryId() {
+	public RuntimeId runtimeId() {
 		return id;
 	}
 

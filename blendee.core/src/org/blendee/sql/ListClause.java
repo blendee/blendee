@@ -21,7 +21,9 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	final List<ListQueryBlock> blocks = new LinkedList<>();
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * @param id {@link RuntimeId}
+	 */
 	protected ListClause(RuntimeId id) {
 		super(id);
 	}
@@ -52,7 +54,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	@Override
 	public T replicate() {
-		T clone = createNewInstance(queryId);
+		T clone = createNewInstance(runtimeId);
 		blocks.forEach(b -> clone.blocks.add(b.replicate()));
 		return clone;
 	}
@@ -127,7 +129,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param template テンプレート
 	 */
 	protected void addInternal(int order, Column column, String template) {
-		ListQueryBlock block = new ListQueryBlock(queryId, order);
+		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
 		block.addColumn(column);
 		block.addTemplate(template);
 		addBlock(block);
@@ -157,7 +159,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	List<Column> getColumnsInternal() {
 		List<Column> columns = new LinkedList<>();
 
-		blocks.forEach(b -> columns.addAll(b.getColumns(queryId)));
+		blocks.forEach(b -> columns.addAll(b.getColumns(runtimeId)));
 
 		return columns;
 	}

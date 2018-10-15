@@ -3,8 +3,11 @@ package org.blendee.plugin.views.element;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.blendee.plugin.BlendeePlugin;
+import org.blendee.plugin.Constants;
 import org.blendee.util.Blendee;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 
 public class GeneratorRootElement implements Element {
@@ -20,7 +23,9 @@ public class GeneratorRootElement implements Element {
 				}
 			});
 		} catch (Throwable t) {
-			throw new IllegalStateException(t);
+			t = BlendeePlugin.strip(t);
+			t.printStackTrace();
+			MessageDialog.openError(null, Constants.TITLE, t.getMessage());
 		}
 
 		children = list.toArray(new SchemaElement[list.size()]);

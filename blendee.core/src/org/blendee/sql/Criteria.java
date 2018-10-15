@@ -185,7 +185,7 @@ public class Criteria extends Clause {
 			}
 		}
 
-		Criteria clone = new Criteria(queryId, clause, replicateColumns, replicateBinders);
+		Criteria clone = new Criteria(runtimeId, clause, replicateColumns, replicateBinders);
 		clone.current = current;
 		clone.keyword = keyword;
 		return clone;
@@ -218,10 +218,10 @@ public class Criteria extends Clause {
 		if (target == null) return;
 		clause = target.delegateProcess(operator, current, clause, columns.size());
 
-		if (queryId.equals(target.queryId)) {
+		if (runtimeId.equals(target.runtimeId)) {
 			columns.addAll(target.columns);
 		} else {
-			columns.addAll(target.columns.stream().map(c -> new RuntimeIdColumn(c, target.queryId)).collect(Collectors.toList()));
+			columns.addAll(target.columns.stream().map(c -> new RuntimeIdColumn(c, target.runtimeId)).collect(Collectors.toList()));
 		}
 
 		binders.addAll(target.binders);
@@ -332,7 +332,7 @@ public class Criteria extends Clause {
 
 		@Override
 		public Criteria replicate() {
-			if (inclusion == null) return new ProxyCriteria(queryId);
+			if (inclusion == null) return new ProxyCriteria(runtimeId);
 			return inclusion.replicate();
 		}
 
