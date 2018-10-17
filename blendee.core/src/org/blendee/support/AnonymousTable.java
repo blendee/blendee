@@ -64,14 +64,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		private WhereLogicalOperators() {}
 
 		/**
-		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final WhereRel AND = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.AND);
-
-		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereRel OR = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.OR);
+		public final WhereRel OR = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.OR, null);
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final WhereRel AND = new WhereRel(AnonymousTable.this, whereContext, CriteriaContext.AND, OR);
 
 		@Override
 		public WhereRel defaultOperator() {
@@ -87,14 +87,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		private HavingLogicalOperators() {}
 
 		/**
-		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final HavingRel AND = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.AND);
-
-		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingRel OR = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.OR);
+		public final HavingRel OR = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.OR, null);
+
+		/**
+		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final HavingRel AND = new HavingRel(AnonymousTable.this, havingContext, CriteriaContext.AND, OR);
 
 		@Override
 		public HavingRel defaultOperator() {
@@ -110,14 +110,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		private OnLeftLogicalOperators() {}
 
 		/**
-		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final OnLeftRel AND = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.AND);
-
-		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftRel OR = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.OR);
+		public final OnLeftRel OR = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.OR, null);
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final OnLeftRel AND = new OnLeftRel(AnonymousTable.this, onLeftContext, CriteriaContext.AND, OR);
 
 		@Override
 		public OnLeftRel defaultOperator() {
@@ -133,14 +133,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		private OnRightLogicalOperators() {}
 
 		/**
-		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final OnRightRel AND = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.AND);
-
-		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightRel OR = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.OR);
+		public final OnRightRel OR = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.OR, null);
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final OnRightRel AND = new OnRightRel(AnonymousTable.this, onRightContext, CriteriaContext.AND, OR);
 
 		@Override
 		public OnRightRel defaultOperator() {
@@ -743,11 +743,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	public static class WhereRel extends Rel<WhereColumn<WhereLogicalOperators>, Void>
 		implements WhereRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final WhereRel OR;
+
 		private WhereRel(
 			AnonymousTable query,
 			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder,
-			CriteriaContext context) {
+			CriteriaContext context,
+			WhereRel or) {
 			super(query, builder, context);
+			OR = or == null ? this : or;
 		}
 	}
 
@@ -767,11 +774,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	public static class HavingRel extends Rel<HavingColumn<HavingLogicalOperators>, Void>
 		implements HavingRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final HavingRel OR;
+
 		private HavingRel(
 			AnonymousTable query,
 			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder,
-			CriteriaContext context) {
+			CriteriaContext context,
+			HavingRel or) {
 			super(query, builder, context);
+			OR = or == null ? this : or;
 		}
 	}
 
@@ -796,11 +810,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	public static class OnLeftRel extends Rel<OnLeftColumn<OnLeftLogicalOperators>, Void>
 		implements OnLeftRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final OnLeftRel OR;
+
 		private OnLeftRel(
 			AnonymousTable query,
 			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder,
-			CriteriaContext context) {
+			CriteriaContext context,
+			OnLeftRel or) {
 			super(query, builder, context);
+			OR = or == null ? this : or;
 		}
 	}
 
@@ -810,11 +831,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void>
 		implements OnRightRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final OnRightRel OR;
+
 		private OnRightRel(
 			AnonymousTable query,
 			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder,
-			CriteriaContext context) {
+			CriteriaContext context,
+			OnRightRel or) {
 			super(query, builder, context);
+			OR = or == null ? this : or;
 		}
 	}
 

@@ -278,20 +278,22 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private WhereLogicalOperators() {}
 
 		/**
-		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final WhereRel AND = new WhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			whereContext$,
-			CriteriaContext.AND);
-
-		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final WhereRel OR = new WhereRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 			whereContext$,
-			CriteriaContext.OR);
+			CriteriaContext.OR,
+			null);
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final WhereRel AND = new WhereRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			whereContext$,
+			CriteriaContext.AND,
+			OR);
 
 		@Override
 		public WhereRel defaultOperator() {
@@ -307,21 +309,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private HavingLogicalOperators() {}
 
 		/**
+		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final HavingRel OR = new HavingRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				havingContext$,
+				CriteriaContext.OR,
+				null);
+
+		/**
 		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final HavingRel AND =
 			new HavingRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				havingContext$,
-				CriteriaContext.AND);
-
-		/**
-		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final HavingRel OR = new HavingRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				havingContext$,
-				CriteriaContext.OR);
+				CriteriaContext.AND,
+				OR);
 
 		@Override
 		public HavingRel defaultOperator() {
@@ -337,22 +341,24 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private OnLeftLogicalOperators() {}
 
 		/**
-		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final OnLeftRel AND =
-			new OnLeftRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onLeftContext$,
-				CriteriaContext.AND);
-
-		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final OnLeftRel OR =
 			new OnLeftRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onLeftContext$,
-				CriteriaContext.OR);
+				CriteriaContext.OR,
+				null);
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final OnLeftRel AND =
+			new OnLeftRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				onLeftContext$,
+				CriteriaContext.AND,
+				OR);
 
 		@Override
 		public OnLeftRel defaultOperator() {
@@ -368,22 +374,24 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private OnRightLogicalOperators() {}
 
 		/**
-		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final OnRightRel AND =
-			new OnRightRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onRightContext$,
-				CriteriaContext.AND);
-
-		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final OnRightRel OR =
 			new OnRightRel(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				onRightContext$,
-				CriteriaContext.OR);
+				CriteriaContext.OR,
+				null);
+
+		/**
+		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final OnRightRel AND =
+			new OnRightRel(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				onRightContext$,
+				CriteriaContext.AND,
+				OR);
 
 		@Override
 		public OnRightRel defaultOperator() {
@@ -399,20 +407,22 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private DMSWhereLogicalOperators() {}
 
 		/**
-		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
-		 */
-		public final DMSWhereRel AND = new DMSWhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			dmsWhereContext$,
-			CriteriaContext.AND);
-
-		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final DMSWhereRel OR = new DMSWhereRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 			dmsWhereContext$,
-			CriteriaContext.OR);
+			CriteriaContext.OR,
+			null);
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final DMSWhereRel AND = new DMSWhereRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			dmsWhereContext$,
+			CriteriaContext.AND,
+			OR);
 
 		@Override
 		public DMSWhereRel defaultOperator() {
@@ -1387,11 +1397,18 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final WhereRel OR;
+
 		private WhereRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder$,
-			CriteriaContext context$) {
+			CriteriaContext context$,
+			WhereRel or$) {
 			super(table$, builder$, context$);
+			OR = or$ == null ? this : or$;
 		}
 
 		@Override
@@ -1417,11 +1434,18 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final HavingRel OR;
+
 		private HavingRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder$,
-			CriteriaContext context$) {
+			CriteriaContext context$,
+			HavingRel or$) {
 			super(table$, builder$, context$);
+			OR = or$ == null ? this : or$;
 		}
 	}
 
@@ -1447,11 +1471,18 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final OnLeftRel OR;
+
 		private OnLeftRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder$,
-			CriteriaContext context$) {
+			CriteriaContext context$,
+			OnLeftRel or$) {
 			super(table$, builder$, context$);
+			OR = or$ == null ? this : or$;
 		}
 	}
 
@@ -1460,11 +1491,18 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final OnRightRel OR;
+
 		private OnRightRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder$,
-			CriteriaContext context$) {
+			CriteriaContext context$,
+			OnRightRel or$) {
 			super(table$, builder$, context$);
+			OR = or$ == null ? this : or$;
 		}
 	}
 
@@ -1497,11 +1535,18 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void> implements WhereRelationship {
 
+		/**
+		 * 条件接続 OR
+		 */
+		public final DMSWhereRel OR;
+
 		private DMSWhereRel(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> builder$,
-			CriteriaContext context$) {
+			CriteriaContext context$,
+			DMSWhereRel or$) {
 			super(table$, builder$, context$);
+			OR = or$ == null ? this : or$;
 		}
 
 		@Override
