@@ -6,7 +6,7 @@ import org.blendee.sql.Column;
  * INSERT, UPDATE, DELETE 文を生成するための機能を持つものを表すインターフェイスです。
  * @author 千葉 哲嗣
  */
-public interface DataManipulationStatement {
+public interface DataManipulationStatement extends Statement {
 
 	/**
 	 * INSERT 文に加える {@link Column} を追加します。

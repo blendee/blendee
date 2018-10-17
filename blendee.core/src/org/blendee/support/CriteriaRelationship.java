@@ -20,7 +20,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void EXISTS(SelectStatement subquery) {
-		Exists.setExists(getSelectStatement().getRuntimeId(), this, subquery, "EXISTS");
+		Exists.setExists(getStatement().getRuntimeId(), this, subquery, "EXISTS");
 	}
 
 	/**
@@ -28,7 +28,7 @@ public interface CriteriaRelationship {
 	 * @param subquery サブクエリ
 	 */
 	default void NOT_EXISTS(SelectStatement subquery) {
-		Exists.setExists(getSelectStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
+		Exists.setExists(getStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
 	}
 
 	/**
@@ -38,7 +38,7 @@ public interface CriteriaRelationship {
 	 */
 	default CriteriaColumn<?> any(String template) {
 		return new CriteriaColumn<LogicalOperators<?>>(
-			getSelectStatement(),
+			getStatement(),
 			getContext(),
 			new MultiColumn(getRelationship(), template)) {
 
@@ -70,7 +70,7 @@ public interface CriteriaRelationship {
 		WithValues values = new WithValues();
 		consumer.accept(values);
 
-		getContext().addCriteria(values.createCriteria(getSelectStatement().getRuntimeId(), template));
+		getContext().addCriteria(values.createCriteria(getStatement().getRuntimeId(), template));
 	}
 
 	/**
@@ -78,49 +78,34 @@ public interface CriteriaRelationship {
 	 * @param expression カラムの文字列表現
 	 */
 	default void with(String expression) {
-		getContext().addCriteria(new CriteriaFactory(getSelectStatement().getRuntimeId()).createCriteria(expression));
+		getContext().addCriteria(new CriteriaFactory(getStatement().getRuntimeId()).createCriteria(expression));
 	}
 
 	/**
 	 * この句に IN サブクエリ条件を追加します。
-	 * @param subquery 追加条件
-	 */
-	default void subquery(SelectStatement subquery) {
-		subquery(false, subquery);
-	}
-
-	/**
-	 * この句に IN サブクエリ条件を追加します。
-	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
+	 * @param subquery 追加条件
 	 */
-	default void subquery(SelectStatement subquery, CriteriaColumn<?>... mainColumns) {
-		subquery(false, subquery, mainColumns);
+	default void IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		IN(false, mainColumns, subquery);
 	}
 
 	/**
 	 * この句に IN サブクエリ条件を追加します。
 	 * @param notIn NOT IN の場合 true
-	 * @param subquery 追加条件
-	 */
-	default void subquery(boolean notIn, SelectStatement subquery) {
-		getContext().addCriteria(Subquery.createCriteria(subquery.toSQLQueryBuilder(), notIn, getSelectStatement()));
-	}
-
-	/**
-	 * この句に IN サブクエリ条件を追加します。
-	 * @param notIn NOT IN の場合 true
-	 * @param subquery 追加条件
 	 * @param mainColumns メイン側クエリの結合カラム
+	 * @param subquery 追加条件
 	 */
-	default void subquery(boolean notIn, SelectStatement subquery, CriteriaColumn<?>... mainColumns) {
-		Column[] columns = new Column[mainColumns.length];
+	default void IN(boolean notIn, Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		CriteriaColumn<?>[] criteriaColumns = mainColumns.get();
 
-		for (int i = 0; i < mainColumns.length; i++) {
-			columns[i] = mainColumns[i].column();
+		Column[] columns = new Column[criteriaColumns.length];
+
+		for (int i = 0; i < criteriaColumns.length; i++) {
+			columns[i] = criteriaColumns[i].column();
 		}
 
-		getContext().addCriteria(Subquery.createCriteria(getSelectStatement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
+		getContext().addCriteria(Subquery.createCriteria(getStatement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
 	}
 
 	/**
@@ -128,6 +113,14 @@ public interface CriteriaRelationship {
 	 * @return QueryRelationship が WHERE 句用の場合、そのタイプに応じた {@link CriteriaContext}
 	 */
 	CriteriaContext getContext();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return このインスタンスの大元の {@link Statement}
+	 */
+	default Statement getStatement() {
+		return getSelectStatement();
+	}
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

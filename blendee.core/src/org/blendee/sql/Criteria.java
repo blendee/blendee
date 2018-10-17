@@ -386,5 +386,11 @@ public class Criteria extends Clause {
 			if (inclusion == null) return;
 			inclusion.join(fromClause);
 		}
+
+		@Override
+		public String toString(boolean joining) {
+			if (inclusion == null) return "";
+			return inclusion.toString(joining);
+		}
 	}
 }

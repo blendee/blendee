@@ -36,6 +36,8 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 
 	private CriteriaFactory factory;
 
+	private boolean forSubquery;
+
 	public DataManipulationStatementBehavior(TablePath table, RuntimeId id, SQLDecorators decorators) {
 		this.table = table;
 		this.id = id;
@@ -96,6 +98,21 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 		getSetElements().add(element);
 	}
 
+	@Override
+	public RuntimeId getRuntimeId() {
+		return id;
+	}
+
+	@Override
+	public void forSubquery(boolean forSubquery) {
+		this.forSubquery = forSubquery;
+	};
+
+	@Override
+	public LogicalOperators<?> getWhereLogicalOperators() {
+		return whereOperators();
+	}
+
 	public void resetInsert() {
 		insertColumns = null;
 	}
@@ -118,6 +135,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 		resetInsert();
 		resetUpdate();
 		resetWhere();
+		forSubquery = false;
 	}
 
 	protected abstract I newInsert();
@@ -161,7 +179,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 	}
 
 	DataManipulator createDeleteDataManipulator() {
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(table, id);
+		DeleteDMLBuilder builder = new DeleteDMLBuilder(table, id, forSubquery);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());
@@ -172,7 +190,7 @@ public abstract class DataManipulationStatementBehavior<I extends InsertRelation
 	}
 
 	DataManipulator createUpdateDataManipulator() {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(table, id);
+		UpdateDMLBuilder builder = new UpdateDMLBuilder(table, id, forSubquery);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());

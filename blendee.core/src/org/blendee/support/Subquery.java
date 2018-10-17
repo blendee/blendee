@@ -14,22 +14,6 @@ class Subquery {
 
 	/**
 	 * このサブクエリから、メインクエリで使用できる {@link Criteria} を生成します。
-	 * @param builder {@link SQLQueryBuilder}
-	 * @param notIn NOT IN の場合 true
-	 * @param mainquery メインクエリ
-	 * @return {@link Criteria} となったサブクエリ
-	 */
-	static Criteria createCriteria(SQLQueryBuilder builder, boolean notIn, SelectStatement mainquery) {
-		return new CriteriaFactory(mainquery.getRuntimeId())
-			//SQLDecoratorでサブクエリのSELECT句自体が変更されている場合を考慮し、SELECT句チェックを行わない
-			.createSubqueryWithoutCheck(
-				mainquery.getRootRealtionship().getPrimaryKeyColumns(),
-				builder,
-				notIn);
-	}
-
-	/**
-	 * このサブクエリから、メインクエリで使用できる {@link Criteria} を生成します。
 	 * @param main {@link RuntimeId}
 	 * @param builder {@link SQLQueryBuilder}
 	 * @param notIn NOT IN の場合 true

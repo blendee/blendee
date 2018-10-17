@@ -639,6 +639,11 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
+	public SelectStatement getSelectStatement() {
+		return this;
+	}
+
+	@Override
 	public RuntimeId getRuntimeId() {
 		return id;
 	}
@@ -714,6 +719,11 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		public T col(String name) {
 			return builder.buildColumn(this, name);
+		}
+
+		@Override
+		public RuntimeId getRuntimeId() {
+			return table.id;
 		}
 	}
 

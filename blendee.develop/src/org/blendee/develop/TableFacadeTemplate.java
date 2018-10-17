@@ -68,6 +68,7 @@ import org.blendee.support.RowIterator;
 import org.blendee.support.SelectColumn;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectRelationship;
+import org.blendee.support.Statement;
 import org.blendee.support.SelectStatement;
 import org.blendee.support.SelectStatementBehavior;
 import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
@@ -267,6 +268,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext$ =  TableFacadeContext.newOnRightBuilder();
 
+	private static final TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> dmsWhereContext$ =  TableFacadeContext.newDMSWhereBuilder();
+
 	/**
 	 * WHERE 句 で使用する AND, OR です。
 	 */
@@ -278,17 +281,17 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final WhereRel AND = new WhereRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				whereContext$,
-				CriteriaContext.AND);
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			whereContext$,
+			CriteriaContext.AND);
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
 		public final WhereRel OR = new WhereRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				whereContext$,
-				CriteriaContext.OR);
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			whereContext$,
+			CriteriaContext.OR);
 
 		@Override
 		public WhereRel defaultOperator() {
@@ -357,7 +360,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 	}
 
-
 	/**
 	 * ON 句 (RIGHT) で使用する AND, OR です。
 	 */
@@ -385,6 +387,35 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public OnRightRel defaultOperator() {
+			return AND;
+		}
+	}
+
+	/**
+	 * WHERE 句 で使用する AND, OR です。
+	 */
+	public class DMSWhereLogicalOperators implements LogicalOperators<DMSWhereRel> {
+
+		private DMSWhereLogicalOperators() {}
+
+		/**
+		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final DMSWhereRel AND = new DMSWhereRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			dmsWhereContext$,
+			CriteriaContext.AND);
+
+		/**
+		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
+		 */
+		public final DMSWhereRel OR = new DMSWhereRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+			dmsWhereContext$,
+			CriteriaContext.OR);
+
+		@Override
+		public DMSWhereRel defaultOperator() {
 			return AND;
 		}
 	}
@@ -453,10 +484,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return dmsBehavior$ == null ? (dmsBehavior$ = new DMSBehavior()) : dmsBehavior$;
 	}
 
-	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, WhereRel> {
+	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, DMSWhereRel> {
 
 		public DMSBehavior() {
-			super($TABLE, getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super($TABLE, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this.getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -474,8 +505,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
-		protected LogicalOperators<WhereRel> newWhereOperators() {
-			return new WhereLogicalOperators();
+		protected LogicalOperators<DMSWhereRel> newWhereOperators() {
+			return new DMSWhereLogicalOperators();
 		}
 	}
 
@@ -1081,6 +1112,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return getOnRightLogicalOperators().AND;
 	}
 
+	@Override
+	public SelectStatement getSelectStatement() {
+		return this;
+	}
 	/**
 	 * INSERT 文を生成します。
 	 * @param function function
@@ -1124,7 +1159,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param consumer
 	 * @return {@link UpdateStatementIntermediate}
 	 */
-	public UpdateStatementIntermediate<WhereRel> UPDATE(Consumer<UpdateRel> consumer) {
+	public UpdateStatementIntermediate<DMSWhereRel> UPDATE(Consumer<UpdateRel> consumer) {
 		return dmsBehavior().UPDATE(consumer);
 	}
 
@@ -1132,7 +1167,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * UPDATE 文を生成します。
 	 * @return {@link UpdateStatementIntermediate}
 	 */
-	public UpdateStatementIntermediate<WhereRel> UPDATE() {
+	public UpdateStatementIntermediate<DMSWhereRel> UPDATE() {
 		return dmsBehavior().UPDATE();
 	}
 
@@ -1140,7 +1175,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * DELETE 文を生成します。
 	 * @return {@link DeleteStatementIntermediate}
 	 */
-	public final DeleteStatementIntermediate<WhereRel> DELETE() {
+	public final DeleteStatementIntermediate<DMSWhereRel> DELETE() {
 		return dmsBehavior().DELETE();
 	}
 
@@ -1245,7 +1280,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public DataManipulationStatement getDataManipulationStatement() {
-			if (table$ != null) return table$.dmsBehavior$;
+			if (table$ != null) return table$.dmsBehavior();
 			return parent$.getDataManipulationStatement();
 		}
 
@@ -1264,6 +1299,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		@Override
 		public int hashCode() {
 			return getRelationship().hashCode();
+		}
+
+		@Override
+		public RuntimeId getRuntimeId() {
+			if (table$ != null) return table$.id$;
+			return parent$.getRuntimeId();
 		}
 	}
 
@@ -1342,7 +1383,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
-	 * WHERE 句用
+	 * SELECT 文 WHERE 句用
 	 */
 	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
 
@@ -1351,6 +1392,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder$,
 			CriteriaContext context$) {
 			super(table$, builder$, context$);
+		}
+
+		@Override
+		public Statement getStatement() {
+			return getSelectStatement();
 		}
 	}
 
@@ -1443,6 +1489,24 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<UpdateCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * UPDATE, DELETE 文 WHERE 句用
+	 */
+	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void> implements WhereRelationship {
+
+		private DMSWhereRel(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> builder$,
+			CriteriaContext context$) {
+			super(table$, builder$, context$);
+		}
+
+		@Override
+		public Statement getStatement() {
+			return getDataManipulationStatement();
 		}
 	}
 

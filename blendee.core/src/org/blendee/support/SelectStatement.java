@@ -6,7 +6,6 @@ import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 
 /**
@@ -14,7 +13,7 @@ import org.blendee.sql.SQLQueryBuilder;
  * このインスタンスは、マルチスレッド環境で使用されることを想定されていません。
  * @author 千葉 哲嗣
  */
-public interface SelectStatement extends SQLDecorators {
+public interface SelectStatement extends Statement, SQLDecorators {
 
 	/**
 	 * 現時点での、このインスタンスが検索条件を持つかどうかを調べます。
@@ -27,11 +26,6 @@ public interface SelectStatement extends SQLDecorators {
 	 * @return 現在の検索に使用する {@link Optimizer}
 	 */
 	Optimizer getOptimizer();
-
-	/**
-	 * @return {@link RuntimeId}
-	 */
-	RuntimeId getRuntimeId();
 
 	/**
 	 * 内部処理用なので直接使用しないこと。
@@ -56,12 +50,6 @@ public interface SelectStatement extends SQLDecorators {
 	 * @return ルート {@link Relationship}
 	 */
 	Relationship getRootRealtionship();
-
-	/**
-	 * この Query の WHERE 句用 {@link LogicalOperators} を返します。
-	 * @return {@link LogicalOperators}
-	 */
-	LogicalOperators<?> getWhereLogicalOperators();
 
 	/**
 	 * この Query の HAVING 句用 {@link LogicalOperators} を返します。
@@ -106,11 +94,6 @@ public interface SelectStatement extends SQLDecorators {
 	 * @return {@link SQLQueryBuilder}
 	 */
 	SQLQueryBuilder toSQLQueryBuilder();
-
-	/**
-	 * @param forSubquery true の場合、カラムにテーブルIDが付与される
-	 */
-	void forSubquery(boolean forSubquery);
 
 	/**
 	 * {@link Query} を生成し、返します。

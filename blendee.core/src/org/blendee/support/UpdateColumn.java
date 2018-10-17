@@ -1,7 +1,6 @@
 package org.blendee.support;
 
 import org.blendee.sql.Column;
-import org.blendee.sql.RuntimeId;
 
 /**
  * UPDATE 文に新しい要素を追加するクラスです。<br>
@@ -12,7 +11,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 
 	private final Column column;
 
-	private final RuntimeId id;
+	private final Statement statement;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -22,7 +21,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 	public UpdateColumn(TableFacadeRelationship helper, String name) {
 		super(helper);
 		this.column = helper.getRelationship().getColumn(name);
-		this.id = helper.getRuntimeId();
+		this.statement = helper.getDataManipulationStatement();
 		addColumn(column);
 	}
 
@@ -32,7 +31,7 @@ public class UpdateColumn extends SetElement implements ColumnSupplier {
 	}
 
 	@Override
-	public RuntimeId runtimeId() {
-		return id;
+	public Statement statement() {
+		return statement;
 	}
 }

@@ -31,10 +31,15 @@ public class UpdateDMLBuilder extends Updater {
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path UPDATE 対象テーブル
 	 * @param id {@link RuntimeId}
+	 * @param forSubquery サブクエリを使用する
 	 */
-	public UpdateDMLBuilder(TablePath path, RuntimeId id) {
+	public UpdateDMLBuilder(TablePath path, RuntimeId id, boolean forSubquery) {
 		super(path);
-		alias = " " + id.toAlias(factory.getInstance(path));
+		if (forSubquery) {
+			alias = " " + id.toAlias(factory.getInstance(path));
+		} else {
+			alias = "";
+		}
 	}
 
 	@Override

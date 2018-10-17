@@ -12,4 +12,10 @@ public interface RightTable<R extends OnRightRelationship> {
 	 * @return joint
 	 */
 	R joint();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return このインスタンスの大元の {@link SelectStatement}
+	 */
+	SelectStatement getSelectStatement();
 }

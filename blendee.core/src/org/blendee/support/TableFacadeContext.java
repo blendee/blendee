@@ -65,6 +65,18 @@ public interface TableFacadeContext<T> {
 	}
 
 	/**
+	 * WHERE 句用
+	 * @param <O> {@link SelectStatement} 実装
+	 * @return WHERE 句用 Context
+	 */
+	static <O extends LogicalOperators<?>> TableFacadeContext<WhereColumn<O>> newDMSWhereBuilder() {
+		return (relationship, name) -> new WhereColumn<>(
+			relationship.getDataManipulationStatement(),
+			relationship.getContext(),
+			relationship.getRelationship().getColumn(name));
+	}
+
+	/**
 	 * このインスタンスに対応したカラムインスタンスを生成します。
 	 * @param relationship 条件作成に必要な情報を持った {@link TableFacadeRelationship}
 	 * @param name カラム名

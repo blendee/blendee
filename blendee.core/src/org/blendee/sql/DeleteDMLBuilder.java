@@ -36,10 +36,15 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	 * パラメータのテーブルを対象にするインスタンスを生成します。
 	 * @param path DELETE 対象テーブル
 	 * @param id {@link RuntimeId}
+	 * @param forSubquery サブクエリを使用する
 	 */
-	public DeleteDMLBuilder(TablePath path, RuntimeId id) {
+	public DeleteDMLBuilder(TablePath path, RuntimeId id, boolean forSubquery) {
 		this.path = path;
-		alias = " " + id.toAlias(factory.getInstance(path));
+		if (forSubquery) {
+			alias = " " + id.toAlias(factory.getInstance(path));
+		} else {
+			alias = "";
+		}
 	}
 
 	/**

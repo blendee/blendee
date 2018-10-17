@@ -10,13 +10,13 @@ import org.blendee.sql.Column;
  */
 public class WhereColumn<O extends LogicalOperators<?>> extends CriteriaColumn<O> {
 
-	private final SelectStatement root;
+	private final Statement root;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
 	 */
 	@SuppressWarnings("javadoc")
-	public WhereColumn(SelectStatement root, CriteriaContext context, Column column) {
+	public WhereColumn(Statement root, CriteriaContext context, Column column) {
 		super(root, context, column);
 		this.root = root;
 	}

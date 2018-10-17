@@ -1,8 +1,8 @@
 package org.blendee.support;
 
 import org.blendee.orm.DataObject;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.RuntimeId;
 
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
@@ -37,17 +37,15 @@ public interface TableFacadeRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return {@link RuntimeId}
-	 */
-	default RuntimeId getRuntimeId() {
-		return getSelectStatement().getRuntimeId();
-	}
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスの大元の {@link DataManipulationStatement}
 	 */
 	DataManipulationStatement getDataManipulationStatement();
+
+	/**
+	 * Query 内部処理用なので直接使用しないこと。
+	 * @return {@link RuntimeId}
+	 */
+	RuntimeId getRuntimeId();
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
