@@ -231,10 +231,22 @@ public class TableFacadeGenerator {
 	 * @throws IOException ファイル書き込みに失敗した場合
 	 */
 	public void writeDatabaseInfo(File home) throws IOException {
+		writeDatabaseInfo(home, new DatabaseInfo(rootPackageName));
+	}
+
+	/**
+	 * データベース全体の情報をファイルに保存します。
+	 * @param home 生成された Java ソースを保存するためのルートとなる場所
+	 * @param loader database-info ファイルをロード可能な {@link ClassLoader}
+	 * @throws IOException ファイル書き込みに失敗した場合
+	 */
+	public void writeDatabaseInfo(File home, ClassLoader loader) throws IOException {
+		writeDatabaseInfo(home, new DatabaseInfo(rootPackageName, loader));
+	}
+
+	private void writeDatabaseInfo(File home, DatabaseInfo info) throws IOException {
 		File rootPackageDir = getRootPackageDir(home);
 		rootPackageDir.mkdirs();
-
-		DatabaseInfo info = new DatabaseInfo(rootPackageName);
 
 		Properties properties = new Properties();
 

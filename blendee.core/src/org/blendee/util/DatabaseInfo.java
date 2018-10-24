@@ -35,7 +35,7 @@ public class DatabaseInfo {
 		loader = getClass().getClassLoader();
 	}
 
-	DatabaseInfo(String rootPackageName, ClassLoader loader) {
+	public DatabaseInfo(String rootPackageName, ClassLoader loader) {
 		Objects.requireNonNull(rootPackageName);
 		this.rootPackageName = rootPackageName;
 		this.loader = loader;
@@ -48,17 +48,28 @@ public class DatabaseInfo {
 		InputStream input = loader.getResourceAsStream(path);
 		if (input == null) return prop;
 
-		prop.load(new BufferedReader(new InputStreamReader(input, defaultCharset)));
+		try {
+			prop.load(new BufferedReader(new InputStreamReader(input, defaultCharset)));
+		} finally {
+			input.close();
+		}
 
 		return prop;
 	}
 
-	public void write(File homeDir, Properties properties) throws IOException {
+	public boolean write(File homeDir, Properties properties) throws IOException {
+		if (!needsOverwrite(properties)) return false;
+
 		File dir = new File(homeDir, String.join("/", rootPackageName.split("\\.")));
 
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(dir, fileName)), defaultCharset))) {
-			properties.store(writer, DatabaseInfo.class.getName());
+		try (Writer writer = new BufferedWriter(
+			new OutputStreamWriter(
+				new FileOutputStream(new File(dir, fileName)),
+				defaultCharset))) {
+			properties.store(writer, null);
 		}
+
+		return true;
 	}
 
 	public void setStoredIdentifier(Properties properties, StoredIdentifier value) {
@@ -72,5 +83,15 @@ public class DatabaseInfo {
 
 	public StoredIdentifier getStoredIdentifier(Properties properties) {
 		return StoredIdentifier.valueOf(properties.getProperty(storedIdentifierKey).toUpperCase());
+	}
+
+	private boolean needsOverwrite(Properties newOne) throws IOException {
+		Properties oldOne = read();
+
+		if (hasStoredIdentifier(oldOne) && hasStoredIdentifier(newOne)) {
+			if (getStoredIdentifier(oldOne).equals(getStoredIdentifier(newOne))) return false;
+		}
+
+		return true;
 	}
 }

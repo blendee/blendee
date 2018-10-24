@@ -9,6 +9,7 @@ import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.plugin.BlendeePlugin;
 import org.blendee.plugin.Constants;
+import org.blendee.plugin.PluginTableFacadeGenerator;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.support.TableFacadePackageRule;
@@ -116,7 +117,7 @@ public class TableElement extends PropertySourceElement {
 
 		IPackageFragmentRoot fragmentRoot = findPackageRoot(baseFragment);
 
-		TableFacadeGenerator generator = new TableFacadeGenerator(
+		TableFacadeGenerator generator = new PluginTableFacadeGenerator(
 			BlendeeManager.get().getMetadata(),
 			baseFragment.getElementName(),
 			plugin.getTableFacadeParentClass(),

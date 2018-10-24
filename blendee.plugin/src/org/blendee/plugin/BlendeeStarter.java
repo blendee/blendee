@@ -22,6 +22,7 @@ public class BlendeeStarter {
 		throws Exception {
 		PluginDriverTransactionFactory.setClassLoader(loader);
 		PluginAnnotationMetadataFactory.setClassLoader(loader);
+		PluginTableFacadeGenerator.setClassLoader(loader);
 
 		ContextManager.newStrategy();
 
