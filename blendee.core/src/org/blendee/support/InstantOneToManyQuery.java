@@ -19,14 +19,15 @@ import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
 import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.Selector;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
@@ -222,6 +223,11 @@ public class InstantOneToManyQuery<O extends Row, M>
 			toCountSQL().sql(),
 			new ComplementerValues(composedSQL()).reproduce(placeHolderValues),
 			optimizer.getOptimizedSelectClause().getColumns());
+	}
+
+	@Override
+	public Binder[] currentBinders() {
+		return new ComplementerValues(composedSQL()).currentBinders();
 	}
 
 	@Override

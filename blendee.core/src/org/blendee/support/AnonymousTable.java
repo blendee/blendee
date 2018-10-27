@@ -11,6 +11,7 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
@@ -519,6 +520,12 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
+	public Binder[] currentBinders() {
+		careEmptySelect();
+		return behavior().query().currentBinders();
+	}
+
+	@Override
 	public void joinTo(SQLQueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		careEmptySelect();//下でこのQueryが評価されてしまうのでSELECT句を補う
 		behavior().joinTo(builder, joinType, onCriteria);
@@ -925,6 +932,11 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public AnonymousQuery reproduce(Object... placeHolderValues) {
 			return new AnonymousQuery(inner.reproduce(placeHolderValues));
+		}
+
+		@Override
+		public Binder[] currentBinders() {
+			return inner.currentBinders();
 		}
 	}
 }

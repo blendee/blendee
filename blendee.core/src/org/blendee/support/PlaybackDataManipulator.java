@@ -65,4 +65,9 @@ class PlaybackDataManipulator implements DataManipulator {
 		List<Binder> binders = new ComplementerValues(this).binders();
 		return new PlaybackDataManipulator(base.sql(), binders.toArray(new Binder[binders.size()]));
 	}
+
+	@Override
+	public Binder[] currentBinders() {
+		return new ComplementerValues(this).currentBinders();
+	}
 }

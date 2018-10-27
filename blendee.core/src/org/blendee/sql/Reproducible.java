@@ -12,4 +12,10 @@ public interface Reproducible<R extends Reproducible<?>> {
 	 * @return 複製
 	 */
 	R reproduce(Object... placeHolderValues);
+
+	/**
+	 * 内部で保持している値を {@link Binder} の配列として返します。
+	 * @return {@link Binder} array
+	 */
+	Binder[] currentBinders();
 }

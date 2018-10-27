@@ -978,6 +978,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
+	public Binder[] currentBinders() {
+		return selectBehavior().query().currentBinders();
+	}
+
+	@Override
 	public void joinTo(SQLQueryBuilder builder, JoinType joinType, Criteria onCriteria) {
 		selectBehavior().joinTo(builder, joinType, onCriteria);
 	}
@@ -1654,6 +1659,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		@Override
 		public Query reproduce(Object... placeHolderValues) {
 			return new Query(inner.reproduce(placeHolderValues));
+		}
+
+		@Override
+		public Binder[] currentBinders() {
+			return inner.currentBinders();
 		}
 	}
 }

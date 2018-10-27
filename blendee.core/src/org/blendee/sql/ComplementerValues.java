@@ -81,21 +81,21 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			@Override
 			public void setTimestamp(int parameterIndex, Timestamp x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setString(int parameterIndex, String x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setObject(int parameterIndex, Object x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
@@ -107,35 +107,35 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			@Override
 			public void setLong(int parameterIndex, long x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setInt(int parameterIndex, int x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setFloat(int parameterIndex, float x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setDouble(int parameterIndex, double x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setClob(int parameterIndex, Clob x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
@@ -147,21 +147,21 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			@Override
 			public void setBytes(int parameterIndex, byte[] x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setBoolean(int parameterIndex, boolean x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
 			@Override
 			public void setBlob(int parameterIndex, Blob x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
@@ -173,7 +173,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			@Override
 			public void setBigDecimal(int parameterIndex, BigDecimal x) {
 				Objects.requireNonNull(x);
-				checkparameterIndex(parameterIndex);
+				checkParameterIndex(parameterIndex);
 				map.put(parameterIndex, x);
 			}
 
@@ -225,6 +225,11 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 		return new ComplementerValues(extractors, Collections.unmodifiableList(binders));
 	}
 
+	@Override
+	public Binder[] currentBinders() {
+		return binders.toArray(new Binder[binders.size()]);
+	}
+
 	/**
 	 * 抽出した {@link Binder} を返します。
 	 * @return {@link Binder} のリスト
@@ -240,7 +245,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 		return index[0];
 	}
 
-	private static void checkparameterIndex(int i) {
+	private static void checkParameterIndex(int i) {
 		if (i < 1) throw new IllegalStateException("不正な parameterIndex: " + i);
 	}
 

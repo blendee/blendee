@@ -11,6 +11,7 @@ import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.SimpleSelectedValuesConverter;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.RuntimeId;
@@ -123,6 +124,11 @@ class PlaybackOneToManyQuery<O extends Row, M>
 			countSQL,
 			values.reproduce(placeHolderValues),
 			selectedColumns);
+	}
+
+	@Override
+	public Binder[] currentBinders() {
+		return values.currentBinders();
 	}
 
 	@Override

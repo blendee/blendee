@@ -23,6 +23,7 @@ import org.blendee.selector.Selector;
 import org.blendee.selector.SimpleOptimizer;
 import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Bindable;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
@@ -31,9 +32,9 @@ import org.blendee.sql.FromClause;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SQLQueryBuilder.UnionOperator;
 import org.blendee.sql.SelectClause;
@@ -658,6 +659,11 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 				selectedColumns,
 				converter,
 				rowMode);
+		}
+
+		@Override
+		public Binder[] currentBinders() {
+			return values.currentBinders();
 		}
 	}
 

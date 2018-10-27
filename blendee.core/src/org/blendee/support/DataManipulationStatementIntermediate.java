@@ -3,6 +3,7 @@ package org.blendee.support;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.sql.Binder;
 
 /**
  * データ操作文の中間形態を表すものの基底インターフェイスです。
@@ -31,6 +32,11 @@ public interface DataManipulationStatementIntermediate<W extends WhereRelationsh
 	@Override
 	default DataManipulator reproduce(Object... placeHolderValues) {
 		return dataManipulator().reproduce(placeHolderValues);
+	}
+
+	@Override
+	default Binder[] currentBinders() {
+		return dataManipulator().currentBinders();
 	}
 
 	@Override
