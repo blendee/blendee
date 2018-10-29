@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Blendee Plugin
 Bundle-SymbolicName: org.blendee.plugin;singleton:=true
-Bundle-Version: 0.6.5
+Bundle-Version: 0.7.0
 Bundle-ClassPath: blendee.jar,
  blendee.plugin.jar
 Bundle-Activator: org.blendee.plugin.BlendeePlugin
@@ -19,7 +19,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.ui.views,
- org.eclipse.jface.text,
- org.eclipse.text;bundle-version="3.5.0"
+ org.eclipse.jface.text
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
