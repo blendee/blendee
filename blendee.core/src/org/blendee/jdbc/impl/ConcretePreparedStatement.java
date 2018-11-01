@@ -34,7 +34,7 @@ public class ConcretePreparedStatement implements BPreparedStatement {
 	 * インスタンスを生成します。
 	 * @param config {@link Configure}
 	 * @param statement {@link PreparedStatement}
-	 * @param finalizer
+	 * @param finalizer {@link AutoCloseableFinalizer}
 	 */
 	public ConcretePreparedStatement(Configure config, PreparedStatement statement, AutoCloseableFinalizer finalizer) {
 		this.config = config;

@@ -10,7 +10,7 @@ public class TableFacadePackageRule {
 
 	/**
 	 * パッケージ名に使用できるように文字列を加工します。
-	 * @param name
+	 * @param name パッケージ名
 	 * @return for packageName
 	 */
 	public static String care(String name) {

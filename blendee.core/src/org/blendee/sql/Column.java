@@ -53,7 +53,7 @@ public interface Column extends Comparable<Column> {
 
 	/**
 	 * このインスタンスが含まれる {@link Relationship} を {@link Consumer} に渡します。
-	 * @param consumer
+	 * @param consumer {@link Relationship} の {@link Consumer}
 	 */
 	void setRelationship(Consumer<Relationship> consumer);
 
@@ -128,7 +128,8 @@ public interface Column extends Comparable<Column> {
 	Column replicate();
 
 	/**
-	 * @param sqlRoot
+	 * SQL 生成のために、このカラムが属している（はずの） {@link Relationship} root の通知を受けます。
+	 * @param sqlRoot {@link Relationship} の root 要素
 	 */
 	default void prepareForSQL(Relationship sqlRoot) {}
 }

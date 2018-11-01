@@ -4,15 +4,16 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * 可変パラメータの引数をパックするクラスです。
+ * 可変パラメータの引数をパックするユーティリティクラスです。
  * @author 千葉 哲嗣
- * @param <T>
+ * @param <T> 引数の型
  */
 public class Vargs<T> {
 
 	/**
 	 * 可変パラメータの引数をパックします。
-	 * @param args
+	 * @param args 引数
+	 * @param <T> 引数の型
 	 * @return このクラスのインスタンス
 	 */
 	@SafeVarargs
@@ -43,6 +44,7 @@ public class Vargs<T> {
 	}
 
 	/**
+	 * {@link Stream} として返します。
 	 * @return {@link Stream}
 	 */
 	public Stream<T> stream() {

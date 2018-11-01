@@ -12,6 +12,7 @@ public interface OnRightRelationship extends CriteriaRelationship {
 
 	/**
 	 * COALESCE を追加します。
+	 * @param <O> operator
 	 * @param columns 対象カラム
 	 * @return カラム
 	 */

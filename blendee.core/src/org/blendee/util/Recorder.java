@@ -27,7 +27,8 @@ public class Recorder {
 	 * 以前の {@link Query} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
 	 * @param supplier {@link Query} を生成する処理
 	 * @param playbackPlaceHolderValues supplier で使用した {@link Placeholder} に、再実行時セットする値
-	 * @return {@link Query}
+	 * @param <E> {@link Reproducible} の実装
+	 * @return {@link Reproducible}
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E extends Reproducible<E>> E play(Supplier<E> supplier, Object... playbackPlaceHolderValues) {
@@ -58,7 +59,9 @@ public class Recorder {
 	 * @param decision 使用するクエリを判定し、それを知らせる結果を返す {@link Supplier}
 	 * @param supplier decision の結果を受け取り、状況にあった {@link Query} を生成する処理
 	 * @param playbackPlaceHolderValuesSupplier decision の結果を受け取り、 supplier で使用した {@link Placeholder} に、再実行時セットする値
-	 * @return {@link Query}
+	 * @param <R> 条件判定のための材料の型
+	 * @param <E> {@link Reproducible} の実装
+	 * @return {@link Reproducible}
 	 */
 	@SuppressWarnings("unchecked")
 	public static <R, E extends Reproducible<E>> E play(

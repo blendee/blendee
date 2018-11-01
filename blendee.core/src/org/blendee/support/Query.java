@@ -45,6 +45,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	/**
 	 * 検索を実行します。
 	 * @param action {@link Consumer}
+	 * @param <T> 戻り値の型
 	 * @return 任意の型の戻り値
 	 */
 	default <T> T executeAndGet(Function<I, T> action) {
@@ -135,6 +136,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	/**
 	 * 集合関数を含む検索を実行します。
 	 * @param action {@link Function}
+	 * @param <T> 戻り値の型
 	 * @return 任意の型の戻り値
 	 */
 	default <T> T aggregateAndGet(Function<BResultSet, T> action) {

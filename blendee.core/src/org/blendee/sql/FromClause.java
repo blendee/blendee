@@ -79,7 +79,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	/**
 	 * パラメータのテーブルをルートとする FROM 句を生成します。
 	 * @param path テーブルのルート
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public FromClause(TablePath path, RuntimeId id) {
 		this(RelationshipFactory.getInstance().getInstance(path), id);

@@ -14,8 +14,10 @@ public class WhereColumn<O extends LogicalOperators<?>> extends CriteriaColumn<O
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
+	 * @param root {@link SelectStatement}
+	 * @param context {@link CriteriaContext}
+	 * @param column {@link Column}
 	 */
-	@SuppressWarnings("javadoc")
 	public WhereColumn(Statement root, CriteriaContext context, Column column) {
 		super(root, context, column);
 		this.root = root;

@@ -174,7 +174,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
-	 * @param operator
+	 * @param operator UNION の種類
 	 * @param query UNION 対象
 	 */
 	public synchronized void union(UnionOperator operator, ComposedSQL query) {

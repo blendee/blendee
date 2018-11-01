@@ -17,7 +17,8 @@ public interface DataManipulator extends ComposedSQL, Reproducible<DataManipulat
 	int execute();
 
 	/**
-	 * @param statement
+	 * データ操作をバッチ実行します。
+	 * @param statement {@link BatchStatement}
 	 */
 	default void execute(BatchStatement statement) {
 		statement.addBatch(this);

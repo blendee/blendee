@@ -23,7 +23,7 @@ public class RuntimeOptimizer extends SimpleSelectedValuesConverter implements O
 	/**
 	 * インスタンスを生成します。
 	 * @param path 対象テーブル
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public RuntimeOptimizer(TablePath path, RuntimeId id) {
 		this.path = Objects.requireNonNull(path);

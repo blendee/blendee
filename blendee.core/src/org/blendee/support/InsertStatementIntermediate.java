@@ -30,7 +30,7 @@ public class InsertStatementIntermediate {
 	}
 
 	/**
-	 * @param values
+	 * @param values プレースホルダにセットする値
 	 * @return {@link SelectStatement}
 	 */
 	public DataManipulator VALUES(Object... values) {

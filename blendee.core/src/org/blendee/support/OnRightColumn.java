@@ -14,8 +14,10 @@ public class OnRightColumn<O extends LogicalOperators<?>> extends OnColumn<O> {
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
+	 * @param root {@link SelectStatement}
+	 * @param context {@link CriteriaContext}
+	 * @param column {@link Column}
 	 */
-	@SuppressWarnings("javadoc")
 	public OnRightColumn(SelectStatement root, CriteriaContext context, Column column) {
 		super(root, context, column);
 		this.root = root;

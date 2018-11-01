@@ -939,7 +939,7 @@ public class CriteriaFactory {
 	/**
 	 * 条件句のテンプレートとそれに埋め込むカラムから条件句を生成します。<br>
 	 * このテンプレートにはプレースホルダを含めることはできません。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @param clause 条件句のテンプレート
 	 * @param columns 対象となるカラム
 	 * @return 生成されたインスタンス
@@ -1039,7 +1039,7 @@ public class CriteriaFactory {
 
 	/**
 	 * プレースホルダを含む条件句のテンプレートとそれに埋め込むカラム、プレースホルダに設定する値から条件句を生成します。
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 * @param clause プレースホルダを含む条件句のテンプレート
 	 * @param columns 対象となるカラム
 	 * @param bindables プレースホルダに設定する値

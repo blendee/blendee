@@ -212,7 +212,7 @@ public class SetElement {
 
 	/**
 	 * 内部使用
-	 * @param column
+	 * @param column {@link Column}
 	 */
 	public void addColumn(Column column) {
 		columns.add(column);

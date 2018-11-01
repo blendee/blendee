@@ -230,7 +230,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 	/**
 	 * HAVING 句を記述します。
-	 * @param consumer {@link Consumer}
+	 * @param consumers {@link Consumer}
 	 */
 	@SafeVarargs
 	public final void HAVING(
@@ -303,6 +303,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	/**
 	 * WHERE 句で使用できる {@link  Criteria} を作成します。
 	 * @param consumer {@link Consumer}
+	 * @return 作成された {@link Criteria}
 	 */
 	public Criteria createWhereCriteria(
 		Consumer<W> consumer) {
@@ -327,6 +328,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	/**
 	 * HAVING 句で使用できる {@link  Criteria} を作成します。
 	 * @param consumer {@link Consumer}
+	 * @return 作成された {@link Criteria}
 	 */
 	public Criteria createHavingCriteria(
 		Consumer<H> consumer) {
@@ -495,7 +497,6 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	}
 
 	/**
-	 * @param options 検索オプション
 	 * @return {@link ComposedSQL}
 	 */
 	public ComposedSQL composeSQL() {

@@ -11,8 +11,8 @@ public interface JDBCBorrower<T> {
 
 	/**
 	 * JDBC オブジェクトを借り受けます。
-	 * @param jdbcObject
-	 * @throws SQLException
+	 * @param jdbcObject JDBC の各インスタンス
+	 * @throws SQLException JDBC から投げられた例外
 	 */
 	void accept(T jdbcObject) throws SQLException;
 }

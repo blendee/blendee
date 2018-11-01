@@ -57,7 +57,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param runtimeId
+	 * @param runtimeId {@link RuntimeId}
 	 * @return このクラスのインスタンス
 	 */
 	public AnchorOptimizer getInstance(String id, RuntimeId runtimeId) {
@@ -73,7 +73,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param runtimeId
+	 * @param runtimeId {@link RuntimeId}
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @return このクラスのインスタンス
 	 */
@@ -101,7 +101,7 @@ public class AnchorOptimizerFactory implements ManagementSubject {
 	/**
 	 * ID を直接指定してこのクラスのインスタンスを生成します。
 	 * @param id パラメータで渡されたクラスに存在するこのインスタンスを格納したフィールド名
-	 * @param runtimeId
+	 * @param runtimeId {@link RuntimeId}
 	 * @param hint リポジトリにまだ登録されていない場合使用されるテーブル
 	 * @param using 使用されるクラス
 	 * @return このクラスのインスタンス

@@ -18,9 +18,9 @@ public class ChangeProjectHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String id = event.getCommand().getId();
-		if ("org.blendee.plugin.restartQueryEditor".equals(id)) {
+		if ("org.blendee.plugin.restartSelectEditor".equals(id)) {
 			Starter.start("org.blendee.plugin.queryEditorView");
-		} else if ("org.blendee.plugin.restartORMGenerator".equals(id)) {
+		} else if ("org.blendee.plugin.restartGenerator".equals(id)) {
 			Starter.start("org.blendee.plugin.classBuilderView");
 		} else {
 			throw new IllegalStateException(id);

@@ -14,7 +14,7 @@ import org.blendee.internal.U;
 public class OrderByClause extends ListClause<OrderByClause> {
 
 	/**
-	 * @param id
+	 * @param id {@link RuntimeId}
 	 */
 	public OrderByClause(RuntimeId id) {
 		super(id);

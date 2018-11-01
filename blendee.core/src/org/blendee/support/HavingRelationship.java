@@ -75,6 +75,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 	 * COALESCE を追加します。
 	 * @param columns 対象カラム
 	 * @param values カラム以外の要素
+	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<HavingColumn<O>> columns, Object... values) {
@@ -96,6 +97,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 	 * COALESCE を追加します。
 	 * @param column 対象カラム
 	 * @param values カラム以外の要素
+	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(HavingColumn<O> column, Object... values) {
@@ -116,6 +118,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 	/**
 	 * COALESCE を追加します。
 	 * @param columns 対象カラム
+	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<HavingColumn<O>> columns) {
@@ -124,7 +127,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 
 	/**
 	 * HAVING 句に任意のカラムを追加します。
-	 * @param <O> operator
+	 * @param <O> {@link LogicalOperators}
 	 * @param template カラムのテンプレート
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
@@ -140,7 +143,7 @@ public interface HavingRelationship extends CriteriaRelationship {
 
 	/**
 	 * HAVING 句に任意のカラムを追加します。
-	 * @param <O> operator
+	 * @param <O> {@link LogicalOperators}
 	 * @param template カラムのテンプレート
 	 * @param args 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR

@@ -13,6 +13,7 @@ public interface WhereRelationship extends CriteriaRelationship {
 	/**
 	 * COALESCE を追加します。
 	 * @param columns 対象カラム
+	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> WhereColumn<O> COALESCE(Vargs<WhereColumn<O>> columns) {
@@ -21,7 +22,7 @@ public interface WhereRelationship extends CriteriaRelationship {
 
 	/**
 	 * WHERE 句に任意のカラムを追加します。
-	 * @param <O> operator
+	 * @param <O> {@link LogicalOperators}
 	 * @param template カラムのテンプレート
 	 * @param column 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR
@@ -37,7 +38,7 @@ public interface WhereRelationship extends CriteriaRelationship {
 
 	/**
 	 * WHERE 句に任意のカラムを追加します。
-	 * @param <O> operator
+	 * @param <O> {@link LogicalOperators}
 	 * @param template カラムのテンプレート
 	 * @param args 使用するカラム
 	 * @return {@link LogicalOperators} AND か OR

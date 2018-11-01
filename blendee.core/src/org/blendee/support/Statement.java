@@ -15,6 +15,7 @@ public interface Statement {
 	LogicalOperators<?> getWhereLogicalOperators();
 
 	/**
+	 * この文が持つ {@link RuntimeId} を返します。
 	 * @return {@link RuntimeId}
 	 */
 	RuntimeId getRuntimeId();

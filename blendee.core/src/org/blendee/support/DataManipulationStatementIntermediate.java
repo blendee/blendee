@@ -13,7 +13,8 @@ import org.blendee.sql.Binder;
 public interface DataManipulationStatementIntermediate<W extends WhereRelationship> extends DataManipulator {
 
 	/**
-	 * @param consumers
+	 * このデータ操作文に WHERE 句をセットします。
+	 * @param consumers {@link Consumer}
 	 * @return {@link DataManipulator}
 	 */
 	@SuppressWarnings("unchecked")

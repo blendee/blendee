@@ -45,24 +45,24 @@
       </category>
       <command
             categoryId="org.blendee.plugin.commandCategory"
-            id="org.blendee.plugin.restartQueryEditor"
-            name="restartQueryEditor">
+            id="org.blendee.plugin.restartSelectEditor"
+            name="restartSelectEditor">
       </command>
       <command
             categoryId="org.blendee.plugin.commandCategory"
-            id="org.blendee.plugin.restartORMGenerator"
-            name="restartORMGenerator">
+            id="org.blendee.plugin.restartGenerator"
+            name="restartGenerator">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="org.blendee.plugin.popup.actions.ChangeProjectHandler"
-            commandId="org.blendee.plugin.restartQueryEditor">
+            commandId="org.blendee.plugin.restartSelectEditor">
       </handler>
       <handler
             class="org.blendee.plugin.popup.actions.ChangeProjectHandler"
-            commandId="org.blendee.plugin.restartORMGenerator">
+            commandId="org.blendee.plugin.restartGenerator">
       </handler>
    </extension>
    <extension
@@ -84,13 +84,13 @@
               </with>
            </visibleWhen>
             <command
-                  commandId="org.blendee.plugin.restartQueryEditor"
+                  commandId="org.blendee.plugin.restartSelectEditor"
                   icon="icons/blendee.png"
                   label="Select Editor を起動する"
                   style="push">
             </command>
             <command
-                  commandId="org.blendee.plugin.restartORMGenerator"
+                  commandId="org.blendee.plugin.restartGenerator"
                   icon="icons/blendee.png"
                   label="Generator を起動する"
                   style="push">
