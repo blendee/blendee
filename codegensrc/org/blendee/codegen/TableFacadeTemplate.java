@@ -1,4 +1,4 @@
-/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.develop/*--*/;
+/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.codegen/*--*/;
 
 import java.util.Objects;
 import java.util.Optional;

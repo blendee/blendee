@@ -1,4 +1,4 @@
-package org.blendee.develop;
+package org.blendee.codegen;
 
 import java.io.BufferedWriter;
 import java.io.File;
