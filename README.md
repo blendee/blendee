@@ -1,6 +1,6 @@
 # Blendee
 
-Blendeeは、ORMも兼ね備えた軽量なSQLエディタです。
+Blendeeは、ORM機能を持った軽量なSQLエディタです。
 
 ## Description
 
