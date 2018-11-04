@@ -6,7 +6,7 @@ Blendee build.xml
 <project name="blendee" default="all">
 
 	<property name="title" value="blendee" />
-	<property name="version" value="0.7-XXXXXXXXx" />
+	<property name="version" value="0.7.0" />
 	<property name="vendor" value="blendee.org" />
 
 	<path id="develop.classpath">

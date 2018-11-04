@@ -5,24 +5,24 @@ Blendee build.xml
 -->
 <project name="blendee.develop" default="all">
 
-	<property name="title" value="blendee.develop" />
-	<property name="version" value="0.1-XXXXXXXXx" />
+	<property name="title" value="blendee-codegen" />
+	<property name="version" value="0.7.0" />
 	<property name="vendor" value="blendee.org" />
 
 	<path id="develop.classpath">
 		<pathelement location="build" />
-		<pathelement location="blendee.jar" />
 	</path>
 
 	<!--
 	blendee.develop.jar を生成します。
 	-->
-	<target name="all" depends="cleanup, import">
+	<target name="all" depends="cleanup">
 		<antcall target="compile" />
 		<copy todir="build">
 			<fileset dir="src" includes="**/*.java" />
+			<fileset dir="codegensrc" includes="**/*.java" />
 		</copy>
-		<jar basedir="build" jarfile="blendee.develop.jar">
+		<jar basedir="build" jarfile="blendee-codegen.jar">
 			<manifest>
 				<attribute name="Implementation-Title"   value="${title}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
@@ -32,19 +32,11 @@ Blendee build.xml
 	</target>
 
 	<!--
-	blendee.jar を生成し、使用可能なようにインポートします。
-	-->
-	<target name="import">
-		<ant dir="../blendee" />
-		<copy file="../blendee/blendee.jar" todir="." />
-	</target>
-
-	<!--
 	ソースファイルを含まない blendee.develop.jar を生成します。
 	-->
 	<target name="class-jar" depends="cleanup">
 		<antcall target="compile" />
-		<jar basedir="build" jarfile="blendee.develop.jar">
+		<jar basedir="build" jarfile="blendee-codegen.jar">
 			<manifest>
 				<attribute name="Implementation-Title"   value="${title}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
@@ -57,7 +49,7 @@ Blendee build.xml
 	ソースファイルのみの jar ファイル blendee.develop-src.jar を生成します。
 	-->
 	<target name="src-jar" depends="cleanup">
-		<jar basedir="src" jarfile="blendee.develop-src.jar">
+		<jar basedir="src; codegensrc" jarfile="blendee-codegen-src.jar">
 			<include name="**/*.java" />
 			<manifest>
 				<attribute name="Implementation-Title"   value="${title}"/>
@@ -74,10 +66,10 @@ Blendee build.xml
 	<target name="javadoc" depends="cleanup">
 		<mkdir dir="blendee-api" />
 		<javadoc classpathref="develop.classpath" packagenames="org.blendee.*" destdir="blendee-api" windowtitle="Blendee API" doctitle="Blendee API" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
-			<sourcepath path="src" />
+			<sourcepath path="src; codegensrc" />
 			<link offline="true" href="https://docs.oracle.com/javase/jp/8/docs/api/" packagelistLoc="." />
 		</javadoc>
-		<zip zipfile="blendee.develop-api.zip" basedir="blendee-api" />
+		<zip zipfile="blendee-codegen-api.zip" basedir="blendee-api" />
 	</target>
 
 	<!--
@@ -86,10 +78,10 @@ Blendee build.xml
 	<target name="cleanup">
 		<delete dir="build" />
 		<delete dir="blendee.jar" />
-		<delete file="blendee.develop.jar" />
-		<delete file="blendee.develop-src.jar" />
+		<delete file="blendee-codegen.jar" />
+		<delete file="blendee-codegen-src.jar" />
 		<delete dir="blendee-api" />
-		<delete file="blendee.develop-api.zip" />
+		<delete file="blendee-codegen-api.zip" />
 	</target>
 
 	<!--
@@ -97,7 +89,7 @@ Blendee build.xml
 	-->
 	<target name="compile">
 		<mkdir dir="build" />
-		<javac srcdir="src" destdir="build" debug="true" optimize="true" deprecation="true" encoding="UTF-8" includeantruntime="false">
+		<javac srcdir="src; codegensrc" destdir="build" debug="true" optimize="true" deprecation="true" encoding="UTF-8" includeantruntime="false">
 			<classpath refid="develop.classpath" />
 			<include name="**/*.java" />
 			<exclude name="**/package-info.java" />

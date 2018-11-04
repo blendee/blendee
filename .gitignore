@@ -1,1 +1,9 @@
-/blendee.core/target
+/bin/
+/build
+/blendee.jar
+/blendee-src.jar
+/blendee-api
+/blendee-api.zip
+/blende-codegen.jar
+/blende-codegen-src.jar
+/blendee-codegen-api.zip
