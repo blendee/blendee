@@ -1,11 +1,9 @@
 package org.blendee.support;
 
-import org.blendee.orm.DataObject;
 import org.blendee.sql.Relationship;
-import org.blendee.sql.RuntimeId;
 
 /**
- * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
+ * 自動生成される Rel の振る舞いを定義したインターフェイスです。<br>
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
@@ -25,12 +23,6 @@ public interface TableFacadeRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return このインスタンスをメンバとして保持している親インスタンス
-	 */
-	TableFacadeRelationship getParent();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
 	SelectStatement getSelectStatement();
@@ -43,14 +35,7 @@ public interface TableFacadeRelationship {
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。
-	 * @return {@link RuntimeId}
+	 * @return {@link OneToManyRelationship}
 	 */
-	RuntimeId getRuntimeId();
-
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @param data {@link Row} の全要素の値を持つ検索結果オブジェクト
-	 * @return 生成された {@link Row}
-	 */
-	Row createRow(DataObject data);
+	OneToManyRelationship getOneToManyRelationship();
 }

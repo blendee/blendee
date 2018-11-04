@@ -34,4 +34,9 @@ public class UpdateStatementIntermediate<W extends WhereRelationship> implements
 	public DataManipulator dataManipulator() {
 		return behavior.createUpdateDataManipulator();
 	}
+
+	@Override
+	public String toString() {
+		return sql();
+	}
 }

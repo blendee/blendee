@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に byte 配列を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class ByteArrayBinder extends Binder {
+public final class ByteArrayBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = -2881851076127712598L;
 
 	private final ByteArray byteArray;
 
@@ -59,7 +62,9 @@ public final class ByteArrayBinder extends Binder {
 		return byteArray;
 	}
 
-	private static class ByteArray {
+	private static class ByteArray implements Serializable {
+
+		private static final long serialVersionUID = -4868414829167612853L;
 
 		private final byte[] value;
 

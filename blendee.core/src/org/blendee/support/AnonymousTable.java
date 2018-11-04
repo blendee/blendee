@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.orm.DataObject;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
@@ -524,6 +523,12 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
+	public AnonymousQuery reproduce() {
+		careEmptySelect();
+		return new AnonymousQuery(behavior().query().reproduce());
+	}
+
+	@Override
 	public Binder[] currentBinders() {
 		careEmptySelect();
 		return behavior().query().currentBinders();
@@ -705,22 +710,12 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public TableFacadeRelationship getParent() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public SelectStatement getSelectStatement() {
 			return table;
 		}
 
 		@Override
 		public DataManipulationStatement getDataManipulationStatement() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Row createRow(DataObject data) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -733,8 +728,8 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public RuntimeId getRuntimeId() {
-			return table.id;
+		public OneToManyRelationship getOneToManyRelationship() {
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -936,6 +931,11 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public AnonymousQuery reproduce(Object... placeHolderValues) {
 			return new AnonymousQuery(inner.reproduce(placeHolderValues));
+		}
+
+		@Override
+		public AnonymousQuery reproduce() {
+			return new AnonymousQuery(inner.reproduce());
 		}
 
 		@Override

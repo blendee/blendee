@@ -17,12 +17,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
@@ -205,8 +207,10 @@ public class TableFacadeGenerator {
 			String tableName = relation.getTablePath().getTableName();
 
 			//使用できない名前の場合
-			if (!isGeneratableTableName(tableName)) return;
-			//TODO 警告出す方法を検討
+			if (!isGeneratableTableName(tableName)) {
+				BlendeeManager.getLogger().log(Level.WARNING, "使用できない名前: " + tableName);
+				return;
+			}
 
 			write(
 				new File(packageDir, createCompilationUnitName(tableName)),

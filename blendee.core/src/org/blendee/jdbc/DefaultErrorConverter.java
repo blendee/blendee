@@ -17,7 +17,7 @@ public class DefaultErrorConverter implements ErrorConverter {
 	 */
 	@Override
 	public BlendeeException convert(SQLException e) {
-		BLogger logger = BlendeeManager.get().getConfigure().getLogger();
+		BLogger logger = BlendeeManager.getLogger();
 
 		if (e instanceof DataTruncation) {
 			DataTruncation warning = (DataTruncation) e;

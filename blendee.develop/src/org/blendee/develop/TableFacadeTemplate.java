@@ -58,6 +58,7 @@ import org.blendee.support.OnLeftRelationship;
 import org.blendee.support.OnRightColumn;
 import org.blendee.support.OnRightRelationship;
 import org.blendee.support.OneToManyQuery;
+import org.blendee.support.OneToManyRelationship;
 import org.blendee.support.OrderByColumn;
 import org.blendee.support.OrderByOfferFunction;
 import org.blendee.support.OrderByRelationship;
@@ -978,6 +979,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
+	public Query reproduce() {
+		return new Query(selectBehavior().query().reproduce());
+	}
+
+	@Override
 	public Binder[] currentBinders() {
 		return selectBehavior().query().currentBinders();
 	}
@@ -1283,11 +1289,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
-		public TableFacadeRelationship getParent() {
-			return parent$;
-		}
-
-		@Override
 		public SelectStatement getSelectStatement() {
 			if (table$ != null) return table$;
 			return parent$.getSelectStatement();
@@ -1297,11 +1298,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public DataManipulationStatement getDataManipulationStatement() {
 			if (table$ != null) return table$.dmsBehavior();
 			return parent$.getDataManipulationStatement();
-		}
-
-		@Override
-		public Row createRow(DataObject data) {
-			return new Row(data);
 		}
 
 		@Override
@@ -1317,9 +1313,13 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
-		public RuntimeId getRuntimeId() {
-			if (table$ != null) return table$.id$;
-			return parent$.getRuntimeId();
+		public OneToManyRelationship getOneToManyRelationship() {
+			return new OneToManyRelationship(
+				parent$ == null ? null : parent$.getOneToManyRelationship(),
+				Rel.this.getRelationship(),
+				data -> new Row(data),
+				table$ != null ? table$.id$ : parent$.getSelectStatement().getRuntimeId()
+			);
 		}
 	}
 
@@ -1659,6 +1659,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		@Override
 		public Query reproduce(Object... placeHolderValues) {
 			return new Query(inner.reproduce(placeHolderValues));
+		}
+
+		@Override
+		public Query reproduce() {
+			return new Query(inner.reproduce());
 		}
 
 		@Override

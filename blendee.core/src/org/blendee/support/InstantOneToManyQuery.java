@@ -42,9 +42,9 @@ import org.blendee.sql.SelectClause;
 public class InstantOneToManyQuery<O extends Row, M>
 	extends OneToManyQuery<O, M> {
 
-	private final TableFacadeRelationship self;
+	private final OneToManyRelationship self;
 
-	private final TableFacadeRelationship root;
+	private final OneToManyRelationship root;
 
 	private final RuntimeId id;
 
@@ -56,7 +56,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private final DataAccessHelper helper = new DataAccessHelper();
 
-	private final List<TableFacadeRelationship> route;
+	private final List<OneToManyRelationship> route;
 
 	private final SQLDecorator[] options;
 
@@ -68,20 +68,19 @@ public class InstantOneToManyQuery<O extends Row, M>
 	 * @param options {@link SQLDecorator}
 	 */
 	public InstantOneToManyQuery(TableFacadeRelationship relation, SQLDecorator[] options) {
-		super(relation);
+		super(relation.getOneToManyRelationship());
 
-		self = relation;
+		self = self();
 
-		List<TableFacadeRelationship> route = new LinkedList<>();
+		List<OneToManyRelationship> route = new LinkedList<>();
 
-		root = getRoot(relation, route);
+		root = getRoot(self, route);
 
-		id = root.getSelectStatement().getRuntimeId();
+		id = self.getRuntimeId();
 
-		TableFacadeRelationship root = root();
-		SelectStatement select = root.getSelectStatement();
+		SelectStatement select = relation.getSelectStatement();
 		order = convertOrderByClause(id, route, select.getOrderByClause());
-		optimizer = convertOptimizer(id, route, root);
+		optimizer = convertOptimizer(select.getOptimizer(), id, route, root);
 		criteria = select.getWhereClause();
 
 		this.options = options;
@@ -111,14 +110,9 @@ public class InstantOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	List<TableFacadeRelationship> route() {
+	List<OneToManyRelationship> route() {
 		return route;
 	}
-
-	@Override
-	TableFacadeRelationship root() {
-		return root;
-	};
 
 	@Override
 	DataObjectIterator iterator() {
@@ -129,16 +123,15 @@ public class InstantOneToManyQuery<O extends Row, M>
 			options);
 	}
 
-	private static TableFacadeRelationship getRoot(TableFacadeRelationship relation, List<TableFacadeRelationship> relations) {
+	private static OneToManyRelationship getRoot(OneToManyRelationship relation, List<OneToManyRelationship> relations) {
 		relations.add(relation);
-		TableFacadeRelationship parent = relation.getParent();
+		OneToManyRelationship parent = relation.getParent();
 		if (parent == null) return relation;
 		return getRoot(parent, relations);
 	}
 
-	private static Optimizer convertOptimizer(RuntimeId id, List<TableFacadeRelationship> route, TableFacadeRelationship root) {
+	private static Optimizer convertOptimizer(Optimizer optimizer, RuntimeId id, List<OneToManyRelationship> route, OneToManyRelationship root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
-		Optimizer optimizer = root.getSelectStatement().getOptimizer();
 		SelectClause select = optimizer.getOptimizedSelectClause();
 		Arrays.stream(select.getColumns()).forEach(c -> selectColumns.add(c));
 		route.forEach(r -> {
@@ -150,11 +143,11 @@ public class InstantOneToManyQuery<O extends Row, M>
 		RuntimeOptimizer runtimeOptimizer = new RuntimeOptimizer(optimizer.getTablePath(), id);
 		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
-		return optimizer;
+		return runtimeOptimizer;
 	}
 
-	private static OrderByClause convertOrderByClause(RuntimeId id, List<TableFacadeRelationship> route, OrderByClause order) {
-		LinkedList<TableFacadeRelationship> relations = new LinkedList<>(route);
+	private static OrderByClause convertOrderByClause(RuntimeId id, List<OneToManyRelationship> route, OrderByClause order) {
+		LinkedList<OneToManyRelationship> relations = new LinkedList<>(route);
 		relations.removeLast();
 
 		OrderByClause newOrder = new OrderByClause(id);
@@ -164,7 +157,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 		Map<Column, DirectionalColumn> map = new LinkedHashMap<>();
 		list.forEach(column -> map.put(column.getColumn(), column));
 
-		for (TableFacadeRelationship facadeRelation : relations) {
+		for (OneToManyRelationship facadeRelation : relations) {
 			Relationship relation = facadeRelation.getRelationship();
 			Set<Column> pks = new LinkedHashSet<>(Arrays.asList(relation.getPrimaryKeyColumns()));
 
@@ -217,11 +210,21 @@ public class InstantOneToManyQuery<O extends Row, M>
 	public OneToManyQuery<O, M> reproduce(Object... placeHolderValues) {
 		return new PlaybackOneToManyQuery<>(
 			self,
-			root,
 			route,
 			sql(),
 			toCountSQL().sql(),
 			new ComplementerValues(composedSQL()).reproduce(placeHolderValues),
+			optimizer.getOptimizedSelectClause().getColumns());
+	}
+
+	@Override
+	public OneToManyQuery<O, M> reproduce() {
+		return new PlaybackOneToManyQuery<>(
+			self,
+			route,
+			sql(),
+			toCountSQL().sql(),
+			new ComplementerValues(composedSQL()),
 			optimizer.getOptimizedSelectClause().getColumns());
 	}
 

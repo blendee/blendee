@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に {@link Timestamp} の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class TimestampBinder extends Binder {
+public final class TimestampBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = -5124328334762735345L;
 
 	private final Timestamp value;
 

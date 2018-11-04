@@ -6,13 +6,12 @@ import java.util.Objects;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ComposedSQL;
 import org.blendee.sql.Binder;
 import org.blendee.sql.ComplementerValues;
 
 class PlaybackDataManipulator implements DataManipulator {
 
-	private final ComposedSQL base;
+	private final SimpleComposedSQL base;
 
 	PlaybackDataManipulator(String sql, List<Binder> binders) {
 		this(sql, binders.toArray(new Binder[binders.size()]));
@@ -22,22 +21,7 @@ class PlaybackDataManipulator implements DataManipulator {
 		Objects.requireNonNull(sql);
 		Objects.requireNonNull(binders);
 
-		base = new ComposedSQL() {
-
-			@Override
-			public int complement(int done, BPreparedStatement statement) {
-				for (Binder binder : binders) {
-					binder.bind(++done, statement);
-				}
-
-				return done;
-			}
-
-			@Override
-			public String sql() {
-				return sql;
-			}
-		};
+		base = new SimpleComposedSQL(sql, binders);
 	}
 
 	@Override
@@ -61,13 +45,23 @@ class PlaybackDataManipulator implements DataManipulator {
 	}
 
 	@Override
-	public DataManipulator reproduce(Object... placeHolderValues) {
-		List<Binder> binders = new ComplementerValues(this).binders();
+	public PlaybackDataManipulator reproduce(Object... placeHolderValues) {
+		List<Binder> binders = new ComplementerValues(this).reproduce(placeHolderValues).binders();
 		return new PlaybackDataManipulator(base.sql(), binders.toArray(new Binder[binders.size()]));
+	}
+
+	@Override
+	public PlaybackDataManipulator reproduce() {
+		return new PlaybackDataManipulator(base.sql(), base.binders());
 	}
 
 	@Override
 	public Binder[] currentBinders() {
 		return new ComplementerValues(this).currentBinders();
+	}
+
+	@Override
+	public String toString() {
+		return sql();
 	}
 }

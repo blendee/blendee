@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に double の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class DoubleBinder extends Binder {
+public final class DoubleBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = -3044487284590340581L;
 
 	private final double value;
 

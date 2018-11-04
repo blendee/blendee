@@ -36,6 +36,11 @@ public interface DataManipulationStatementIntermediate<W extends WhereRelationsh
 	}
 
 	@Override
+	default DataManipulator reproduce() {
+		return dataManipulator().reproduce();
+	}
+
+	@Override
 	default Binder[] currentBinders() {
 		return dataManipulator().currentBinders();
 	}

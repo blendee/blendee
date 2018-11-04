@@ -4,7 +4,8 @@ import java.util.logging.Level;
 
 /**
  * {@link BLogger} の簡易実装です。<br>
- * ログを標準出力に出力します。
+ * ログを標準出力に出力します。<br>
+ * ログレベルは INFO です。
  * @author 千葉 哲嗣
  */
 public class SystemOutLogger implements BLogger {

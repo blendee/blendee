@@ -18,7 +18,7 @@ public interface Column extends Comparable<Column> {
 	/**
 	 * 空配列
 	 */
-	static final RelationshipColumn[] EMPTY_ARRAY = {};
+	static final Column[] EMPTY_ARRAY = {};
 
 	@Override
 	int compareTo(Column target);

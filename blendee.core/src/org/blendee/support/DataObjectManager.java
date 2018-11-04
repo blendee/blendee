@@ -13,11 +13,11 @@ class DataObjectManager {
 
 	private final DataObjectIterator iterator;
 
-	private final LinkedList<TableFacadeRelationship> route;
+	private final LinkedList<OneToManyRelationship> route;
 
 	Map<Relationship, DataObject> current;
 
-	DataObjectManager(DataObjectIterator iterator, List<TableFacadeRelationship> relations) {
+	DataObjectManager(DataObjectIterator iterator, List<OneToManyRelationship> relations) {
 		this.iterator = iterator;
 		route = new LinkedList<>(relations);
 		route.pop();
@@ -44,7 +44,7 @@ class DataObjectManager {
 	private Map<Relationship, DataObject> convert(DataObject source) {
 		Map<Relationship, DataObject> map = new HashMap<>();
 		map.put(source.getRelationship(), source);
-		for (TableFacadeRelationship relation : route) {
+		for (OneToManyRelationship relation : route) {
 			Relationship include = relation.getRelationship();
 			source = source.getDataObject(include.getCrossReference().getForeignKeyName());
 			map.put(include, source);

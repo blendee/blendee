@@ -23,17 +23,17 @@ import org.blendee.sql.RuntimeId;
 public abstract class OneToManyQuery<O extends Row, M>
 	implements Query<Many<O, M>, One<O, M>> {
 
-	private final TableFacadeRelationship self;
+	private final OneToManyRelationship self;
 
 	/**
 	 * 自動生成されたサブクラス用のコンストラクタです。
 	 * @param relation 中心となるテーブルを表す
 	 */
-	OneToManyQuery(TableFacadeRelationship relation) {
+	OneToManyQuery(OneToManyRelationship relation) {
 		self = relation;
 	}
 
-	TableFacadeRelationship self() {
+	OneToManyRelationship self() {
 		return self;
 	}
 
@@ -45,15 +45,13 @@ public abstract class OneToManyQuery<O extends Row, M>
 	 */
 	abstract DataObjectIterator iterator();
 
-	abstract List<TableFacadeRelationship> route();
-
-	abstract TableFacadeRelationship root();
+	abstract List<OneToManyRelationship> route();
 
 	abstract BStatement createStatementForCount();
 
 	@Override
 	public Many<O, M> execute() {
-		List<TableFacadeRelationship> route = route();
+		List<OneToManyRelationship> route = route();
 		return new Many<>(
 			new DataObjectManager(iterator(), route),
 			null,
@@ -73,7 +71,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 			criteria.and(columns[i].getCriteria(runtimeId(), primaryKeyMembers[i]));
 		}
 
-		List<TableFacadeRelationship> route = route();
+		List<OneToManyRelationship> route = route();
 
 		return Unique.get(
 			new Many<>(

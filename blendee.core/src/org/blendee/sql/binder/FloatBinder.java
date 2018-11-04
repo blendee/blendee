@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に float の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class FloatBinder extends Binder {
+public final class FloatBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = -674933888887174923L;
 
 	private final float value;
 

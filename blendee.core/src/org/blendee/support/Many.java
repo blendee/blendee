@@ -24,19 +24,19 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 
 	private final DataObject one;
 
-	private final TableFacadeRelationship selfAsMany;
+	private final OneToManyRelationship selfAsMany;
 
-	private final TableFacadeRelationship nextMany;
+	private final OneToManyRelationship nextMany;
 
-	private final List<TableFacadeRelationship> route;
+	private final List<OneToManyRelationship> route;
 
 	private DataObject prev;
 
 	Many(
 		DataObjectManager manager,
 		DataObject one,
-		TableFacadeRelationship selfAsMany,
-		List<TableFacadeRelationship> route) {
+		OneToManyRelationship selfAsMany,
+		List<OneToManyRelationship> route) {
 		this.manager = manager;
 		this.one = one;
 		this.selfAsMany = selfAsMany;
@@ -108,10 +108,10 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 		return U.toString(this);
 	}
 
-	private TableFacadeRelationship getManyOf(TableFacadeRelationship one) {
-		TableFacadeRelationship many = null;
+	private OneToManyRelationship getManyOf(OneToManyRelationship one) {
+		OneToManyRelationship many = null;
 
-		for (TableFacadeRelationship relation : route) {
+		for (OneToManyRelationship relation : route) {
 			if (relation.equals(one)) return many;
 			many = relation;
 		}

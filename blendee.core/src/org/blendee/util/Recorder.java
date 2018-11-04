@@ -38,7 +38,7 @@ public class Recorder {
 		synchronized (executorCache) {
 			if ((reproducer = executorCache.get(lambdaClass)) == null) {
 				try {
-					reproducer = new Reproducer(supplier.get());
+					reproducer = new Reproducer(supplier.get().reproduce());
 				} finally {
 					Placeholder.remove();
 				}
@@ -86,7 +86,7 @@ public class Recorder {
 			reproducer = map.get(result);
 			if (reproducer == null) {
 				try {
-					reproducer = new Reproducer(supplier.apply(result));
+					reproducer = new Reproducer(supplier.apply(result).reproduce());
 				} finally {
 					Placeholder.remove();
 				}

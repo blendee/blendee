@@ -1,5 +1,7 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
+
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.sql.Binder;
 
@@ -7,7 +9,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に boolean の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class BooleanBinder extends Binder {
+public final class BooleanBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = 5577640491615778597L;
 
 	private final boolean value;
 

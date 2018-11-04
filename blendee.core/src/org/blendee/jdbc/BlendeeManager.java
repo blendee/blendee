@@ -1,7 +1,5 @@
 package org.blendee.jdbc;
 
-import org.blendee.internal.LoggingManager;
-
 /**
  * Blendee の設定を管理し、トランザクションの生成、接続の管理等をおこなうハブクラスです。
  * @author 千葉 哲嗣
@@ -36,8 +34,6 @@ public class BlendeeManager implements ManagementSubject {
 			//intervalが0以下の場合、スレッドを起動しない
 			if (interval > 0) autoCloseableFinalizer.start();
 		}
-
-		LoggingManager.getLogger().info("Blendee initialized. " + initializer);
 	}
 
 	/**
@@ -145,6 +141,14 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public static BlendeeManager get() {
 		return ContextManager.get(BlendeeManager.class);
+	}
+
+	/**
+	 * 設定済みの {@link BLogger} を返します。
+	 * @return {@link BLogger}
+	 */
+	public static BLogger getLogger() {
+		return get().getConfigure().getLogger();
 	}
 
 	/**

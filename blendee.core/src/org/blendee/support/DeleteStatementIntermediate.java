@@ -33,4 +33,9 @@ public class DeleteStatementIntermediate<W extends WhereRelationship> implements
 	public DataManipulator dataManipulator() {
 		return behavior.createDeleteDataManipulator();
 	}
+
+	@Override
+	public String toString() {
+		return sql();
+	}
 }

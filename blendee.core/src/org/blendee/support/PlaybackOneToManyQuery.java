@@ -25,9 +25,7 @@ import org.blendee.sql.RuntimeId;
 class PlaybackOneToManyQuery<O extends Row, M>
 	extends OneToManyQuery<O, M> {
 
-	private final TableFacadeRelationship root;
-
-	private final List<TableFacadeRelationship> route;
+	private final List<OneToManyRelationship> route;
 
 	private final String sql;
 
@@ -40,15 +38,13 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	private final SelectedValuesConverter converter = new SimpleSelectedValuesConverter();
 
 	PlaybackOneToManyQuery(
-		TableFacadeRelationship self,
-		TableFacadeRelationship root,
-		List<TableFacadeRelationship> route,
+		OneToManyRelationship self,
+		List<OneToManyRelationship> route,
 		String sql,
 		String countSQL,
 		ComplementerValues values,
 		Column[] selectedColumns) {
 		super(self);
-		this.root = root;
 		this.route = route;
 		this.sql = sql;
 		this.countSQL = countSQL;
@@ -69,21 +65,16 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	List<TableFacadeRelationship> route() {
+	List<OneToManyRelationship> route() {
 		return route;
 	}
-
-	@Override
-	TableFacadeRelationship root() {
-		return root;
-	};
 
 	@Override
 	DataObjectIterator iterator() {
 		return DataAccessHelper.select(
 			sql,
 			values,
-			root.getRelationship(),
+			self().getRelationship().getRoot(),
 			selectedColumns,
 			converter);
 	}
@@ -118,11 +109,21 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	public OneToManyQuery<O, M> reproduce(Object... placeHolderValues) {
 		return new PlaybackOneToManyQuery<>(
 			self(),
-			root,
 			route,
 			sql,
 			countSQL,
 			values.reproduce(placeHolderValues),
+			selectedColumns);
+	}
+
+	@Override
+	public OneToManyQuery<O, M> reproduce() {
+		return new PlaybackOneToManyQuery<>(
+			self(),
+			route,
+			sql,
+			countSQL,
+			values.reproduce(),
 			selectedColumns);
 	}
 
@@ -133,6 +134,6 @@ class PlaybackOneToManyQuery<O extends Row, M>
 
 	@Override
 	RuntimeId runtimeId() {
-		return root.getSelectStatement().getRuntimeId();
+		return self().getRuntimeId();
 	}
 }

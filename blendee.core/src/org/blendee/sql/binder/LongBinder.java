@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に long の値を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class LongBinder extends Binder {
+public final class LongBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = -3559894285119376552L;
 
 	private final long value;
 

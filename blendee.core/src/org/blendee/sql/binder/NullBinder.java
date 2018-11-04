@@ -1,5 +1,6 @@
 package org.blendee.sql.binder;
 
+import java.io.Serializable;
 import java.sql.Types;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -9,7 +10,9 @@ import org.blendee.sql.Binder;
  * {@link BPreparedStatement} に NULL を設定するための {@link Binder} です。
  * @author 千葉 哲嗣
  */
-public final class NullBinder extends Binder {
+public final class NullBinder extends Binder implements Serializable {
+
+	private static final long serialVersionUID = 6619539178136044428L;
 
 	private final int type;
 

@@ -9,9 +9,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
-import org.blendee.internal.LoggingManager;
 import org.blendee.internal.U;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Result;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
@@ -173,7 +174,7 @@ class ConcreteSelectedValues implements SelectedValues {
 	private void checkContains(Column column) {
 		if (!values.containsKey(column)) {
 			String message = IllegalValueException.buildMessage(column);
-			LoggingManager.getLogger().warning(message);
+			BlendeeManager.getLogger().log(Level.WARNING, message);
 			throw new IllegalValueException(message);
 		}
 	}

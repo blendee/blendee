@@ -663,6 +663,19 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		}
 
 		@Override
+		public PlaybackQuery reproduce() {
+			return new PlaybackQuery(
+				sql,
+				countSQL,
+				fetchSQL,
+				values.reproduce(),
+				relationship,
+				selectedColumns,
+				converter,
+				rowMode);
+		}
+
+		@Override
 		public Binder[] currentBinders() {
 			return values.currentBinders();
 		}

@@ -33,6 +33,16 @@ public interface BLogger {
 	void flush(Level level);
 
 	/**
+	 * ログを一行出力します。
+	 * @param level 出力レベル
+	 * @param message メッセージ
+	 */
+	default void log(Level level, String message) {
+		println(message);
+		flush(level);
+	}
+
+	/**
 	 * {@link Throwable} のスタックトレースをログに出力します。
 	 * @param t Throwable
 	 */

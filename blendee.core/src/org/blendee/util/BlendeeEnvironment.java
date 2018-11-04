@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.blendee.jdbc.AutoCloseableFinalizer;
@@ -243,6 +244,8 @@ public class BlendeeEnvironment {
 				BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
 					.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
 
+			BlendeeManager.getLogger().log(Level.INFO, "Blendee [" + contextName + "] started.");
+
 			return this;
 		} finally {
 			ContextManager.releaseContext();
@@ -263,6 +266,8 @@ public class BlendeeEnvironment {
 			}
 
 			clearCache();
+
+			BlendeeManager.getLogger().log(Level.INFO, "Blendee [" + contextName + "] stopped.");
 		} finally {
 			ContextManager.releaseContext();
 		}
@@ -295,7 +300,7 @@ public class BlendeeEnvironment {
 				try {
 					if (top) transaction.rollback();
 				} catch (Throwable tt) {
-					BlendeeManager.get().getConfigure().getLogger().log(tt);
+					BlendeeManager.getLogger().log(tt);
 				}
 
 				throw t;
@@ -317,7 +322,7 @@ public class BlendeeEnvironment {
 		try {
 			mainFunction.run();
 		} catch (Throwable t) {
-			BlendeeManager.get().getConfigure().getLogger().log(t);
+			BlendeeManager.getLogger().log(t);
 		} finally {
 			finallyFunction.run();
 		}

@@ -204,6 +204,15 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	}
 
 	/**
+	 * @param extractors {@link ValueExtractor}
+	 * @param binders {@link Binder}
+	 */
+	public ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
+		this.extractors = Collections.unmodifiableList(extractors);
+		this.binders = Collections.unmodifiableList(binders);
+	}
+
+	/**
 	 * 新しいプレースホルダ値で複製を生成します。
 	 * @param placeHolderValues 新しいプレースホルダ値
 	 * @return 複製
@@ -222,7 +231,12 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			index++;
 		}
 
-		return new ComplementerValues(extractors, Collections.unmodifiableList(binders));
+		return new ComplementerValues(extractors, binders);
+	}
+
+	@Override
+	public ComplementerValues reproduce() {
+		return new ComplementerValues(extractors, binders);
 	}
 
 	@Override
@@ -247,10 +261,5 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 
 	private static void checkParameterIndex(int i) {
 		if (i < 1) throw new IllegalStateException("不正な parameterIndex: " + i);
-	}
-
-	private ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
-		this.extractors = extractors;
-		this.binders = binders;
 	}
 }
