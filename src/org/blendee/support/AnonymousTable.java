@@ -330,6 +330,17 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	/**
+	 * このクエリに CROSS JOIN で別テーブルを結合します。
+	 * @param right 別クエリ
+	 * @param <R> {@link OnRightRelationship}
+	 * @return この {@link SelectStatement}
+	 */
+	public <R extends OnRightRelationship> AnonymousTable CROSS_JOIN(RightTable<R> right) {
+		behavior().CROSS_JOIN(right, this);
+		return this;
+	}
+
+	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param select UNION 対象

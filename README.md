@@ -13,27 +13,41 @@ ORMモードと集計モードについて
 ## Features
 
 - SELECT文
-	- ORMモード
-		- SELECT句
-		- FROM句
-		- WHERE句
-		- ORDER BY句
-	- 集計モード
-		- SELECT句
-		- FROM句
-		- WHERE句
-		- GROUP BY句
-		- HAVING句
-		- ORDER BY句
+
+	- SELECT句
+		- ORMモード
+			- SELECTカラムの自動選択
+		- 集計モード
+			- AVG, MAX, MIN, COUNT, COALESCE, その他任意の文字列による表現
+	- FROM句
+		- ORMモード
+			- 参照テーブルの自動JOIN
+		- 集計モード
+			- 各JOIN(INNER JOIN, LEFT OUTER JOIN, RIGHT OUTER JOIN, FULL OUTER JOIN, CROSS JOIN)
+			- 副問合せとのJOIN
+	- WHERE句
+		- AND, ORの結合順、強弱により()を付与
+		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL
+	- GROUP BY句
+		- 集計モードでのみ使用可能
+	- HAVING句
+		- 集計モードでのみ使用可能
+		- AVG, MAX, MIN, COUNT, COALESCE, その他任意の文字列による表現
+		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL
+	- ORDER BY句
+		- ASC, DESC, ASC NULLS FIRST, ASC NULLS LAST, DESC NULLS FIRST, DESC NULLS LAST
 
 - INSERT文
 	- ORMエンティティによるINSERT
+	- SELECT INSER
 
-- UPDATE
+- UPDATE文
 	- ORMエンティティによるUPDATE
+	- 相関副問合せUPDATE
 
-- DELETE
+- DELETE文
 	- ORMエンティティによるDELETE
+	- 副問合せDELETE
 
 ## Requirement
 

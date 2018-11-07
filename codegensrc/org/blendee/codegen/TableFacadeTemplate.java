@@ -764,6 +764,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * このクエリに CROSS JOIN で別テーブルを結合します。
+	 * @param right 別クエリ
+	 * @return この {@link SelectStatement}
+	 */
+	public <R extends OnRightRelationship> /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ CROSS_JOIN(RightTable<R> right) {
+		selectBehavior().CROSS_JOIN(right, this);
+		return this;
+	}
+
+	/**
 	 * UNION するクエリを追加します。<br>
 	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
 	 * @param select UNION 対象

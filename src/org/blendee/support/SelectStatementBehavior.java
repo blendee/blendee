@@ -267,19 +267,23 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 	}
 
 	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
-		return joinInternal(JoinType.INNER_JOIN, right, query);
+		return joinAndCreateOnClause(JoinType.INNER_JOIN, right, query);
 	}
 
 	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> LEFT_OUTER_JOIN(RightTable<R> right, Q query) {
-		return joinInternal(JoinType.LEFT_OUTER_JOIN, right, query);
+		return joinAndCreateOnClause(JoinType.LEFT_OUTER_JOIN, right, query);
 	}
 
 	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> RIGHT_OUTER_JOIN(RightTable<R> right, Q query) {
-		return joinInternal(JoinType.RIGHT_OUTER_JOIN, right, query);
+		return joinAndCreateOnClause(JoinType.RIGHT_OUTER_JOIN, right, query);
 	}
 
 	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> FULL_OUTER_JOIN(RightTable<R> right, Q query) {
-		return joinInternal(JoinType.FULL_OUTER_JOIN, right, query);
+		return joinAndCreateOnClause(JoinType.FULL_OUTER_JOIN, right, query);
+	}
+
+	public <R extends OnRightRelationship, Q extends SelectStatement> void CROSS_JOIN(RightTable<R> right, Q query) {
+		joinInternal(JoinType.CROSS_JOIN, right, query).onCriteria = new CriteriaFactory(id).create();
 	}
 
 	public void UNION(SelectStatement select) {
@@ -805,13 +809,11 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		return fromClause;
 	}
 
-	private <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> joinInternal(
+	private <R extends OnRightRelationship, Q extends SelectStatement> JoinResource joinInternal(
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {
 		quitRowMode();
-
-		R rightJoint = right.joint();
 
 		JoinResource joinResource = new JoinResource();
 		joinResource.rightRoot = right.getSelectStatement();
@@ -819,10 +821,19 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 
 		joinResources.add(joinResource);
 
+		return joinResource;
+	}
+
+	private <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> joinAndCreateOnClause(
+		JoinType joinType,
+		RightTable<R> right,
+		Q query) {
+		JoinResource joinResource = joinInternal(joinType, right, query);
+
 		return new OnClause<>(
 			joinResource,
 			onLeftOperators().defaultOperator(),
-			rightJoint,
+			right.joint(),
 			query);
 	}
 

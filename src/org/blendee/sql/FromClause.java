@@ -44,22 +44,29 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		/**
 		 * RIGHT OUTER JOIN
 		 */
-		RIGHT_OUTER_JOIN;
+		RIGHT_OUTER_JOIN,
 
-		@Override
-		public String toString() {
+		/**
+		 * CROSS JOIN
+		 */
+		CROSS_JOIN;
+
+		private String toString(String relation, String criteria) {
 			switch (this) {
 			case INNER_JOIN:
-				return "INNER JOIN";
+				return "INNER JOIN " + relation + " ON (" + criteria + ")";
 
 			case FULL_OUTER_JOIN:
-				return "FULL OUTER JOIN";
+				return "FULL OUTER JOIN " + relation + " ON (" + criteria + ")";
 
 			case LEFT_OUTER_JOIN:
-				return "LEFT OUTER JOIN";
+				return "LEFT OUTER JOIN " + relation + " ON (" + criteria + ")";
 
 			case RIGHT_OUTER_JOIN:
-				return "RIGHT OUTER JOIN";
+				return "RIGHT OUTER JOIN " + relation + " ON (" + criteria + ")";
+
+			case CROSS_JOIN:
+				return "CROSS JOIN " + relation;
 			default:
 				throw new Error();
 			}
@@ -248,12 +255,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			criteria.and(factory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, Bindable.EMPTY_ARRAY));
 		}
 
-		return type
-			+ " "
-			+ id.toString(relationship)
-			+ " ON ("
-			+ criteria.toString(true).trim()
-			+ ")";
+		return type.toString(id.toString(relationship), criteria.toString(true).trim());
 	}
 
 	private String processPart(
@@ -261,12 +263,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		JoinType type,
 		Relationship relationship,
 		Criteria onCriteria) {
-		return type
-			+ " "
-			+ anotherId.toString(relationship)
-			+ " ON ("
-			+ onCriteria.toString(true).trim()
-			+ ")";
+		return type.toString(anotherId.toString(relationship), onCriteria.toString(true).trim());
 	}
 
 	/**
