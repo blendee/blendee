@@ -1,16 +1,27 @@
 # Blendee
 
-Blendeeは、ORM機能を持った軽量なSQLエディタです。
+Blendeeは、ORM機能を持った軽量なSQL生成ツールです。
 
 ## Description
+
+- データベースドリブン、SQLファースト
+
+- コード自動生成
+	- SQLを作成するためのクラスをEclipseのプラグインで簡単に生成
+
+- Java8以降(ラムダ式、Optional)ベースのAPI
+
+## Features
+
+Blendeeの機能は主に検索（SELECT文の生成、実行）を行うためのものですが、検索にはORMモードと集計モードの2つのモードがあります。
 
 ORMモードと集計モードについて
 
 - ORMモード
+	検索結果は自動生成されたテーブルクラスのインスタンスとして扱える
 
 - 集計モード
-
-## Features
+	検索結果はResultSetとして扱える
 
 - SELECT文
 
@@ -29,9 +40,9 @@ ORMモードと集計モードについて
 		- AND, ORの結合順、強弱により()を付与
 		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL
 	- GROUP BY句
-		- 集計モードでのみ使用可能
+		- 集計モードでのみ使用可能(GROUP BY句を使用すると自動的に集計モードに変わる)
 	- HAVING句
-		- 集計モードでのみ使用可能
+		- 集計モードでのみ使用可能(HAVING句を使用すると自動的に集計モードに変わる)
 		- AVG, MAX, MIN, COUNT, COALESCE, その他任意の文字列による表現
 		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL
 	- ORDER BY句
@@ -39,7 +50,7 @@ ORMモードと集計モードについて
 
 - INSERT文
 	- ORMエンティティによるINSERT
-	- SELECT INSER
+	- SELECT INSERT
 
 - UPDATE文
 	- ORMエンティティによるUPDATE
@@ -52,6 +63,8 @@ ORMモードと集計モードについて
 ## Requirement
 
 Java8以降
+
+Eclipse Oxygen以降
 
 ## Usage
 

@@ -15,12 +15,10 @@ import org.blendee.jdbc.Result;
 import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.ColumnNameDataObjectBuilder;
-import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
@@ -592,45 +590,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public Row next() {
 			return createRow(nextDataObject());
 		}
-	}
-
-	/**
-	 * パラメータの条件にマッチするレコードを検索し、 {@link Iterator} として返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
-	 * @param criteria WHERE 句となる条件
-	 * @param order  ORDER 句
-	 * @param options 検索オプション
-	 * @return {@link RowIterator}
-	 */
-	public Iterator select(
-		Criteria criteria,
-		OrderByClause order,
-		SQLDecorator... options) {
-		return select(
-			new SimpleOptimizer(getTablePath(), getRuntimeId()),
-			criteria,
-			order,
-			options);
-	}
-
-	/**
-	 * パラメータの条件にマッチするレコードを検索し、 {@link Iterator} として返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param criteria WHERE 句となる条件
-	 * @param order  ORDER 句
-	 * @param options 検索オプション
-	 * @return {@link RowIterator}
-	 */
-	public Iterator select(
-		Optimizer optimizer,
-		Criteria criteria,
-		OrderByClause order,
-		SQLDecorator... options) {
-		return wrap(new DataAccessHelper().getDataObjects(
-			optimizer,
-			criteria,
-			order,
-			options));
 	}
 
 	/**
