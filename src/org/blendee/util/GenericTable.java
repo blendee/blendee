@@ -1468,6 +1468,14 @@ public class GenericTable
 		 * @param name カラム名
 		 * @return 使用されるカラムのタイプにあった型
 		 */
+		public T column(String name) {
+			return col(name);
+		}
+
+		/**
+		 * @param name カラム名
+		 * @return 使用されるカラムのタイプにあった型
+		 */
 		public T col(String name) {
 			return builder$.buildColumn(this, name);
 		}
@@ -1564,6 +1572,14 @@ public class GenericTable
 			if (!getSelectStatement().rowMode())
 				throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
+		}
+
+		/**
+		 * @param fkName 外部キー名
+		 * @return 参照先の {@link ExtRel}
+		 */
+		public ExtRel<T, Many<Row, M>> table(String fkName) {
+			return tab(fkName);
 		}
 
 		/**
