@@ -1,14 +1,23 @@
-/*--*//*@formatter:off*//*--*/package /*++[[PACKAGE]]++*//*--*/org.blendee.codegen/*--*/;
+package org.blendee.util;
 
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.List;
-import java.util.LinkedList;
 
+import org.blendee.internal.U;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
+import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
@@ -17,6 +26,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
+import org.blendee.orm.NullPrimaryKeyException;
 import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
@@ -27,12 +37,11 @@ import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.SQLDecorator;
-import org.blendee.sql.SQLQueryBuilder;
-import org.blendee.sql.ValueExtractor;
-import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.RuntimeIdFactory;
+import org.blendee.sql.SQLDecorator;
+import org.blendee.sql.SQLQueryBuilder;
+import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.support.CriteriaContext;
 import org.blendee.support.DataManipulationStatement;
 import org.blendee.support.DataManipulationStatementBehavior;
@@ -48,8 +57,8 @@ import org.blendee.support.InsertOfferFunction;
 import org.blendee.support.InsertRelationship;
 import org.blendee.support.InsertStatementIntermediate;
 import org.blendee.support.InstantOneToManyQuery;
-/*++[[IMPORTS]]++*/
 import org.blendee.support.LogicalOperators;
+import org.blendee.support.Many;
 import org.blendee.support.OnClause;
 import org.blendee.support.OnLeftColumn;
 import org.blendee.support.OnLeftRelationship;
@@ -64,13 +73,14 @@ import org.blendee.support.Query;
 import org.blendee.support.RightTable;
 import org.blendee.support.Row;
 import org.blendee.support.RowIterator;
+import org.blendee.support.SQLDecorators;
 import org.blendee.support.SelectColumn;
 import org.blendee.support.SelectOfferFunction;
 import org.blendee.support.SelectRelationship;
-import org.blendee.support.Statement;
 import org.blendee.support.SelectStatement;
 import org.blendee.support.SelectStatementBehavior;
 import org.blendee.support.SelectStatementBehavior.PlaybackQuery;
+import org.blendee.support.Statement;
 import org.blendee.support.TableFacade;
 import org.blendee.support.TableFacadeColumn;
 import org.blendee.support.TableFacadeContext;
@@ -80,81 +90,25 @@ import org.blendee.support.UpdateRelationship;
 import org.blendee.support.UpdateStatementIntermediate;
 import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
-import org.blendee.support.SQLDecorators;
-import org.blendee.support.annotation.Column;
-/*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
-/*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
-import org.blendee.support.annotation.Table;
 
 /**
- * 自動生成されたテーブル操作クラスです。
-[[TABLE_COMMENT]]
+ * @author 千葉 哲嗣
  */
-@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]", type = "[[TYPE]]", remarks = "[[REMARKS]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
-public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
-	extends /*++[[PARENT]]++*//*--*/Object/*--*/
-	implements
-		TableFacade<Row>,
-		SelectStatement,
-		SQLDecorators,
-		Query</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Iterator, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.Row>,
-		RightTable</*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.OnRightRel> {
+public class GenericTable
+	implements TableFacade<Row>, SelectStatement, SQLDecorators, Query<GenericTable.Iterator, GenericTable.Row>, RightTable<GenericTable.OnRightRel> {
 
-	/**
-	 * この定数クラスのスキーマ名
-	 */
-	public static final String SCHEMA = "[[SCHEMA]]";
+	private final TablePath tablePath;
 
-	/**
-	 * この定数クラスのテーブル名
-	 */
-	public static final String TABLE = "[[TABLE]]";
-
-	/**
-	 * この定数クラスのテーブルを指す {@link TablePath}
-	 */
-	public static final TablePath $TABLE = new TablePath(SCHEMA, TABLE);
-
-	private final Relationship relationship$ = RelationshipFactory.getInstance().getInstance($TABLE);
+	private final Relationship relationship$;
 
 	private final List<SQLDecorator> decorators$ = new LinkedList<SQLDecorator>();
-
-/*++[[COLUMN_NAMES_PART]]++*/
-/*==ColumnNamesPart==*/
-	/**
-[[COMMENT]]
-	 */
-	@Column(
-		name = "[[COLUMN]]",
-		type = /*++[[DB_TYPE]]++*//*--*/0/*--*/,
-		typeName = "[[TYPE_NAME]]",
-		size = /*++[[SIZE]]++*//*--*/0/*--*/,
-		hasDecimalDigits = /*++[[HAS_DECIMAL_DIGITS]]++*//*--*/false/*--*/,
-		decimalDigits = /*++[[DECIMAL_DIGITS]]++*//*--*/0/*--*/,
-		remarks = "[[REMARKS]]",
-		defaultValue = "[[DEFAULT]]",
-		ordinalPosition = /*++[[ORDINAL_POSITION]]++*//*--*/0/*--*/,
-		notNull = /*++[[NOT_NULL]]++*//*--*/true/*--*/)
-	public static final String /*++[[COLUMN]]++*//*--*/columnName/*--*/ = "[[COLUMN]]";
-/*==ColumnNamesPart==*/
-
-/*++[[FOREIGN_KEYS_PART]]++*/
-/*==ForeignKeysPart==*/
-	/**
-	 * name: [[FK]]<br>
-	 * reference: [[REFERENCE]]<br>
-	 * columns: [[FK_COLUMNS]]
-	 */
-	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)
-	public static final String /*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/ = "[[FK]]";
-/*==ForeignKeysPart==*/
 
 	/**
 	 * 登録用コンストラクタです。
 	 * @return {@link Row}
 	 */
-	public static Row row() {
-		return new Row();
+	public Row row() {
+		return new Row(tablePath);
 	}
 
 	/**
@@ -163,8 +117,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param result 値を持つ {@link Result}
 	 * @return {@link Row}
 	 */
-	public static Row row(Result result) {
-		return new Row(result);
+	public Row row(Result result) {
+		return new Row(tablePath, result);
 	}
 
 	/**
@@ -177,97 +131,441 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
-	 * 自動生成された {@link Row} の実装クラスです。
+	 * Row
 	 */
-	public static class Row extends /*++[[ROW_PARENT]]++*//*--*/Object/*--*/
-		implements org.blendee.support.Row {
+	public static class Row implements org.blendee.support.Row {
 
-		private final DataObject data$;
+		private final TablePath tablePath;
 
-		private final Relationship rowRel$ = RelationshipFactory.getInstance().getInstance($TABLE);
+		private final DataObject data;
 
-		private Row() {
-			data$ = new DataObject(rowRel$);
+		private final Relationship relationship;
+
+		/**
+		 * 登録用コンストラクタです。
+		 * @param tablePath 対象となるテーブル
+		 */
+		private Row(TablePath tablePath) {
+			this.tablePath = tablePath;
+			relationship = RelationshipFactory.getInstance().getInstance(tablePath);
+			data = new DataObject(relationship);
 		}
 
+		/**
+		 * 参照、更新用コンストラクタです。
+		 * @param data 値を持つ {@link DataObject}
+		 */
 		private Row(DataObject data) {
-			this.data$ = data;
+			tablePath = data.getRelationship().getTablePath();
+			relationship = RelationshipFactory.getInstance().getInstance(tablePath);
+			this.data = data;
 		}
 
-		private Row(Result result) {
-			this.data$ = ColumnNameDataObjectBuilder.build(result, rowRel$, ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
+		private Row(TablePath tablePath, Result result) {
+			this.tablePath = tablePath;
+			relationship = RelationshipFactory.getInstance().getInstance(tablePath);
+			this.data = ColumnNameDataObjectBuilder.build(
+				result,
+				relationship,
+				ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors());
+		}
+
+		/**
+		 * 指定されたカラムの値を boolean として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public boolean getBoolean(String columnName) {
+			return data.getBoolean(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を double として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public double getDouble(String columnName) {
+			return data.getDouble(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を float として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public float getFloat(String columnName) {
+			return data.getFloat(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を int として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public int getInt(String columnName) {
+			return data.getInt(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を long として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public long getLong(String columnName) {
+			return data.getLong(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を文字列として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public String getString(String columnName) {
+			return data.getString(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Timestamp} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Timestamp getTimestamp(String columnName) {
+			return data.getTimestamp(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link BigDecimal} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public BigDecimal getBigDecimal(String columnName) {
+			return data.getBigDecimal(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link UUID} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public UUID getUUID(String columnName) {
+			return data.getUUID(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Object} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Object getObject(String columnName) {
+			return data.getObject(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値をバイトの配列として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public byte[] getBytes(String columnName) {
+			return data.getBytes(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Blob} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Blob getBlob(String columnName) {
+			return data.getBlob(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Clob} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Clob getClob(String columnName) {
+			return data.getClob(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Binder} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Binder getBinder(String columnName) {
+			return data.getValue(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値が NULL かどうか検査します。
+		 * @param columnName カラム名
+		 * @return カラムの値が NULL の場合、true
+		 */
+		public boolean isNull(String columnName) {
+			return data.isNull(columnName);
+		}
+
+		/**
+		 * キーが項目名、値がその項目の値となるMapを返します。
+		 * @return 全値を持つ {@link Map}
+		 */
+		public Map<String, Object> getValues() {
+			return data.getValues();
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの boolean 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setBoolean(String columnName, boolean value) {
+			data.setBoolean(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの double 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setDouble(String columnName, double value) {
+			data.setDouble(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの float 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setFloat(String columnName, float value) {
+			data.setFloat(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの int 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setInt(String columnName, int value) {
+			data.setInt(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの long 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setLong(String columnName, long value) {
+			data.setLong(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link String} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setString(String columnName, String value) {
+			data.setString(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link Timestamp} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setTimestamp(String columnName, Timestamp value) {
+			data.setTimestamp(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link BigDecimal} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setBigDecimal(String columnName, BigDecimal value) {
+			data.setBigDecimal(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link UUID} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setUUID(String columnName, UUID value) {
+			data.setUUID(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link Object} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setObject(String columnName, Object value) {
+			data.setObject(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの byte 配列で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setBytes(String columnName, byte[] value) {
+			data.setBytes(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link Blob} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setBlob(String columnName, Blob value) {
+			data.setBlob(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link Clob} 値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setClob(String columnName, Clob value) {
+			data.setClob(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムの値をパラメータの {@link Bindable} が持つ値で更新します。
+		 * @param columnName 対象カラム
+		 * @param value 更新値
+		 */
+		public void setValue(String columnName, Bindable value) {
+			data.setValue(columnName, value);
+		}
+
+		/**
+		 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文を設定します。
+		 * @param columnName 対象カラム
+		 * @param sqlFragment SQL 文の一部
+		 */
+		public void setSQLFragment(String columnName, String sqlFragment) {
+			data.setSQLFragment(columnName, sqlFragment);
+		}
+
+		/**
+		 * 指定されたカラムに、 UPDATE 文に組み込む SQL 文とそのプレースホルダの値を設定します。
+		 * @param columnName 対象カラム
+		 * @param sqlFragment SQL 文の一部
+		 * @param value プレースホルダの値
+		 */
+		public void setSQLFragmentAndValue(
+			String columnName,
+			String sqlFragment,
+			Bindable value) {
+			data.setSQLFragmentAndValue(columnName, sqlFragment, value);
+		}
+
+		/**
+		 * 内部に保持している {@link Relationship} を返します。
+		 * @return このインスタンスが内部にもつ {@link Relationship}
+		 */
+		public Relationship getRelationship() {
+			return relationship;
+		}
+
+		/**
+		 * 更新された値をデータベースに反映させるため、 UPDATE を実行します。<br>
+		 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
+		 * @return 更新された値が一件も無かった場合、 false
+		 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
+		 */
+		@Override
+		public boolean update() {
+			return data.update();
+		}
+
+		/**
+		 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。<br>
+		 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
+		 * @param statement バッチ実行を依頼する {@link BatchStatement}
+		 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
+		 */
+		@Override
+		public void update(BatchStatement statement) {
+			data.update(statement);
 		}
 
 		@Override
 		public DataObject dataObject() {
-			return data$;
+			return data;
 		}
 
 		@Override
 		public TablePath tablePath() {
-			return $TABLE;
-		}
-
-/*++[[ROW_PROPERTY_ACCESSOR_PART]]++*/
-/*==RowPropertyAccessorPart==*/
-		/**
-		 * setter
-	[[COMMENT]]
-		 * @param value [[TYPE]]
-		 */
-		public void set/*++[[METHOD]]++*/(/*++[[TYPE]]++*//*--*/Object/*--*/ value) {
-			/*++[[NULL_CHECK]]++*/ValueExtractor valueExtractor = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors().selectValueExtractor(
-				rowRel$.getColumn("[[COLUMN]]").getType());
-			data$.setValue("[[COLUMN]]", valueExtractor.extractAsBinder(value));
+			return tablePath;
 		}
 
 		/**
-		 * getter
-	[[COMMENT]]
-		 * @return [[TYPE]]
+		 * キーがFK名、値がこのクラスのインスタンスとなるMapを返します。
+		 * @return このインスタンスのテーブルが参照している全テーブルの {@link DataObject} の {@link Map}
 		 */
-		public /*++[[RETURN_TYPE]]++*/ /*--*/String/*--*/get/*++[[METHOD]]++*/() {
-			Binder binder = data$.getValue("[[COLUMN]]");
-			return /*++[[PREFIX]]++*/(/*++[[TYPE]]++*//*--*/String/*--*/) binder.getValue()/*++[[SUFFIX]]++*/;
+		public Map<String, Row> getRows() {
+			Map<String, DataObject> source = data.getDataObjects();
+			Map<String, Row> dest = new HashMap<>();
+			source.forEach((key, value) -> dest.put(key, new Row(value)));
+
+			return dest;
 		}
 
-/*==RowPropertyAccessorPart==*/
-/*++[[ROW_RELATIONSHIP_PART]]++*/
-/*==RowRelationshipPart==*/
 		/**
 		 * このレコードが参照しているレコードの Row を返します。<br>
-		 * 参照先テーブル名 [[REFERENCE]]<br>
-		 * 外部キー名 [[FK]]<br>
-		 * 項目名 [[FK_COLUMNS]]
+		 * @param fkName 外部キー名
 		 * @return 参照しているレコードの Row
 		 */
-		public /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/Row /*++[[METHOD]]++*//*--*/getRelationship/*--*/() {
-			return /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/row(
-				data$.getDataObject(/*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/));
+		public Row tab(String fkName) {
+			return new Row(data.getDataObject(fkName));
 		}
 
-/*==RowRelationshipPart==*/
+		/**
+		 * このレコードが参照しているレコードの Row を返します。<br>
+		 * @param fkColumnNames 外部キーを構成するカラム名
+		 * @return 参照しているレコードの Row
+		 */
+		public Row tab(String[] fkColumnNames) {
+			return new Row(data.getDataObject(fkColumnNames));
+		}
 	}
 
-	private static final TableFacadeContext<SelectCol> selectContext$ = (relationship, name) -> new SelectCol(relationship, name);
+	private static final TableFacadeContext<SelectCol> selectContext$ = (
+		relationship,
+		name) -> new SelectCol(relationship, name);
 
-	private static final TableFacadeContext<GroupByCol> groupByContext$ = (relationship, name) -> new GroupByCol(relationship, name);
+	private static final TableFacadeContext<GroupByCol> groupByContext$ = (
+		relationship,
+		name) -> new GroupByCol(relationship, name);
 
-	private static final TableFacadeContext<OrderByCol> orderByContext$ = (relationship, name) -> new OrderByCol(relationship, name);
+	private static final TableFacadeContext<OrderByCol> orderByContext$ = (
+		relationship,
+		name) -> new OrderByCol(relationship, name);
 
-	private static final TableFacadeContext<InsertCol> insertContext$ = (relationship, name) -> new InsertCol(relationship, name);
+	private static final TableFacadeContext<InsertCol> insertContext$ = (
+		relationship,
+		name) -> new InsertCol(relationship, name);
 
-	private static final TableFacadeContext<UpdateCol> updateContext$ = (relationship, name) -> new UpdateCol(relationship, name);
+	private static final TableFacadeContext<UpdateCol> updateContext$ = (
+		relationship,
+		name) -> new UpdateCol(relationship, name);
 
-	private static final TableFacadeContext<WhereColumn<WhereLogicalOperators>> whereContext$ =  TableFacadeContext.newWhereBuilder();
+	private static final TableFacadeContext<WhereColumn<WhereLogicalOperators>> whereContext$ = TableFacadeContext
+		.newWhereBuilder();
 
-	private static final TableFacadeContext<HavingColumn<HavingLogicalOperators>> havingContext$ =  TableFacadeContext.newHavingBuilder();
+	private static final TableFacadeContext<HavingColumn<HavingLogicalOperators>> havingContext$ = TableFacadeContext
+		.newHavingBuilder();
 
-	private static final TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> onLeftContext$ =  TableFacadeContext.newOnLeftBuilder();
+	private static final TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> onLeftContext$ = TableFacadeContext
+		.newOnLeftBuilder();
 
-	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext$ =  TableFacadeContext.newOnRightBuilder();
+	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext$ = TableFacadeContext
+		.newOnRightBuilder();
 
-	private static final TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> dmsWhereContext$ =  TableFacadeContext.newDMSWhereBuilder();
+	private static final TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> dmsWhereContext$ = TableFacadeContext
+		.newDMSWhereBuilder();
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
@@ -279,20 +577,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereRel OR = new WhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			whereContext$,
-			CriteriaContext.OR,
-			null);
+		public final WhereRel OR = new WhereRel(GenericTable.this, whereContext$, CriteriaContext.OR, null);
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final WhereRel AND = new WhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			whereContext$,
-			CriteriaContext.AND,
-			OR);
+		public final WhereRel AND = new WhereRel(GenericTable.this, whereContext$, CriteriaContext.AND, OR);
 
 		@Override
 		public WhereRel defaultOperator() {
@@ -310,21 +600,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingRel OR = new HavingRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				havingContext$,
-				CriteriaContext.OR,
-				null);
+		public final HavingRel OR = new HavingRel(GenericTable.this, havingContext$, CriteriaContext.OR, null);
 
 		/**
 		 * HAVING 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final HavingRel AND =
-			new HavingRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				havingContext$,
-				CriteriaContext.AND,
-				OR);
+		public final HavingRel AND = new HavingRel(GenericTable.this, havingContext$, CriteriaContext.AND, OR);
 
 		@Override
 		public HavingRel defaultOperator() {
@@ -342,22 +623,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftRel OR =
-			new OnLeftRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onLeftContext$,
-				CriteriaContext.OR,
-				null);
+		public final OnLeftRel OR = new OnLeftRel(GenericTable.this, onLeftContext$, CriteriaContext.OR, null);
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnLeftRel AND =
-			new OnLeftRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onLeftContext$,
-				CriteriaContext.AND,
-				OR);
+		public final OnLeftRel AND = new OnLeftRel(GenericTable.this, onLeftContext$, CriteriaContext.AND, OR);
 
 		@Override
 		public OnLeftRel defaultOperator() {
@@ -375,22 +646,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightRel OR =
-			new OnRightRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onRightContext$,
-				CriteriaContext.OR,
-				null);
+		public final OnRightRel OR = new OnRightRel(GenericTable.this, onRightContext$, CriteriaContext.OR, null);
 
 		/**
 		 * ON 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final OnRightRel AND =
-			new OnRightRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				onRightContext$,
-				CriteriaContext.AND,
-				OR);
+		public final OnRightRel AND = new OnRightRel(GenericTable.this, onRightContext$, CriteriaContext.AND, OR);
 
 		@Override
 		public OnRightRel defaultOperator() {
@@ -408,20 +669,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final DMSWhereRel OR = new DMSWhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			dmsWhereContext$,
-			CriteriaContext.OR,
-			null);
+		public final DMSWhereRel OR = new DMSWhereRel(GenericTable.this, dmsWhereContext$, CriteriaContext.OR, null);
 
 		/**
 		 * WHERE 句に AND 結合する条件用のカラムを選択するための {@link TableFacadeRelationship} です。
 		 */
-		public final DMSWhereRel AND = new DMSWhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-			dmsWhereContext$,
-			CriteriaContext.AND,
-			OR);
+		public final DMSWhereRel AND = new DMSWhereRel(GenericTable.this, dmsWhereContext$, CriteriaContext.AND, OR);
 
 		@Override
 		public DMSWhereRel defaultOperator() {
@@ -444,31 +697,26 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
 	}
 
-	private class SelectBehavior extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
+	private class SelectBehavior
+		extends SelectStatementBehavior<SelectRel, GroupByRel, WhereRel, HavingRel, OrderByRel, OnLeftRel> {
 
 		private SelectBehavior() {
-			super($TABLE, getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super(tablePath, getRuntimeId(), GenericTable.this);
 		}
 
 		@Override
 		protected SelectRel newSelect() {
-			return new SelectRel(
-					/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-					selectContext$);
+			return new SelectRel(GenericTable.this, selectContext$);
 		}
 
 		@Override
 		protected GroupByRel newGroupBy() {
-			return new GroupByRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				groupByContext$);
+			return new GroupByRel(GenericTable.this, groupByContext$);
 		}
 
 		@Override
 		protected OrderByRel newOrderBy() {
-			return new OrderByRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				orderByContext$);
+			return new OrderByRel(GenericTable.this, orderByContext$);
 		}
 
 		@Override
@@ -496,21 +744,17 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertRel, UpdateRel, DMSWhereRel> {
 
 		public DMSBehavior() {
-			super($TABLE, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this.getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super(tablePath, GenericTable.this.getRuntimeId(), GenericTable.this);
 		}
 
 		@Override
 		protected InsertRel newInsert() {
-			return new InsertRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				insertContext$);
+			return new InsertRel(GenericTable.this, insertContext$);
 		}
 
 		@Override
 		protected UpdateRel newUpdate() {
-			return new UpdateRel(
-				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
-				updateContext$);
+			return new UpdateRel(GenericTable.this, updateContext$);
 		}
 
 		@Override
@@ -523,34 +767,40 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * このクラスのインスタンスを生成します。<br>
 	 * インスタンスは ID として、引数で渡された id を使用します。<br>
 	 * フィールド定義の必要がなく、簡易に使用できますが、 ID は呼び出し側クラス内で一意である必要があります。
-	 * @param id {@link SelectStatement} を使用するクラス内で一意の ID
+	 * @param id {@link Query} を使用するクラス内で一意の ID
+	 * @param tablePath 検索対象テーブル
 	 * @return このクラスのインスタンス
 	 */
-	public static /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ of(String id) {
-		if (id == null || id.equals(""))
+	public static GenericTable of(String id, TablePath tablePath) {
+		if (!U.presents(id))
 			throw new IllegalArgumentException("id が空です");
 
-		return new /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
+		return new GenericTable(tablePath, getUsing(new Throwable().getStackTrace()[1]), id);
 	}
-
 
 	/**
 	 * 空のインスタンスを生成します。
+	 * @param tablePath 検索対象テーブル
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/() {}
+	public GenericTable(TablePath tablePath) {
+		this.tablePath = tablePath;
+		relationship$ = RelationshipFactory.getInstance().getInstance(tablePath);
+	}
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
 	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link Optimizer} に依存します。
 	 * @param optimizer SELECT 句を決定する
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
+	public GenericTable(Optimizer optimizer) {
+		this(optimizer.getTablePath());
 		selectBehavior().setOptimizer(Objects.requireNonNull(optimizer));
 	}
 
-	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
+	private GenericTable(TablePath tablePath, Class<?> using, String id) {
+		this(tablePath);
 		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getRuntimeId(), $TABLE, using));
+			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getRuntimeId(), tablePath, using));
 	}
 
 	@Override
@@ -560,7 +810,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public TablePath getTablePath() {
-		return $TABLE;
+		return tablePath;
 	}
 
 	/**
@@ -581,8 +831,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * 唯一のコンストラクタです。
 		 * @param iterator
 		 */
-		private Iterator(
-			DataObjectIterator iterator) {
+		private Iterator(DataObjectIterator iterator) {
 			super(iterator);
 		}
 
@@ -605,8 +854,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param function
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT(
-		SelectOfferFunction<SelectRel> function) {
+	public GenericTable SELECT(SelectOfferFunction<SelectRel> function) {
 		selectBehavior().SELECT(function);
 		return this;
 	}
@@ -616,8 +864,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param function
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_DISTINCT(
-		SelectOfferFunction<SelectRel> function) {
+	public GenericTable SELECT_DISTINCT(SelectOfferFunction<SelectRel> function) {
 		selectBehavior().SELECT_DISTINCT(function);
 		return this;
 	}
@@ -626,7 +873,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * COUNT(*) を使用した SELECT 句を記述します。
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ SELECT_COUNT() {
+	public GenericTable SELECT_COUNT() {
 		selectBehavior().SELECT_COUNT();
 		return this;
 	}
@@ -636,8 +883,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param function
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ GROUP_BY(
-		GroupByOfferFunction<GroupByRel> function) {
+	public GenericTable GROUP_BY(GroupByOfferFunction<GroupByRel> function) {
 		selectBehavior().GROUP_BY(function);
 		return this;
 	}
@@ -648,8 +894,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
-	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ WHERE(
-		Consumer<WhereRel>... consumers) {
+	public final GenericTable WHERE(Consumer<WhereRel>... consumers) {
 		selectBehavior().WHERE(consumers);
 		return this;
 	}
@@ -659,8 +904,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param consumer {@link Consumer}
 	 * @return {@link Criteria}
 	 */
-	public Criteria createWhereCriteria(
-		Consumer<WhereRel> consumer) {
+	public Criteria createWhereCriteria(Consumer<WhereRel> consumer) {
 		return selectBehavior().createWhereCriteria(consumer);
 	}
 
@@ -670,8 +914,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return この {@link SelectStatement}
 	 */
 	@SafeVarargs
-	public final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ HAVING(
-		Consumer<HavingRel>... consumers) {
+	public final GenericTable HAVING(Consumer<HavingRel>... consumers) {
 		selectBehavior().HAVING(consumers);
 		return this;
 	}
@@ -681,8 +924,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param consumer {@link Consumer}
 	 * @return {@link Criteria}
 	 */
-	public Criteria createHavingCriteria(
-		Consumer<HavingRel> consumer) {
+	public Criteria createHavingCriteria(Consumer<HavingRel> consumer) {
 		return selectBehavior().createHavingCriteria(consumer);
 	}
 
@@ -691,7 +933,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> INNER_JOIN(RightTable<R> right) {
 		return selectBehavior().INNER_JOIN(right, this);
 	}
 
@@ -700,7 +942,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> LEFT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().LEFT_OUTER_JOIN(right, this);
 	}
 
@@ -709,7 +951,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> RIGHT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().RIGHT_OUTER_JOIN(right, this);
 	}
 
@@ -718,7 +960,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> FULL_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().FULL_OUTER_JOIN(right, this);
 	}
 
@@ -727,7 +969,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return この {@link SelectStatement}
 	 */
-	public <R extends OnRightRelationship> /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ CROSS_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship> GenericTable CROSS_JOIN(RightTable<R> right) {
 		selectBehavior().CROSS_JOIN(right, this);
 		return this;
 	}
@@ -738,7 +980,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param select UNION 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION(SelectStatement select) {
+	public GenericTable UNION(SelectStatement select) {
 		selectBehavior().UNION(select);
 		return this;
 	}
@@ -749,7 +991,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param select UNION ALL 対象
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ UNION_ALL(SelectStatement select) {
+	public GenericTable UNION_ALL(SelectStatement select) {
 		selectBehavior().UNION_ALL(select);
 		return this;
 	}
@@ -759,8 +1001,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param function
 	 * @return この {@link SelectStatement}
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ ORDER_BY(
-		OrderByOfferFunction<OrderByRel> function) {
+	public GenericTable ORDER_BY(OrderByOfferFunction<OrderByRel> function) {
 		selectBehavior().ORDER_BY(function);
 		return this;
 	}
@@ -776,7 +1017,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupBy(GroupByClause clause) {
+	public GenericTable groupBy(GroupByClause clause) {
 		selectBehavior().setGroupByClause(clause);
 		return this;
 	}
@@ -787,7 +1028,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderBy(OrderByClause clause) {
+	public GenericTable orderBy(OrderByClause clause) {
 		selectBehavior().setOrderByClause(clause);
 		return this;
 	}
@@ -798,7 +1039,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param criteria AND 結合する新条件
 	 * @return {@link SelectStatement} 自身
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ and(Criteria criteria) {
+	public GenericTable and(Criteria criteria) {
 		selectBehavior().and(criteria);
 		return this;
 	}
@@ -809,7 +1050,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param criteria OR 結合する新条件
 	 * @return {@link SelectStatement} 自身
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ or(Criteria criteria) {
+	public GenericTable or(Criteria criteria) {
 		selectBehavior().or(criteria);
 		return this;
 	}
@@ -820,7 +1061,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 */
 	@Override
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
+	public GenericTable apply(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators$.add(decorator);
 		}
@@ -969,14 +1210,14 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public void forSubquery(boolean forSubquery) {
-		 selectBehavior().forSubquery(forSubquery);
+		selectBehavior().forSubquery(forSubquery);
 	}
 
 	/**
 	 * 現在保持している SELECT 文の WHERE 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetWhere() {
+	public GenericTable resetWhere() {
 		selectBehavior().resetWhere();
 		return this;
 	}
@@ -985,7 +1226,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している HAVING 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetHaving() {
+	public GenericTable resetHaving() {
 		selectBehavior().resetHaving();
 		return this;
 	}
@@ -994,7 +1235,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している SELECT 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetSelect() {
+	public GenericTable resetSelect() {
 		selectBehavior().resetSelect();
 		return this;
 	}
@@ -1003,7 +1244,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している GROUP BY 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetGroupBy() {
+	public GenericTable resetGroupBy() {
 		selectBehavior().resetGroupBy();
 		return this;
 	}
@@ -1012,7 +1253,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している ORDER BY 句をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetOrderBy() {
+	public GenericTable resetOrderBy() {
 		selectBehavior().resetOrderBy();
 		return this;
 	}
@@ -1021,7 +1262,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している UNION をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetUnions() {
+	public GenericTable resetUnions() {
 		selectBehavior().resetUnions();
 		return this;
 	}
@@ -1030,7 +1271,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している JOIN をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetJoins() {
+	public GenericTable resetJoins() {
 		selectBehavior().resetJoins();
 		return this;
 	}
@@ -1039,7 +1280,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している INSERT 文のカラムをリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetInsert() {
+	public GenericTable resetInsert() {
 		dmsBehavior().resetInsert();
 		return this;
 	}
@@ -1048,7 +1289,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している UPDATE 文の更新要素をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetUpdate() {
+	public GenericTable resetUpdate() {
 		dmsBehavior().resetUpdate();
 		return this;
 	}
@@ -1057,7 +1298,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している SET 文の更新要素をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDelete() {
+	public GenericTable resetDelete() {
 		dmsBehavior().resetDelete();
 		return this;
 	}
@@ -1066,7 +1307,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している {@link SQLDecorator} をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ resetDecorators() {
+	public GenericTable resetDecorators() {
 		decorators$.clear();
 		return this;
 	}
@@ -1075,7 +1316,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * 現在保持している条件、並び順をリセットします。
 	 * @return このインスタンス
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ reset() {
+	public GenericTable reset() {
 		selectBehavior().reset();
 		dmsBehavior().reset();
 		resetDecorators();
@@ -1094,7 +1335,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public Query query() {
-		return  new Query(selectBehavior().query());
+		return new Query(selectBehavior().query());
 	}
 
 	@Override
@@ -1106,6 +1347,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	public SelectStatement getSelectStatement() {
 		return this;
 	}
+
 	/**
 	 * INSERT 文を生成します。
 	 * @param function function
@@ -1190,7 +1432,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class Rel<T, M> implements TableFacadeRelationship {
 
-		private final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$;
+		private final TableFacadeContext<T> builder$;
+
+		private final GenericTable table$;
 
 		private final CriteriaContext context$;
 
@@ -1198,52 +1442,40 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		private final String fkName$;
 
-/*++[[COLUMN_PART1]]++*/
-/*==ColumnPart1==*/
-		/**
-		 * 項目名 [[COLUMN]]
-		 */
-		public final T /*++[[COLUMN]]++*//*--*/columnName/*--*/;
-
-/*==ColumnPart1==*/
-
 		/**
 		 * 直接使用しないでください。
 		 * @param builder$ builder
 		 * @param parent$ parent
 		 * @param fkName$ fkName
 		 */
-		public Rel(
-			TableFacadeContext<T> builder$,
-			TableFacadeRelationship parent$,
-			String fkName$) {
+		public Rel(TableFacadeContext<T> builder$, TableFacadeRelationship parent$, String fkName$) {
+			this.builder$ = builder$;
 			table$ = null;
 			context$ = null;
 			this.parent$ = parent$;
 			this.fkName$ = fkName$;
-
-/*++[[COLUMN_PART2]]++*/
-/*==ColumnPart2==*/this./*++[[COLUMN]]++*//*--*/columnName/*--*/ = builder$.buildColumn(
-				this, /*++[[PACKAGE]].[[TABLE]].[[COLUMN]]++*//*--*/TableFacadeTemplate.columnName/*--*/);
-/*==ColumnPart2==*/
 		}
 
-		private Rel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<T> builder$,
-			CriteriaContext context$) {
+		private Rel(GenericTable table$, TableFacadeContext<T> builder$, CriteriaContext context$) {
 			this.table$ = table$;
+			this.builder$ = builder$;
 			this.context$ = context$;
 			parent$ = null;
 			fkName$ = null;
+		}
 
-			/*--*/columnName = null;/*--*/
-/*++[[COLUMN_PART2]]++*/
+		/**
+		 * @param name カラム名
+		 * @return 使用されるカラムのタイプにあった型
+		 */
+		public T col(String name) {
+			return builder$.buildColumn(this, name);
 		}
 
 		@Override
 		public CriteriaContext getContext() {
-			if (context$ == null) return parent$.getContext();
+			if (context$ == null)
+				return parent$.getContext();
 
 			return context$;
 		}
@@ -1259,21 +1491,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		@Override
 		public SelectStatement getSelectStatement() {
-			if (table$ != null) return table$;
+			if (table$ != null)
+				return table$;
 			return parent$.getSelectStatement();
 		}
 
 		@Override
 		public DataManipulationStatement getDataManipulationStatement() {
-			if (table$ != null) return table$.dmsBehavior();
+			if (table$ != null)
+				return table$.dmsBehavior();
 			return parent$.getDataManipulationStatement();
 		}
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof TableFacadeRelationship)) return false;
-			return getRelationship()
-				.equals(((TableFacadeRelationship) o).getRelationship());
+			if (!(o instanceof TableFacadeRelationship))
+				return false;
+			return getRelationship().equals(((TableFacadeRelationship) o).getRelationship());
 		}
 
 		@Override
@@ -1287,8 +1521,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				parent$ == null ? null : parent$.getOneToManyRelationship(),
 				Rel.this.getRelationship(),
 				data -> new Row(data),
-				table$ != null ? table$.id$ : parent$.getSelectStatement().getRuntimeId()
-			);
+				table$ != null ? table$.id$ : parent$.getSelectStatement().getRuntimeId());
 		}
 	}
 
@@ -1300,7 +1533,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class ExtRel<T, M> extends Rel<T, M> {
 
-		/*--?--*/private final TableFacadeContext<T> builder$;/*--?--*/
+		private final TableFacadeContext<T> builder$;
 
 		/**
 		 * 直接使用しないでください。
@@ -1313,15 +1546,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			TableFacadeRelationship parent$,
 			String fkName$) {
 			super(builder$, parent$, fkName$);
-			/*--?--*/this.builder$ = builder$;/*--?--*/
+			this.builder$ = builder$;
 		}
 
-		private ExtRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<T> builder$,
-			CriteriaContext context$) {
+		private ExtRel(GenericTable table$, TableFacadeContext<T> builder$, CriteriaContext context$) {
 			super(table$, builder$, context$);
-			/*--?--*/this.builder$ = builder$;/*--?--*/
+			this.builder$ = builder$;
 		}
 
 		/**
@@ -1329,26 +1559,20 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @return {@link OneToManyQuery}
 		 */
 		public OneToManyQuery<Row, M> intercept() {
-			if (super.table$ != null) throw new IllegalStateException("このインスタンスでは直接使用することはできません");
-			if (!getSelectStatement().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			if (super.table$ != null)
+				throw new IllegalStateException("このインスタンスでは直接使用することはできません");
+			if (!getSelectStatement().rowMode())
+				throw new IllegalStateException("集計モードでは実行できない処理です");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
 		}
 
-/*++[[TABLE_RELATIONSHIP_PART]]++*/
-/*==TableRelationshipPart==*/
 		/**
-		 * 参照先テーブル名 [[REFERENCE]]<br>
-		 * 外部キー名 [[FK]]<br>
-		 * 項目名 [[FK_COLUMNS]]
-		 * @return [[REFERENCE]] relationship
+		 * @param fkName 外部キー名
+		 * @return 参照先の {@link ExtRel}
 		 */
-		public /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/ExtRel<T, /*++[[MANY]]++*//*--*/Object/*--*/> /*--*/relationshipName/*--*//*++[[RELATIONSHIP]]++*/() {
-			return new /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/ExtRel<>(
-				builder$,
-				this,
-				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/);
+		public ExtRel<T, Many<Row, M>> tab(String fkName) {
+			return new ExtRel<T, Many<Row, M>>(builder$, this, fkName);
 		}
-/*==TableRelationshipPart==*/
 	}
 
 	/**
@@ -1356,9 +1580,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class SelectRel extends ExtRel<SelectCol, Void> implements SelectRelationship {
 
-		private SelectRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<SelectCol> builder$) {
+		private SelectRel(GenericTable table$, TableFacadeContext<SelectCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
 	}
@@ -1374,7 +1596,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public final WhereRel OR;
 
 		private WhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			GenericTable table$,
 			TableFacadeContext<WhereColumn<WhereLogicalOperators>> builder$,
 			CriteriaContext context$,
 			WhereRel or$) {
@@ -1393,9 +1615,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class GroupByRel extends ExtRel<GroupByCol, Void> implements GroupByRelationship {
 
-		private GroupByRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<GroupByCol> builder$) {
+		private GroupByRel(GenericTable table$, TableFacadeContext<GroupByCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
 	}
@@ -1403,7 +1623,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * HAVING 句用
 	 */
-	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship {
+	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void>
+		implements HavingRelationship {
 
 		/**
 		 * 条件接続 OR
@@ -1411,7 +1632,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public final HavingRel OR;
 
 		private HavingRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			GenericTable table$,
 			TableFacadeContext<HavingColumn<HavingLogicalOperators>> builder$,
 			CriteriaContext context$,
 			HavingRel or$) {
@@ -1425,9 +1646,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class OrderByRel extends ExtRel<OrderByCol, Void> implements OrderByRelationship {
 
-		private OrderByRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<OrderByCol> builder$) {
+		private OrderByRel(GenericTable table$, TableFacadeContext<OrderByCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
 
@@ -1440,7 +1659,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * ON 句 (LEFT) 用
 	 */
-	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship {
+	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void>
+		implements OnLeftRelationship {
 
 		/**
 		 * 条件接続 OR
@@ -1448,7 +1668,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public final OnLeftRel OR;
 
 		private OnLeftRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			GenericTable table$,
 			TableFacadeContext<OnLeftColumn<OnLeftLogicalOperators>> builder$,
 			CriteriaContext context$,
 			OnLeftRel or$) {
@@ -1460,7 +1680,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * ON 句 (RIGHT) 用
 	 */
-	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship {
+	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void>
+		implements OnRightRelationship {
 
 		/**
 		 * 条件接続 OR
@@ -1468,7 +1689,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public final OnRightRel OR;
 
 		private OnRightRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			GenericTable table$,
 			TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> builder$,
 			CriteriaContext context$,
 			OnRightRel or$) {
@@ -1482,9 +1703,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class InsertRel extends Rel<InsertCol, Void> implements InsertRelationship {
 
-		private InsertRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<InsertCol> builder$) {
+		private InsertRel(GenericTable table$, TableFacadeContext<InsertCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
 	}
@@ -1494,9 +1713,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class UpdateRel extends Rel<UpdateCol, Void> implements UpdateRelationship {
 
-		private UpdateRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
-			TableFacadeContext<UpdateCol> builder$) {
+		private UpdateRel(GenericTable table$, TableFacadeContext<UpdateCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
 	}
@@ -1504,7 +1721,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * UPDATE, DELETE 文 WHERE 句用
 	 */
-	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void> implements WhereRelationship {
+	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void>
+		implements WhereRelationship {
 
 		/**
 		 * 条件接続 OR
@@ -1512,7 +1730,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public final DMSWhereRel OR;
 
 		private DMSWhereRel(
-			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			GenericTable table$,
 			TableFacadeContext<WhereColumn<DMSWhereLogicalOperators>> builder$,
 			CriteriaContext context$,
 			DMSWhereRel or$) {
