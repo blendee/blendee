@@ -1,27 +1,34 @@
 # Blendee
 
-Blendeeは、ORM機能を持った軽量なSQL生成ツールです。
+Blendeeは、Javaのコード内にSQLを混ぜてコーディングすることを目的とするツールです。
 
 ## Description
 
-- データベースドリブン、SQLファースト
+- SQL > ORM
 
-- コード自動生成
-	- SQLを作成するためのクラスをEclipseのプラグインで簡単に生成
+- データベース設計ドリブン
+	- Javaのコードからデータベースの構築を行うのではなく、既存のデータベースのメタ情報からSQLを作成するためのクラスを自動生成
+	- Eclipseのプラグインで生成することが可能
 
-- Java8以降(ラムダ式、Optional)ベースのAPI
+- タイプセーフSQL
+	- 自動生成クラスでは、テーブル、カラム等データベースオブジェクトが全てJavaのシンボルとして扱える
+
+- ラムダ式と高い親和性
+	- Java8以降(ラムダ式、Optional)ベースのAPI
 
 ## Features
 
-Blendeeの機能は主に検索（SELECT文の生成、実行）を行うためのものですが、検索にはORMモードと集計モードの2つのモードがあります。
+Blendeeの持っている機能は、主に検索（SELECT文の生成、実行）を行うためのものですが、それにはORMモードと集計モードの2つのモードがあります。
 
 ORMモードと集計モードについて
 
 - ORMモード
-	検索結果は自動生成されたテーブルクラスのインスタンスとして扱える
+	検索結果は自動生成されたテーブルクラスのインスタンスとして扱う
+	検索するテーブルの全カラムを取得するのではなく、指定したカラムのみ取得することが可能
+	開発中の使用状況からSELECTするカラムを記録し、再現することができる
 
 - 集計モード
-	検索結果はResultSetとして扱える
+	検索結果はResultSetとして扱う
 
 - SELECT文
 
@@ -35,10 +42,10 @@ ORMモードと集計モードについて
 			- 参照テーブルの自動JOIN
 		- 集計モード
 			- 各JOIN(INNER JOIN, LEFT OUTER JOIN, RIGHT OUTER JOIN, FULL OUTER JOIN, CROSS JOIN)
-			- 副問合せとのJOIN
+			- 副問合せ表とのJOIN
 	- WHERE句
 		- AND, ORの結合順、強弱により()を付与
-		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL
+		- (NOT) LIKE, (NOT) IN, (NOT) IN (副問い合わせ), (NOT) BETWEEN, IS (NOT) NULL, EXISTS
 	- GROUP BY句
 		- 集計モードでのみ使用可能(GROUP BY句を使用すると自動的に集計モードに変わる)
 	- HAVING句
@@ -78,4 +85,4 @@ Eclipse Oxygen以降
 
 ## License
 
-MIT
+This project is licensed under the MIT License.
