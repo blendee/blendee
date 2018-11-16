@@ -62,7 +62,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 				tablePathMap.put(source.getId(), source);
 			} else if (columnMatcher.matches()) {
 				TablePathSource source = tablePathMap.get(columnMatcher.group(1));
-				if (source == null) throw new IllegalStateException("IDが存在しません " + "[" + line + "]");
+				if (source == null) throw new IllegalStateException("ID が存在しません " + "[" + line + "]");
 
 				source.add(
 					new ColumnSource(
