@@ -49,7 +49,7 @@ public class AutoCloseableFinalizer {
 	 * @param closeableEnclosure Blendee ラッパーインスタンス
 	 * @param closeable JDBC リソース
 	 */
-	public void regist(Object closeableEnclosure, AutoCloseable closeable) {
+	public void register(Object closeableEnclosure, AutoCloseable closeable) {
 		synchronized (lock) {
 			map.put(new PhantomReference<>(closeableEnclosure, reaped), closeable);
 			lock.notify();
@@ -114,7 +114,7 @@ public class AutoCloseableFinalizer {
 		while ((ref = reaped.poll()) != null) {
 			ref.clear();
 
-			//一件ずつsyncするのは無駄だが、極力メインスレッド（regist側）を止めないためにこうする
+			//一件ずつsyncするのは無駄だが、極力メインスレッド（register側）を止めないためにこうする
 			synchronized (lock) {
 				close(map.remove(ref));
 				try {

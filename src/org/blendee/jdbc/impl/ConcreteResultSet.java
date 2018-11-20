@@ -50,7 +50,7 @@ public class ConcreteResultSet implements BResultSet {
 		}
 
 		if (finalizer != null)
-			finalizer.regist(this, base);
+			finalizer.register(this, base);
 	}
 
 	@Override

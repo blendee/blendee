@@ -49,7 +49,7 @@ public class ConcreteConnection implements BConnection {
 
 		AutoCloseableFinalizer finalizer = ContextManager.get(BlendeeManager.class).getAutoCloseableFinalizer();
 		if (finalizer.started()) {
-			finalizer.regist(this, connection);
+			finalizer.register(this, connection);
 			this.finalizer = finalizer;
 		} else {
 			this.finalizer = null;

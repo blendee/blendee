@@ -91,7 +91,7 @@ public class VirtualSpace implements Metadata {
 			processForExported(table, exported, depends);
 
 		for (TableSource table : tables.values())
-			registTable(table, exported);
+			registerTable(table, exported);
 
 		started = true;
 	}
@@ -175,7 +175,7 @@ public class VirtualSpace implements Metadata {
 		return table;
 	}
 
-	private void registTable(
+	private void registerTable(
 		TableSource table,
 		CollectionMap<TablePath, TablePath> exportedMap) {
 		ForeignKeySource[] fks = table.getForeignKeySources();
