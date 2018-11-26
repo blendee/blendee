@@ -2,6 +2,7 @@ package org.blendee.jdbc.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BConnection;
@@ -27,6 +28,8 @@ public class JDBCTransaction extends Transaction {
 	 * @param jdbcConnection JDBC 接続
 	 */
 	public JDBCTransaction(Connection jdbcConnection) {
+		Objects.requireNonNull(jdbcConnection);
+
 		this.jdbcConnection = jdbcConnection;
 		connection = new ConcreteConnection(config, jdbcConnection);
 	}

@@ -1,5 +1,6 @@
 package org.blendee.util;
 
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -41,8 +42,11 @@ public class DriverTransactionFactory implements TransactionFactory {
 	@Override
 	public Transaction createTransaction() {
 		try {
-			driver.connect(url, properties);
-			return new JDBCTransaction(driver.connect(url, properties));
+			Connection connection = driver.connect(url, properties);
+
+			if (connection == null) throw new IllegalStateException(driver.getClass() + "#connect(String, Properties) returns null");
+
+			return new JDBCTransaction(connection);
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		}
