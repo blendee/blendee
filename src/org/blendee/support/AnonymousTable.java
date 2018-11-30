@@ -14,6 +14,7 @@ import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
+import org.blendee.sql.MultiColumn;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
@@ -773,6 +774,30 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			super(query, builder, context);
 			OR = or == null ? this : or;
 		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public WhereColumn<WhereLogicalOperators> any(String template) {
+			return new WhereColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public WhereLogicalOperators paren(Consumer<WhereRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
+		}
 	}
 
 	/**
@@ -803,6 +828,30 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			HavingRel or) {
 			super(query, builder, context);
 			OR = or == null ? this : or;
+		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public HavingColumn<HavingLogicalOperators> any(String template) {
+			return new HavingColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public HavingLogicalOperators paren(Consumer<HavingRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
 	}
 
@@ -840,6 +889,30 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			super(query, builder, context);
 			OR = or == null ? this : or;
 		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
+			return new OnLeftColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public OnLeftLogicalOperators paren(Consumer<OnLeftRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
+		}
 	}
 
 	/**
@@ -860,6 +933,30 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OnRightRel or) {
 			super(query, builder, context);
 			OR = or == null ? this : or;
+		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public OnRightColumn<OnRightLogicalOperators> any(String template) {
+			return new OnRightColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public OnRightLogicalOperators paren(Consumer<OnRightRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
 	}
 

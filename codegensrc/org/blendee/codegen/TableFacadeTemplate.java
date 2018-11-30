@@ -24,6 +24,7 @@ import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
+import org.blendee.sql.MultiColumn;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
@@ -82,6 +83,7 @@ import org.blendee.support.WhereColumn;
 import org.blendee.support.WhereRelationship;
 import org.blendee.support.SQLDecorators;
 import org.blendee.support.annotation.Column;
+import org.blendee.support.Paren;
 /*--*/import org.blendee.support.annotation.ForeignKey;/*--*/
 /*--*/import org.blendee.support.annotation.PrimaryKey;/*--*/
 import org.blendee.support.annotation.Table;
@@ -1382,6 +1384,30 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OR = or$ == null ? this : or$;
 		}
 
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public WhereColumn<WhereLogicalOperators> any(String template) {
+			return new WhereColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public WhereLogicalOperators paren(Consumer<WhereRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
+		}
+
 		@Override
 		public Statement getStatement() {
 			return getSelectStatement();
@@ -1417,6 +1443,30 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			HavingRel or$) {
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
+		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public HavingColumn<HavingLogicalOperators> any(String template) {
+			return new HavingColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public HavingLogicalOperators paren(Consumer<HavingRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
 	}
 
@@ -1455,6 +1505,30 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
 		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
+			return new OnLeftColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public OnLeftLogicalOperators paren(Consumer<OnLeftRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
+		}
 	}
 
 	/**
@@ -1474,6 +1548,30 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OnRightRel or$) {
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
+		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public OnRightColumn<OnRightLogicalOperators> any(String template) {
+			return new OnRightColumn<>(
+				getSelectStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public OnRightLogicalOperators paren(Consumer<OnRightRel> consumer) {
+			SelectStatement statement = getSelectStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
 	}
 
@@ -1518,6 +1616,30 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			DMSWhereRel or$) {
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
+		}
+
+		/**
+		 * この句に任意のカラムを追加します。
+		 * @param template カラムのテンプレート
+		 * @return {@link LogicalOperators} AND か OR
+		 */
+		@Override
+		public WhereColumn<DMSWhereLogicalOperators> any(String template) {
+			return new WhereColumn<>(
+				getDataManipulationStatement(),
+				getContext(),
+				new MultiColumn(template));
+		}
+
+		/**
+		 * Consumer に渡された条件句を () で囲みます。
+		 * @param consumer {@link Consumer}
+		 * @return this
+		 */
+		public DMSWhereLogicalOperators paren(Consumer<DMSWhereRel> consumer) {
+			DataManipulationStatement statement = getDataManipulationStatement();
+			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			return (DMSWhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
 
 		@Override

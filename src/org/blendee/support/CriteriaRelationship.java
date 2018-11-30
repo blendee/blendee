@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
-import org.blendee.sql.MultiColumn;
 import org.blendee.sql.Relationship;
 
 /**
@@ -34,22 +33,9 @@ public interface CriteriaRelationship {
 	/**
 	 * この句に任意のカラムを追加します。
 	 * @param template カラムのテンプレート
-	 * @return AND/OR で継続できないカラム
+	 * @return {@link CriteriaColumn}
 	 */
-	default CriteriaColumn<?> any(String template) {
-		return new CriteriaColumn<LogicalOperators<?>>(
-			getStatement(),
-			getContext(),
-			new MultiColumn(getRelationship(), template)) {
-
-			@Override
-			LogicalOperators<?> logocalOperators() {
-				return () -> {
-					throw new UnsupportedOperationException();
-				};
-			}
-		};
-	}
+	CriteriaColumn<?> any(String template);
 
 	/**
 	 * この句に条件を追加します。
