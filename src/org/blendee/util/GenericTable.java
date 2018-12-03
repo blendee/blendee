@@ -935,7 +935,7 @@ public class GenericTable
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> INNER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, GenericTable> INNER_JOIN(RightTable<R> right) {
 		return selectBehavior().INNER_JOIN(right, this);
 	}
 
@@ -944,7 +944,7 @@ public class GenericTable
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> LEFT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, GenericTable> LEFT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().LEFT_OUTER_JOIN(right, this);
 	}
 
@@ -953,7 +953,7 @@ public class GenericTable
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> RIGHT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, GenericTable> RIGHT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().RIGHT_OUTER_JOIN(right, this);
 	}
 
@@ -962,7 +962,7 @@ public class GenericTable
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, GenericTable> FULL_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, GenericTable> FULL_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().FULL_OUTER_JOIN(right, this);
 	}
 
@@ -971,7 +971,7 @@ public class GenericTable
 	 * @param right 別クエリ
 	 * @return この {@link SelectStatement}
 	 */
-	public <R extends OnRightRelationship> GenericTable CROSS_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> GenericTable CROSS_JOIN(RightTable<R> right) {
 		selectBehavior().CROSS_JOIN(right, this);
 		return this;
 	}
@@ -1606,7 +1606,7 @@ public class GenericTable
 	/**
 	 * SELECT 文 WHERE 句用
 	 */
-	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
+	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship<WhereRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1640,6 +1640,7 @@ public class GenericTable
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public WhereLogicalOperators paren(Consumer<WhereRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1666,7 +1667,7 @@ public class GenericTable
 	 * HAVING 句用
 	 */
 	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void>
-		implements HavingRelationship {
+		implements HavingRelationship<HavingRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1700,6 +1701,7 @@ public class GenericTable
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public HavingLogicalOperators paren(Consumer<HavingRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1726,7 +1728,7 @@ public class GenericTable
 	 * ON 句 (LEFT) 用
 	 */
 	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void>
-		implements OnLeftRelationship {
+		implements OnLeftRelationship<OnLeftRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1760,6 +1762,7 @@ public class GenericTable
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1771,7 +1774,7 @@ public class GenericTable
 	 * ON 句 (RIGHT) 用
 	 */
 	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void>
-		implements OnRightRelationship {
+		implements OnRightRelationship<OnRightRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1805,6 +1808,7 @@ public class GenericTable
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1836,7 +1840,7 @@ public class GenericTable
 	 * UPDATE, DELETE 文 WHERE 句用
 	 */
 	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void>
-		implements WhereRelationship {
+		implements WhereRelationship<DMSWhereRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1855,7 +1859,7 @@ public class GenericTable
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
-		 * @return {@link LogicalOperators} AND か OR
+		 * @return {@link WhereColumn}
 		 */
 		@Override
 		public WhereColumn<DMSWhereLogicalOperators> any(String template) {
@@ -1868,8 +1872,9 @@ public class GenericTable
 		/**
 		 * Consumer に渡された条件句を () で囲みます。
 		 * @param consumer {@link Consumer}
-		 * @return this
+		 * @return {@link DMSWhereLogicalOperators}
 		 */
+		@Override
 		public DMSWhereLogicalOperators paren(Consumer<DMSWhereRel> consumer) {
 			DataManipulationStatement statement = getDataManipulationStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);

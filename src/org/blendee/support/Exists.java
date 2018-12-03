@@ -11,7 +11,7 @@ import org.blendee.sql.SQLQueryBuilder;
 
 class Exists {
 
-	static void setExists(RuntimeId main, CriteriaRelationship relationship, SelectStatement subquery, String keyword) {
+	static void setExists(RuntimeId main, CriteriaRelationship<?> relationship, SelectStatement subquery, String keyword) {
 		relationship.getStatement().forSubquery(true);
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();

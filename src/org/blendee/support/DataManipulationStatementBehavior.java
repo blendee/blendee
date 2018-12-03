@@ -18,7 +18,7 @@ import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 
 @SuppressWarnings("javadoc")
-public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, U extends UpdateRelationship, W extends WhereRelationship> implements DataManipulationStatement {
+public abstract class DataManipulationStatementBehavior<I extends InsertRelationship, U extends UpdateRelationship, W extends WhereRelationship<?>> implements DataManipulationStatement {
 
 	private final TablePath table;
 

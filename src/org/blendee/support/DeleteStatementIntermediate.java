@@ -7,7 +7,7 @@ import java.util.function.Consumer;
  * DELETE
  * @param <W> WhereRelationship
  */
-public class DeleteStatementIntermediate<W extends WhereRelationship> implements DataManipulationStatementIntermediate<W> {
+public class DeleteStatementIntermediate<W extends WhereRelationship<?>> implements DataManipulationStatementIntermediate<W> {
 
 	private final DataManipulationStatementBehavior<?, ?, W> behavior;
 

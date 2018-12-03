@@ -5,7 +5,7 @@ package org.blendee.support;
  * @author 千葉 哲嗣
  * @param <R> joint の型
  */
-public interface RightTable<R extends OnRightRelationship> {
+public interface RightTable<R extends OnRightRelationship<?>> {
 
 	/**
 	 * JOIN の右側を構成する {@link OnRightRelationship} を返します。

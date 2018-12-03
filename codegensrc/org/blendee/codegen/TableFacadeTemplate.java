@@ -693,7 +693,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> INNER_JOIN(RightTable<R> right) {
 		return selectBehavior().INNER_JOIN(right, this);
 	}
 
@@ -702,7 +702,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> LEFT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().LEFT_OUTER_JOIN(right, this);
 	}
 
@@ -711,7 +711,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> RIGHT_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().RIGHT_OUTER_JOIN(right, this);
 	}
 
@@ -720,7 +720,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/> FULL_OUTER_JOIN(RightTable<R> right) {
 		return selectBehavior().FULL_OUTER_JOIN(right, this);
 	}
 
@@ -729,7 +729,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @param right 別クエリ
 	 * @return この {@link SelectStatement}
 	 */
-	public <R extends OnRightRelationship> /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ CROSS_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ CROSS_JOIN(RightTable<R> right) {
 		selectBehavior().CROSS_JOIN(right, this);
 		return this;
 	}
@@ -1368,7 +1368,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * SELECT 文 WHERE 句用
 	 */
-	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship {
+	public static class WhereRel extends ExtRel<WhereColumn<WhereLogicalOperators>, Void> implements WhereRelationship<WhereRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1402,6 +1402,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public WhereLogicalOperators paren(Consumer<WhereRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1429,7 +1430,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * HAVING 句用
 	 */
-	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship {
+	public static class HavingRel extends ExtRel<HavingColumn<HavingLogicalOperators>, Void> implements HavingRelationship<HavingRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1463,6 +1464,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public HavingLogicalOperators paren(Consumer<HavingRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1490,7 +1492,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * ON 句 (LEFT) 用
 	 */
-	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship {
+	public static class OnLeftRel extends ExtRel<OnLeftColumn<OnLeftLogicalOperators>, Void> implements OnLeftRelationship<OnLeftRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1524,6 +1526,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1534,7 +1537,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * ON 句 (RIGHT) 用
 	 */
-	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship {
+	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void> implements OnRightRelationship<OnRightRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1568,6 +1571,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -1602,7 +1606,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * UPDATE, DELETE 文 WHERE 句用
 	 */
-	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void> implements WhereRelationship {
+	public static class DMSWhereRel extends Rel<WhereColumn<DMSWhereLogicalOperators>, Void> implements WhereRelationship<DMSWhereRel> {
 
 		/**
 		 * 条件接続 OR
@@ -1621,7 +1625,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
-		 * @return {@link LogicalOperators} AND か OR
+		 * @return {@link WhereColumn}
 		 */
 		@Override
 		public WhereColumn<DMSWhereLogicalOperators> any(String template) {
@@ -1634,8 +1638,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		/**
 		 * Consumer に渡された条件句を () で囲みます。
 		 * @param consumer {@link Consumer}
-		 * @return this
+		 * @return {@link DMSWhereLogicalOperators}
 		 */
+		@Override
 		public DMSWhereLogicalOperators paren(Consumer<DMSWhereRel> consumer) {
 			DataManipulationStatement statement = getDataManipulationStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);

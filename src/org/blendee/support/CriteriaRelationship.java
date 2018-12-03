@@ -10,9 +10,10 @@ import org.blendee.sql.Relationship;
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
+ * @param <R> {@link #paren(Consumer)} 用実装サブクラス
  * @author 千葉 哲嗣
  */
-public interface CriteriaRelationship {
+public interface CriteriaRelationship<R extends CriteriaRelationship<?>> {
 
 	/**
 	 * この句に EXISTS 条件を追加します。
@@ -36,6 +37,13 @@ public interface CriteriaRelationship {
 	 * @return {@link CriteriaColumn}
 	 */
 	CriteriaColumn<?> any(String template);
+
+	/**
+	 * Consumer に渡された条件句を () で囲みます。
+	 * @param consumer {@link Consumer}
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators<?> paren(Consumer<R> consumer);
 
 	/**
 	 * この句に条件を追加します。

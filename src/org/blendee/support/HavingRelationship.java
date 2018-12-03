@@ -17,9 +17,10 @@ import org.blendee.sql.PseudoColumn;
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
+ * @param <R> 実装クラス
  * @author 千葉 哲嗣
  */
-public interface HavingRelationship extends CriteriaRelationship {
+public interface HavingRelationship<R extends HavingRelationship<?>> extends CriteriaRelationship<R> {
 
 	/**
 	 * GROUP BY 句用 AVG(column)

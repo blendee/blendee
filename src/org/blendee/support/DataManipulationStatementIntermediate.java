@@ -10,7 +10,7 @@ import org.blendee.sql.Binder;
  * @author 千葉 哲嗣
  * @param <W> WHERE
  */
-public interface DataManipulationStatementIntermediate<W extends WhereRelationship> extends DataManipulator {
+public interface DataManipulationStatementIntermediate<W extends WhereRelationship<?>> extends DataManipulator {
 
 	/**
 	 * このデータ操作文に WHERE 句をセットします。

@@ -11,7 +11,7 @@ import org.blendee.sql.CriteriaFactory;
  * @param <R> RIGHT
  * @param <S> SelectStatement
  */
-public class OnClause<L extends OnLeftRelationship, R extends OnRightRelationship, S extends SelectStatement> {
+public class OnClause<L extends OnLeftRelationship<?>, R extends OnRightRelationship<?>, S extends SelectStatement> {
 
 	private final JoinResource resource;
 

@@ -292,7 +292,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param <R> {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> INNER_JOIN(
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, AnonymousTable> INNER_JOIN(
 		RightTable<R> right) {
 		return behavior().INNER_JOIN(right, this);
 	}
@@ -303,7 +303,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param <R> {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> LEFT_OUTER_JOIN(
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, AnonymousTable> LEFT_OUTER_JOIN(
 		RightTable<R> right) {
 		return behavior().LEFT_OUTER_JOIN(right, this);
 	}
@@ -314,7 +314,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param <R> {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> RIGHT_OUTER_JOIN(
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, AnonymousTable> RIGHT_OUTER_JOIN(
 		RightTable<R> right) {
 		return behavior().RIGHT_OUTER_JOIN(right, this);
 	}
@@ -325,7 +325,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param <R> {@link OnRightRelationship}
 	 * @return ON
 	 */
-	public <R extends OnRightRelationship> OnClause<OnLeftRel, R, AnonymousTable> FULL_OUTER_JOIN(
+	public <R extends OnRightRelationship<?>> OnClause<OnLeftRel, R, AnonymousTable> FULL_OUTER_JOIN(
 		RightTable<R> right) {
 		return behavior().FULL_OUTER_JOIN(right, this);
 	}
@@ -336,7 +336,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param <R> {@link OnRightRelationship}
 	 * @return この {@link SelectStatement}
 	 */
-	public <R extends OnRightRelationship> AnonymousTable CROSS_JOIN(RightTable<R> right) {
+	public <R extends OnRightRelationship<?>> AnonymousTable CROSS_JOIN(RightTable<R> right) {
 		behavior().CROSS_JOIN(right, this);
 		return this;
 	}
@@ -759,7 +759,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * WHERE 句用
 	 */
 	public static class WhereRel extends Rel<WhereColumn<WhereLogicalOperators>, Void>
-		implements WhereRelationship {
+		implements WhereRelationship<WhereRel> {
 
 		/**
 		 * 条件接続 OR
@@ -793,6 +793,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public WhereLogicalOperators paren(Consumer<WhereRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -814,7 +815,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * HAVING 句用
 	 */
 	public static class HavingRel extends Rel<HavingColumn<HavingLogicalOperators>, Void>
-		implements HavingRelationship {
+		implements HavingRelationship<HavingRel> {
 
 		/**
 		 * 条件接続 OR
@@ -848,6 +849,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public HavingLogicalOperators paren(Consumer<HavingRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -874,7 +876,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * ON 句 (LEFT) 用
 	 */
 	public static class OnLeftRel extends Rel<OnLeftColumn<OnLeftLogicalOperators>, Void>
-		implements OnLeftRelationship {
+		implements OnLeftRelationship<OnLeftRel> {
 
 		/**
 		 * 条件接続 OR
@@ -893,7 +895,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
-		 * @return {@link LogicalOperators} AND か OR
+		 * @return {@link OnLeftColumn}
 		 */
 		@Override
 		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
@@ -906,8 +908,9 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		/**
 		 * Consumer に渡された条件句を () で囲みます。
 		 * @param consumer {@link Consumer}
-		 * @return this
+		 * @return {@link OnLeftLogicalOperators}
 		 */
+		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
@@ -919,7 +922,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * ON 句 (RIGHT) 用
 	 */
 	public static class OnRightRel extends Rel<OnRightColumn<OnRightLogicalOperators>, Void>
-		implements OnRightRelationship {
+		implements OnRightRelationship<OnRightRel> {
 
 		/**
 		 * 条件接続 OR
@@ -953,6 +956,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 * @param consumer {@link Consumer}
 		 * @return this
 		 */
+		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightRel> consumer) {
 			SelectStatement statement = getSelectStatement();
 			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);

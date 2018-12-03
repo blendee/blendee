@@ -7,7 +7,7 @@ import java.util.function.Consumer;
  * @author 千葉 哲嗣
  * @param <W> WhereRelationship
  */
-public class UpdateStatementIntermediate<W extends WhereRelationship> implements DataManipulationStatementIntermediate<W> {
+public class UpdateStatementIntermediate<W extends WhereRelationship<?>> implements DataManipulationStatementIntermediate<W> {
 
 	private final DataManipulationStatementBehavior<?, ?, W> behavior;
 

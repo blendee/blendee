@@ -48,7 +48,7 @@ import org.blendee.sql.binder.NullBinder;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public abstract class SelectStatementBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship, H extends HavingRelationship, O extends OrderByRelationship, L extends OnLeftRelationship> {
+public abstract class SelectStatementBehavior<S extends SelectRelationship, G extends GroupByRelationship, W extends WhereRelationship<?>, H extends HavingRelationship<?>, O extends OrderByRelationship, L extends OnLeftRelationship<?>> {
 
 	private final TablePath table;
 
@@ -266,23 +266,23 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		function.apply(orderBy()).get().forEach(o -> o.offer());
 	}
 
-	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship<?>, Q extends SelectStatement> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {
 		return joinAndCreateOnClause(JoinType.INNER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> LEFT_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship<?>, Q extends SelectStatement> OnClause<L, R, Q> LEFT_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinAndCreateOnClause(JoinType.LEFT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> RIGHT_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship<?>, Q extends SelectStatement> OnClause<L, R, Q> RIGHT_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinAndCreateOnClause(JoinType.RIGHT_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> FULL_OUTER_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship<?>, Q extends SelectStatement> OnClause<L, R, Q> FULL_OUTER_JOIN(RightTable<R> right, Q query) {
 		return joinAndCreateOnClause(JoinType.FULL_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightRelationship, Q extends SelectStatement> void CROSS_JOIN(RightTable<R> right, Q query) {
+	public <R extends OnRightRelationship<?>, Q extends SelectStatement> void CROSS_JOIN(RightTable<R> right, Q query) {
 		joinInternal(JoinType.CROSS_JOIN, right, query).onCriteria = new CriteriaFactory(id).create();
 	}
 
@@ -809,7 +809,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		return fromClause;
 	}
 
-	private <R extends OnRightRelationship, Q extends SelectStatement> JoinResource joinInternal(
+	private <R extends OnRightRelationship<?>, Q extends SelectStatement> JoinResource joinInternal(
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {
@@ -824,7 +824,7 @@ public abstract class SelectStatementBehavior<S extends SelectRelationship, G ex
 		return joinResource;
 	}
 
-	private <R extends OnRightRelationship, Q extends SelectStatement> OnClause<L, R, Q> joinAndCreateOnClause(
+	private <R extends OnRightRelationship<?>, Q extends SelectStatement> OnClause<L, R, Q> joinAndCreateOnClause(
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {

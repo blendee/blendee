@@ -6,9 +6,10 @@ import org.blendee.sql.MultiColumn;
 /**
  * 自動生成される ConcreteQueryRelationship の振る舞いを定義したインターフェイスです。<br>
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
+ * @param <R> 実装クラス
  * @author 千葉 哲嗣
  */
-public interface OnRightRelationship extends CriteriaRelationship {
+public interface OnRightRelationship<R extends OnRightRelationship<?>> extends CriteriaRelationship<R> {
 
 	/**
 	 * COALESCE を追加します。
