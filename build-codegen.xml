@@ -3,7 +3,7 @@
 <!--
 Blendee build.xml
 -->
-<project name="blendee.develop" default="all">
+<project name="blendee-codegen" default="all">
 
 	<property name="title" value="blendee-codegen" />
 	<property name="version" value="0.7.0" />
@@ -14,7 +14,7 @@ Blendee build.xml
 	</path>
 
 	<!--
-	blendee.develop.jar を生成します。
+	blendee-codegen.jar を生成します。
 	-->
 	<target name="all" depends="cleanup">
 		<antcall target="compile" />
@@ -32,7 +32,7 @@ Blendee build.xml
 	</target>
 
 	<!--
-	ソースファイルを含まない blendee.develop.jar を生成します。
+	ソースファイルを含まない blendee-codegen.jar を生成します。
 	-->
 	<target name="class-jar" depends="cleanup">
 		<antcall target="compile" />
@@ -46,7 +46,7 @@ Blendee build.xml
 	</target>
 
 	<!--
-	ソースファイルのみの jar ファイル blendee.develop-src.jar を生成します。
+	ソースファイルのみの jar ファイル blendee-codegen-src.jar を生成します。
 	-->
 	<target name="src-jar" depends="cleanup">
 		<jar basedir="src; codegensrc" jarfile="blendee-codegen-src.jar">
