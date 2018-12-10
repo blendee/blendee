@@ -302,6 +302,12 @@ public class TableFacadeGenerator {
 					classNameString = convertForNumber(convertPrimitiveClassToWrapperClass(column.getType())).getName();
 				}
 
+				String cast = "";
+
+				if (!classNameString.equals(Object.class.getName())) {
+					cast = "(" + classNameString + ") ";
+				}
+
 				ColumnMetadata columnMetadata = column.getColumnMetadata();
 
 				boolean notNull = columnMetadata.isNotNull();
@@ -328,6 +334,7 @@ public class TableFacadeGenerator {
 				args.put("METHOD", toUpperCaseFirstLetter(columnName));
 				args.put("COLUMN", columnName);
 				args.put("TYPE", classNameString);
+				args.put("CAST", cast);
 				args.put("COMMENT", buildColumnComment(column));
 				args.put("NULL_CHECK", nullCheck);
 				args.put("RETURN_TYPE", returnType);

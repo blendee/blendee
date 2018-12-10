@@ -230,7 +230,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		public /*++[[RETURN_TYPE]]++*/ /*--*/String/*--*/get/*++[[METHOD]]++*/() {
 			Binder binder = data$.getValue("[[COLUMN]]");
-			return /*++[[PREFIX]]++*/(/*++[[TYPE]]++*//*--*/String/*--*/) binder.getValue()/*++[[SUFFIX]]++*/;
+			return /*++[[PREFIX]]++*//*++[[CAST]]++*//*--*/(String)/*--*/binder.getValue()/*++[[SUFFIX]]++*/;
 		}
 
 /*==RowPropertyAccessorPart==*/
