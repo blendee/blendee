@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 
 import org.blendee.sql.Binder;
 import org.blendee.sql.Reproducible;
-import org.blendee.support.Query;
-import org.blendee.support.SelectStatement;
+import org.blendee.assist.Query;
+import org.blendee.assist.SelectStatement;
 
 /**
  * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化するためのクラスです。

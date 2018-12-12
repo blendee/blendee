@@ -13,6 +13,9 @@ import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
+import org.blendee.assist.Row;
+import org.blendee.assist.TableFacade;
+import org.blendee.assist.TableFacadePackageRule;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
@@ -25,13 +28,10 @@ import org.blendee.jdbc.PrimaryKeyMetadata;
 import org.blendee.jdbc.StoredIdentifier;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
-import org.blendee.support.Row;
-import org.blendee.support.TableFacade;
-import org.blendee.support.TableFacadePackageRule;
-import org.blendee.support.annotation.Column;
-import org.blendee.support.annotation.ForeignKey;
-import org.blendee.support.annotation.PrimaryKey;
-import org.blendee.support.annotation.Table;
+import org.blendee.assist.annotation.Column;
+import org.blendee.assist.annotation.ForeignKey;
+import org.blendee.assist.annotation.PrimaryKey;
+import org.blendee.assist.annotation.Table;
 
 /**
  * {@link VirtualSpace} を {@link Row} に付与されたアノテーションからロードするファクトリクラスです。

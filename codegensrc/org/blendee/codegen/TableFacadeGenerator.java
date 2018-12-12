@@ -23,6 +23,10 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.SourceVersion;
 
+import org.blendee.assist.Many;
+import org.blendee.assist.TableFacadePackageRule;
+import org.blendee.assist.annotation.ForeignKey;
+import org.blendee.assist.annotation.PrimaryKey;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
@@ -34,10 +38,6 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.support.Many;
-import org.blendee.support.TableFacadePackageRule;
-import org.blendee.support.annotation.ForeignKey;
-import org.blendee.support.annotation.PrimaryKey;
 import org.blendee.util.DatabaseInfo;
 
 /**

@@ -14,7 +14,7 @@ import org.blendee.sql.Updatable;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.support.Row;
+import org.blendee.assist.Row;
 
 /**
  * PK が単一項目で、シーケンス (serial) を使用しているテーブル用のユーティリティクラスです。

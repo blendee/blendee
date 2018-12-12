@@ -16,7 +16,7 @@ import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
-import org.blendee.support.Row;
+import org.blendee.assist.Row;
 
 /**
  * PostgreSQL の RETURNING を使用した DML を発行するユーティリティクラスです。

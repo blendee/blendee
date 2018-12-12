@@ -2,8 +2,8 @@ package org.blendee.codegen;
 
 import java.util.Map;
 
-import org.blendee.support.Row;
-import org.blendee.support.SelectStatement;
+import org.blendee.assist.Row;
+import org.blendee.assist.SelectStatement;
 
 /**
  * {@link TableFacadeGenerator} で生成されるクラスの出力前に割り込み、コードを組み立てるインターフェイスです。
