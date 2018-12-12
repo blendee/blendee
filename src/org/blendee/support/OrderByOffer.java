@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.blendee.sql.ListClause;
@@ -22,13 +23,13 @@ public class OrderByOffer implements Offerable, Offers<Offerable> {
 	 * @param offerFunction {@link Runnable}
 	 */
 	OrderByOffer(Consumer<Integer> offerFunction) {
-		this.offerFunction = offerFunction;
+		this.offerFunction = Objects.requireNonNull(offerFunction);
 		order = ListClause.DEFAULT_ORDER;
 		offerable = null;
 	}
 
 	OrderByOffer(Offerable offerable, int order) {
-		this.offerable = offerable;
+		this.offerable = Objects.requireNonNull(offerable);
 		this.order = order;
 		offerFunction = null;
 	}

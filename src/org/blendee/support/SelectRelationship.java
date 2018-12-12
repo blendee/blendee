@@ -250,12 +250,12 @@ public interface SelectRelationship {
 	 */
 	default SelectOffer asterisk() {
 		getSelectStatement().quitRowMode();
-		Column[] columns = { new PseudoColumn(getRelationship(), "*", true) };
+		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
 
-		SelectStatement statmeent = getSelectStatement();
+		SelectStatement statement = getSelectStatement();
 
-		SelectOffers offers = new SelectOffers(statmeent);
-		offers.add(new ColumnExpression(statmeent, "{0}", columns));
+		SelectOffers offers = new SelectOffers(statement);
+		offers.add(new ColumnExpression(statement, "{0}", columns));
 
 		return offers;
 	}
@@ -271,22 +271,6 @@ public interface SelectRelationship {
 		statement.quitRowMode();
 
 		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
-
-		SelectOffers offers = new SelectOffers(statement);
-		offers.add(new ColumnExpression(statement, "{0}", columns));
-
-		return offers;
-	}
-
-	/**
-	 * SELECT 句に * を追加します。
-	 * @return {@link SelectOffer}
-	 */
-	default SelectOffer asteriskAll() {
-		getSelectStatement().quitRowMode();
-		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
-
-		SelectStatement statement = getSelectStatement();
 
 		SelectOffers offers = new SelectOffers(statement);
 		offers.add(new ColumnExpression(statement, "{0}", columns));

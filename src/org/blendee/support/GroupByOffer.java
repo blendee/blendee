@@ -2,6 +2,7 @@ package org.blendee.support;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 順序付き GROUP BY 候補です。
@@ -14,7 +15,7 @@ public class GroupByOffer implements Offerable, Offers<Offerable> {
 
 	GroupByOffer(int order, GroupByColumn column) {
 		this.order = order;
-		this.column = column;
+		this.column = Objects.requireNonNull(column);
 	}
 
 	@Override

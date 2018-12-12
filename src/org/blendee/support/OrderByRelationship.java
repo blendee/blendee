@@ -7,7 +7,6 @@ import static org.blendee.support.RelationshipConstants.MIN_TEMPLATE;
 import static org.blendee.support.RelationshipConstants.SUM_TEMPLATE;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.OrderByClause;
@@ -114,8 +113,6 @@ public interface OrderByRelationship {
 	 * @return {@link GroupByColumn}
 	 */
 	default OrderByOffer order(int order, Offerable offer) {
-		Objects.requireNonNull(offer);
-
 		return new OrderByOffer(offer, order);
 	}
 
