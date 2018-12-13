@@ -66,15 +66,15 @@ public interface SelectClauseAssist {
 
 	/**
 	 * SELECT 句に、このテーブルのカラムすべてを追加します。
-	 * @param relationship このテーブルから辿れるテーブル
+	 * @param assist このテーブルから辿れるテーブル
 	 * @return {@link SelectOffer}
 	 */
-	default SelectOffer all(TableFacadeAssist relationship) {
+	default SelectOffer all(TableFacadeAssist assist) {
 		return new SelectOffer() {
 
 			@Override
 			public List<ColumnExpression> get() {
-				return Arrays.stream(relationship.getRelationship().getColumns())
+				return Arrays.stream(assist.getRelationship().getColumns())
 					.map(c -> new ColumnExpression(getSelectStatement(), c))
 					.collect(Collectors.toList());
 			}
@@ -262,15 +262,15 @@ public interface SelectClauseAssist {
 
 	/**
 	 * SELECT 句に 関連したテーブルの * を追加します。
-	 * @param relationship このテーブルから辿れるテーブル
+	 * @param assist このテーブルから辿れるテーブル
 	 * @return {@link SelectOffer}
 	 */
-	default SelectOffer asterisk(TableFacadeAssist relationship) {
+	default SelectOffer asterisk(TableFacadeAssist assist) {
 		SelectStatement statement = getSelectStatement();
 
 		statement.quitRowMode();
 
-		Column[] columns = { new PseudoColumn(relationship.getRelationship(), "*", true) };
+		Column[] columns = { new PseudoColumn(assist.getRelationship(), "*", true) };
 
 		SelectOffers offers = new SelectOffers(statement);
 		offers.add(new ColumnExpression(statement, "{0}", columns));

@@ -17,18 +17,32 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	/**
 	 * この句に EXISTS 条件を追加します。
 	 * @param subquery サブクエリ
+	 * @return {@link LogicalOperators}
 	 */
-	default void EXISTS(SelectStatement subquery) {
-		Helper.setExists(getStatement().getRuntimeId(), this, subquery, "EXISTS");
-	}
+	LogicalOperators<?> EXISTS(SelectStatement subquery);
 
 	/**
 	 * この句に NOT EXISTS 条件を追加します。
 	 * @param subquery サブクエリ
+	 * @return {@link LogicalOperators}
 	 */
-	default void NOT_EXISTS(SelectStatement subquery) {
-		Helper.setExists(getStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
-	}
+	LogicalOperators<?> NOT_EXISTS(SelectStatement subquery);
+
+	/**
+	 * この句に IN サブクエリ条件を追加します。
+	 * @param mainColumns メイン側クエリの結合カラム
+	 * @param subquery 追加条件
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators<?> IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery);
+
+	/**
+	 * この句に NOT IN サブクエリ条件を追加します。
+	 * @param mainColumns メイン側クエリの結合カラム
+	 * @param subquery 追加条件
+	 * @return {@link LogicalOperators}
+	 */
+	LogicalOperators<?> NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery);
 
 	/**
 	 * この句に任意のカラムを追加します。
@@ -72,24 +86,6 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 */
 	default void with(String expression) {
 		getContext().addCriteria(new CriteriaFactory(getStatement().getRuntimeId()).createCriteria(expression));
-	}
-
-	/**
-	 * この句に IN サブクエリ条件を追加します。
-	 * @param mainColumns メイン側クエリの結合カラム
-	 * @param subquery 追加条件
-	 */
-	default void IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
-		Helper.addInCriteria(this, false, mainColumns, subquery);
-	}
-
-	/**
-	 * この句に NOT IN サブクエリ条件を追加します。
-	 * @param mainColumns メイン側クエリの結合カラム
-	 * @param subquery 追加条件
-	 */
-	default void NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
-		Helper.addInCriteria(this, true, mainColumns, subquery);
 	}
 
 	/**

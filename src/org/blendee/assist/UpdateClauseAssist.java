@@ -10,7 +10,7 @@ import java.util.Arrays;
 public interface UpdateClauseAssist extends TableFacadeAssist {
 
 	/**
-	 * INSERT 文生成用メソッドです。<br>
+	 * UPDATE 文生成用メソッドです。<br>
 	 * パラメータの項目と順序を UPDATE 文に割り当てます。
 	 * @param columns UPDATE 文に含めるテーブルおよびカラム
 	 * @return element
@@ -33,7 +33,7 @@ public interface UpdateClauseAssist extends TableFacadeAssist {
 	}
 
 	/**
-	 * INSERT 文生成用メソッドです。<br>
+	 * UPDATE 文生成用メソッドです。<br>
 	 * パラメータの項目と順序を UPDATE 文に割り当てます。
 	 * @param proofs INSERT 文に含めるテーブルおよびカラム
 	 */

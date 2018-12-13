@@ -775,6 +775,32 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		@Override
+		public WhereLogicalOperators EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setExists(statement.getRuntimeId(), this, subquery);
+			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
+		}
+
+		@Override
+		public WhereLogicalOperators NOT_EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
+			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
+		}
+
+		@Override
+		public WhereLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, false, mainColumns, subquery);
+			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
+		}
+
+		@Override
+		public WhereLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, true, mainColumns, subquery);
+			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
+		}
+
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
@@ -796,7 +822,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public WhereLogicalOperators paren(Consumer<WhereAssist> consumer) {
 			SelectStatement statement = getSelectStatement();
-			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
 	}
@@ -831,6 +857,32 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		@Override
+		public HavingLogicalOperators EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setExists(statement.getRuntimeId(), this, subquery);
+			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
+		}
+
+		@Override
+		public HavingLogicalOperators NOT_EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
+			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
+		}
+
+		@Override
+		public HavingLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, false, mainColumns, subquery);
+			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
+		}
+
+		@Override
+		public HavingLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, true, mainColumns, subquery);
+			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
+		}
+
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
@@ -852,7 +904,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public HavingLogicalOperators paren(Consumer<HavingAssist> consumer) {
 			SelectStatement statement = getSelectStatement();
-			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
 	}
@@ -892,6 +944,32 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		@Override
+		public OnLeftLogicalOperators EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setExists(statement.getRuntimeId(), this, subquery);
+			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
+		}
+
+		@Override
+		public OnLeftLogicalOperators NOT_EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
+			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
+		}
+
+		@Override
+		public OnLeftLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, false, mainColumns, subquery);
+			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
+		}
+
+		@Override
+		public OnLeftLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, true, mainColumns, subquery);
+			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
+		}
+
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
@@ -913,7 +991,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftAssist> consumer) {
 			SelectStatement statement = getSelectStatement();
-			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
 	}
@@ -938,6 +1016,32 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		@Override
+		public OnRightLogicalOperators EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setExists(statement.getRuntimeId(), this, subquery);
+			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
+		}
+
+		@Override
+		public OnRightLogicalOperators NOT_EXISTS(SelectStatement subquery) {
+			SelectStatement statement = getSelectStatement();
+			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
+			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
+		}
+
+		@Override
+		public OnRightLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, false, mainColumns, subquery);
+			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
+		}
+
+		@Override
+		public OnRightLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+			Helper.addInCriteria(this, true, mainColumns, subquery);
+			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
+		}
+
 		/**
 		 * この句に任意のカラムを追加します。
 		 * @param template カラムのテンプレート
@@ -959,7 +1063,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightAssist> consumer) {
 			SelectStatement statement = getSelectStatement();
-			Paren.execute(statement.getRuntimeId(), getContext(), consumer, this);
+			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
 	}

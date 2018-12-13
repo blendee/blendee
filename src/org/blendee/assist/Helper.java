@@ -2,7 +2,9 @@ package org.blendee.assist;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
@@ -12,7 +14,8 @@ import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
 
-class Helper {
+@SuppressWarnings("javadoc")
+public class Helper {
 
 	static final String AVG_TEMPLATE = "AVG({0})";
 
@@ -24,7 +27,15 @@ class Helper {
 
 	static final String COUNT_TEMPLATE = "COUNT({0})";
 
-	static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery, String keyword) {
+	public static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery) {
+		setExists(main, assist, subquery, "EXISTS");
+	}
+
+	public static void setNotExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery) {
+		setExists(main, assist, subquery, "NOT EXISTS");
+	}
+
+	private static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery, String keyword) {
 		assist.getStatement().forSubquery(true);
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
@@ -41,13 +52,27 @@ class Helper {
 				new CriteriaFactory(main).createCriteria(subqueryString, Column.EMPTY_ARRAY, binders.toArray(new Binder[binders.size()])));
 	}
 
+	public static <A> void paren(RuntimeId id, CriteriaContext context, Consumer<A> consumer, A assist) {
+		Criteria current = CriteriaContext.getContextCriteria();
+
+		Objects.requireNonNull(current);
+
+		Criteria contextCriteria = new CriteriaFactory(id).create();
+		CriteriaContext.setContextCriteria(contextCriteria);
+
+		consumer.accept(assist);
+
+		CriteriaContext.setContextCriteria(current);
+		context.addCriteria(contextCriteria);
+	}
+
 	/**
 	 * {@link CriteriaClauseAssist} に IN サブクエリ条件を追加します。
 	 * @param notIn NOT IN の場合 true
 	 * @param mainColumns メイン側クエリの結合カラム
 	 * @param subquery 追加条件
 	 */
-	static void addInCriteria(CriteriaClauseAssist<?> assist, boolean notIn, Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+	public static void addInCriteria(CriteriaClauseAssist<?> assist, boolean notIn, Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
 		CriteriaColumn<?>[] criteriaColumns = mainColumns.get();
 
 		Column[] columns = new Column[criteriaColumns.length];
