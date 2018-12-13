@@ -21,7 +21,7 @@ final class SimpleResourceReader {
 		return readLines(input, Charset.defaultCharset());
 	}
 
-	private static String[] readLines(InputStream input, Charset charset) {
+	static String[] readLines(InputStream input, Charset charset) {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, charset))) {
 			List<String> list = new LinkedList<>();
 			for (String line; (line = reader.readLine()) != null;) {

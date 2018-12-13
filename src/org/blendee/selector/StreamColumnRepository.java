@@ -7,8 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,6 +25,8 @@ import org.blendee.jdbc.TablePath;
  */
 public class StreamColumnRepository extends AbstractColumnRepository {
 
+	private static final Charset charset = StandardCharsets.UTF_8;
+
 	private static final Pattern tableLinePattern = Pattern
 		.compile("^id=([^&]+)&path=([^&]*)&using=\\{([^\\}]*)\\}&timestamp=(\\d+)$");
 
@@ -34,7 +39,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	 * @param repository リポジトリのソース
 	 */
 	public StreamColumnRepository(IOStream repository) {
-		this.repository = repository;
+		this.repository = Objects.requireNonNull(repository);
 		initialize();
 	}
 
@@ -42,7 +47,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	void read(Map<String, TablePathSource> tablePathMap) {
 		String[] lines;
 		try (InputStream input = new BufferedInputStream(repository.getInputStream())) {
-			lines = SimpleResourceReader.readLines(input);
+			lines = SimpleResourceReader.readLines(input, charset);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
@@ -77,7 +82,7 @@ public class StreamColumnRepository extends AbstractColumnRepository {
 	@Override
 	void write(Map<String, TablePathSource> tablePathMap) {
 		try (PrintWriter writer = new PrintWriter(
-			new BufferedWriter(new OutputStreamWriter(repository.getOutputStream())))) {
+			new BufferedWriter(new OutputStreamWriter(repository.getOutputStream(), charset)))) {
 			String[] ids = getIds();
 			for (String id : ids) {
 				TablePathSource source = tablePathMap.get(id);
