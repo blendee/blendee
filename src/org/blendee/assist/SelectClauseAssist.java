@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.blendee.assist.SelectOfferFunction.SelectOffers;
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLQueryBuilder;
-import org.blendee.assist.SelectOfferFunction.SelectOffers;
 
 /**
  * 自動生成される TableFacade の振る舞いを定義したインターフェイスです。<br>
@@ -50,33 +51,26 @@ public interface SelectClauseAssist {
 
 	/**
 	 * SELECT 句に、このテーブルのカラムすべてを追加します。
+	 * @param assists このテーブルから辿れるテーブル
 	 * @return {@link SelectOffer}
 	 */
-	default SelectOffer all() {
+	default SelectOffer all(TableFacadeAssist... assists) {
+		Stream<Column> columns;
+		if (assists.length == 0) {
+			columns = Arrays.stream(getRelationship().getColumns());
+		} else {
+			columns = Arrays.stream(assists).flatMap(a -> Arrays.stream(a.getRelationship().getColumns()));
+		}
+
+		SelectStatement statement = getSelectStatement();
+		List<ColumnExpression> result = columns.map(c -> new ColumnExpression(statement, c))
+			.collect(Collectors.toList());
+
 		return new SelectOffer() {
 
 			@Override
 			public List<ColumnExpression> get() {
-				return Arrays.stream(getRelationship().getColumns())
-					.map(c -> new ColumnExpression(getSelectStatement(), c))
-					.collect(Collectors.toList());
-			}
-		};
-	}
-
-	/**
-	 * SELECT 句に、このテーブルのカラムすべてを追加します。
-	 * @param assist このテーブルから辿れるテーブル
-	 * @return {@link SelectOffer}
-	 */
-	default SelectOffer all(TableFacadeAssist assist) {
-		return new SelectOffer() {
-
-			@Override
-			public List<ColumnExpression> get() {
-				return Arrays.stream(assist.getRelationship().getColumns())
-					.map(c -> new ColumnExpression(getSelectStatement(), c))
-					.collect(Collectors.toList());
+				return result;
 			}
 		};
 	}
@@ -245,35 +239,28 @@ public interface SelectClauseAssist {
 	}
 
 	/**
-	 * SELECT 句に * を追加します。
-	 * @return {@link SelectOffer}
-	 */
-	default SelectOffer asterisk() {
-		getSelectStatement().quitRowMode();
-		Column[] columns = { new PseudoColumn(getRelationship(), "*", false) };
-
-		SelectStatement statement = getSelectStatement();
-
-		SelectOffers offers = new SelectOffers(statement);
-		offers.add(new ColumnExpression(statement, "{0}", columns));
-
-		return offers;
-	}
-
-	/**
 	 * SELECT 句に 関連したテーブルの * を追加します。
-	 * @param assist このテーブルから辿れるテーブル
+	 * @param assists このテーブルから辿れるテーブル
 	 * @return {@link SelectOffer}
 	 */
-	default SelectOffer asterisk(TableFacadeAssist assist) {
+	default SelectOffer asterisk(TableFacadeAssist... assists) {
 		SelectStatement statement = getSelectStatement();
 
 		statement.quitRowMode();
 
-		Column[] columns = { new PseudoColumn(assist.getRelationship(), "*", true) };
-
 		SelectOffers offers = new SelectOffers(statement);
-		offers.add(new ColumnExpression(statement, "{0}", columns));
+
+		Stream<Relationship> relationships;
+		if (assists.length == 0) {
+			relationships = Stream.of(getRelationship());
+		} else {
+			relationships = Arrays.stream(assists).map(a -> a.getRelationship());
+		}
+
+		relationships.forEach(r -> {
+			Column[] columns = { new PseudoColumn(r, "*", true) };
+			offers.add(new ColumnExpression(statement, "{0}", columns));
+		});
 
 		return offers;
 	}
