@@ -73,7 +73,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 
 		List<OneToManyBehavior> route = route();
 
-		return Unique.get(
+		return Helper.unique(
 			new Many<>(
 				new DataObjectManager(iterator(), route),
 				null,

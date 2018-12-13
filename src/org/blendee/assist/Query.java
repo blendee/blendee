@@ -71,7 +71,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
 	default Optional<R> willUnique() {
-		return Unique.get(execute());
+		return Helper.unique(execute());
 	}
 
 	/**

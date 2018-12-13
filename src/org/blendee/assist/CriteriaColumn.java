@@ -964,7 +964,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(SelectStatement subquery) {
-		getContext().addCriteria(Subquery.createCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), false, column()));
+		getContext().addCriteria(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), false, column()));
 
 		return logocalOperators();
 	}
@@ -1023,7 +1023,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(SelectStatement subquery) {
-		getContext().addCriteria(Subquery.createCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), true, column()));
+		getContext().addCriteria(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), true, column()));
 
 		return logocalOperators();
 	}

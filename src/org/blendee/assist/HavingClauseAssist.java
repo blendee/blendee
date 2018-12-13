@@ -1,10 +1,10 @@
 package org.blendee.assist;
 
-import static org.blendee.assist.AssistConstants.AVG_TEMPLATE;
-import static org.blendee.assist.AssistConstants.COUNT_TEMPLATE;
-import static org.blendee.assist.AssistConstants.MAX_TEMPLATE;
-import static org.blendee.assist.AssistConstants.MIN_TEMPLATE;
-import static org.blendee.assist.AssistConstants.SUM_TEMPLATE;
+import static org.blendee.assist.Helper.AVG_TEMPLATE;
+import static org.blendee.assist.Helper.COUNT_TEMPLATE;
+import static org.blendee.assist.Helper.MAX_TEMPLATE;
+import static org.blendee.assist.Helper.MIN_TEMPLATE;
+import static org.blendee.assist.Helper.SUM_TEMPLATE;
 
 import java.util.Arrays;
 import java.util.LinkedList;

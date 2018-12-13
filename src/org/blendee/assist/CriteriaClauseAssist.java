@@ -2,7 +2,6 @@ package org.blendee.assist;
 
 import java.util.function.Consumer;
 
-import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.Relationship;
@@ -20,7 +19,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param subquery サブクエリ
 	 */
 	default void EXISTS(SelectStatement subquery) {
-		Exists.setExists(getStatement().getRuntimeId(), this, subquery, "EXISTS");
+		Helper.setExists(getStatement().getRuntimeId(), this, subquery, "EXISTS");
 	}
 
 	/**
@@ -28,7 +27,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param subquery サブクエリ
 	 */
 	default void NOT_EXISTS(SelectStatement subquery) {
-		Exists.setExists(getStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
+		Helper.setExists(getStatement().getRuntimeId(), this, subquery, "NOT EXISTS");
 	}
 
 	/**
@@ -81,25 +80,16 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param subquery 追加条件
 	 */
 	default void IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
-		IN(false, mainColumns, subquery);
+		Helper.addInCriteria(this, false, mainColumns, subquery);
 	}
 
 	/**
-	 * この句に IN サブクエリ条件を追加します。
-	 * @param notIn NOT IN の場合 true
+	 * この句に NOT IN サブクエリ条件を追加します。
 	 * @param mainColumns メイン側クエリの結合カラム
 	 * @param subquery 追加条件
 	 */
-	default void IN(boolean notIn, Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
-		CriteriaColumn<?>[] criteriaColumns = mainColumns.get();
-
-		Column[] columns = new Column[criteriaColumns.length];
-
-		for (int i = 0; i < criteriaColumns.length; i++) {
-			columns[i] = criteriaColumns[i].column();
-		}
-
-		getContext().addCriteria(Subquery.createCriteria(getStatement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
+	default void NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		Helper.addInCriteria(this, true, mainColumns, subquery);
 	}
 
 	/**
