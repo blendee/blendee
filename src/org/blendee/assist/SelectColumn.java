@@ -13,24 +13,24 @@ import org.blendee.sql.Column;
  */
 public class SelectColumn extends AliasableOffer {
 
-	private final TableFacadeAssist relationship;
+	private final TableFacadeAssist assist;
 
 	private final Column column;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param helper 条件作成に必要な情報を持った {@link TableFacadeAssist}
+	 * @param assist 条件作成に必要な情報を持った {@link TableFacadeAssist}
 	 * @param name カラム名
 	 */
-	public SelectColumn(TableFacadeAssist helper, String name) {
-		relationship = helper;
-		column = helper.getRelationship().getColumn(name);
+	public SelectColumn(TableFacadeAssist assist, String name) {
+		this.assist = assist;
+		column = assist.getRelationship().getColumn(name);
 	}
 
 	@Override
 	public List<ColumnExpression> get() {
 		List<ColumnExpression> list = new LinkedList<>();
-		list.add(new ColumnExpression(relationship.getSelectStatement(), column));
+		list.add(new ColumnExpression(assist.getSelectStatement(), column));
 
 		return list;
 	}
@@ -43,8 +43,8 @@ public class SelectColumn extends AliasableOffer {
 	 */
 	@Override
 	public SelectOffer AS(String alias) {
-		relationship.getSelectStatement().quitRowMode();
-		ColumnExpression expression = new ColumnExpression(relationship.getSelectStatement(), column);
+		assist.getSelectStatement().quitRowMode();
+		ColumnExpression expression = new ColumnExpression(assist.getSelectStatement(), column);
 		expression.AS(alias);
 		return expression;
 	}
@@ -56,6 +56,6 @@ public class SelectColumn extends AliasableOffer {
 
 	@Override
 	public Statement statement() {
-		return relationship.getSelectStatement();
+		return assist.getSelectStatement();
 	}
 }

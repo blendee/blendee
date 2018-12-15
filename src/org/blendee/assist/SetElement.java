@@ -40,7 +40,7 @@ public class SetElement {
 
 	private final LinkedList<Column> columns = new LinkedList<>();
 
-	private final TableFacadeAssist relationship;
+	private final TableFacadeAssist assist;
 
 	private final List<Binder> binders = new LinkedList<>();
 
@@ -48,10 +48,10 @@ public class SetElement {
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param helper 条件作成に必要な情報を持った {@link TableFacadeAssist}
+	 * @param assist 条件作成に必要な情報を持った {@link TableFacadeAssist}
 	 */
-	public SetElement(TableFacadeAssist helper) {
-		relationship = helper;
+	public SetElement(TableFacadeAssist assist) {
+		this.assist = assist;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class SetElement {
 		binders.add(value.toBinder());
 		template = singleTemplate;
 
-		relationship.getDataManipulationStatement().addSetElement(this);
+		assist.getDataManipulationStatement().addSetElement(this);
 
 		return SetProof.singleton;
 	}
@@ -165,7 +165,7 @@ public class SetElement {
 
 		template = Stream.generate(() -> singleTemplate).limit(values.length).collect(Collectors.joining(", "));
 
-		relationship.getDataManipulationStatement().addSetElement(this);
+		assist.getDataManipulationStatement().addSetElement(this);
 
 		return SetProof.singleton;
 	}
@@ -186,7 +186,7 @@ public class SetElement {
 
 		this.template = template;
 
-		relationship.getDataManipulationStatement().addSetElement(this);
+		assist.getDataManipulationStatement().addSetElement(this);
 
 		return SetProof.singleton;
 	}
@@ -205,7 +205,7 @@ public class SetElement {
 		template = "(" + builder.sql() + ")";
 		binders.addAll(new ComplementerValues(builder).binders());
 
-		relationship.getDataManipulationStatement().addSetElement(this);
+		assist.getDataManipulationStatement().addSetElement(this);
 
 		return SetProof.singleton;
 	}

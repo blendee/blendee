@@ -12,23 +12,23 @@ import org.blendee.sql.Column;
  */
 public class GroupByColumn implements Offerable, Offers<Offerable> {
 
-	private final TableFacadeAssist relationship;
+	private final TableFacadeAssist assist;
 
 	private final Column column;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param helper 条件作成に必要な情報を持った {@link TableFacadeAssist}
+	 * @param assist 条件作成に必要な情報を持った {@link TableFacadeAssist}
 	 * @param name カラム名
 	 */
-	public GroupByColumn(TableFacadeAssist helper, String name) {
-		relationship = helper;
-		column = helper.getRelationship().getColumn(name);
+	public GroupByColumn(TableFacadeAssist assist, String name) {
+		this.assist = assist;
+		column = assist.getRelationship().getColumn(name);
 	}
 
 	@Override
 	public void offer(int order) {
-		relationship.getSelectStatement().getGroupByClause().add(order, column);
+		assist.getSelectStatement().getGroupByClause().add(order, column);
 	}
 
 	@Override
