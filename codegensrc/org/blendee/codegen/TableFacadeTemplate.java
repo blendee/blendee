@@ -612,27 +612,27 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * SELECT 句を作成する {@link Consumer}
 	 */
-	public Consumer<FieldSelectAssist> select;
+	public Consumer<FieldSelectAssist> selectClause;
 
 	/**
 	 * GROUP BY 句を作成する {@link Consumer}
 	 */
-	public Consumer<FieldGroupByAssist> groupBy;
+	public Consumer<FieldGroupByAssist> groupByClause;
 
 	/**
 	 * ORDER BY 句を作成する {@link Consumer}
 	 */
-	public Consumer<FieldOrderByAssist> orderBy;
+	public Consumer<FieldOrderByAssist> orderByClause;
 
 	/**
-	 * ORDER BY 句を作成する {@link Consumer}
+	 * INSERT 文を作成する {@link Consumer}
 	 */
-	public Consumer<FieldUpdateAssist> update;
+	public Function<FieldInsertAssist, DataManipulator> insertStatement;
 
 	/**
-	 * ORDER BY 句を作成する {@link Consumer}
+	 * UPDATE 文を作成する {@link Consumer}
 	 */
-	public Consumer<FieldInsertAssist> insert;
+	public Function<FieldUpdateAssist, DataManipulator> updateStatement;
 
 	/**
 	 * SELECT 句を記述します。
@@ -1403,7 +1403,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * SELECT 句用
 	 */
-	public static class FieldSelectAssist extends SelectAssist implements SelectClauseAssist, FieldSelectClauseAssist {
+	public static class FieldSelectAssist extends SelectAssist implements FieldSelectClauseAssist {
 
 		private FieldSelectAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
