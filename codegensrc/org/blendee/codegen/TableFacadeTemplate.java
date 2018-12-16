@@ -83,6 +83,11 @@ import org.blendee.assist.UpdateStatementIntermediate;
 import org.blendee.assist.WhereColumn;
 import org.blendee.assist.WhereClauseAssist;
 import org.blendee.assist.SQLDecorators;
+import org.blendee.assist.FieldSelectClauseAssist;
+import org.blendee.assist.FieldGroupByClauseAssist;
+import org.blendee.assist.FieldOrderByClauseAssist;
+import org.blendee.assist.FieldInsertClauseAssist;
+import org.blendee.assist.FieldUpdateClauseAssist;
 import org.blendee.assist.annotation.Column;
 import org.blendee.assist.Helper;
 import org.blendee.assist.Vargs;
@@ -605,6 +610,31 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * SELECT 句を作成する {@link Consumer}
+	 */
+	public Consumer<FieldSelectAssist> select;
+
+	/**
+	 * GROUP BY 句を作成する {@link Consumer}
+	 */
+	public Consumer<FieldGroupByAssist> groupBy;
+
+	/**
+	 * ORDER BY 句を作成する {@link Consumer}
+	 */
+	public Consumer<FieldOrderByAssist> orderBy;
+
+	/**
+	 * ORDER BY 句を作成する {@link Consumer}
+	 */
+	public Consumer<FieldUpdateAssist> update;
+
+	/**
+	 * ORDER BY 句を作成する {@link Consumer}
+	 */
+	public Consumer<FieldInsertAssist> insert;
+
+	/**
 	 * SELECT 句を記述します。
 	 * @param function
 	 * @return この {@link SelectStatement}
@@ -780,7 +810,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupBy(GroupByClause clause) {
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ setGroupByClause(GroupByClause clause) {
 		selectBehavior().setGroupByClause(clause);
 		return this;
 	}
@@ -791,7 +821,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 * @throws IllegalStateException 既に ORDER BY 句がセットされている場合
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderBy(OrderByClause clause) {
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ setOrderByClause(OrderByClause clause) {
 		selectBehavior().setOrderByClause(clause);
 		return this;
 	}
@@ -1194,7 +1224,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public static class Assist<T, M> implements TableFacadeAssist {
 
-		private final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$;
+		final /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$;
 
 		private final CriteriaContext context$;
 
@@ -1371,6 +1401,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * SELECT 句用
+	 */
+	public static class FieldSelectAssist extends SelectAssist implements SelectClauseAssist, FieldSelectClauseAssist {
+
+		private FieldSelectAssist(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<SelectCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
+		}
+	}
+
+	/**
 	 * SELECT 文 WHERE 句用
 	 */
 	public static class WhereAssist extends ExtAssist<WhereColumn<WhereLogicalOperators>, Void> implements WhereClauseAssist<WhereAssist> {
@@ -1459,6 +1506,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * GROUB BY 句用
+	 */
+	public static class FieldGroupByAssist extends GroupByAssist implements FieldGroupByClauseAssist {
+
+		private FieldGroupByAssist(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<GroupByCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
+		}
+	}
+
+	/**
 	 * HAVING 句用
 	 */
 	public static class HavingAssist extends ExtAssist<HavingColumn<HavingLogicalOperators>, Void> implements HavingClauseAssist<HavingAssist> {
@@ -1543,6 +1607,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		@Override
 		public OrderByClause getOrderByClause() {
 			return getSelectStatement().getOrderByClause();
+		}
+	}
+
+	/**
+	 * GROUB BY 句用
+	 */
+	public static class FieldOrderByAssist extends OrderByAssist implements FieldOrderByClauseAssist {
+
+		private FieldOrderByAssist(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<OrderByCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
 		}
 	}
 
@@ -1701,6 +1782,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
+	 * INSERT 用
+	 */
+	public static class FieldInsertAssist extends InsertAssist implements FieldInsertClauseAssist {
+
+		private FieldInsertAssist(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<InsertCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public DataManipulationStatementBehavior<?, ?, ?> behavior() {
+			return table$.dmsBehavior();
+		}
+	}
+
+	/**
 	 * UPDATE 用
 	 */
 	public static class UpdateAssist extends Assist<UpdateCol, Void> implements UpdateClauseAssist {
@@ -1709,6 +1807,23 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<UpdateCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * INSERT 用
+	 */
+	public static class FieldUpdateAssist extends UpdateAssist implements FieldUpdateClauseAssist<DMSWhereAssist> {
+
+		private FieldUpdateAssist(
+			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
+			TableFacadeContext<UpdateCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public DataManipulationStatementBehavior<?, ?, DMSWhereAssist> behavior() {
+			return table$.dmsBehavior();
 		}
 	}
 
