@@ -3,6 +3,7 @@ package org.blendee.dialect.postgresql;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.blendee.assist.Row;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
@@ -16,7 +17,6 @@ import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
-import org.blendee.assist.Row;
 
 /**
  * PostgreSQL の RETURNING を使用した DML を発行するユーティリティクラスです。
@@ -79,7 +79,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(DataObject data, Consumer<Result> consumer, String... columnNames) {
+	public static void update(DataObject data, Consumer<BResultSet> consumer, String... columnNames) {
 		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
 	}
 
@@ -89,7 +89,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(Row row, Consumer<Result> consumer, String... columnNames) {
+	public static void update(Row row, Consumer<BResultSet> consumer, String... columnNames) {
 		update(row.tablePath(), row, row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
 	}
 
@@ -101,7 +101,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void update(TablePath path, Updatable data, Criteria criteria, Consumer<Result> consumer, String... columnNames) {
+	public static void update(TablePath path, Updatable data, Criteria criteria, Consumer<BResultSet> consumer, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(criteria);
@@ -119,9 +119,7 @@ public class ReturningUtilities {
 			builder.complement(statement);
 
 			try (BResultSet result = statement.executeQuery()) {
-				while (result.next()) {
-					consumer.accept(result);
-				}
+				consumer.accept(result);
 			}
 		}
 	}
@@ -132,7 +130,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(DataObject data, Consumer<Result> consumer, String... columnNames) {
+	public static void delete(DataObject data, Consumer<BResultSet> consumer, String... columnNames) {
 		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
 	}
 
@@ -142,7 +140,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(Row row, Consumer<Result> consumer, String... columnNames) {
+	public static void delete(Row row, Consumer<BResultSet> consumer, String... columnNames) {
 		delete(row.tablePath(), row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
 	}
 
@@ -153,7 +151,7 @@ public class ReturningUtilities {
 	 * @param consumer consumer
 	 * @param columnNames RETURNING で使用する項目
 	 */
-	public static void delete(TablePath path, Criteria criteria, Consumer<Result> consumer, String... columnNames) {
+	public static void delete(TablePath path, Criteria criteria, Consumer<BResultSet> consumer, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(criteria);
 		Objects.requireNonNull(consumer);
@@ -169,9 +167,7 @@ public class ReturningUtilities {
 			builder.complement(statement);
 
 			try (BResultSet result = statement.executeQuery()) {
-				while (result.next()) {
-					consumer.accept(result);
-				}
+				consumer.accept(result);
 			}
 		}
 	}
