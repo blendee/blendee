@@ -9,12 +9,12 @@ import java.util.function.Consumer;
  */
 public class DeleteStatementIntermediate<W extends WhereClauseAssist<?>> implements DataManipulationStatementIntermediate<W> {
 
-	private final DataManipulationStatementBehavior<?, ?, W> behavior;
+	private final DataManipulationStatementBehavior<?, ?, ?, ?, W> behavior;
 
 	/**
 	 * @param behavior {@link DataManipulationStatementBehavior}
 	 */
-	public DeleteStatementIntermediate(DataManipulationStatementBehavior<?, ?, W> behavior) {
+	public DeleteStatementIntermediate(DataManipulationStatementBehavior<?, ?, ?, ?, W> behavior) {
 		this.behavior = behavior;
 	}
 

@@ -3,7 +3,7 @@ package org.blendee.assist;
 /**
  * @author 千葉 哲嗣
  */
-public interface FieldGroupByClauseAssist {
+public interface ListGroupByClauseAssist {
 
 	/**
 	 * GROUP BY
@@ -16,5 +16,5 @@ public interface FieldGroupByClauseAssist {
 	/**
 	 * @return {@link SelectStatementBehavior}
 	 */
-	SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior();
+	SelectStatementBehavior<?, ?, ? extends GroupByClauseAssist, ?, ?, ?, ?, ?, ?> behavior();
 }

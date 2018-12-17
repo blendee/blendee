@@ -3,7 +3,7 @@ package org.blendee.assist;
 /**
  * @author 千葉 哲嗣
  */
-public interface FieldInsertClauseAssist {
+public interface ListInsertClauseAssist {
 
 	/**
 	 * INSERT
@@ -44,5 +44,5 @@ public interface FieldInsertClauseAssist {
 	/**
 	 * @return {@link SelectStatementBehavior}
 	 */
-	DataManipulationStatementBehavior<?, ?, ?> behavior();
+	DataManipulationStatementBehavior<? extends InsertClauseAssist, ?, ?, ?, ?> behavior();
 }

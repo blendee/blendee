@@ -3,7 +3,7 @@ package org.blendee.assist;
 /**
  * @author 千葉 哲嗣
  */
-public interface FieldSelectClauseAssist {
+public interface ListSelectClauseAssist {
 
 	/**
 	 * SELECT
@@ -31,5 +31,5 @@ public interface FieldSelectClauseAssist {
 	/**
 	 * @return {@link SelectStatementBehavior}
 	 */
-	SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior();
+	SelectStatementBehavior<? extends SelectClauseAssist, ?, ?, ?, ?, ?, ?, ?, ?> behavior();
 }

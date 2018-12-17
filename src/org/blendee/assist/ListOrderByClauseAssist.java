@@ -3,7 +3,7 @@ package org.blendee.assist;
 /**
  * @author 千葉 哲嗣
  */
-public interface FieldOrderByClauseAssist {
+public interface ListOrderByClauseAssist {
 
 	/**
 	 * ORDER BY
@@ -16,5 +16,5 @@ public interface FieldOrderByClauseAssist {
 	/**
 	 * @return {@link SelectStatementBehavior}
 	 */
-	SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior();
+	SelectStatementBehavior<?, ?, ?, ?, ?, ?, ? extends OrderByClauseAssist, ?, ?> behavior();
 }

@@ -4,7 +4,7 @@ package org.blendee.assist;
  * @author 千葉 哲嗣
  * @param <W> {@link WhereClauseAssist}
  */
-public interface FieldUpdateClauseAssist<W extends WhereClauseAssist<?>> {
+public interface ListUpdateClauseAssist<W extends WhereClauseAssist<?>> {
 
 	/**
 	 * UPDATE SET
@@ -26,5 +26,5 @@ public interface FieldUpdateClauseAssist<W extends WhereClauseAssist<?>> {
 	/**
 	 * @return {@link SelectStatementBehavior}
 	 */
-	DataManipulationStatementBehavior<?, ?, W> behavior();
+	DataManipulationStatementBehavior<?, ?, ? extends UpdateClauseAssist, ?, W> behavior();
 }

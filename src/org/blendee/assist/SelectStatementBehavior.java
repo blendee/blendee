@@ -48,8 +48,18 @@ import org.blendee.sql.binder.NullBinder;
  * @author 千葉 哲嗣
  */
 @SuppressWarnings("javadoc")
-public abstract class SelectStatementBehavior<S extends SelectClauseAssist, G extends GroupByClauseAssist, W extends WhereClauseAssist<?>, H extends HavingClauseAssist<?>, O extends OrderByClauseAssist, L extends OnLeftClauseAssist<?>> {
-
+//@formatter:off
+public abstract class SelectStatementBehavior<
+	S extends SelectClauseAssist,
+	LS extends ListSelectClauseAssist,
+	G extends GroupByClauseAssist,
+	LG extends ListGroupByClauseAssist,
+	W extends WhereClauseAssist<?>,
+	H extends HavingClauseAssist<?>,
+	O extends OrderByClauseAssist,
+	LO extends ListOrderByClauseAssist,
+	L extends OnLeftClauseAssist<?>> {
+//@formatter:on
 	private final TablePath table;
 
 	private final RuntimeId id;
@@ -100,9 +110,15 @@ public abstract class SelectStatementBehavior<S extends SelectClauseAssist, G ex
 
 	protected abstract S newSelect();
 
+	protected abstract LS newListSelect();
+
 	protected abstract G newGroupBy();
 
+	protected abstract LG newListGroupBy();
+
 	protected abstract O newOrderBy();
+
+	protected abstract LO newListOrderBy();
 
 	protected abstract LogicalOperators<W> newWhereOperators();
 
@@ -112,9 +128,15 @@ public abstract class SelectStatementBehavior<S extends SelectClauseAssist, G ex
 
 	private S select;
 
+	private LS listSelect;
+
 	private G groupBy;
 
+	private LG listGroupBy;
+
 	private O orderBy;
+
+	private LO listOrderBy;
 
 	private LogicalOperators<W> whereOperators;
 
@@ -126,12 +148,24 @@ public abstract class SelectStatementBehavior<S extends SelectClauseAssist, G ex
 		return select == null ? (select = newSelect()) : select;
 	}
 
+	private LS listSelect() {
+		return listSelect == null ? (listSelect = newListSelect()) : listSelect;
+	}
+
 	private G groupBy() {
 		return groupBy == null ? (groupBy = newGroupBy()) : groupBy;
 	}
 
+	private LG listGroupBy() {
+		return listGroupBy == null ? (listGroupBy = newListGroupBy()) : listGroupBy;
+	}
+
 	private O orderBy() {
 		return orderBy == null ? (orderBy = newOrderBy()) : orderBy;
+	}
+
+	private LO listOrderBy() {
+		return listOrderBy == null ? (listOrderBy = newListOrderBy()) : listOrderBy;
 	}
 
 	public LogicalOperators<W> whereOperators() {
@@ -144,6 +178,18 @@ public abstract class SelectStatementBehavior<S extends SelectClauseAssist, G ex
 
 	public LogicalOperators<L> onLeftOperators() {
 		return onLeftOperators == null ? (onLeftOperators = newOnLeftOperators()) : onLeftOperators;
+	}
+
+	public void selectClause(Consumer<LS> consumer) {
+		consumer.accept(listSelect());
+	}
+
+	public void groupByClause(Consumer<LG> consumer) {
+		consumer.accept(listGroupBy());
+	}
+
+	public void orderByClause(Consumer<LO> consumer) {
+		consumer.accept(listOrderBy());
 	}
 
 	/**

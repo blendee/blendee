@@ -3,6 +3,7 @@ package org.blendee.assist;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.blendee.jdbc.TablePath;
@@ -18,7 +19,14 @@ import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 
 @SuppressWarnings("javadoc")
-public abstract class DataManipulationStatementBehavior<I extends InsertClauseAssist, U extends UpdateClauseAssist, W extends WhereClauseAssist<?>> implements DataManipulationStatement {
+//@formatter:off
+public abstract class DataManipulationStatementBehavior<
+	I extends InsertClauseAssist,
+	LI extends ListInsertClauseAssist,
+	U extends UpdateClauseAssist,
+	LU extends ListUpdateClauseAssist<W>,
+	W extends WhereClauseAssist<?>> implements DataManipulationStatement {
+//@formatter:on
 
 	private final TablePath table;
 
@@ -42,6 +50,14 @@ public abstract class DataManipulationStatementBehavior<I extends InsertClauseAs
 		this.table = table;
 		this.id = id;
 		this.decorators = decorators;
+	}
+
+	public DataManipulator insertStatement(Function<LI, DataManipulator> function) {
+		return function.apply(listInsert());
+	}
+
+	public DataManipulator updateStatement(Function<LU, DataManipulator> function) {
+		return function.apply(listUpdate());
 	}
 
 	public InsertStatementIntermediate INSERT() {
@@ -140,20 +156,36 @@ public abstract class DataManipulationStatementBehavior<I extends InsertClauseAs
 
 	protected abstract I newInsert();
 
+	protected abstract LI newListInsert();
+
 	protected abstract U newUpdate();
+
+	protected abstract LU newListUpdate();
 
 	protected abstract LogicalOperators<W> newWhereOperators();
 
 	private I insert;
 
+	private LI listInsert;
+
 	private U update;
+
+	private LU listUpdate;
 
 	private I insert() {
 		return insert == null ? (insert = newInsert()) : insert;
 	}
 
+	private LI listInsert() {
+		return listInsert == null ? (listInsert = newListInsert()) : listInsert;
+	}
+
 	private U update() {
 		return update == null ? (update = newUpdate()) : update;
+	}
+
+	private LU listUpdate() {
+		return listUpdate == null ? (listUpdate = newListUpdate()) : listUpdate;
 	}
 
 	@SafeVarargs

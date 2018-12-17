@@ -159,7 +159,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		return behavior == null ? (behavior = new Behavior()) : behavior;
 	}
 
-	private class Behavior extends SelectStatementBehavior<SelectAssist, GroupByAssist, WhereAssist, HavingAssist, OrderByAssist, OnLeftAssist> {
+	//@formatter:off
+	private class Behavior extends SelectStatementBehavior<
+		SelectAssist,
+		ListSelectAssist,
+		GroupByAssist,
+		ListGroupByAssist,
+		WhereAssist,
+		HavingAssist,
+		OrderByAssist,
+		ListOrderByAssist,
+		OnLeftAssist> {
+	//@formatter:on
 
 		private Behavior() {
 			super(new AnonymousFromClause(relationship, id), AnonymousTable.this);
@@ -167,17 +178,32 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 
 		@Override
 		protected SelectAssist newSelect() {
-			return new SelectAssist(AnonymousTable.this, selectContext, CriteriaContext.NULL);
+			return new SelectAssist(AnonymousTable.this, selectContext);
+		}
+
+		@Override
+		protected ListSelectAssist newListSelect() {
+			return new ListSelectAssist(AnonymousTable.this, selectContext);
 		}
 
 		@Override
 		protected GroupByAssist newGroupBy() {
-			return new GroupByAssist(AnonymousTable.this, groupByContext, CriteriaContext.NULL);
+			return new GroupByAssist(AnonymousTable.this, groupByContext);
+		}
+
+		@Override
+		protected ListGroupByAssist newListGroupBy() {
+			return new ListGroupByAssist(AnonymousTable.this, groupByContext);
+		}
+
+		@Override
+		protected ListOrderByAssist newListOrderBy() {
+			return new ListOrderByAssist(AnonymousTable.this, orderByContext);
 		}
 
 		@Override
 		protected OrderByAssist newOrderBy() {
-			return new OrderByAssist(AnonymousTable.this, orderByContext, CriteriaContext.NULL);
+			return new OrderByAssist(AnonymousTable.this, orderByContext);
 		}
 
 		@Override
@@ -699,7 +725,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public static class Assist<T, M> implements TableFacadeAssist {
 
-		private final AnonymousTable table;
+		final AnonymousTable table;
 
 		private final CriteriaContext context;
 
@@ -750,8 +776,23 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public static class SelectAssist extends Assist<SelectCol, Void> implements SelectClauseAssist {
 
-		private SelectAssist(AnonymousTable query, TableFacadeContext<SelectCol> builder, CriteriaContext context) {
-			super(query, builder, context);
+		private SelectAssist(AnonymousTable table, TableFacadeContext<SelectCol> builder) {
+			super(table, builder, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * SELECT 句用
+	 */
+	public static class ListSelectAssist extends SelectAssist implements ListSelectClauseAssist {
+
+		private ListSelectAssist(AnonymousTable table, TableFacadeContext<SelectCol> builder) {
+			super(table, builder);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table.behavior();
 		}
 	}
 
@@ -832,8 +873,23 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public static class GroupByAssist extends Assist<GroupByCol, Void> implements GroupByClauseAssist {
 
-		private GroupByAssist(AnonymousTable query, TableFacadeContext<GroupByCol> builder, CriteriaContext context) {
-			super(query, builder, context);
+		private GroupByAssist(AnonymousTable query, TableFacadeContext<GroupByCol> builder) {
+			super(query, builder, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * GROUB BY 句用
+	 */
+	public static class ListGroupByAssist extends GroupByAssist implements ListGroupByClauseAssist {
+
+		private ListGroupByAssist(AnonymousTable query, TableFacadeContext<GroupByCol> builder) {
+			super(query, builder);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table.behavior();
 		}
 	}
 
@@ -914,13 +970,28 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public static class OrderByAssist extends Assist<OrderByCol, Void> implements OrderByClauseAssist {
 
-		private OrderByAssist(AnonymousTable query, TableFacadeContext<OrderByCol> builder, CriteriaContext context) {
-			super(query, builder, context);
+		private OrderByAssist(AnonymousTable query, TableFacadeContext<OrderByCol> builder) {
+			super(query, builder, CriteriaContext.NULL);
 		}
 
 		@Override
 		public OrderByClause getOrderByClause() {
 			return getSelectStatement().getOrderByClause();
+		}
+	}
+
+	/**
+	 * GROUB BY 句用
+	 */
+	public static class ListOrderByAssist extends OrderByAssist implements ListOrderByClauseAssist {
+
+		private ListOrderByAssist(AnonymousTable query, TableFacadeContext<OrderByCol> builder) {
+			super(query, builder);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table.behavior();
 		}
 	}
 

@@ -83,11 +83,11 @@ import org.blendee.assist.UpdateStatementIntermediate;
 import org.blendee.assist.WhereColumn;
 import org.blendee.assist.WhereClauseAssist;
 import org.blendee.assist.SQLDecorators;
-import org.blendee.assist.FieldSelectClauseAssist;
-import org.blendee.assist.FieldGroupByClauseAssist;
-import org.blendee.assist.FieldOrderByClauseAssist;
-import org.blendee.assist.FieldInsertClauseAssist;
-import org.blendee.assist.FieldUpdateClauseAssist;
+import org.blendee.assist.ListSelectClauseAssist;
+import org.blendee.assist.ListGroupByClauseAssist;
+import org.blendee.assist.ListOrderByClauseAssist;
+import org.blendee.assist.ListInsertClauseAssist;
+import org.blendee.assist.ListUpdateClauseAssist;
 import org.blendee.assist.annotation.Column;
 import org.blendee.assist.Helper;
 import org.blendee.assist.Vargs;
@@ -453,7 +453,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
 	}
 
-	private class SelectBehavior extends SelectStatementBehavior<SelectAssist, GroupByAssist, WhereAssist, HavingAssist, OrderByAssist, OnLeftAssist> {
+	private class SelectBehavior extends SelectStatementBehavior<
+		SelectAssist,
+		ListSelectAssist,
+		GroupByAssist,
+		ListGroupByAssist,
+		WhereAssist,
+		HavingAssist,
+		OrderByAssist,
+		ListOrderByAssist,
+		OnLeftAssist> {
 
 		private SelectBehavior() {
 			super($TABLE, getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
@@ -467,6 +476,13 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
+		protected ListSelectAssist newListSelect() {
+			return new ListSelectAssist(
+					/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+					selectContext$);
+		}
+
+		@Override
 		protected GroupByAssist newGroupBy() {
 			return new GroupByAssist(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
@@ -474,8 +490,22 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
+		protected ListGroupByAssist newListGroupBy() {
+			return new ListGroupByAssist(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				groupByContext$);
+		}
+
+		@Override
 		protected OrderByAssist newOrderBy() {
 			return new OrderByAssist(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				orderByContext$);
+		}
+
+		@Override
+		protected ListOrderByAssist newListOrderBy() {
+			return new ListOrderByAssist(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				orderByContext$);
 		}
@@ -502,7 +532,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		return dmsBehavior$ == null ? (dmsBehavior$ = new DMSBehavior()) : dmsBehavior$;
 	}
 
-	private class DMSBehavior extends DataManipulationStatementBehavior<InsertAssist, UpdateAssist, DMSWhereAssist> {
+	private class DMSBehavior extends DataManipulationStatementBehavior<InsertAssist, ListInsertAssist, UpdateAssist, ListUpdateAssist, DMSWhereAssist> {
 
 		public DMSBehavior() {
 			super($TABLE, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this.getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
@@ -516,8 +546,22 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
+		protected ListInsertAssist newListInsert() {
+			return new ListInsertAssist(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				insertContext$);
+		}
+
+		@Override
 		protected UpdateAssist newUpdate() {
 			return new UpdateAssist(
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
+				updateContext$);
+		}
+
+		@Override
+		protected ListUpdateAssist newListUpdate() {
+			return new ListUpdateAssist(
 				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this,
 				updateContext$);
 		}
@@ -611,28 +655,33 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	/**
 	 * SELECT 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
 	 */
-	public Consumer<FieldSelectAssist> selectClause;
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ selectClause(Consumer<ListSelectAssist> consumer) {
+		selectBehavior().selectClause(consumer);
+		return this;
+	}
 
 	/**
 	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
 	 */
-	public Consumer<FieldGroupByAssist> groupByClause;
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ groupByClause(Consumer<ListGroupByAssist> consumer) {
+		selectBehavior().groupByClause(consumer);
+		return this;
+	}
 
 	/**
-	 * ORDER BY 句を作成する {@link Consumer}
+	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
 	 */
-	public Consumer<FieldOrderByAssist> orderByClause;
-
-	/**
-	 * INSERT 文を作成する {@link Consumer}
-	 */
-	public Function<FieldInsertAssist, DataManipulator> insertStatement;
-
-	/**
-	 * UPDATE 文を作成する {@link Consumer}
-	 */
-	public Function<FieldUpdateAssist, DataManipulator> updateStatement;
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ orderByClause(Consumer<ListOrderByAssist> consumer) {
+		selectBehavior().orderByClause(consumer);
+		return this;
+	}
 
 	/**
 	 * SELECT 句を記述します。
@@ -1140,6 +1189,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	public SelectStatement getSelectStatement() {
 		return this;
 	}
+
+	/**
+	 * INSERT 文を作成する {@link Consumer}
+	 * @param function {@link Function}
+	 * @return {@link DataManipulator}
+	 */
+	public DataManipulator insertStatement(Function<ListInsertAssist, DataManipulator> function) {
+		return dmsBehavior().insertStatement(function);
+	}
+
+	/**
+	 * UPDATE 文を作成する {@link Consumer}
+	 * @param function {@link Function}
+	 * @return {@link DataManipulator}
+	 */
+	public DataManipulator updateStatement(Function<ListUpdateAssist, DataManipulator> function) {
+		return dmsBehavior().updateStatement(function);
+	}
+
 	/**
 	 * INSERT 文を生成します。
 	 * @param function function
@@ -1403,16 +1471,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * SELECT 句用
 	 */
-	public static class FieldSelectAssist extends SelectAssist implements FieldSelectClauseAssist {
+	public static class ListSelectAssist extends SelectAssist implements ListSelectClauseAssist {
 
-		private FieldSelectAssist(
+		private ListSelectAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<SelectCol> builder$) {
 			super(table$, builder$);
 		}
 
 		@Override
-		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+		public SelectBehavior behavior() {
 			return table$.selectBehavior();
 		}
 	}
@@ -1508,16 +1576,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * GROUB BY 句用
 	 */
-	public static class FieldGroupByAssist extends GroupByAssist implements FieldGroupByClauseAssist {
+	public static class ListGroupByAssist extends GroupByAssist implements ListGroupByClauseAssist {
 
-		private FieldGroupByAssist(
+		private ListGroupByAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<GroupByCol> builder$) {
 			super(table$, builder$);
 		}
 
 		@Override
-		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+		public SelectBehavior behavior() {
 			return table$.selectBehavior();
 		}
 	}
@@ -1613,16 +1681,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * GROUB BY 句用
 	 */
-	public static class FieldOrderByAssist extends OrderByAssist implements FieldOrderByClauseAssist {
+	public static class ListOrderByAssist extends OrderByAssist implements ListOrderByClauseAssist {
 
-		private FieldOrderByAssist(
+		private ListOrderByAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<OrderByCol> builder$) {
 			super(table$, builder$);
 		}
 
 		@Override
-		public SelectStatementBehavior<?, ?, ?, ?, ?, ?> behavior() {
+		public SelectBehavior behavior() {
 			return table$.selectBehavior();
 		}
 	}
@@ -1784,16 +1852,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * INSERT 用
 	 */
-	public static class FieldInsertAssist extends InsertAssist implements FieldInsertClauseAssist {
+	public static class ListInsertAssist extends InsertAssist implements ListInsertClauseAssist {
 
-		private FieldInsertAssist(
+		private ListInsertAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<InsertCol> builder$) {
 			super(table$, builder$);
 		}
 
 		@Override
-		public DataManipulationStatementBehavior<?, ?, ?> behavior() {
+		public DataManipulationStatementBehavior<?, ?, ?, ?, ?> behavior() {
 			return table$.dmsBehavior();
 		}
 	}
@@ -1813,16 +1881,16 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	/**
 	 * INSERT 用
 	 */
-	public static class FieldUpdateAssist extends UpdateAssist implements FieldUpdateClauseAssist<DMSWhereAssist> {
+	public static class ListUpdateAssist extends UpdateAssist implements ListUpdateClauseAssist<DMSWhereAssist> {
 
-		private FieldUpdateAssist(
+		private ListUpdateAssist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<UpdateCol> builder$) {
 			super(table$, builder$);
 		}
 
 		@Override
-		public DataManipulationStatementBehavior<?, ?, DMSWhereAssist> behavior() {
+		public DataManipulationStatementBehavior<?, ?, ?, ?, DMSWhereAssist> behavior() {
 			return table$.dmsBehavior();
 		}
 	}

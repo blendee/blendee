@@ -31,6 +31,11 @@ import org.blendee.assist.InsertColumn;
 import org.blendee.assist.InsertOfferFunction;
 import org.blendee.assist.InsertStatementIntermediate;
 import org.blendee.assist.InstantOneToManyQuery;
+import org.blendee.assist.ListGroupByClauseAssist;
+import org.blendee.assist.ListInsertClauseAssist;
+import org.blendee.assist.ListOrderByClauseAssist;
+import org.blendee.assist.ListSelectClauseAssist;
+import org.blendee.assist.ListUpdateClauseAssist;
 import org.blendee.assist.LogicalOperators;
 import org.blendee.assist.Many;
 import org.blendee.assist.OnClause;
@@ -701,8 +706,18 @@ public class GenericTable
 		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
 	}
 
-	private class SelectBehavior
-		extends SelectStatementBehavior<SelectAssist, GroupByAssist, WhereAssist, HavingAssist, OrderByAssist, OnLeftAssist> {
+	//@formatter:off
+	private class SelectBehavior extends SelectStatementBehavior<
+		SelectAssist,
+		ListSelectAssist,
+		GroupByAssist,
+		ListGroupByAssist,
+		WhereAssist,
+		HavingAssist,
+		OrderByAssist,
+		ListOrderByAssist,
+		OnLeftAssist> {
+	//@formatter:on
 
 		private SelectBehavior() {
 			super(tablePath, getRuntimeId(), GenericTable.this);
@@ -714,13 +729,28 @@ public class GenericTable
 		}
 
 		@Override
+		protected ListSelectAssist newListSelect() {
+			return new ListSelectAssist(GenericTable.this, selectContext$);
+		}
+
+		@Override
 		protected GroupByAssist newGroupBy() {
 			return new GroupByAssist(GenericTable.this, groupByContext$);
 		}
 
 		@Override
+		protected ListGroupByAssist newListGroupBy() {
+			return new ListGroupByAssist(GenericTable.this, groupByContext$);
+		}
+
+		@Override
 		protected OrderByAssist newOrderBy() {
 			return new OrderByAssist(GenericTable.this, orderByContext$);
+		}
+
+		@Override
+		protected ListOrderByAssist newListOrderBy() {
+			return new ListOrderByAssist(GenericTable.this, orderByContext$);
 		}
 
 		@Override
@@ -745,7 +775,7 @@ public class GenericTable
 		return dmsBehavior$ == null ? (dmsBehavior$ = new DMSBehavior()) : dmsBehavior$;
 	}
 
-	private class DMSBehavior extends DataManipulationStatementBehavior<InsertAssist, UpdateAssist, DMSWhereAssist> {
+	private class DMSBehavior extends DataManipulationStatementBehavior<InsertAssist, ListInsertAssist, UpdateAssist, ListUpdateAssist, DMSWhereAssist> {
 
 		public DMSBehavior() {
 			super(tablePath, GenericTable.this.getRuntimeId(), GenericTable.this);
@@ -757,8 +787,18 @@ public class GenericTable
 		}
 
 		@Override
+		protected ListInsertAssist newListInsert() {
+			return new ListInsertAssist(GenericTable.this, insertContext$);
+		}
+
+		@Override
 		protected UpdateAssist newUpdate() {
 			return new UpdateAssist(GenericTable.this, updateContext$);
+		}
+
+		@Override
+		protected ListUpdateAssist newListUpdate() {
+			return new ListUpdateAssist(GenericTable.this, updateContext$);
 		}
 
 		@Override
@@ -1436,9 +1476,9 @@ public class GenericTable
 	 */
 	public static class Assist<T, M> implements TableFacadeAssist {
 
-		private final TableFacadeContext<T> builder$;
+		final GenericTable table$;
 
-		private final GenericTable table$;
+		private final TableFacadeContext<T> builder$;
 
 		private final CriteriaContext context$;
 
@@ -1606,6 +1646,21 @@ public class GenericTable
 	}
 
 	/**
+	 * SELECT 句用
+	 */
+	public static class ListSelectAssist extends SelectAssist implements ListSelectClauseAssist {
+
+		private ListSelectAssist(GenericTable table$, TableFacadeContext<SelectCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
+		}
+	}
+
+	/**
 	 * SELECT 文 WHERE 句用
 	 */
 	public static class WhereAssist extends ExtAssist<WhereColumn<WhereLogicalOperators>, Void> implements WhereClauseAssist<WhereAssist> {
@@ -1688,6 +1743,21 @@ public class GenericTable
 
 		private GroupByAssist(GenericTable table$, TableFacadeContext<GroupByCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * GROUB BY 句用
+	 */
+	public static class ListGroupByAssist extends GroupByAssist implements ListGroupByClauseAssist {
+
+		private ListGroupByAssist(GenericTable table$, TableFacadeContext<GroupByCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
 		}
 	}
 
@@ -1775,6 +1845,21 @@ public class GenericTable
 		@Override
 		public OrderByClause getOrderByClause() {
 			return getSelectStatement().getOrderByClause();
+		}
+	}
+
+	/**
+	 * GROUB BY 句用
+	 */
+	public static class ListOrderByAssist extends OrderByAssist implements ListOrderByClauseAssist {
+
+		private ListOrderByAssist(GenericTable table$, TableFacadeContext<OrderByCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public SelectStatementBehavior<?, ?, ?, ?, ?, ?, ?, ?, ?> behavior() {
+			return table$.selectBehavior();
 		}
 	}
 
@@ -1933,12 +2018,42 @@ public class GenericTable
 	}
 
 	/**
+	 * INSERT 用
+	 */
+	public static class ListInsertAssist extends InsertAssist implements ListInsertClauseAssist {
+
+		private ListInsertAssist(GenericTable table$, TableFacadeContext<InsertCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public DataManipulationStatementBehavior<?, ?, ?, ?, ?> behavior() {
+			return table$.dmsBehavior();
+		}
+	}
+
+	/**
 	 * UPDATE 用
 	 */
 	public static class UpdateAssist extends Assist<UpdateCol, Void> implements UpdateClauseAssist {
 
 		private UpdateAssist(GenericTable table$, TableFacadeContext<UpdateCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
+		}
+	}
+
+	/**
+	 * UPDATE 用
+	 */
+	public static class ListUpdateAssist extends UpdateAssist implements ListUpdateClauseAssist<DMSWhereAssist> {
+
+		private ListUpdateAssist(GenericTable table$, TableFacadeContext<UpdateCol> builder$) {
+			super(table$, builder$);
+		}
+
+		@Override
+		public DMSBehavior behavior() {
+			return table$.dmsBehavior();
 		}
 	}
 
