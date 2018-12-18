@@ -419,7 +419,12 @@ public class TableFacadeGenerator {
 				args.put("PACKAGE", packageName);
 				args.put("TABLE", tableName);
 				args.put("REFERENCE_PACKAGE", rootPackageName + "." + TableFacadePackageRule.care(childPath.getSchemaName()));
+
+				String reference = childPath.toString();
 				args.put("REFERENCE", childTableName);
+				args.put("REFERENCE_PATH", reference);
+				args.put("REFERENCE_FIELD", reference.replaceAll("\\.", "\\$"));
+
 				args.put("FK", foreignKey);
 
 				String[] fkColumns = crossReference.getForeignKeyColumnNames();

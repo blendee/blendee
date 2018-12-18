@@ -154,8 +154,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * reference: [[REFERENCE]]<br>
 	 * columns: [[FK_COLUMNS]]
 	 */
-	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)
-	public static final String /*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/ = "[[FK]]";
+	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE_PATH]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)
+	public static final String /*++[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/ = "[[FK]]";
 /*==ForeignKeysPart==*/
 
 	/**
@@ -252,7 +252,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		public /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/Row /*++[[METHOD]]++*//*--*/getRelatedRow/*--*/() {
 			return /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/row(
-				data$.getDataObject(/*++[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/));
+				data$.getDataObject(/*++[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/));
 		}
 
 /*==RowRelationshipPart==*/
@@ -1451,7 +1451,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			return new /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/ExtAssist<>(
 				builder$,
 				this,
-				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE]]$[[FK]]++*//*--*/FK/*--*/);
+				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/);
 		}
 /*==TableRelationshipPart==*/
 	}
