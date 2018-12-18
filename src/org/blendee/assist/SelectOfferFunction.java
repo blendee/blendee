@@ -9,21 +9,21 @@ import org.blendee.sql.Column;
 /**
  * {@link SelectStatement} に SELECT 句を設定するための関数型インターフェイスです。
  * @author 千葉 哲嗣
- * @param <R> 使用する {@link SelectStatement} のルートテーブル
+ * @param <S> 使用する {@link SelectStatement} のルートテーブル
  */
 @FunctionalInterface
-public interface SelectOfferFunction<R extends SelectClauseAssist> {
+public interface SelectOfferFunction<S extends SelectClauseAssist> {
 
 	/**
 	 * @param relation 使用する {@link SelectStatement} のルートテーブル
 	 * @return {@link SelectClauseAssist#list(SelectOffer...)} で生成した {@link SelectOffers}
 	 */
-	Offers<ColumnExpression> apply(R relation);
+	Offers<ColumnExpression> apply(S relation);
 
 	/**
 	 * SELECT 句対象を束ねるクラスです。
 	 */
-	static class SelectOffers implements SelectOffer, Offers<ColumnExpression> {
+	static class SelectOffers implements SelectOffer {
 
 		private final List<ColumnExpression> expressions = new LinkedList<>();
 
@@ -48,7 +48,7 @@ public interface SelectOfferFunction<R extends SelectClauseAssist> {
 		 * @param containers 追加関数
 		 */
 		public void add(ColumnExpression... containers) {
-			this.expressions.addAll(Arrays.asList(containers));
+			expressions.addAll(Arrays.asList(containers));
 		}
 
 		/**
