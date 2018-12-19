@@ -18,7 +18,7 @@ public interface ListInsertClauseAssist {
 	 * @param offers INSERT の要素
 	 * @return {@link InsertStatementIntermediate}
 	 */
-	default InsertStatementIntermediate INSERT(Offerable... offers) {
+	default InsertStatementIntermediate INSERT(Offer... offers) {
 		return behavior().INSERT(a -> a.ls(offers));
 	}
 
@@ -28,7 +28,7 @@ public interface ListInsertClauseAssist {
 	 * @param select {@link SelectStatement}
 	 * @return {@link DataManipulator}
 	 */
-	default DataManipulator INSERT(Vargs<Offerable> offers, SelectStatement select) {
+	default DataManipulator INSERT(Vargs<Offer> offers, SelectStatement select) {
 		return behavior().INSERT(a -> a.ls(offers.get()), select);
 	}
 

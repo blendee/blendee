@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * 順序付き GROUP BY 候補です。
  */
-public class GroupByOffer implements Offerable, Offers<Offerable> {
+public class GroupByOffer implements Offer, Offers<Offer> {
 
 	private final int order;
 
@@ -19,19 +19,19 @@ public class GroupByOffer implements Offerable, Offers<Offerable> {
 	}
 
 	@Override
-	public List<Offerable> get() {
-		List<Offerable> offers = new LinkedList<>();
+	public List<Offer> get() {
+		List<Offer> offers = new LinkedList<>();
 		offers.add(this);
 		return offers;
 	}
 
 	@Override
-	public void offer() {
-		column.offer(order);
+	public void add() {
+		column.add(order);
 	}
 
 	@Override
-	public void offer(int order) {
-		column.offer(order);
+	public void add(int order) {
+		column.add(order);
 	}
 }

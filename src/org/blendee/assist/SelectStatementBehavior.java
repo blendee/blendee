@@ -244,7 +244,7 @@ public abstract class SelectStatementBehavior<
 	public void GROUP_BY(
 		GroupByOfferFunction<G> function) {
 		quitRowMode();
-		function.apply(groupBy()).get().forEach(o -> o.offer());
+		function.apply(groupBy()).get().forEach(o -> o.add());
 	}
 
 	/**
@@ -309,7 +309,7 @@ public abstract class SelectStatementBehavior<
 	 */
 	public void ORDER_BY(
 		OrderByOfferFunction<O> function) {
-		function.apply(orderBy()).get().forEach(o -> o.offer());
+		function.apply(orderBy()).get().forEach(o -> o.add());
 	}
 
 	public <R extends OnRightClauseAssist<?>, Q extends SelectStatement> OnClause<L, R, Q> INNER_JOIN(RightTable<R> right, Q query) {

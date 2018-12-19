@@ -12,5 +12,5 @@ public interface OrderByOfferFunction<A extends OrderByClauseAssist> {
 	 * @param assist 使用する {@link SelectStatement} のルートテーブル
 	 * @return {@link Offers}
 	 */
-	Offers<Offerable> apply(A assist);
+	Offers<Offer> apply(A assist);
 }

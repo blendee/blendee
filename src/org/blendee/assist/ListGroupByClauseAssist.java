@@ -9,7 +9,7 @@ public interface ListGroupByClauseAssist {
 	 * GROUP BY
 	 * @param offers GROUP BY 句の要素
 	 */
-	default void GROUP_BY(Offerable... offers) {
+	default void GROUP_BY(Offer... offers) {
 		behavior().GROUP_BY(a -> a.ls(offers));
 	}
 

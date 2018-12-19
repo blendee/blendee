@@ -65,12 +65,12 @@ public abstract class DataManipulationStatementBehavior<
 	}
 
 	public InsertStatementIntermediate INSERT(InsertOfferFunction<I> function) {
-		function.apply(insert()).get().forEach(o -> o.offer());
+		function.apply(insert()).get().forEach(o -> o.add());
 		return INSERT();
 	}
 
 	public DataManipulator INSERT(InsertOfferFunction<I> function, SelectStatement select) {
-		function.apply(insert()).get().forEach(o -> o.offer());
+		function.apply(insert()).get().forEach(o -> o.add());
 
 		SQLQueryBuilder builder = select.toSQLQueryBuilder();
 

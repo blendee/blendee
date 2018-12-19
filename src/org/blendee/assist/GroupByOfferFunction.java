@@ -12,5 +12,5 @@ public interface GroupByOfferFunction<R extends GroupByClauseAssist> {
 	 * @param relation 使用する {@link SelectStatement} のルートテーブル
 	 * @return {@link Offers}
 	 */
-	Offers<Offerable> apply(R relation);
+	Offers<Offer> apply(R relation);
 }

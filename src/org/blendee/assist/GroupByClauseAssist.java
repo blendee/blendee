@@ -15,7 +15,7 @@ public interface GroupByClauseAssist {
 	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<Offerable> list(Offerable... offers) {
+	default Offers<Offer> list(Offer... offers) {
 		return ls(offers);
 	}
 
@@ -25,7 +25,7 @@ public interface GroupByClauseAssist {
 	 * @param offers GROUP BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<Offerable> ls(Offerable... offers) {
+	default Offers<Offer> ls(Offer... offers) {
 		return () -> Arrays.asList(offers);
 	}
 

@@ -9,7 +9,7 @@ public interface ListOrderByClauseAssist {
 	 * ORDER BY
 	 * @param offers ORDER BY 句の要素
 	 */
-	default void ORDER_BY(Offerable... offers) {
+	default void ORDER_BY(Offer... offers) {
 		behavior().ORDER_BY(a -> a.ls(offers));
 	}
 

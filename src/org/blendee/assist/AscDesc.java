@@ -7,7 +7,7 @@ import java.util.List;
  * ORDER BY 句のカラムに ASC DESC を追加するための補助クラスです。
  * @author 千葉 哲嗣
  */
-public class AscDesc implements Offerable, Offers<Offerable> {
+public class AscDesc implements Offer, Offers<Offer> {
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
@@ -63,13 +63,13 @@ public class AscDesc implements Offerable, Offers<Offerable> {
 	}
 
 	@Override
-	public void offer(int order) {
-		NONE.offer(order);
+	public void add(int order) {
+		NONE.add(order);
 	}
 
 	@Override
-	public List<Offerable> get() {
-		List<Offerable> offers = new LinkedList<>();
+	public List<Offer> get() {
+		List<Offer> offers = new LinkedList<>();
 		offers.add(this);
 		return offers;
 	}

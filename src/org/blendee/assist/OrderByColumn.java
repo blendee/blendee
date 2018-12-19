@@ -11,7 +11,7 @@ import org.blendee.sql.OrderByClause.Direction;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class OrderByColumn implements Offerable, Offers<Offerable> {
+public class OrderByColumn implements Offer, Offers<Offer> {
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
@@ -71,13 +71,13 @@ public class OrderByColumn implements Offerable, Offers<Offerable> {
 	}
 
 	@Override
-	public void offer(int order) {
-		NONE.offer(order);
+	public void add(int order) {
+		NONE.add(order);
 	}
 
 	@Override
-	public List<Offerable> get() {
-		List<Offerable> offers = new LinkedList<>();
+	public List<Offer> get() {
+		List<Offer> offers = new LinkedList<>();
 		offers.add(this);
 		return offers;
 	}

@@ -25,7 +25,7 @@ public interface OrderByClauseAssist {
 	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<Offerable> list(Offerable... offers) {
+	default Offers<Offer> list(Offer... offers) {
 		return ls(offers);
 	}
 
@@ -34,7 +34,7 @@ public interface OrderByClauseAssist {
 	 * @param offers ORDER BY 句に含めるテーブルおよびカラム
 	 * @return offers
 	 */
-	default Offers<Offerable> ls(Offerable... offers) {
+	default Offers<Offer> ls(Offer... offers) {
 		return () -> Arrays.asList(offers);
 	}
 
@@ -112,7 +112,7 @@ public interface OrderByClauseAssist {
 	 * @param offer 対象カラム
 	 * @return {@link GroupByColumn}
 	 */
-	default OrderByOffer order(int order, Offerable offer) {
+	default OrderByOffer order(int order, Offer offer) {
 		return new OrderByOffer(offer, order);
 	}
 

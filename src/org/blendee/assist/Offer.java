@@ -7,18 +7,18 @@ import org.blendee.sql.ListClause;
  * @author 千葉 哲嗣
  */
 @FunctionalInterface
-public interface Offerable {
+public interface Offer {
 
 	/**
 	 * 句に追加されます。
 	 * @param order 句内の順序
 	 */
-	void offer(int order);
+	void add(int order);
 
 	/**
 	 * 句に追加されます。
 	 */
-	default void offer() {
-		offer(ListClause.DEFAULT_ORDER);
+	default void add() {
+		add(ListClause.DEFAULT_ORDER);
 	}
 }

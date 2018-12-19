@@ -10,7 +10,7 @@ import org.blendee.sql.Column;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class GroupByColumn implements Offerable, Offers<Offerable> {
+public class GroupByColumn implements Offer, Offers<Offer> {
 
 	private final TableFacadeAssist assist;
 
@@ -27,13 +27,13 @@ public class GroupByColumn implements Offerable, Offers<Offerable> {
 	}
 
 	@Override
-	public void offer(int order) {
+	public void add(int order) {
 		assist.getSelectStatement().getGroupByClause().add(order, column);
 	}
 
 	@Override
-	public List<Offerable> get() {
-		List<Offerable> offers = new LinkedList<>();
+	public List<Offer> get() {
+		List<Offer> offers = new LinkedList<>();
 		offers.add(this);
 		return offers;
 	}

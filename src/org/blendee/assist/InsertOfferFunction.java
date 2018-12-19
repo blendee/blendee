@@ -12,5 +12,5 @@ public interface InsertOfferFunction<I extends InsertClauseAssist> {
 	 * @param relation 使用する {@link SelectStatement} のルートテーブル
 	 * @return {@link Offers}
 	 */
-	Offers<Offerable> apply(I relation);
+	Offers<Offer> apply(I relation);
 }
