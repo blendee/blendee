@@ -71,8 +71,6 @@ ORMモードと集計モードについて
 
 Java8以降
 
-Eclipse Oxygen以降
-
 ## Usage
 
 ## Installation

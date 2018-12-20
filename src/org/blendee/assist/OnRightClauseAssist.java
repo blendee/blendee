@@ -18,7 +18,7 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> OnRightColumn<O> COALESCE(Vargs<? extends OnColumn<O>> columns) {
-		return any(Coalesce.createTemplate(columns.length()), columns);
+		return any(Helper.createCoalesceTemplate(columns.length()), columns);
 	}
 
 	/**

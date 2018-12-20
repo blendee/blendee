@@ -91,7 +91,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
+			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])));
 	}
 
 	/**
@@ -113,7 +113,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(Coalesce.createTemplate(size), list.toArray(new Column[size])));
+			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])));
 	}
 
 	/**
@@ -123,7 +123,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<HavingColumn<O>> columns) {
-		return any(Coalesce.createTemplate(columns.length()), columns);
+		return any(Helper.createCoalesceTemplate(columns.length()), columns);
 	}
 
 	/**

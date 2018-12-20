@@ -151,7 +151,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 /*==ForeignKeysPart==*/
 	/**
 	 * name: [[FK]]<br>
-	 * reference: [[REFERENCE]]<br>
+	 * references: [[REFERENCE]]<br>
 	 * columns: [[FK_COLUMNS]]
 	 */
 	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE_PATH]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)

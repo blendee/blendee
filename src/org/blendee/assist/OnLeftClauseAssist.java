@@ -18,7 +18,7 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> OnLeftColumn<O> COALESCE(Vargs<? extends OnColumn<O>> columns) {
-		return any(Coalesce.createTemplate(columns.length()), columns);
+		return any(Helper.createCoalesceTemplate(columns.length()), columns);
 	}
 
 	/**

@@ -134,7 +134,7 @@ public interface SelectClauseAssist {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COALESCE(AliasableOffer... columns) {
-		return any(Coalesce.createTemplate(columns.length), columns);
+		return any(Helper.createCoalesceTemplate(columns.length), columns);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public interface SelectClauseAssist {
 		int size = all.size();
 
 		return any(
-			Coalesce.createTemplate(size),
+			Helper.createCoalesceTemplate(size),
 			all.toArray(new AliasableOffer[size]));
 	}
 
@@ -177,7 +177,7 @@ public interface SelectClauseAssist {
 		int size = all.size();
 
 		return any(
-			Coalesce.createTemplate(size),
+			Helper.createCoalesceTemplate(size),
 			all.toArray(new AliasableOffer[size]));
 	}
 

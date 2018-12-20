@@ -18,7 +18,7 @@ public interface WhereClauseAssist<R extends WhereClauseAssist<?>> extends Crite
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> WhereColumn<O> COALESCE(Vargs<WhereColumn<O>> columns) {
-		return any(Coalesce.createTemplate(columns.length()), columns);
+		return any(Helper.createCoalesceTemplate(columns.length()), columns);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package org.blendee.assist;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -106,5 +107,14 @@ public class Helper {
 		R row = iterator.next();
 		if (iterator.hasNext()) throw new NotUniqueException();
 		return Optional.of(row);
+	}
+
+	static String createCoalesceTemplate(int columns) {
+		List<String> list = new LinkedList<>();
+		for (int i = 0; i < columns; i++) {
+			list.add("{" + i + "}");
+		}
+
+		return "COALESCE(" + String.join(", ", list) + ")";
 	}
 }
