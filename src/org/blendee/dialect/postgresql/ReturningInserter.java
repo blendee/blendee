@@ -1,7 +1,6 @@
 package org.blendee.dialect.postgresql;
 
-import java.util.Objects;
-
+import org.blendee.assist.Row;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.ContextManager;
@@ -14,7 +13,6 @@ import org.blendee.sql.Updatable;
 import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
-import org.blendee.assist.Row;
 
 /**
  * PK が単一項目で、シーケンス (serial) を使用しているテーブル用のユーティリティクラスです。
@@ -63,8 +61,6 @@ public class ReturningInserter<T> {
 	 * @return PK
 	 */
 	public T insertAndGetSequencePK(DataObject data) {
-		Objects.requireNonNull(data);
-
 		TablePath myPath = data.getPrimaryKey().getTablePath();
 		if (!myPath.equals(path))
 			throw new IllegalStateException("data のテーブルが不正です table=[" + myPath + "]");
@@ -77,8 +73,6 @@ public class ReturningInserter<T> {
 	 * @return PK
 	 */
 	public T insertAndGetSequencePK(Row row) {
-		Objects.requireNonNull(row);
-
 		TablePath myPath = row.tablePath();
 		if (!myPath.equals(path))
 			throw new IllegalStateException("row のテーブルが不正です table=[" + myPath + "]");
@@ -88,11 +82,6 @@ public class ReturningInserter<T> {
 
 	@SuppressWarnings("unchecked")
 	private T insertAndGetSequencePKInternal(Updatable data) {
-		Objects.requireNonNull(data);
-
-		if (!path.equals(this.path))
-			throw new IllegalStateException("INSERT 対象のテーブルが不正です table=[" + path + "]");
-
 		Object[] pk = new Object[] { null };
 		ReturningUtilities.insert(path, data, (result) -> {
 			if (pk[0] != null) throw new IllegalStateException("PK を指定した検索で、結果が複数あります PK=[" + pk[0] + "]");

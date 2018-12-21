@@ -1,5 +1,7 @@
 package org.blendee.sql;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,10 +12,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
+import org.blendee.sql.binder.BigDecimalBinder;
+import org.blendee.sql.binder.BooleanBinder;
+import org.blendee.sql.binder.DoubleBinder;
+import org.blendee.sql.binder.FloatBinder;
+import org.blendee.sql.binder.IntBinder;
+import org.blendee.sql.binder.LongBinder;
+import org.blendee.sql.binder.ObjectBinder;
+import org.blendee.sql.binder.StringBinder;
+import org.blendee.sql.binder.TimestampBinder;
+import org.blendee.sql.binder.UUIDBinder;
 
 /**
  * 登録更新用 SQL 文を生成するための抽象基底クラスです。
@@ -46,6 +59,116 @@ public abstract class Updater implements ComposedSQL {
 	 */
 	public void add(Updatable updatable) {
 		updatable.setValuesTo(this);
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, BigDecimal value) {
+		columns.add(columnName);
+		values.put(columnName, new BigDecimalBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, boolean value) {
+		columns.add(columnName);
+		values.put(columnName, new BooleanBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, double value) {
+		columns.add(columnName);
+		values.put(columnName, new DoubleBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, float value) {
+		columns.add(columnName);
+		values.put(columnName, new FloatBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, int value) {
+		columns.add(columnName);
+		values.put(columnName, new IntBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, long value) {
+		columns.add(columnName);
+		values.put(columnName, new LongBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, Object value) {
+		columns.add(columnName);
+		values.put(columnName, new ObjectBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, String value) {
+		columns.add(columnName);
+		values.put(columnName, new StringBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, Timestamp value) {
+		columns.add(columnName);
+		values.put(columnName, new TimestampBinder(value));
+	}
+
+	/**
+	 * SQL 文に挿入する項目名とプレースホルダにバインドする値を追加します。<br>
+	 * 追加された順に SQL 文に反映されます。
+	 * @param columnName テーブルの項目名
+	 * @param value 値
+	 */
+	public void add(String columnName, UUID value) {
+		columns.add(columnName);
+		values.put(columnName, new UUIDBinder(value));
 	}
 
 	/**

@@ -2,6 +2,7 @@ package org.blendee.dialect.postgresql;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.blendee.assist.Row;
 import org.blendee.jdbc.BConnection;
@@ -51,9 +52,46 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void insert(TablePath path, Updatable data, Consumer<Result> consumer, String... columnNames) {
+		insertAndReturn(path, data, r -> {
+			consumer.accept(r);
+			return null;
+		}, columnNames);
+	}
+
+	/**
+	 * INSERT を行います。
+	 * @param data INSERT 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T insertAndReturn(DataObject data, Function<Result, T> function, String... columnNames) {
+		return insertAndReturn(data.getRelationship().getTablePath(), data, function, columnNames);
+	}
+
+	/**
+	 * INSERT を行います。
+	 * @param row INSERT 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T insertAndReturn(Row row, Function<Result, T> function, String... columnNames) {
+		return insertAndReturn(row.tablePath(), row, function, columnNames);
+	}
+
+	/**
+	 * INSERT を行います。
+	 * @param path INSERT 対象テーブル
+	 * @param data INSERT 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T insertAndReturn(TablePath path, Updatable data, Function<Result, T> function, String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(data);
-		Objects.requireNonNull(consumer);
+		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
 		BConnection connection = BlendeeManager.getConnection();
@@ -66,9 +104,8 @@ public class ReturningUtilities {
 			builder.complement(statement);
 
 			try (BResultSet result = statement.executeQuery()) {
-				while (result.next()) {
-					consumer.accept(result);
-				}
+				result.next();
+				return function.apply(result);
 			}
 		}
 	}
@@ -102,10 +139,63 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(TablePath path, Updatable data, Criteria criteria, Consumer<BResultSet> consumer, String... columnNames) {
+		updateAndReturn(path, data, criteria, r -> {
+			consumer.accept(r);
+			return null;
+		}, columnNames);
+	}
+
+	/**
+	 * UPDATE を行います。
+	 * @param data UPDATE 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T updateAndReturn(DataObject data, Function<BResultSet, T> function, String... columnNames) {
+		return updateAndReturn(
+			data.getRelationship().getTablePath(),
+			data,
+			data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			function,
+			columnNames);
+	}
+
+	/**
+	 * UPDATE を行います。
+	 * @param row UPDATE 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T updateAndReturn(Row row, Function<BResultSet, T> function, String... columnNames) {
+		return updateAndReturn(
+			row.tablePath(),
+			row,
+			row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			function,
+			columnNames);
+	}
+
+	/**
+	 * UPDATE を行います。
+	 * @param path UPDATE 対象テーブル
+	 * @param data UPDATE 対象
+	 * @param criteria UPDATE 条件
+	 * @param function consumer
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T updateAndReturn(
+		TablePath path,
+		Updatable data,
+		Criteria criteria,
+		Function<BResultSet, T> function,
+		String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(criteria);
-		Objects.requireNonNull(consumer);
+		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
 		BConnection connection = BlendeeManager.getConnection();
@@ -119,7 +209,7 @@ public class ReturningUtilities {
 			builder.complement(statement);
 
 			try (BResultSet result = statement.executeQuery()) {
-				consumer.accept(result);
+				return function.apply(result);
 			}
 		}
 	}
@@ -152,9 +242,58 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(TablePath path, Criteria criteria, Consumer<BResultSet> consumer, String... columnNames) {
+		deleteAndReturn(path, criteria, r -> {
+			consumer.accept(r);
+			return null;
+		}, columnNames);
+	}
+
+	/**
+	 * DELETE を行います。
+	 * @param data DELETE 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T deleteAndReturn(DataObject data, Function<BResultSet, T> function, String... columnNames) {
+		return deleteAndReturn(
+			data.getRelationship().getTablePath(),
+			data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			function,
+			columnNames);
+	}
+
+	/**
+	 * DELETE を行います。
+	 * @param row DELETE 対象
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T deleteAndReturn(Row row, Function<BResultSet, T> function, String... columnNames) {
+		return deleteAndReturn(
+			row.tablePath(),
+			row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			function,
+			columnNames);
+	}
+
+	/**
+	 * DELETE を行います。
+	 * @param path DELETE 対象テーブル
+	 * @param criteria DELETE 条件
+	 * @param function function
+	 * @param columnNames RETURNING で使用する項目
+	 * @return T
+	 */
+	public static <T> T deleteAndReturn(
+		TablePath path,
+		Criteria criteria,
+		Function<BResultSet, T> function,
+		String... columnNames) {
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(criteria);
-		Objects.requireNonNull(consumer);
+		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
 		BConnection connection = BlendeeManager.getConnection();
@@ -167,7 +306,7 @@ public class ReturningUtilities {
 			builder.complement(statement);
 
 			try (BResultSet result = statement.executeQuery()) {
-				consumer.accept(result);
+				return function.apply(result);
 			}
 		}
 	}
