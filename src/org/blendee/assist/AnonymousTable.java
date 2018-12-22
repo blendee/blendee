@@ -234,6 +234,36 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	/**
+	 * SELECT 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public AnonymousTable selectClause(Consumer<ListSelectAssist> consumer) {
+		behavior().selectClause(consumer);
+		return this;
+	}
+
+	/**
+	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public AnonymousTable groupByClause(Consumer<ListGroupByAssist> consumer) {
+		behavior().groupByClause(consumer);
+		return this;
+	}
+
+	/**
+	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public AnonymousTable orderByClause(Consumer<ListOrderByAssist> consumer) {
+		behavior().orderByClause(consumer);
+		return this;
+	}
+
+	/**
 	 * SELECT 句を記述します。
 	 * @param function {@link SelectOfferFunction}
 	 * @return この {@link SelectStatement}

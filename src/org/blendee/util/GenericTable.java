@@ -894,6 +894,36 @@ public class GenericTable
 	}
 
 	/**
+	 * SELECT 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public GenericTable selectClause(Consumer<ListSelectAssist> consumer) {
+		selectBehavior().selectClause(consumer);
+		return this;
+	}
+
+	/**
+	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public GenericTable groupByClause(Consumer<ListGroupByAssist> consumer) {
+		selectBehavior().groupByClause(consumer);
+		return this;
+	}
+
+	/**
+	 * GROUP BY 句を作成する {@link Consumer}
+	 * @param consumer {@link Consumer}
+	 * @return this
+	 */
+	public GenericTable orderByClause(Consumer<ListOrderByAssist> consumer) {
+		selectBehavior().orderByClause(consumer);
+		return this;
+	}
+
+	/**
 	 * SELECT 句を記述します。
 	 * @param function
 	 * @return この {@link SelectStatement}
@@ -1390,6 +1420,24 @@ public class GenericTable
 	@Override
 	public SelectStatement getSelectStatement() {
 		return this;
+	}
+
+	/**
+	 * INSERT 文を作成する {@link Function}
+	 * @param function {@link Function}
+	 * @return {@link DataManipulator}
+	 */
+	public DataManipulator insertStatement(Function<ListInsertAssist, DataManipulator> function) {
+		return dmsBehavior().insertStatement(function);
+	}
+
+	/**
+	 * UPDATE 文を作成する {@link Function}
+	 * @param function {@link Function}
+	 * @return {@link DataManipulator}
+	 */
+	public DataManipulator updateStatement(Function<ListUpdateAssist, DataManipulator> function) {
+		return dmsBehavior().updateStatement(function);
 	}
 
 	/**
