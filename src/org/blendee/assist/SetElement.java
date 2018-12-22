@@ -2,6 +2,7 @@ package org.blendee.assist;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -185,6 +186,29 @@ public class SetElement {
 		});
 
 		this.template = template;
+
+		assist.getDataManipulationStatement().addSetElement(this);
+
+		return SetProof.singleton;
+	}
+
+	/**
+	 * UPDATE SET 句に、このカラムへの代入を追加します。
+	 * @param template テンプレート
+	 * @param columns テンプレートにセットするカラム
+	 * @param values テンプレートにセットする値
+	 * @return {@link SetProof}
+	 */
+	public SetProof set(String template, Vargs<? extends UpdateColumn> columns, Vargs<Object> values) {
+		binders.clear();
+		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		Arrays.stream(values.get()).forEach(v -> {
+			ValueExtractor extractor = valueExtractors.selectValueExtractor(v.getClass());
+			binders.add(extractor.extractAsBinder(v));
+		});
+
+		List<String> columnNames = columns.stream().map(c -> c.column().getName()).collect(Collectors.toList());
+		this.template = MessageFormat.format(template, columnNames.toArray());
 
 		assist.getDataManipulationStatement().addSetElement(this);
 
