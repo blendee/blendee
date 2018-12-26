@@ -334,11 +334,13 @@ public abstract class SelectStatementBehavior<
 
 	public void UNION(SelectStatement select) {
 		quitRowMode();
+		select.quitRowMode();
 		unions.add(new Union(UnionOperator.UNION, select.query()));
 	}
 
 	public void UNION_ALL(SelectStatement select) {
 		quitRowMode();
+		select.quitRowMode();
 		unions.add(new Union(UnionOperator.UNION_ALL, select.query()));
 	}
 
