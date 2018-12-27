@@ -141,7 +141,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	/**
-	 * アノテーションからカラムを作成するかを決定します。<br />
+	 * アノテーションからカラムを作成するかを決定します。<br>
 	 * TableFacade 作成時に DB から最新の情報でカラムを作る場合には、 false にします。
 	 * @return falseの場合、アノテーションからカラムを作成しない
 	 */
