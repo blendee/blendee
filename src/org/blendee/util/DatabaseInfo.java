@@ -46,7 +46,7 @@ public class DatabaseInfo {
 
 		Properties prop = new Properties();
 		InputStream input = loader.getResourceAsStream(path);
-		if (input == null) return prop;
+		if (input == null) throw new IllegalStateException(path + " が存在しません");
 
 		try {
 			prop.load(new BufferedReader(new InputStreamReader(input, defaultCharset)));
