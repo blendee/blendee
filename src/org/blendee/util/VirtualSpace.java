@@ -64,8 +64,7 @@ public class VirtualSpace implements Metadata {
 	 */
 	public synchronized void setStoredIdentifier(StoredIdentifier storedIdentifier) {
 		checkStarted();
-		Objects.requireNonNull(storedIdentifier);
-		this.storedIdentifier = storedIdentifier;
+		this.storedIdentifier = Objects.requireNonNull(storedIdentifier);
 	}
 
 	/**
@@ -234,16 +233,17 @@ public class VirtualSpace implements Metadata {
 			String[] pkColumns = fk.getPKColumns();
 			if (pkColumns.length == 0) pkColumns = pkTable.getPrimaryKeySource().getColumnNames();
 
-			crossReferences.get(tablePath).put(
-				pkTable.getTablePath(),
-				new SimpleCrossReference(
-					pkTable.getPrimaryKeySource().getName(),
-					fk.getName(),
+			crossReferences.get(tablePath)
+				.put(
 					pkTable.getTablePath(),
-					tablePath,
-					pkColumns,
-					fk.getFKColumns(),
-					true));
+					new SimpleCrossReference(
+						pkTable.getPrimaryKeySource().getName(),
+						fk.getName(),
+						pkTable.getTablePath(),
+						tablePath,
+						pkColumns,
+						fk.getFKColumns(),
+						true));
 		}
 	}
 
