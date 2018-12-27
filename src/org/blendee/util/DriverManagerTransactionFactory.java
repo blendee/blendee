@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Objects;
 
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
@@ -33,11 +32,11 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 
 		Class.forName(
-			Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()),
+			config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get(),
 			false,
 			getClassLoader());
 
-		url = Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_URL).get());
+		url = config.getOption(BlendeeConstants.JDBC_URL).get();
 
 		user = config.getOption(BlendeeConstants.JDBC_USER).get();
 		password = config.getOption(BlendeeConstants.JDBC_PASSWORD).get();
