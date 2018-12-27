@@ -200,9 +200,9 @@ public class TableFacadeGenerator {
 		packageDir.mkdir();
 
 		TablePath[] tables = metadata.getTables(schemaName);
+		RelationshipFactory factory = RelationshipFactory.getInstance();
 		for (TablePath table : tables) {
-
-			Relationship relation = RelationshipFactory.getInstance().getInstance(table);
+			Relationship relation = factory.getInstance(table);
 
 			String tableName = relation.getTablePath().getTableName();
 

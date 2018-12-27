@@ -1,12 +1,14 @@
 package org.blendee.assist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.InsertDMLBuilder;
+import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.binder.NullBinder;
@@ -34,6 +36,11 @@ public class InsertStatementIntermediate {
 	 * @return {@link SelectStatement}
 	 */
 	public DataManipulator VALUES(Object... values) {
+		if (columns.size() == 0) {
+			columns.addAll(
+				Arrays.asList(RelationshipFactory.getInstance().getInstance(table).getColumns()));
+		}
+
 		if (columns.size() != values.length) throw new IllegalStateException();
 
 		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
