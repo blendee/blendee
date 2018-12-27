@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 import org.blendee.assist.Row;
 import org.blendee.assist.TableFacade;
 import org.blendee.assist.TableFacadePackageRule;
+import org.blendee.assist.annotation.Column;
+import org.blendee.assist.annotation.ForeignKey;
+import org.blendee.assist.annotation.PrimaryKey;
+import org.blendee.assist.annotation.Table;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
@@ -28,10 +32,6 @@ import org.blendee.jdbc.PrimaryKeyMetadata;
 import org.blendee.jdbc.StoredIdentifier;
 import org.blendee.jdbc.TableMetadata;
 import org.blendee.jdbc.TablePath;
-import org.blendee.assist.annotation.Column;
-import org.blendee.assist.annotation.ForeignKey;
-import org.blendee.assist.annotation.PrimaryKey;
-import org.blendee.assist.annotation.Table;
 
 /**
  * {@link VirtualSpace} を {@link Row} に付与されたアノテーションからロードするファクトリクラスです。
@@ -140,6 +140,15 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		};
 	}
 
+	/**
+	 * アノテーションからカラムを作成するかを決定します。<br />
+	 * TableFacade 作成時に DB から最新の情報でカラムを作る場合には、 false にします。
+	 * @return falseの場合、アノテーションからカラムを作成しない
+	 */
+	protected boolean usesAllVirtualColumns() {
+		return true;
+	}
+
 	private void prepareVirtualSpace() {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 		String rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
@@ -159,41 +168,44 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			.forEach(
 				name -> listClasses(getClassLoader(), name)
 					.stream()
-					.map(AnnotationMetadataFactory::convert)
+					.map(this::convert)
 					.forEach(virtualSpace::addTable));
 	}
 
-	private static TableSource convert(Class<?> clazz) {
+	private TableSource convert(Class<?> clazz) {
 		Table table = clazz.getAnnotation(Table.class);
 
 		PrimaryKey pk = clazz.getAnnotation(PrimaryKey.class);
 
 		List<ForeignKeySource> fkSources = new LinkedList<>();
 		List<ColumnMetadata> columnMetadatas = new LinkedList<>();
-		Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
-			ForeignKey fk = f.getAnnotation(ForeignKey.class);
-			if (fk != null) fkSources.add(createSource(fk));
 
-			Column column = f.getAnnotation(Column.class);
+		if (usesAllVirtualColumns()) {
+			Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
+				ForeignKey fk = f.getAnnotation(ForeignKey.class);
+				if (fk != null) fkSources.add(createSource(fk));
 
-			if (column != null) {
-				ColumnMetadata columnMetadata = new VirtualColumnMetadata(
-					table.schema(),
-					table.name(),
-					column.name(),
-					column.type(),
-					column.typeName(),
-					column.size(),
-					column.hasDecimalDigits(),
-					column.decimalDigits(),
-					column.remarks(),
-					column.defaultValue(),
-					column.ordinalPosition(),
-					column.notNull());
+				Column column = f.getAnnotation(Column.class);
 
-				columnMetadatas.add(columnMetadata);
-			}
-		});
+				if (column != null) {
+					ColumnMetadata columnMetadata = new VirtualColumnMetadata(
+						table.schema(),
+						table.name(),
+						column.name(),
+						column.type(),
+						column.typeName(),
+						column.size(),
+						column.hasDecimalDigits(),
+						column.decimalDigits(),
+						column.remarks(),
+						column.defaultValue(),
+						column.ordinalPosition(),
+						column.notNull());
+
+					columnMetadatas.add(columnMetadata);
+				}
+			});
+		}
 
 		//手動でクラスに直接つけられた疑似FKを取り込み
 		Arrays.stream(clazz.getAnnotationsByType(ForeignKey.class)).forEach(fk -> {
