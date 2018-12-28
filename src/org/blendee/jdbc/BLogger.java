@@ -44,9 +44,10 @@ public interface BLogger {
 
 	/**
 	 * {@link Throwable} のスタックトレースをログに出力します。
+	 * @param level 出力レベル
 	 * @param t Throwable
 	 */
-	default void log(Throwable t) {
+	default void log(Level level, Throwable t) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream stream;
 		try {
@@ -59,5 +60,7 @@ public interface BLogger {
 		stream.flush();
 
 		println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+
+		flush(level);
 	}
 }

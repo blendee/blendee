@@ -208,20 +208,22 @@ public class BlendeeEnvironment {
 			BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
 
 			Optional.ofNullable(
-				BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues).orElseGet(
-					() -> Optional.of(getDefaultMetadataFactoryClass())
-						.filter(c -> BlendeeConstants.TABLE_FACADE_PACKAGE.extract(initValues).isPresent())
-						.orElse(null)))
+				BlendeeConstants.METADATA_FACTORY_CLASS.extract(initValues)
+					.orElseGet(
+						() -> Optional.of(getDefaultMetadataFactoryClass())
+							.filter(c -> BlendeeConstants.TABLE_FACADE_PACKAGE.extract(initValues).isPresent())
+							.orElse(null)))
 				.ifPresent(clazz -> init.setMetadataFactoryClass(clazz));
 
 			Optional.ofNullable(
-				BlendeeConstants.TRANSACTION_FACTORY_CLASS.extract(initValues).orElseGet(
-					() -> Optional.of(getDefaultTransactionFactoryClass())
-						.filter(
-							c -> BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues)
-								.filter(name -> name.length() > 0)
-								.isPresent())
-						.orElse(null)))
+				BlendeeConstants.TRANSACTION_FACTORY_CLASS.extract(initValues)
+					.orElseGet(
+						() -> Optional.of(getDefaultTransactionFactoryClass())
+							.filter(
+								c -> BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues)
+									.filter(name -> name.length() > 0)
+									.isPresent())
+							.orElse(null)))
 				.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
 			if (consumer != null) consumer.accept(init);
@@ -300,31 +302,21 @@ public class BlendeeEnvironment {
 				try {
 					if (top) transaction.rollback();
 				} catch (Throwable tt) {
-					BlendeeManager.getLogger().log(tt);
+					BlendeeManager.getLogger().log(Level.SEVERE, tt);
 				}
 
 				throw t;
 			} finally {
 				if (top) {
-					doFinally(
-						() -> manager.getAutoCloseableFinalizer().closeAll(),
-						() -> doFinally(
-							() -> transaction.close(),
-							ContextManager::releaseContext));
+					try {
+						transaction.close();
+					} catch (Throwable tt) {
+						BlendeeManager.getLogger().log(Level.SEVERE, tt);
+					}
 				}
 			}
 		} finally {
 			ContextManager.releaseContext();
-		}
-	}
-
-	private static void doFinally(Runnable mainFunction, Runnable finallyFunction) {
-		try {
-			mainFunction.run();
-		} catch (Throwable t) {
-			BlendeeManager.getLogger().log(t);
-		} finally {
-			finallyFunction.run();
 		}
 	}
 

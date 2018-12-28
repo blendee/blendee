@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * finalize() の代わりに、参照されなくなった JDBC のインスタンスを自動的にクローズするクラスです。
  * @author 千葉 哲嗣
  */
+//Java9でjava.lang.ref.Cleaner使用に書き換えること
 public class AutoCloseableFinalizer {
 
 	private static final AtomicInteger threadCounter = new AtomicInteger();
@@ -133,6 +134,8 @@ public class AutoCloseableFinalizer {
 		try {
 			if (closeable != null)
 				closeable.close();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			//多重クローズで例外が出るかもしれないのでここでは無視
+		}
 	}
 }

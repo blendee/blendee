@@ -2,6 +2,7 @@ package org.blendee.jdbc;
 
 import java.sql.DataTruncation;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import org.blendee.internal.U;
 
@@ -29,7 +30,7 @@ public class DefaultErrorConverter implements ErrorConverter {
 			logger.println(prefix + "transfer size: " + warning.getTransferSize());
 		}
 
-		logger.log(e);
+		logger.log(Level.INFO, e);
 
 		throw new BlendeeException(e);
 	}
