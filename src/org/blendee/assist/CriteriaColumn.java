@@ -1179,6 +1179,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	}
 
 	private O addAnotherColumnCriteria(Statement statement, Column another, String template) {
+		root.forSubquery(true);
 		statement.forSubquery(true);
 
 		getContext().addCriteria(
