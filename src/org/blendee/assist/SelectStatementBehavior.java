@@ -25,6 +25,7 @@ import org.blendee.selector.SimpleSelectedValuesConverter;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
+import org.blendee.sql.CombiningQuery;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
@@ -36,11 +37,10 @@ import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLQueryBuilder;
-import org.blendee.sql.SQLQueryBuilder.UnionOperator;
+import org.blendee.sql.SQLQueryBuilder.CombineOperator;
 import org.blendee.sql.SelectClause;
 import org.blendee.sql.SelectCountClause;
 import org.blendee.sql.SelectDistinctClause;
-import org.blendee.sql.Union;
 import org.blendee.sql.binder.NullBinder;
 
 /**
@@ -80,7 +80,7 @@ public abstract class SelectStatementBehavior<
 
 	private Criteria havingClause;
 
-	private final List<Union> unions = new ArrayList<>();
+	private final List<CombiningQuery> combiningQueries = new ArrayList<>();
 
 	private OrderByClause orderByClause;
 
@@ -335,13 +335,37 @@ public abstract class SelectStatementBehavior<
 	public void UNION(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		unions.add(new Union(UnionOperator.UNION, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.UNION, select.query()));
 	}
 
 	public void UNION_ALL(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		unions.add(new Union(UnionOperator.UNION_ALL, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.UNION_ALL, select.query()));
+	}
+
+	public void INTERSECT(SelectStatement select) {
+		quitRowMode();
+		select.quitRowMode();
+		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT, select.query()));
+	}
+
+	public void INTERSECT_ALL(SelectStatement select) {
+		quitRowMode();
+		select.quitRowMode();
+		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT_ALL, select.query()));
+	}
+
+	public void EXCEPT(SelectStatement select) {
+		quitRowMode();
+		select.quitRowMode();
+		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT, select.query()));
+	}
+
+	public void EXCEPT_ALL(SelectStatement select) {
+		quitRowMode();
+		select.quitRowMode();
+		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT_ALL, select.query()));
 	}
 
 	public void and(Criteria whereClause) {
@@ -524,7 +548,7 @@ public abstract class SelectStatementBehavior<
 	}
 
 	public void resetUnions() {
-		unions.clear();
+		combiningQueries.clear();
 	}
 
 	public void resetJoins() {
@@ -541,7 +565,7 @@ public abstract class SelectStatementBehavior<
 		groupByClause = null;
 		fromClause = null;
 		joinResources.clear();
-		unions.clear();
+		combiningQueries.clear();
 		orderByClause = null;
 		rowMode = true;
 		sql = null;
@@ -841,7 +865,7 @@ public abstract class SelectStatementBehavior<
 		if (whereClause != null) builder.setWhereClause(whereClause);
 		if (havingClause != null) builder.setHavingClause(havingClause);
 
-		unions.forEach(u -> builder.union(u.getUnionOperator(), u.getSQL()));
+		combiningQueries.forEach(u -> builder.combine(u.getCombineOperator(), u.getSQL()));
 
 		if (orderByClause != null) builder.setOrderByClause(orderByClause);
 

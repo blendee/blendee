@@ -18,7 +18,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 
 	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private final List<Union> unions = new LinkedList<>();
+	private final List<CombiningQuery> combiningQueries = new LinkedList<>();
 
 	private final List<JoinContainer> joins = new LinkedList<>();
 
@@ -35,9 +35,9 @@ public class SQLQueryBuilder implements ComposedSQL {
 	private String query;
 
 	/**
-	 * 使用可能な UNION キーワードです。
+	 * 使用可能な検索結果結合キーワードです。
 	 */
-	public enum UnionOperator {
+	public enum CombineOperator {
 
 		/**
 		 * UNION
@@ -47,11 +47,31 @@ public class SQLQueryBuilder implements ComposedSQL {
 		/**
 		 * UNION ALL
 		 */
-		UNION_ALL("UNION ALL");
+		UNION_ALL("UNION ALL"),
+
+		/**
+		 * INTERSECT
+		 */
+		INTERSECT("INTERSECT"),
+
+		/**
+		 * INTERSECT ALL
+		 */
+		INTERSECT_ALL("INTERSECT ALL"),
+
+		/**
+		 * EXCEPT
+		 */
+		EXCEPT("EXCEPT"),
+
+		/**
+		 * EXCEPT ALL
+		 */
+		EXCEPT_ALL("EXCEPT ALL");
 
 		private final String expression;
 
-		private UnionOperator(String expression) {
+		private CombineOperator(String expression) {
 			this.expression = expression;
 		}
 	}
@@ -177,17 +197,17 @@ public class SQLQueryBuilder implements ComposedSQL {
 	 * @param operator UNION の種類
 	 * @param query UNION 対象
 	 */
-	public synchronized void union(UnionOperator operator, ComposedSQL query) {
-		unions.add(new Union(operator, query));
+	public synchronized void combine(CombineOperator operator, ComposedSQL query) {
+		combiningQueries.add(new CombiningQuery(operator, query));
 		query = null;
 	}
 
 	/**
-	 * 保持する {@link Union} を返します。
-	 * @return {@link Union}
+	 * 保持する {@link CombiningQuery} を返します。
+	 * @return {@link CombiningQuery}
 	 */
-	public synchronized Union[] getUnions() {
-		return unions.toArray(new Union[unions.size()]);
+	public synchronized CombiningQuery[] getCombiningQueries() {
+		return combiningQueries.toArray(new CombiningQuery[combiningQueries.size()]);
 	}
 
 	/**
@@ -228,7 +248,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 	 * @param onCriteria ON 句
 	 */
 	public synchronized void join(JoinType joinType, SQLQueryBuilder another, Criteria onCriteria) {
-		if (unions.size() > 0 || another.unions.size() > 0)
+		if (combiningQueries.size() > 0 || another.combiningQueries.size() > 0)
 			throw new IllegalArgumentException("UNION されたクエリはマージできません");
 
 		joins.add(new JoinContainer(joinType, another, onCriteria));
@@ -279,7 +299,7 @@ public class SQLQueryBuilder implements ComposedSQL {
 		done = groupClause.complement(done, statement);
 		done = havingClause.complement(done, statement);
 
-		for (Union union : unions) {
+		for (CombiningQuery union : combiningQueries) {
 			done = union.getSQL().complement(done, statement);
 		}
 
@@ -314,8 +334,8 @@ public class SQLQueryBuilder implements ComposedSQL {
 			addClause(clauses, listClauses.toGroupByString(joined));
 			addClause(clauses, havingClause.toString(joined));
 
-			unions.forEach(u -> {
-				clauses.add(u.getUnionOperator().expression);
+			combiningQueries.forEach(u -> {
+				clauses.add(u.getCombineOperator().expression);
 				clauses.add(u.getSQL().sql());
 			});
 

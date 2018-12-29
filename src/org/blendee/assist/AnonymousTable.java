@@ -420,6 +420,50 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	/**
+	 * INTERSECT するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param select INTERSECT 対象
+	 * @return この {@link SelectStatement}
+	 */
+	public AnonymousTable INTERSECT(SelectStatement select) {
+		behavior().INTERSECT(select);
+		return this;
+	}
+
+	/**
+	 * INTERSECT ALL するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param select INTERSECT ALL 対象
+	 * @return この {@link SelectStatement}
+	 */
+	public AnonymousTable INTERSECT_ALL(SelectStatement select) {
+		behavior().INTERSECT_ALL(select);
+		return this;
+	}
+
+	/**
+	 * EXCEPT するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param select EXCEPT 対象
+	 * @return この {@link SelectStatement}
+	 */
+	public AnonymousTable EXCEPT(SelectStatement select) {
+		behavior().INTERSECT(select);
+		return this;
+	}
+
+	/**
+	 * EXCEPT ALL するクエリを追加します。<br>
+	 * 追加する側のクエリには ORDER BY 句を設定することはできません。
+	 * @param select EXCEPT ALL 対象
+	 * @return この {@link SelectStatement}
+	 */
+	public AnonymousTable EXCEPT_ALL(SelectStatement select) {
+		behavior().EXCEPT_ALL(select);
+		return this;
+	}
+
+	/**
 	 * ORDER BY 句を記述します。
 	 * @param function {@link OrderByOfferFunction}
 	 * @return この {@link SelectStatement}
