@@ -12,8 +12,8 @@ public interface TableFacadeContext<T> {
 	/**
 	 * 参照用
 	 */
-	static final TableFacadeContext<TableFacadeColumn> OTHER = (relationship, name) -> new TableFacadeColumn(
-		relationship.getRelationship(),
+	static final TableFacadeContext<TableFacadeColumn> OTHER = (assist, name) -> new TableFacadeColumn(
+		assist,
 		name);
 
 	/**
@@ -22,10 +22,10 @@ public interface TableFacadeContext<T> {
 	 * @return WHERE 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<WhereColumn<O>> newWhereBuilder() {
-		return (relationship, name) -> new WhereColumn<>(
-			relationship.getSelectStatement(),
-			relationship.getContext(),
-			relationship.getRelationship().getColumn(name));
+		return (assist, name) -> new WhereColumn<>(
+			assist.getSelectStatement(),
+			assist.getContext(),
+			assist.getRelationship().getColumn(name));
 	}
 
 	/**
@@ -34,10 +34,10 @@ public interface TableFacadeContext<T> {
 	 * @return HAVING 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<HavingColumn<O>> newHavingBuilder() {
-		return (relationship, name) -> new HavingColumn<>(
-			relationship.getSelectStatement(),
-			relationship.getContext(),
-			relationship.getRelationship().getColumn(name));
+		return (assist, name) -> new HavingColumn<>(
+			assist.getSelectStatement(),
+			assist.getContext(),
+			assist.getRelationship().getColumn(name));
 	}
 
 	/**
@@ -46,10 +46,10 @@ public interface TableFacadeContext<T> {
 	 * @return ON 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnLeftColumn<O>> newOnLeftBuilder() {
-		return (relationship, name) -> new OnLeftColumn<>(
-			relationship.getSelectStatement(),
-			relationship.getContext(),
-			relationship.getRelationship().getColumn(name));
+		return (assist, name) -> new OnLeftColumn<>(
+			assist.getSelectStatement(),
+			assist.getContext(),
+			assist.getRelationship().getColumn(name));
 	}
 
 	/**
@@ -58,10 +58,10 @@ public interface TableFacadeContext<T> {
 	 * @return ON 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<OnRightColumn<O>> newOnRightBuilder() {
-		return (relationship, name) -> new OnRightColumn<>(
-			relationship.getSelectStatement(),
-			relationship.getContext(),
-			relationship.getRelationship().getColumn(name));
+		return (assist, name) -> new OnRightColumn<>(
+			assist.getSelectStatement(),
+			assist.getContext(),
+			assist.getRelationship().getColumn(name));
 	}
 
 	/**
@@ -70,10 +70,10 @@ public interface TableFacadeContext<T> {
 	 * @return WHERE 句用 Context
 	 */
 	static <O extends LogicalOperators<?>> TableFacadeContext<WhereColumn<O>> newDMSWhereBuilder() {
-		return (relationship, name) -> new WhereColumn<>(
-			relationship.getDataManipulationStatement(),
-			relationship.getContext(),
-			relationship.getRelationship().getColumn(name));
+		return (assist, name) -> new WhereColumn<>(
+			assist.getDataManipulationStatement(),
+			assist.getContext(),
+			assist.getRelationship().getColumn(name));
 	}
 
 	/**
