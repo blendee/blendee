@@ -1,6 +1,7 @@
 package org.blendee.assist;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
@@ -23,7 +24,7 @@ public class SimpleComposedSQL implements ComposedSQL, Serializable {
 	 * @param binders {@link Binder}
 	 */
 	public SimpleComposedSQL(String sql, Binder... binders) {
-		this.sql = sql;
+		this.sql = Objects.requireNonNull(sql);
 		this.binders = binders.clone();
 	}
 

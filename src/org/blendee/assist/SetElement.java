@@ -158,10 +158,9 @@ public class SetElement {
 	 */
 	public SetProof set(Object... values) {
 		binders.clear();
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		BinderExtractor extractor = new BinderExtractor();
 		Arrays.stream(values).forEach(v -> {
-			ValueExtractor extractor = valueExtractors.selectValueExtractor(v.getClass());
-			binders.add(extractor.extractAsBinder(v));
+			binders.add(extractor.extract(v));
 		});
 
 		template = Stream.generate(() -> singleTemplate).limit(values.length).collect(Collectors.joining(", "));
@@ -179,10 +178,9 @@ public class SetElement {
 	 */
 	public SetProof set(String template, Vargs<Object> values) {
 		binders.clear();
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		BinderExtractor extractor = new BinderExtractor();
 		Arrays.stream(values.get()).forEach(v -> {
-			ValueExtractor extractor = valueExtractors.selectValueExtractor(v.getClass());
-			binders.add(extractor.extractAsBinder(v));
+			binders.add(extractor.extract(v));
 		});
 
 		this.template = template;
@@ -201,10 +199,9 @@ public class SetElement {
 	 */
 	public SetProof set(String template, Vargs<? extends UpdateColumn> columns, Vargs<Object> values) {
 		binders.clear();
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		BinderExtractor extractor = new BinderExtractor();
 		Arrays.stream(values.get()).forEach(v -> {
-			ValueExtractor extractor = valueExtractors.selectValueExtractor(v.getClass());
-			binders.add(extractor.extractAsBinder(v));
+			binders.add(extractor.extract(v));
 		});
 
 		List<String> columnNames = columns.stream().map(c -> c.column().getName()).collect(Collectors.toList());

@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.RelationshipFactory;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.binder.NullBinder;
 
 /**
@@ -43,7 +40,7 @@ public class InsertStatementIntermediate {
 
 		if (columns.size() != values.length) throw new IllegalStateException();
 
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		BinderExtractor extractor = new BinderExtractor();
 
 		InsertDMLBuilder builder = new InsertDMLBuilder(table);
 
@@ -51,7 +48,7 @@ public class InsertStatementIntermediate {
 			Column c = columns.get(i);
 			Object v = values[i];
 			if (v != null) {
-				builder.add(c.getName(), valueExtractors.selectValueExtractor(v.getClass()).extractAsBinder(v));
+				builder.add(c.getName(), extractor.extract(v));
 			} else {
 				builder.add(c.getName(), new NullBinder(c.getColumnMetadata().getType()));
 			}

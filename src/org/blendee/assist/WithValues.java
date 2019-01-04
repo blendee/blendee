@@ -4,14 +4,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.ContextManager;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.RuntimeId;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
  * {@link CriteriaClauseAssist#with(String, java.util.function.Consumer)} の template にセットするカラムとプレースホルダの値を渡すための入れ物クラスです。
@@ -39,10 +36,10 @@ public class WithValues {
 	 * @return self
 	 */
 	public WithValues values(Object... values) {
-		ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		BinderExtractor extractor = new BinderExtractor();
 
 		for (Object value : values) {
-			binders.add(extractors.selectValueExtractor(value.getClass()).extractAsBinder(value));
+			binders.add(extractor.extract(value));
 		}
 
 		return this;
