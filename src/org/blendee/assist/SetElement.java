@@ -10,16 +10,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.blendee.jdbc.ContextManager;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
-import org.blendee.sql.ValueExtractor;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
 import org.blendee.sql.binder.DoubleBinder;
