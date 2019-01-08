@@ -335,37 +335,37 @@ public abstract class SelectStatementBehavior<
 	public void UNION(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.UNION, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.UNION, select.composeSQL()));
 	}
 
 	public void UNION_ALL(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.UNION_ALL, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.UNION_ALL, select.composeSQL()));
 	}
 
 	public void INTERSECT(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT, select.composeSQL()));
 	}
 
 	public void INTERSECT_ALL(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT_ALL, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.INTERSECT_ALL, select.composeSQL()));
 	}
 
 	public void EXCEPT(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT, select.composeSQL()));
 	}
 
 	public void EXCEPT_ALL(SelectStatement select) {
 		quitRowMode();
 		select.quitRowMode();
-		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT_ALL, select.query()));
+		combiningQueries.add(new CombiningQuery(CombineOperator.EXCEPT_ALL, select.composeSQL()));
 	}
 
 	public void and(Criteria whereClause) {

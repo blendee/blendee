@@ -1,6 +1,7 @@
 package org.blendee.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -68,7 +69,14 @@ public abstract class AbstractRecorder {
 		lock.lock();
 		try {
 			if ((reproducer = executorCache.get(lambdaClass)) == null) {
-				reproducer = new Reproducer(supplier.get().reproduce());
+				E reproducible = supplier.get();
+				try {
+					Placeholder.start();
+					//ここで初めてSQLをreproduceし、Placeholderの位置を記録
+					reproducer = new Reproducer(reproducible.reproduce());
+				} finally {
+					Placeholder.remove();
+				}
 
 				executorCache.put(lambdaClass, reproducer);
 			}
@@ -104,7 +112,14 @@ public abstract class AbstractRecorder {
 
 			reproducer = map.get(result);
 			if (reproducer == null) {
-				reproducer = new Reproducer(supplier.apply(result).reproduce());
+				E reproducible = supplier.apply(result);
+				try {
+					Placeholder.start();
+					//ここで初めてSQLをreproduceし、Placeholderの位置を記録
+					reproducer = new Reproducer(reproducible.reproduce());
+				} finally {
+					Placeholder.remove();
+				}
 
 				map.put(result, reproducer);
 			}
@@ -121,24 +136,33 @@ public abstract class AbstractRecorder {
 
 		private final Object[] values;
 
+		private final int[] placeholderIndexes;
+
 		private Reproducer(Reproducible<?> reproducible) {
 			this.reproducible = reproducible;
+
+			List<Integer> indexes = Placeholder.getIndexes();
 
 			Binder[] binders = reproducible.currentBinders().clone();
 			values = new Object[binders.length];
 			for (int i = 0; i < binders.length; i++) {
 				values[i] = binders[i].getValue();
 			}
+
+			placeholderIndexes = new int[indexes.size()];
+			for (int i = 0; i < placeholderIndexes.length; i++) {
+				placeholderIndexes[i] = indexes.get(i) - 1;
+			}
 		}
 
 		private Reproducible<?> reproduce(Object[] newValues) {
-			if (newValues.length != values.length)
-				throw new IllegalStateException("値の数は " + values.length + " である必要があります");
+			if (newValues.length != placeholderIndexes.length)
+				throw new IllegalStateException("値の数は " + placeholderIndexes.length + " である必要があります");
 
 			Object[] clone = values.clone();
 
 			for (int i = 0; i < newValues.length; i++) {
-				clone[i] = newValues[i];
+				clone[placeholderIndexes[i]] = newValues[i];
 			}
 
 			return reproducible.reproduce(clone);

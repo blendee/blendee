@@ -45,13 +45,13 @@ class PlaybackDataManipulator implements DataManipulator {
 	}
 
 	@Override
-	public PlaybackDataManipulator reproduce(Object... placeHolderValues) {
+	public DataManipulator reproduce(Object... placeHolderValues) {
 		List<Binder> binders = new ComplementerValues(this).reproduce(placeHolderValues).binders();
 		return new PlaybackDataManipulator(base.sql(), binders.toArray(new Binder[binders.size()]));
 	}
 
 	@Override
-	public PlaybackDataManipulator reproduce() {
+	public DataManipulator reproduce() {
 		return new PlaybackDataManipulator(base.sql(), base.binders());
 	}
 

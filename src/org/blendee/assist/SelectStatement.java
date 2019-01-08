@@ -1,5 +1,6 @@
 package org.blendee.assist;
 
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
@@ -99,5 +100,5 @@ public interface SelectStatement extends Statement, SQLDecorators {
 	 * {@link Query} を生成し、返します。
 	 * @return {@link Query}
 	 */
-	Query<?, ?> query();
+	ComposedSQL composeSQL();
 }

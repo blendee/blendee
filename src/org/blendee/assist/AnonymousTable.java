@@ -230,7 +230,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @param alias 表別名
 	 */
 	public AnonymousTable(SelectStatement inner, String alias) {
-		relationship = new AnonymousRelationship(inner.query(), alias);
+		relationship = new AnonymousRelationship(inner.composeSQL(), alias);
 	}
 
 	/**
@@ -756,9 +756,9 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
-	public AnonymousQuery query() {
+	public ComposedSQL composeSQL() {
 		careEmptySelect();
-		return new AnonymousQuery(behavior().query());
+		return behavior().composeSQL();
 	}
 
 	@Override
