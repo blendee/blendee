@@ -1,4 +1,4 @@
-package org.blendee.util;
+package org.blendee.sql;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;

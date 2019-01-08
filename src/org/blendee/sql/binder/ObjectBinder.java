@@ -31,7 +31,7 @@ public final class ObjectBinder extends Binder {
 
 	@Override
 	public Binder replicate() {
-		throw new UnsupportedOperationException();
+		return this;
 	}
 
 	@Override

@@ -78,8 +78,11 @@ public class DefaultValueExtractors implements ValueExtractors {
 	@Override
 	public ValueExtractor selectValueExtractor(Class<?> valueClass) {
 		ValueExtractor extractor = map.get(valueClass);
-		if (extractor == null) return ObjectValueExtractor.singleton;
-		return extractor;
+		if (extractor != null) return extractor;
+
+		if (Placeholder.class.isAssignableFrom(valueClass)) return PlaceholderValueExtractor.singleton;
+
+		return ObjectValueExtractor.singleton;
 	}
 
 	@Override
@@ -354,6 +357,23 @@ public class DefaultValueExtractors implements ValueExtractors {
 		@Override
 		public Binder extractAsBinder(Object value) {
 			return new UUIDBinder((UUID) value);
+		}
+	}
+
+	private static class PlaceholderValueExtractor implements ValueExtractor {
+
+		private static final PlaceholderValueExtractor singleton = new PlaceholderValueExtractor();
+
+		private PlaceholderValueExtractor() {}
+
+		@Override
+		public Object extract(Result result, int columnIndex) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Binder extractAsBinder(Object value) {
+			return (Binder) value;
 		}
 	}
 }

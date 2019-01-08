@@ -1,4 +1,4 @@
-package org.blendee.util;
+package org.blendee.sql;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.sql.Binder;
 
 /**
  * プレースホルダの型ヒントを表します。
@@ -23,8 +22,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setString(index, "");
+			if (isStarted()) {
+				addIndex(index);
+				statement.setString(index, "");
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -35,8 +38,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setBigDecimal(index, BigDecimal.ZERO);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setBigDecimal(index, BigDecimal.ZERO);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -47,8 +54,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setTimestamp(index, new Timestamp(0));
+			if (isStarted()) {
+				addIndex(index);
+				statement.setTimestamp(index, new Timestamp(0));
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -59,8 +70,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setInt(index, 0);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setInt(index, 0);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -71,8 +86,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setLong(index, 0L);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setLong(index, 0L);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -83,8 +102,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setFloat(index, 0F);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setFloat(index, 0F);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -95,8 +118,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setDouble(index, 0D);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setDouble(index, 0D);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -107,8 +134,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setBoolean(index, false);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setBoolean(index, false);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -121,8 +152,12 @@ public abstract class Placeholder extends Binder {
 
 		@Override
 		public void bind(int index, BPreparedStatement statement) {
-			addIndex(index);
-			statement.setObject(index, object);
+			if (isStarted()) {
+				addIndex(index);
+				statement.setObject(index, object);
+			} else {
+				statement.setObject(index, this);
+			}
 		}
 	};
 
@@ -216,10 +251,11 @@ public abstract class Placeholder extends Binder {
 		placeholderIndexes.remove();
 	}
 
-	private static void addIndex(int index) {
-		List<Integer> list = placeholderIndexes.get();
-		if (list == null) return;
+	private static boolean isStarted() {
+		return placeholderIndexes.get() != null;
+	}
 
-		list.add(index);
+	private static void addIndex(int index) {
+		placeholderIndexes.get().add(index);
 	}
 }

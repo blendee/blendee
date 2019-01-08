@@ -1,4 +1,4 @@
-package org.blendee.util;
+package org.blendee.sql;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,11 +6,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import org.blendee.assist.Query;
-import org.blendee.assist.SelectStatement;
-import org.blendee.sql.Binder;
-import org.blendee.sql.Reproducible;
 
 /**
  * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化するためのクラスです。
@@ -23,10 +18,10 @@ public abstract class AbstractRecorder {
 	private final Map<Class<?>, Map<?, Reproducer>> executorMapCache = new HashMap<>();
 
 	/**
-	 * {@link SelectStatement} から {@link Query} を生成する処理を実行します。<br>
-	 * 既に一度 {@link Query} が生成されていた場合、新たに {@link Query} を生成せず、以前の {@link Query} を返します。<br>
-	 * 以前の {@link Query} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
-	 * @param supplier {@link Query} を生成する処理
+	 * {@link Reproducible} を生成する処理を実行します。<br>
+	 * 既に一度 {@link Reproducible} が生成されていた場合、新たに {@link Reproducible} を生成せず、以前の {@link Reproducible} を返します。<br>
+	 * 以前の {@link Reproducible} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
+	 * @param supplier {@link Reproducible} を生成する処理
 	 * @param playbackPlaceHolderValues supplier で使用した {@link Placeholder} に、再実行時セットする値
 	 * @param <E> {@link Reproducible} の実装
 	 * @return {@link Reproducible}
@@ -36,13 +31,13 @@ public abstract class AbstractRecorder {
 	}
 
 	/**
-	 * {@link SelectStatement} から {@link Query} を生成する処理を実行します。<br>
-	 * 既に一度 {@link Query} が生成されていた場合、新たに {@link Query} を生成せず、以前の {@link Query} を返します。<br>
-	 * 以前の {@link Query} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。<br>
+	 * {@link Reproducible} を生成する処理を実行します。<br>
+	 * 既に一度 {@link Reproducible} が生成されていた場合、新たに {@link Reproducible} を生成せず、以前の {@link Reproducible} を返します。<br>
+	 * 以前の {@link Reproducible} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。<br>
 	 * decision により、作成されるクエリを複数タイプキャッシュすることが可能です。<br>
 	 * decision が返す結果は、{@link HashMap} のキーとして使用されるので、キーの要件を満たす必要があります。
 	 * @param decision 使用するクエリを判定し、それを知らせる結果を返す {@link Supplier}
-	 * @param supplier decision の結果を受け取り、状況にあった {@link Query} を生成する処理
+	 * @param supplier decision の結果を受け取り、状況にあった {@link Reproducible} を生成する処理
 	 * @param playbackPlaceHolderValuesSupplier decision の結果を受け取り、 supplier で使用した {@link Placeholder} に、再実行時セットする値
 	 * @param <R> 条件判定のための材料の型
 	 * @param <E> {@link Reproducible} の実装
