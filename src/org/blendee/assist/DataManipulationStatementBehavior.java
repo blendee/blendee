@@ -7,9 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.blendee.jdbc.TablePath;
-import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
@@ -74,21 +72,13 @@ public abstract class DataManipulationStatementBehavior<
 
 		SQLQueryBuilder builder = select.toSQLQueryBuilder();
 
-		String sql = buildInsertStatement(builder);
-
-		List<Binder> binders = new ComplementerValues(builder).binders();
-
-		return new PlaybackDataManipulator(sql, binders);
+		return new RawDataManipulator(buildInsertStatement(builder), builder);
 	}
 
 	public DataManipulator INSERT(SelectStatement select) {
 		SQLQueryBuilder builder = select.toSQLQueryBuilder();
 
-		String sql = buildInsertStatement(builder);
-
-		List<Binder> binders = new ComplementerValues(builder).binders();
-
-		return new PlaybackDataManipulator(sql, binders);
+		return new RawDataManipulator(buildInsertStatement(builder), builder);
 	}
 
 	public UpdateStatementIntermediate<W> UPDATE() {
@@ -216,9 +206,7 @@ public abstract class DataManipulationStatementBehavior<
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());
 
-		List<Binder> binders = new ComplementerValues(builder).binders();
-
-		return new PlaybackDataManipulator(builder.sql(), binders);
+		return new RawDataManipulator(builder);
 	}
 
 	DataManipulator createUpdateDataManipulator() {
@@ -231,9 +219,7 @@ public abstract class DataManipulationStatementBehavior<
 			e.appendTo(builder);
 		});
 
-		List<Binder> binders = new ComplementerValues(builder).binders();
-
-		return new PlaybackDataManipulator(builder.sql(), binders);
+		return new RawDataManipulator(builder);
 	}
 
 	private String buildInsertStatement(SQLQueryBuilder builder) {

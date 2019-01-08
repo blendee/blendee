@@ -22,17 +22,18 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public void initialize(Initializer initializer) {
 		synchronized (lock) {
-			if (config != null) throw new IllegalStateException("既に initialize が実行されています。");
+			if (config != null) throw new IllegalStateException("既に initialize が実行されています");
 
 			config = initializer.createConfigure();
 
 			int interval = config.getAutoCloseIntervalMillis();
 
-			//100以下は100に増やしておく
-			autoCloseableFinalizer = new AutoCloseableFinalizer(interval < 100 ? 100 : interval);
-
 			//intervalが0以下の場合、スレッドを起動しない
-			if (interval > 0) autoCloseableFinalizer.start();
+			if (interval > 0) {
+				//100以下は100に増やしておく
+				autoCloseableFinalizer = new AutoCloseableFinalizer(interval < 100 ? 100 : interval);
+				autoCloseableFinalizer.start();
+			}
 		}
 	}
 
@@ -64,7 +65,6 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public AutoCloseableFinalizer getAutoCloseableFinalizer() {
 		synchronized (lock) {
-			if (autoCloseableFinalizer == null) throw new IllegalStateException("設定が完了していません");
 			return autoCloseableFinalizer;
 		}
 	}

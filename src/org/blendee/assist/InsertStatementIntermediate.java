@@ -56,6 +56,6 @@ public class InsertStatementIntermediate {
 
 		builder.addDecorator(decorators.decorators());
 
-		return new PlaybackDataManipulator(builder.sql(), builder.getBinders());
+		return new RawDataManipulator(builder);
 	}
 }
