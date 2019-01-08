@@ -3,8 +3,8 @@ package org.blendee.jdbc.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableFinalizer;
@@ -28,7 +28,7 @@ public class ConcreteConnection implements BConnection {
 
 	private final Connection connection;
 
-	private final List<StatementWrapper> statementWrappers = new LinkedList<>();
+	private final Set<StatementWrapper> statementWrappers = new LinkedHashSet<>();
 
 	private final Configure config;
 
@@ -119,7 +119,7 @@ public class ConcreteConnection implements BConnection {
 
 	private static BStatement wrap(
 		BStatement statement,
-		List<StatementWrapper> wrappers) {
+		Set<StatementWrapper> wrappers) {
 		for (StatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);
 		return statement;
@@ -127,7 +127,7 @@ public class ConcreteConnection implements BConnection {
 
 	private static BPreparedStatement wrap(
 		BPreparedStatement statement,
-		List<StatementWrapper> wrappers) {
+		Set<StatementWrapper> wrappers) {
 		for (StatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);
 		return statement;
@@ -135,7 +135,7 @@ public class ConcreteConnection implements BConnection {
 
 	private static BatchStatement wrap(
 		BatchStatement statement,
-		List<StatementWrapper> wrappers) {
+		Set<StatementWrapper> wrappers) {
 		for (StatementWrapper wrapper : wrappers)
 			statement = wrapper.wrap(statement);
 		return statement;

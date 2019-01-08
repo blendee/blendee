@@ -41,12 +41,40 @@ public class DriverTransactionFactory implements TransactionFactory {
 
 	@Override
 	public Transaction createTransaction() {
+		return new JDBCTransaction(getJDBCConnection());
+	}
+
+	/**
+	 * @return JDBC URL
+	 */
+	protected String url() {
+		return url;
+	}
+
+	/**
+	 * @return JDBC Driver
+	 */
+	protected Driver driver() {
+		return driver;
+	}
+
+	/**
+	 * @return {@link Properties}
+	 */
+	protected Properties properties() {
+		return properties;
+	}
+
+	/**
+	 * @return JDBC {@link Connection}
+	 */
+	protected Connection getJDBCConnection() {
 		try {
-			Connection connection = driver.connect(url, properties);
+			Connection connection = driver().connect(url(), properties());
 
 			if (connection == null) throw new IllegalStateException(driver.getClass() + "#connect(String, Properties) returns null");
 
-			return new JDBCTransaction(connection);
+			return connection;
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		}
