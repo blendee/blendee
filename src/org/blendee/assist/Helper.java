@@ -7,9 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.RuntimeId;
@@ -47,10 +45,9 @@ public class Helper {
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
 		String subqueryString = keyword + " (" + builder.sql() + ")";
 
-		List<Binder> binders = new ComplementerValues(builder).binders();
 		assist.getContext()
 			.addCriteria(
-				new CriteriaFactory(main).createCriteria(subqueryString, Column.EMPTY_ARRAY, binders.toArray(new Binder[binders.size()])));
+				new CriteriaFactory(main).createCriteria(subqueryString, Column.EMPTY_ARRAY, builder.currentBinders()));
 	}
 
 	public static <A> void paren(RuntimeId id, CriteriaContext context, Consumer<A> consumer, A assist) {

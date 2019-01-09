@@ -55,19 +55,19 @@ class RawDataManipulator implements DataManipulator {
 	public DataManipulator reproduce(Object... placeHolderValues) {
 		return new PlaybackDataManipulator(
 			sql.sql(),
-			new ComplementerValues(sql).reproduce(placeHolderValues).binders());
+			ComplementerValues.of(sql).reproduce(placeHolderValues).binders());
 	}
 
 	@Override
 	public DataManipulator reproduce() {
 		return new PlaybackDataManipulator(
 			sql.sql(),
-			new ComplementerValues(sql).reproduce().binders());
+			ComplementerValues.of(sql).reproduce().binders());
 	}
 
 	@Override
 	public Binder[] currentBinders() {
-		return new ComplementerValues(sql).currentBinders();
+		return ComplementerValues.of(sql).currentBinders();
 	}
 
 	@Override

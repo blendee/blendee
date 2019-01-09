@@ -213,7 +213,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			route,
 			sql(),
 			toCountSQL().sql(),
-			new ComplementerValues(composedSQL()).reproduce(placeHolderValues),
+			ComplementerValues.of(composedSQL()).reproduce(placeHolderValues),
 			optimizer.getOptimizedSelectClause().getColumns());
 	}
 
@@ -224,13 +224,13 @@ public class InstantOneToManyQuery<O extends Row, M>
 			route,
 			sql(),
 			toCountSQL().sql(),
-			new ComplementerValues(composedSQL()),
+			ComplementerValues.of(composedSQL()),
 			optimizer.getOptimizedSelectClause().getColumns());
 	}
 
 	@Override
 	public Binder[] currentBinders() {
-		return new ComplementerValues(composedSQL()).currentBinders();
+		return ComplementerValues.of(composedSQL()).currentBinders();
 	}
 
 	@Override

@@ -1184,8 +1184,7 @@ public class CriteriaFactory {
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
 		String subqueryString = "(" + String.join(", ", columnPartList) + ") " + (notIn ? "NOT IN" : "IN") + " (" + subquery.sql() + ")";
 
-		List<Binder> binders = new ComplementerValues(subquery).binders();
-		return new Criteria(id, subqueryString, columns, binders.toArray(new Binder[binders.size()]));
+		return new Criteria(id, subqueryString, columns, subquery.currentBinders());
 	}
 
 	/**
@@ -1205,8 +1204,7 @@ public class CriteriaFactory {
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
 		String subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
 
-		List<Binder> binders = new ComplementerValues(subquery).binders();
-		return new Criteria(id, subqueryString, new Column[] { column }, binders.toArray(new Binder[binders.size()]));
+		return new Criteria(id, subqueryString, new Column[] { column }, subquery.currentBinders());
 	}
 
 	private static String buildInClause(int length) {

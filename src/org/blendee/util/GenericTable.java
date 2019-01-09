@@ -1720,15 +1720,15 @@ public class GenericTable
 		 * @param fkName 外部キー名
 		 * @return 参照先の {@link ExtAssist}
 		 */
-		public ExtAssist<T, Many<Row, M>> table(String fkName) {
-			return tab(fkName);
+		public ExtAssist<T, Many<Row, M>> fkName(String fkName) {
+			return fk(fkName);
 		}
 
 		/**
 		 * @param fkName 外部キー名
 		 * @return 参照先の {@link ExtAssist}
 		 */
-		public ExtAssist<T, Many<Row, M>> tab(String fkName) {
+		public ExtAssist<T, Many<Row, M>> fk(String fkName) {
 			return new ExtAssist<T, Many<Row, M>>(builder$, this, fkName);
 		}
 	}

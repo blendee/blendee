@@ -798,7 +798,7 @@ public abstract class SelectStatementBehavior<
 				sql,
 				countSQL,
 				fetchSQL,
-				new ComplementerValues(composedSQL),
+				ComplementerValues.of(composedSQL),
 				RelationshipFactory.getInstance().getInstance(table),
 				selector.getSelectClause().getColumns(),
 				optimizer,
@@ -813,7 +813,7 @@ public abstract class SelectStatementBehavior<
 			sql,
 			null,
 			null,
-			new ComplementerValues(builder),
+			ComplementerValues.of(builder),
 			null,
 			Column.EMPTY_ARRAY,
 			rowMode);

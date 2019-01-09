@@ -37,8 +37,9 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	/**
 	 * {@link PreparedStatementComplementer} からプレースホルダ値を抽出するコンストラクタです。
 	 * @param complementer 抽出対象
+	 * @return {@link ComplementerValues}
 	 */
-	public ComplementerValues(PreparedStatementComplementer complementer) {
+	public static ComplementerValues of(PreparedStatementComplementer complementer) {
 		Map<Integer, Object> map = new TreeMap<>();
 
 		complementer.complement(new BPreparedStatement() {
@@ -199,15 +200,33 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			binders.set(position, extractor.extractAsBinder(v));
 		});
 
-		this.extractors = Collections.unmodifiableList(extractors);
-		this.binders = Collections.unmodifiableList(binders);
+		return new ComplementerValues(extractors, binders);
+	}
+
+	/**
+	 * @param values {@link Object}
+	 * @return {@link ComplementerValues}
+	 */
+	public static ComplementerValues getInstanceWithPlaceHolderValues(Object... values) {
+		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+
+		List<ValueExtractor> extractors = Arrays.asList(new ValueExtractor[values.length]);
+		List<Binder> binders = Arrays.asList(new Binder[values.length]);
+		for (int i = 0; i < values.length; i++) {
+			Object value = values[i];
+			ValueExtractor extractor = valueExtractors.selectValueExtractor(value.getClass());
+			extractors.set(i, extractor);
+			binders.set(i, extractor.extractAsBinder(value));
+		}
+
+		return new ComplementerValues(extractors, binders);
 	}
 
 	/**
 	 * @param extractors {@link ValueExtractor}
 	 * @param binders {@link Binder}
 	 */
-	public ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
+	private ComplementerValues(List<ValueExtractor> extractors, List<Binder> binders) {
 		this.extractors = Collections.unmodifiableList(extractors);
 		this.binders = Collections.unmodifiableList(binders);
 	}

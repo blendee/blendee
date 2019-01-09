@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.ComplementerValues;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
@@ -220,7 +219,7 @@ public class SetElement {
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		template = "(" + builder.sql() + ")";
-		binders.addAll(new ComplementerValues(builder).binders());
+		binders.addAll(Arrays.asList(builder.currentBinders()));
 
 		assist.getDataManipulationStatement().addSetElement(this);
 

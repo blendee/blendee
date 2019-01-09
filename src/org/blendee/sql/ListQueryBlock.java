@@ -96,7 +96,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	void setComplementer(ChainPreparedStatementComplementer complementer) {
-		this.complementer = new ComplementerValues(complementer);
+		this.complementer = ComplementerValues.of(complementer);
 	}
 
 	List<Column> getColumns(RuntimeId base) {

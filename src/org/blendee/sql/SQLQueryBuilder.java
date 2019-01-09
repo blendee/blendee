@@ -12,7 +12,7 @@ import org.blendee.sql.FromClause.JoinType;
  * SQL の SELECT 文を生成するクラスです。
  * @author 千葉 哲嗣
  */
-public class SQLQueryBuilder implements ComposedSQL {
+public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 
 	private final FromClause fromClause;
 
@@ -304,6 +304,29 @@ public class SQLQueryBuilder implements ComposedSQL {
 		}
 
 		return orderClause.complement(done, statement);
+	}
+
+	/**
+	 * {@link SQL} を生成します。
+	 * @return {@link SQL}
+	 */
+	public SQL build() {
+		return reproduce();
+	}
+
+	@Override
+	public SQL reproduce(Object... placeHolderValues) {
+		return SQL.getInstanceWithPlaceholderValues(sql(), placeHolderValues);
+	}
+
+	@Override
+	public SQL reproduce() {
+		return SQL.getInstance(sql(), ComplementerValues.of(this));
+	}
+
+	@Override
+	public Binder[] currentBinders() {
+		return ComplementerValues.of(this).currentBinders();
 	}
 
 	@Override

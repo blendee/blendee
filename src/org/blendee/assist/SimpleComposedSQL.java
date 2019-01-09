@@ -1,6 +1,5 @@
 package org.blendee.assist;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.blendee.jdbc.BPreparedStatement;
@@ -11,9 +10,7 @@ import org.blendee.sql.Binder;
  * {@link ComposedSQL} の簡易実装です。
  * @author 千葉 哲嗣
  */
-public class SimpleComposedSQL implements ComposedSQL, Serializable {
-
-	private static final long serialVersionUID = -7585283962197067876L;
+public class SimpleComposedSQL implements ComposedSQL {
 
 	private final String sql;
 
