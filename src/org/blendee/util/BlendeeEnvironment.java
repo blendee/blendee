@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import org.blendee.jdbc.AutoCloseableFinalizer;
+import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Initializer;
@@ -277,10 +278,10 @@ public class BlendeeEnvironment {
 
 	/**
 	 * トランザクション内で任意の処理を実行します。
-	 * @param function {@link EnvironmentFunction} の実装
-	 * @throws Exception 処理内で起こった例外
+	 * @param process {@link EnvironmentProcess} の実装
+	 * @throws BlendeeException 処理内で起こった例外
 	 */
-	public void execute(EnvironmentFunction function) throws Exception {
+	public void execute(EnvironmentProcess process) {
 		try {
 			ContextManager.setContext(contextName);
 			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
@@ -296,7 +297,7 @@ public class BlendeeEnvironment {
 			}
 
 			try {
-				function.execute(transaction);
+				process.execute(transaction);
 				if (top) transaction.commit();
 			} catch (Throwable t) {
 				try {
@@ -305,7 +306,7 @@ public class BlendeeEnvironment {
 					BlendeeManager.getLogger().log(Level.SEVERE, tt);
 				}
 
-				throw t;
+				throw new BlendeeException(t);
 			} finally {
 				if (top) {
 					try {
@@ -392,7 +393,7 @@ public class BlendeeEnvironment {
 	 * トランザクション内で行う任意の処理を表します。
 	 */
 	@FunctionalInterface
-	public interface EnvironmentFunction {
+	public interface EnvironmentProcess {
 
 		/**
 		 * トランザクション内で呼び出されます。 <br>

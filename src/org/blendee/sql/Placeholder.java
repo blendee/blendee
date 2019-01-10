@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.blendee.jdbc.BPreparedStatement;
 
@@ -144,6 +145,24 @@ public abstract class Placeholder extends Binder {
 	};
 
 	/**
+	 * UUID
+	 */
+	public static final Placeholder $UUID = new Placeholder() {
+
+		private final UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
+		@Override
+		public void bind(int index, BPreparedStatement statement) {
+			if (isStarted()) {
+				addIndex(index);
+				statement.setObject(index, uuid);
+			} else {
+				statement.setObject(index, this);
+			}
+		}
+	};
+
+	/**
 	 * {@link Object}
 	 */
 	public static final Placeholder $OBJECT = new Placeholder() {
@@ -200,6 +219,11 @@ public abstract class Placeholder extends Binder {
 	 * {@link #$BOOLEAN} の短縮形
 	 */
 	public static final Placeholder $BO = $BOOLEAN;
+
+	/**
+	 * {@link #$UUID} の短縮形
+	 */
+	public static final Placeholder $U = $UUID;
 
 	/**
 	 * {@link #$OBJECT} の短縮形

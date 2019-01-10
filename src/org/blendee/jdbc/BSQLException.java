@@ -3,26 +3,26 @@ package org.blendee.jdbc;
 import java.sql.SQLException;
 
 /**
- * Blendee で使用する例外クラスの基底クラスです。
+ * Blendee で使用する {@link SQLException} のラッパークラスです。
  * @author 千葉 哲嗣
  */
-public class BlendeeException extends RuntimeException {
+public class BSQLException extends BlendeeException {
 
-	private static final long serialVersionUID = -6166517265998968814L;
+	private static final long serialVersionUID = -5202855600298496232L;
 
 	/**
 	 * {@link SQLException} をラップするコンストラクタです。
-	 * @param t 元となる例外
+	 * @param e 元となる例外
 	 * @see Throwable#getCause()
 	 */
-	public BlendeeException(Throwable t) {
-		super(t);
+	public BSQLException(SQLException e) {
+		super(e);
 	}
 
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public BlendeeException() {
+	public BSQLException() {
 		super();
 	}
 
@@ -30,21 +30,21 @@ public class BlendeeException extends RuntimeException {
 	 * メッセージのあるコンストラクタです。
 	 * @param message 独自のメッセージ
 	 */
-	public BlendeeException(String message) {
+	public BSQLException(String message) {
 		super(message);
 	}
 
 	/**
 	 * メッセージのあるコンストラクタです。
 	 * @param message 独自のメッセージ
-	 * @param t 元となる例外
+	 * @param e 元となる例外
 	 */
-	public BlendeeException(String message, Throwable t) {
-		super(message, t);
+	public BSQLException(String message, SQLException e) {
+		super(message, e);
 	}
 
 	@Override
 	public SQLException getCause() {
-		return (SQLException) super.getCause();
+		return super.getCause();
 	}
 }

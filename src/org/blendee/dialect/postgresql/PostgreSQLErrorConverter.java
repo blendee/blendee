@@ -2,6 +2,7 @@ package org.blendee.dialect.postgresql;
 
 import java.sql.SQLException;
 
+import org.blendee.jdbc.BSQLException;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.exception.CheckConstraintViolationException;
@@ -30,6 +31,6 @@ public class PostgreSQLErrorConverter implements ErrorConverter {
 			return new CheckConstraintViolationException(e.getMessage());
 		}
 
-		return new BlendeeException(e);
+		return new BSQLException(e);
 	}
 }

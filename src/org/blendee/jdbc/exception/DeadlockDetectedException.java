@@ -1,14 +1,16 @@
 package org.blendee.jdbc.exception;
 
-import org.blendee.jdbc.BlendeeException;
+import java.sql.SQLException;
+
+import org.blendee.jdbc.BSQLException;
 
 /**
  * デッドロックが発生した場合に使用する例外です。
  * @author 千葉 哲嗣
  */
-public class DeadlockDetectedException extends BlendeeException {
+public class DeadlockDetectedException extends BSQLException {
 
-	private static final long serialVersionUID = -6663058203853766873L;
+	private static final long serialVersionUID = 4188734293398367718L;
 
 	/**
 	 * メッセージ無しのコンストラクタです。
@@ -21,5 +23,14 @@ public class DeadlockDetectedException extends BlendeeException {
 	 */
 	public DeadlockDetectedException(String message) {
 		super(message);
+	}
+
+	/**
+	 * メッセージのあるコンストラクタです。
+	 * @param message 独自のメッセージ
+	 * @param e 元となる例外
+	 */
+	public DeadlockDetectedException(String message, SQLException e) {
+		super(message, e);
 	}
 }

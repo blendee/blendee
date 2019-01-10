@@ -9,9 +9,6 @@ import org.blendee.jdbc.BlendeeException;
  */
 public class NotUniqueException extends BlendeeException {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 6530027126490925906L;
 
 	/**

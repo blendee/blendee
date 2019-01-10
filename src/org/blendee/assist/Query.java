@@ -1,6 +1,7 @@
 package org.blendee.assist;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -91,6 +92,16 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @return {@link Row}
 	 */
 	default Optional<R> fetch(Number... primaryKeyMembers) {
+		return fetch(BindableConverter.convert(primaryKeyMembers));
+	}
+
+	/**
+	 * 主キーから Row 一件を選択するメソッドです。<br>
+	 * パラメータの数は、主キーを構成するカラム数と同じ必要があります。
+	 * @param primaryKeyMembers 主キーの検索値
+	 * @return {@link Row}
+	 */
+	default Optional<R> fetch(UUID... primaryKeyMembers) {
 		return fetch(BindableConverter.convert(primaryKeyMembers));
 	}
 

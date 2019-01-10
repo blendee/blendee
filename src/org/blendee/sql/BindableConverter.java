@@ -1,6 +1,7 @@
 package org.blendee.sql;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import org.blendee.jdbc.ContextManager;
 import org.blendee.sql.binder.StringBinder;
@@ -32,6 +33,16 @@ public class BindableConverter {
 	 * @return 変換された {@link Bindable} の配列
 	 */
 	public static Bindable[] convert(Number... members) {
+		return convertAllTypes(members);
+	}
+
+	/**
+	 * 変換を行います。<br>
+	 * 変換可能な型は、 {@link ValueExtractors} で取得可能なものに限られます。
+	 * @param members 変換対象の数値
+	 * @return 変換された {@link Bindable} の配列
+	 */
+	public static Bindable[] convert(UUID... members) {
 		return convertAllTypes(members);
 	}
 

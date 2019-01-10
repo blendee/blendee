@@ -3,11 +3,12 @@ package org.blendee.util;
 import java.util.Map;
 import java.util.Properties;
 
+import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.util.BlendeeEnvironment.EnvironmentFunction;
+import org.blendee.util.BlendeeEnvironment.EnvironmentProcess;
 
 /**
  * Blendee 全体を対象とする、簡易操作クラスです。
@@ -51,11 +52,11 @@ public class Blendee {
 
 	/**
 	 * トランザクション内で任意の処理を実行します。
-	 * @param function {@link EnvironmentFunction} の実装
-	 * @throws Exception 処理内で起こった例外
+	 * @param process {@link EnvironmentProcess} の実装
+	 * @throws BlendeeException 処理内で起こった例外
 	 */
-	public static void execute(EnvironmentFunction function) throws Exception {
-		environment.execute(function);
+	public static void execute(EnvironmentProcess process) {
+		environment.execute(process);
 	}
 
 	/**
