@@ -8,7 +8,7 @@ import java.sql.SQLException;
  */
 public class BSQLException extends BlendeeException {
 
-	private static final long serialVersionUID = -5202855600298496232L;
+	private static final long serialVersionUID = -1222844191149040136L;
 
 	/**
 	 * {@link SQLException} をラップするコンストラクタです。
@@ -45,6 +45,6 @@ public class BSQLException extends BlendeeException {
 
 	@Override
 	public SQLException getCause() {
-		return super.getCause();
+		return (SQLException) super.getCause();
 	}
 }

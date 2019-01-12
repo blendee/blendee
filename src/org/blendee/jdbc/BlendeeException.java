@@ -44,7 +44,7 @@ public class BlendeeException extends RuntimeException {
 	}
 
 	@Override
-	public SQLException getCause() {
-		return (SQLException) super.getCause();
+	public Throwable getCause() {
+		return super.getCause();
 	}
 }
