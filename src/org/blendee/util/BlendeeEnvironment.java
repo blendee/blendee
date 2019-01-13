@@ -306,6 +306,8 @@ public class BlendeeEnvironment {
 					BlendeeManager.getLogger().log(Level.SEVERE, tt);
 				}
 
+				if (t instanceof BlendeeException) throw (BlendeeException) t;
+
 				throw new BlendeeException(t);
 			} finally {
 				if (top) {

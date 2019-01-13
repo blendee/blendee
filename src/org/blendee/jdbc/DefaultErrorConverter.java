@@ -17,7 +17,7 @@ public class DefaultErrorConverter implements ErrorConverter {
 	 * @throws BlendeeException {@link SQLException} をラップした例外
 	 */
 	@Override
-	public BlendeeException convert(SQLException e) {
+	public BSQLException convert(SQLException e) {
 		BLogger logger = BlendeeManager.getLogger();
 
 		if (e instanceof DataTruncation) {
@@ -32,7 +32,7 @@ public class DefaultErrorConverter implements ErrorConverter {
 
 		logger.log(Level.INFO, e);
 
-		throw new BlendeeException(e);
+		throw new BSQLException(e);
 	}
 
 	@Override

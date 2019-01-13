@@ -17,4 +17,16 @@ public interface ErrorConverter {
 	 * @return 変換後の例外
 	 */
 	BlendeeException convert(SQLException e);
+
+	/**
+	 * ラップされている {@link SQLException} を解除します。
+	 * @param e
+	 * @return cause
+	 */
+	static SQLException strip(SQLException e) {
+		Throwable cause = e.getCause();
+		if (cause == null) return e;
+		if (cause instanceof SQLException) return strip((SQLException) cause);
+		return e;
+	}
 }
