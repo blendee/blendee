@@ -37,10 +37,10 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} のバッチ更新用メソッドです。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link BatchStatement}
 	 */
-	default void update(BatchStatement statement) {
-		dataObject().update(statement);
+	default void update(BatchStatement batch) {
+		dataObject().update(batch);
 	}
 
 	/**
@@ -54,13 +54,36 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} の INSERT をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link BatchStatement}
 	 */
-	default void insert(BatchStatement statement) {
+	default void insert(BatchStatement batch) {
 		new DataAccessHelper().insert(
-			statement,
+			batch,
 			tablePath(),
 			this);
+	}
+
+	/**
+	 * この {@link Row} が検索された場合 UPDATE 、そうでなければ INSERT を行います。
+	 */
+	default void save() {
+		if (dataObject().selected()) {
+			update();
+		} else {
+			insert();
+		}
+	}
+
+	/**
+	 * この {@link Row} が検索された場合 UPDATE 、そうでなければ INSERT を行います。
+	 * @param batch バッチ実行を依頼する {@link BatchStatement}
+	 */
+	default void save(BatchStatement batch) {
+		if (dataObject().selected()) {
+			update(batch);
+		} else {
+			insert(batch);
+		}
 	}
 
 	/**
@@ -77,11 +100,11 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} の DELETE をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link BatchStatement}
 	 */
-	default void delete(BatchStatement statement) {
+	default void delete(BatchStatement batch) {
 		new DataAccessHelper().delete(
-			statement,
+			batch,
 			tablePath(),
 			primaryKey().getCriteria(RuntimeIdFactory.getInstance()));
 	}

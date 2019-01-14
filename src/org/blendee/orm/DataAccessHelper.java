@@ -9,6 +9,7 @@ import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.PreparedStatementComplementer;
@@ -25,10 +26,10 @@ import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.InsertDMLBuilder;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.RuntimeId;
-import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectCountClause;
@@ -227,15 +228,16 @@ public class DataAccessHelper {
 	 * このスレッドが {@link ThreadBatchCallback} 内で行う更新処理を全てバッチ実行します。
 	 * @param batchStatement バッチ実行を依頼する {@link BatchStatement}
 	 * @param callback 更新処理を定義したコールバック
-	 * @throws Exception コールバック内で例外が発生した場合
+	 * @throws BlendeeException コールバック内で例外が発生した場合
 	 */
 	public static void startThreadBatch(
 		BatchStatement batchStatement,
-		ThreadBatchCallback callback)
-		throws Exception {
+		ThreadBatchCallback callback) {
 		threadStatement.set(new BatchStatementFacade(batchStatement));
 		try {
 			callback.execute();
+		} catch (Throwable t) {
+			throw new BlendeeException(t);
 		} finally {
 			threadStatement.remove();
 		}
@@ -505,13 +507,6 @@ public class DataAccessHelper {
 	@Override
 	public String toString() {
 		return U.toString(this);
-	}
-
-	/**
-	 * クラス内に保持する {@link ThreadLocal} の値をクリアします。
-	 */
-	public static void removeThreadLocal() {
-		threadStatement.remove();
 	}
 
 	static StatementFacade getThreadStatement() {

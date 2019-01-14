@@ -28,9 +28,9 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.NotFoundException;
-import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeIdFactory;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
@@ -461,7 +461,7 @@ public class DataObject
 	 */
 	public void setValue(String columnName, Bindable value) {
 		Binder binder = value.toBinder();
-		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
+		updateValues().put(columnName, new BinderUpdateValue(binder));
 	}
 
 	/**
@@ -472,7 +472,7 @@ public class DataObject
 	 */
 	public void setValueForcibly(String columnName, Bindable value) {
 		Binder binder = value.toBinder();
-		getUpdateValues().put(columnName, new BinderUpdateValue(binder));
+		updateValues().put(columnName, new BinderUpdateValue(binder));
 	}
 
 	/**
@@ -481,7 +481,7 @@ public class DataObject
 	 * 既に値が置き換えられている場合、置き換えられた値はそのまま保持されています。
 	 */
 	public void setAllValuesForcibly() {
-		Map<String, UpdateValue> updateValues = getUpdateValues();
+		Map<String, UpdateValue> updateValues = updateValues();
 		for (Column column : relationship.getColumns()) {
 			String name = column.getName();
 			if (updateValues.containsKey(name)) continue;
@@ -506,7 +506,7 @@ public class DataObject
 	 * @param columnName 対象カラム
 	 */
 	public void removeUpdateValue(String columnName) {
-		getUpdateValues().remove(columnName);
+		updateValues().remove(columnName);
 	}
 
 	/**
@@ -524,7 +524,7 @@ public class DataObject
 	 * @param sqlFragment SQL 文の一部
 	 */
 	public void setSQLFragment(String columnName, String sqlFragment) {
-		getUpdateValues().put(columnName, new SQLFragmentUpdateValue(sqlFragment));
+		updateValues().put(columnName, new SQLFragmentUpdateValue(sqlFragment));
 	}
 
 	/**
@@ -537,7 +537,7 @@ public class DataObject
 		String columnName,
 		String sqlFragment,
 		Bindable value) {
-		getUpdateValues().put(
+		updateValues().put(
 			columnName,
 			new SQLFragmentAndBinderUpdateValue(sqlFragment, value.toBinder()));
 	}
@@ -651,6 +651,13 @@ public class DataObject
 		updateInternal(new BatchStatementFacade(statement));
 	}
 
+	/**
+	 * @return 検索されてきた場合、 true
+	 */
+	public boolean selected() {
+		return values != nullSelectedValues;
+	}
+
 	@Override
 	public void setValuesTo(Updater updater) {
 		if (!isValueUpdated()) return;
@@ -724,7 +731,7 @@ public class DataObject
 		return binders;
 	}
 
-	private Map<String, UpdateValue> getUpdateValues() {
+	private Map<String, UpdateValue> updateValues() {
 		if (updateValues == null) updateValues = new LinkedHashMap<>();
 		return updateValues;
 	}
