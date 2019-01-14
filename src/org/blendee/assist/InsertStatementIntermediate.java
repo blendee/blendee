@@ -38,7 +38,7 @@ public class InsertStatementIntermediate {
 				Arrays.asList(RelationshipFactory.getInstance().getInstance(table).getColumns()));
 		}
 
-		if (columns.size() != values.length) throw new IllegalStateException();
+		if (columns.size() != values.length) throw new IllegalStateException("カラム数と値の数が違います");
 
 		BinderExtractor extractor = new BinderExtractor();
 
