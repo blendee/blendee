@@ -22,8 +22,7 @@ class AnonymousRelationship implements Relationship, ComposedSQL {
 	private final String alias;
 
 	AnonymousRelationship(ComposedSQL sql, String alias) {
-		Objects.requireNonNull(alias);
-		this.alias = alias;
+		this.alias = Objects.requireNonNull(alias);
 		this.sql = sql;
 	}
 

@@ -55,7 +55,18 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	private static final TableFacadeContext<OnRightColumn<OnRightLogicalOperators>> onRightContext = TableFacadeContext
 		.newOnRightBuilder();
 
-	private final RuntimeId id = RuntimeIdFactory.getInstance();
+	private final RuntimeId id = new RuntimeId() {
+
+		@Override
+		public String getId() {
+			return "";
+		}
+
+		@Override
+		public String toString(Relationship relationship) {
+			return relationship.getTablePath().toString();
+		}
+	};
 
 	/**
 	 * WHERE 句 で使用する AND, OR です。
