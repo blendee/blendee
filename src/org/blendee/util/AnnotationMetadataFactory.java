@@ -180,11 +180,11 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		List<ForeignKeySource> fkSources = new LinkedList<>();
 		List<ColumnMetadata> columnMetadatas = new LinkedList<>();
 
-		if (usesAllVirtualColumns()) {
-			Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
-				ForeignKey fk = f.getAnnotation(ForeignKey.class);
-				if (fk != null) fkSources.add(createSource(fk));
+		Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
+			ForeignKey fk = f.getAnnotation(ForeignKey.class);
+			if (fk != null) fkSources.add(createSource(fk));
 
+			if (usesAllVirtualColumns()) {
 				Column column = f.getAnnotation(Column.class);
 
 				if (column != null) {
@@ -204,8 +204,8 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 
 					columnMetadatas.add(columnMetadata);
 				}
-			});
-		}
+			}
+		});
 
 		//手動でクラスに直接つけられた疑似FKを取り込み
 		Arrays.stream(clazz.getAnnotationsByType(ForeignKey.class)).forEach(fk -> {
