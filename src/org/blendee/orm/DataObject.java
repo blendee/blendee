@@ -89,18 +89,18 @@ public class DataObject
 	 * @param relationship INSERT 対象のテーブル
 	 */
 	public DataObject(Relationship relationship) {
-		this.relationship = relationship;
+		this.relationship = Objects.requireNonNull(relationship);
 		values = nullSelectedValues;
 	}
 
 	DataObject(Relationship relationship, SelectedValues values) {
-		this.relationship = relationship;
+		this.relationship = Objects.requireNonNull(relationship);
 		this.values = values;
 	}
 
 	DataObject(Relationship relationship, Result result, ValueExtractors extractors) {
-		this.relationship = relationship;
-		this.values = ColumnNameSelectedValuesBuilder.build(
+		this.relationship = Objects.requireNonNull(relationship);
+		values = ColumnNameSelectedValuesBuilder.build(
 			result,
 			relationship,
 			extractors);
