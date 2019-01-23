@@ -208,6 +208,20 @@ public class SetElement {
 	}
 
 	/**
+	 * UPDATE SET 句に、 SQL の断片を追加します。
+	 * @param sqlFragment SQL の断片
+	 * @return {@link SetProof}
+	 */
+	public SetProof setAny(String sqlFragment) {
+		binders.clear();
+		this.template = sqlFragment;
+
+		assist.getDataManipulationStatement().addSetElement(this);
+
+		return SetProof.singleton;
+	}
+
+	/**
 	 * UPDATE SET 句に、このカラムへの代入を追加します。
 	 * @param subquery 代入値のためのサブクエリ
 	 * @return {@link SetProof}
