@@ -1179,7 +1179,7 @@ public class GenericTable
 	 * @return {@link SelectStatement} 自身
 	 */
 	@Override
-	public GenericTable apply(SQLDecorator... decorators) {
+	public GenericTable accept(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators$.add(decorator);
 		}

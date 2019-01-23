@@ -559,7 +559,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 * @return {@link SelectStatement} 自身
 	 */
 	@Override
-	public AnonymousTable apply(SQLDecorator... decorators) {
+	public AnonymousTable accept(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators.add(decorator);
 		}

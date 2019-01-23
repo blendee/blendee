@@ -947,7 +947,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 * @return {@link SelectStatement} 自身
 	 */
 	@Override
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ apply(SQLDecorator... decorators) {
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ accept(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators$.add(decorator);
 		}

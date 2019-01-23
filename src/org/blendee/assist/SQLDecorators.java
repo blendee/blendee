@@ -13,7 +13,7 @@ public interface SQLDecorators {
 	 * @param decorators {@link SQLDecorator}
 	 * @return {@link SelectStatement} 自身
 	 */
-	SelectStatement apply(SQLDecorator... decorators);
+	SelectStatement accept(SQLDecorator... decorators);
 
 	/**
 	 * 内部で保持している {@link SQLDecorator} を返します。
