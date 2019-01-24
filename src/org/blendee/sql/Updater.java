@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.blendee.internal.CollectionMap;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
@@ -38,7 +39,7 @@ public abstract class Updater implements ComposedSQL {
 
 	private final Set<String> columns = new LinkedHashSet<>();
 
-	private final Map<String, Binder> values = new LinkedHashMap<>();
+	private final CollectionMap<String, Binder> values = CollectionMap.newInstance(LinkedHashMap.class);
 
 	private final Map<String, String> fragmentMap = new HashMap<>();
 
@@ -233,7 +234,7 @@ public abstract class Updater implements ComposedSQL {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		for (Iterator<Binder> i = values.values().iterator(); i.hasNext(); done++) {
+		for (Iterator<Binder> i = getBindersInternal().iterator(); i.hasNext(); done++) {
 			i.next().bind(done + 1, statement);
 		}
 
@@ -266,7 +267,7 @@ public abstract class Updater implements ComposedSQL {
 	 * @return {@link Binder}
 	 */
 	public Binder[] getBinders() {
-		Collection<Binder> binders = values.values();
+		Collection<Binder> binders = getBindersInternal();
 		return binders.toArray(new Binder[binders.size()]);
 	}
 
@@ -285,5 +286,12 @@ public abstract class Updater implements ComposedSQL {
 		String fragment = fragmentMap.get(columnName);
 		if (fragment != null) return fragment;
 		return "?";
+	}
+
+	private List<Binder> getBindersInternal() {
+		List<Binder> binders = new LinkedList<>();
+		values.keySet().forEach(key -> values.get(key).forEach(b -> binders.add(b)));
+
+		return binders;
 	}
 }

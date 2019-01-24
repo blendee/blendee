@@ -23,11 +23,11 @@ public class InsertDMLBuilder extends Updater {
 	protected String build() {
 		String[] columnNames = getColumnNames();
 		List<String> columns = new LinkedList<>();
-		List<String> placeHolders = new LinkedList<>();
+		List<String> values = new LinkedList<>();
 		for (int i = 0; i < columnNames.length; i++) {
 			String columnName = columnNames[i];
 			columns.add(columnName);
-			placeHolders.add(getPlaceHolderOrFragment(columnName));
+			values.add(getPlaceHolderOrFragment(columnName));
 		}
 
 		return "INSERT INTO "
@@ -37,7 +37,7 @@ public class InsertDMLBuilder extends Updater {
 			+ ")"
 			+ " VALUES "
 			+ "("
-			+ String.join(", ", placeHolders)
+			+ String.join(", ", values)
 			+ ")";
 	}
 }

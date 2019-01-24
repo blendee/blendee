@@ -3,6 +3,7 @@ package org.blendee.assist;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
@@ -33,10 +34,7 @@ public class InsertStatementIntermediate {
 	 * @return {@link SelectStatement}
 	 */
 	public DataManipulator VALUES(Object... values) {
-		if (columns.size() == 0) {
-			columns.addAll(
-				Arrays.asList(RelationshipFactory.getInstance().getInstance(table).getColumns()));
-		}
+		prepareColumns();
 
 		if (columns.size() != values.length) throw new IllegalStateException("カラム数と値の数が違います");
 
@@ -57,5 +55,29 @@ public class InsertStatementIntermediate {
 		builder.addDecorator(decorators.decorators());
 
 		return new RawDataManipulator(builder);
+	}
+
+	/**
+	 * @param consumer 値を {@link Values} に追加させる {@link Consumer}
+	 * @return {@link SelectStatement}
+	 */
+	public DataManipulator VALUES(Consumer<Values> consumer) {
+		prepareColumns();
+
+		InsertDMLBuilder builder = new InsertDMLBuilder(table);
+
+		Values values = new Values(builder, columns);
+		consumer.accept(values);
+
+		builder.addDecorator(decorators.decorators());
+
+		return new RawDataManipulator(builder);
+	}
+
+	private void prepareColumns() {
+		if (columns.size() == 0) {
+			columns.addAll(
+				Arrays.asList(RelationshipFactory.getInstance().getInstance(table).getColumns()));
+		}
 	}
 }
