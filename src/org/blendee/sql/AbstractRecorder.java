@@ -21,13 +21,17 @@ public abstract class AbstractRecorder {
 	 * {@link Reproducible} を生成する処理を実行します。<br>
 	 * 既に一度 {@link Reproducible} が生成されていた場合、新たに {@link Reproducible} を生成せず、以前の {@link Reproducible} を返します。<br>
 	 * 以前の {@link Reproducible} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
+	 * また、プレースホルダを使用しているのに playbackPlaceHolderValues を指定しない場合、このメソッドが返すのは {@link Reproducible#reproduce(Object...)} をまだ行っていない（プレースホルダの値を持っていない） {@link Reproducible} となります。<br>
 	 * @param supplier {@link Reproducible} を生成する処理
 	 * @param playbackPlaceHolderValues supplier で使用した {@link Placeholder} に、再実行時セットする値
 	 * @param <E> {@link Reproducible} の実装
 	 * @return {@link Reproducible}
 	 */
+	@SuppressWarnings("unchecked")
 	public <E extends Reproducible<E>> E play(Supplier<E> supplier, Object... playbackPlaceHolderValues) {
-		return play(supplier, lock(), playbackPlaceHolderValues);
+		if (playbackPlaceHolderValues.length == 0)
+			return (E) prepare(supplier, lock()).reproduce();
+		return (E) prepare(supplier, lock()).reproduce(playbackPlaceHolderValues);
 	}
 
 	/**
@@ -55,8 +59,7 @@ public abstract class AbstractRecorder {
 	 */
 	protected abstract Lock lock();
 
-	@SuppressWarnings("unchecked")
-	private <E extends Reproducible<E>> E play(Supplier<E> supplier, Lock lock, Object... playbackPlaceHolderValues) {
+	private <E extends Reproducible<E>> Reproducer prepare(Supplier<E> supplier, Lock lock) {
 		Class<?> lambdaClass = supplier.getClass();
 
 		Reproducer reproducer = null;
@@ -79,7 +82,7 @@ public abstract class AbstractRecorder {
 			lock.unlock();
 		}
 
-		return (E) reproducer.reproduce(playbackPlaceHolderValues);
+		return reproducer;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -161,6 +164,10 @@ public abstract class AbstractRecorder {
 			}
 
 			return reproducible.reproduce(clone);
+		}
+
+		private Reproducible<?> reproduce() {
+			return reproducible.reproduce();
 		}
 	}
 }
