@@ -15,9 +15,9 @@ import org.blendee.sql.SelectClause;
  * 内部使用のためのクラスですので直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public class ColumnExpression extends AliasableOffer {
+public class ColumnExpression implements AliasableOffer {
 
-	private final SelectStatement statement;
+	private final Statement statement;
 
 	private final StringBuilder expression = new StringBuilder();
 
@@ -30,7 +30,7 @@ public class ColumnExpression extends AliasableOffer {
 	/**
 	 * @param column {@link Column}
 	 */
-	ColumnExpression(SelectStatement statement, Column column) {
+	ColumnExpression(Statement statement, Column column) {
 		this.statement = statement;
 		this.columns = new Column[] { column };
 		complementer = null;
@@ -40,14 +40,14 @@ public class ColumnExpression extends AliasableOffer {
 	 * @param expression テンプレート
 	 * @param columns {@link Column}
 	 */
-	ColumnExpression(SelectStatement statement, String expression, Column... columns) {
+	ColumnExpression(Statement statement, String expression, Column... columns) {
 		this.statement = statement;
 		this.expression.append(expression);
 		this.columns = columns;
 		complementer = null;
 	}
 
-	ColumnExpression(SelectStatement statement, String expression, Column[] columns, ChainPreparedStatementComplementer complementer) {
+	ColumnExpression(Statement statement, String expression, Column[] columns, ChainPreparedStatementComplementer complementer) {
 		this.statement = statement;
 		this.columns = columns;
 		this.expression.append(expression);

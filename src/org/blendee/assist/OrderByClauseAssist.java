@@ -17,7 +17,7 @@ import org.blendee.sql.OrderByClause.Direction;
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public interface OrderByClauseAssist {
+public interface OrderByClauseAssist extends ColumnMaker {
 
 	/**
 	 * {@link OrderByOfferFunction} 内で使用する ORDER BY 句生成用メソッドです。<br>
@@ -43,7 +43,7 @@ public interface OrderByClauseAssist {
 	 * @param column {@link OrderByColumn}
 	 * @return {@link OrderByColumn}
 	 */
-	default AscDesc AVG(OrderByColumn column) {
+	default AscDesc AVG(AssistColumn column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -52,7 +52,7 @@ public interface OrderByClauseAssist {
 	 * @param column {@link OrderByColumn}
 	 * @return {@link OrderByColumn}
 	 */
-	default AscDesc SUM(OrderByColumn column) {
+	default AscDesc SUM(AssistColumn column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -61,7 +61,7 @@ public interface OrderByClauseAssist {
 	 * @param column {@link OrderByColumn}
 	 * @return {@link OrderByColumn}
 	 */
-	default AscDesc MAX(OrderByColumn column) {
+	default AscDesc MAX(AssistColumn column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -70,7 +70,7 @@ public interface OrderByClauseAssist {
 	 * @param column {@link OrderByColumn}
 	 * @return {@link OrderByColumn}
 	 */
-	default AscDesc MIN(OrderByColumn column) {
+	default AscDesc MIN(AssistColumn column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -79,7 +79,7 @@ public interface OrderByClauseAssist {
 	 * @param column {@link OrderByColumn}
 	 * @return {@link OrderByColumn}
 	 */
-	default AscDesc COUNT(OrderByColumn column) {
+	default AscDesc COUNT(AssistColumn column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -89,7 +89,7 @@ public interface OrderByClauseAssist {
 	 * @param orderByColumns 使用するカラム
 	 * @return {@link AscDesc} ASC か DESC
 	 */
-	default AscDesc any(String template, OrderByColumn... orderByColumns) {
+	default AscDesc any(String template, AssistColumn... orderByColumns) {
 		Column[] columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
 			columns[i] = orderByColumns[i].column();
@@ -121,6 +121,11 @@ public interface OrderByClauseAssist {
 	 * @return 現在の ORDER BY 句
 	 */
 	OrderByClause getOrderByClause();
+
+	@Override
+	default Statement statement() {
+		return getSelectStatement();
+	}
 
 	/**
 	 * Query 内部処理用なので直接使用しないこと。

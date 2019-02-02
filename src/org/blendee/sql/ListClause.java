@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 
 /**
  * 要素を並列に複数持つクエリの句を表す基底クラスです。
@@ -77,6 +78,32 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 		for (String columnName : columnNames) {
 			add(new PhantomColumn(columnName));
 		}
+	}
+
+	/**
+	 * この句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param template SQL 文のテンプレート
+	 * @param columns SQL 文に含まれるカラム
+	 * @param complementer {@link ChainPreparedStatementComplementer}
+	 * @see SQLFragmentFormat
+	 */
+	public void add(
+		int order,
+		String template,
+		Column[] columns,
+		ChainPreparedStatementComplementer complementer) {
+		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
+
+		for (Column column : columns)
+			block.addColumn(column);
+
+		if (complementer != null)
+			block.setComplementer(complementer);
+
+		block.addTemplate(template.trim());
+
+		addBlock(block);
 	}
 
 	@Override

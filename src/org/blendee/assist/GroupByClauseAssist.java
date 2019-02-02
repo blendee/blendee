@@ -7,7 +7,7 @@ import java.util.Arrays;
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public interface GroupByClauseAssist {
+public interface GroupByClauseAssist extends ColumnMaker {
 
 	/**
 	 * {@link GroupByOfferFunction} 内で使用する GROUP BY 句生成用メソッドです。<br>
@@ -32,10 +32,21 @@ public interface GroupByClauseAssist {
 	/**
 	 * 他のクエリと JOIN した際などの、最終的な順位を指定します。
 	 * @param order 最終的な GROUP BY 句内での順序
-	 * @param column 対象カラム
+	 * @param offer 対象カラム
 	 * @return {@link GroupByOffer}
 	 */
-	default GroupByOffer order(int order, GroupByColumn column) {
-		return new GroupByOffer(order, column);
+	default GroupByOffer order(int order, Offer offer) {
+		return new GroupByOffer(order, offer);
 	}
+
+	@Override
+	default Statement statement() {
+		return getSelectStatement();
+	}
+
+	/**
+	 * 内部使用メソッド
+	 * @return {@link SelectStatement}
+	 */
+	SelectStatement getSelectStatement();
 }

@@ -846,6 +846,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 * @param name カラム名
 		 * @return 使用されるカラムのタイプにあった型
 		 */
+		public T column(String name) {
+			return col(name);
+		}
+
+		/**
+		 * @param name カラム名
+		 * @return 使用されるカラムのタイプにあった型
+		 */
 		public T col(String name) {
 			return builder.buildColumn(this, name);
 		}
@@ -916,13 +924,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public WhereLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public WhereLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
 		}
 
 		@Override
-		public WhereLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public WhereLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
 		}
@@ -1013,13 +1021,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public HavingLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public HavingLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
 		}
 
 		@Override
-		public HavingLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public HavingLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
 		}
@@ -1115,13 +1123,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public OnLeftLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnLeftLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
 		}
 
 		@Override
-		public OnLeftLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnLeftLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
 		}
@@ -1187,13 +1195,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public OnRightLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnRightLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
 		}
 
 		@Override
-		public OnRightLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnRightLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
 		}

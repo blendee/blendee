@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.blendee.assist.CriteriaColumn;
+import org.blendee.assist.AssistColumn;
 import org.blendee.assist.CriteriaContext;
 import org.blendee.assist.DataManipulationStatement;
 import org.blendee.assist.DataManipulationStatementBehavior;
@@ -1792,13 +1792,13 @@ public class GenericTable
 		}
 
 		@Override
-		public WhereLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public WhereLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
 		}
 
 		@Override
-		public WhereLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public WhereLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (WhereLogicalOperators) getSelectStatement().getWhereLogicalOperators();
 		}
@@ -1829,7 +1829,7 @@ public class GenericTable
 		}
 
 		@Override
-		public Statement getStatement() {
+		public Statement statement() {
 			return getSelectStatement();
 		}
 	}
@@ -1894,13 +1894,13 @@ public class GenericTable
 		}
 
 		@Override
-		public HavingLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public HavingLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
 		}
 
 		@Override
-		public HavingLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public HavingLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (HavingLogicalOperators) getSelectStatement().getHavingLogicalOperators();
 		}
@@ -1996,13 +1996,13 @@ public class GenericTable
 		}
 
 		@Override
-		public OnLeftLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnLeftLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
 		}
 
 		@Override
-		public OnLeftLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnLeftLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (OnLeftLogicalOperators) getSelectStatement().getOnLeftLogicalOperators();
 		}
@@ -2068,13 +2068,13 @@ public class GenericTable
 		}
 
 		@Override
-		public OnRightLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnRightLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
 		}
 
 		@Override
-		public OnRightLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public OnRightLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (OnRightLogicalOperators) getSelectStatement().getOnRightLogicalOperators();
 		}
@@ -2190,13 +2190,13 @@ public class GenericTable
 		}
 
 		@Override
-		public DMSWhereLogicalOperators IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public DMSWhereLogicalOperators IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, false, mainColumns, subquery);
 			return (DMSWhereLogicalOperators) getDataManipulationStatement().getWhereLogicalOperators();
 		}
 
 		@Override
-		public DMSWhereLogicalOperators NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
+		public DMSWhereLogicalOperators NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
 			Helper.addInCriteria(this, true, mainColumns, subquery);
 			return (DMSWhereLogicalOperators) getDataManipulationStatement().getWhereLogicalOperators();
 		}
@@ -2227,7 +2227,7 @@ public class GenericTable
 		}
 
 		@Override
-		public Statement getStatement() {
+		public Statement statement() {
 			return getDataManipulationStatement();
 		}
 	}

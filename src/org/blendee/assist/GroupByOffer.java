@@ -11,11 +11,11 @@ public class GroupByOffer implements Offer, Offers<Offer> {
 
 	private final int order;
 
-	private final GroupByColumn column;
+	private final Offer offer;
 
-	GroupByOffer(int order, GroupByColumn column) {
+	GroupByOffer(int order, Offer offer) {
 		this.order = order;
-		this.column = Objects.requireNonNull(column);
+		this.offer = Objects.requireNonNull(offer);
 	}
 
 	@Override
@@ -27,11 +27,11 @@ public class GroupByOffer implements Offer, Offers<Offer> {
 
 	@Override
 	public void add() {
-		column.add(order);
+		offer.add(order);
 	}
 
 	@Override
 	public void add(int order) {
-		column.add(order);
+		offer.add(order);
 	}
 }

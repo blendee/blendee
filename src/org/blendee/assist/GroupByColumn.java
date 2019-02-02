@@ -10,11 +10,13 @@ import org.blendee.sql.Column;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class GroupByColumn implements Offer, Offers<Offer> {
+public class GroupByColumn implements Offer, Offers<Offer>, AssistColumn {
 
 	private final TableFacadeAssist assist;
 
 	private final Column column;
+
+	private final Statement statement;
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
@@ -24,6 +26,7 @@ public class GroupByColumn implements Offer, Offers<Offer> {
 	public GroupByColumn(TableFacadeAssist assist, String name) {
 		this.assist = assist;
 		column = assist.getRelationship().getColumn(name);
+		statement = assist.getSelectStatement();
 	}
 
 	@Override
@@ -36,5 +39,15 @@ public class GroupByColumn implements Offer, Offers<Offer> {
 		List<Offer> offers = new LinkedList<>();
 		offers.add(this);
 		return offers;
+	}
+
+	@Override
+	public Column column() {
+		return column;
+	}
+
+	@Override
+	public Statement statement() {
+		return statement;
 	}
 }

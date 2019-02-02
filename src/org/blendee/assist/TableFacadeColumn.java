@@ -8,7 +8,7 @@ import org.blendee.sql.RuntimeId;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class TableFacadeColumn implements ColumnSupplier {
+public class TableFacadeColumn implements AssistColumn {
 
 	private final Statement statement;
 

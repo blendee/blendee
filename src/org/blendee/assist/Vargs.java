@@ -32,7 +32,7 @@ public class Vargs<T> {
 	 * @return args
 	 */
 	public T[] get() {
-		return args;
+		return args.clone();
 	}
 
 	/**

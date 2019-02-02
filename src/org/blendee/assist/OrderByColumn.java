@@ -11,7 +11,7 @@ import org.blendee.sql.OrderByClause.Direction;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class OrderByColumn implements Offer, Offers<Offer> {
+public class OrderByColumn implements Offer, Offers<Offer>, AssistColumn {
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
@@ -47,27 +47,31 @@ public class OrderByColumn implements Offer, Offers<Offer> {
 
 	private final Column column;
 
+	private final Statement statement;
+
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param helper 条件作成に必要な情報を持った {@link TableFacadeAssist}
+	 * @param assist 条件作成に必要な情報を持った {@link TableFacadeAssist}
 	 * @param name カラム名
 	 */
-	public OrderByColumn(TableFacadeAssist helper, String name) {
-		column = helper.getRelationship().getColumn(name);
+	public OrderByColumn(TableFacadeAssist assist, String name) {
+		column = assist.getRelationship().getColumn(name);
 		ASC = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC));
 		DESC = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC));
 		ASC_NULLS_FIRST = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
 		ASC_NULLS_LAST = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
 		DESC_NULLS_FIRST = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
 		DESC_NULLS_LAST = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
 		NONE = new OrderByOffer(
-			order -> helper.getSelectStatement().getOrderByClause().add(order, column, Direction.NONE));
+			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.NONE));
+
+		statement = assist.getSelectStatement();
 	}
 
 	@Override
@@ -82,7 +86,13 @@ public class OrderByColumn implements Offer, Offers<Offer> {
 		return offers;
 	}
 
-	Column column() {
+	@Override
+	public Column column() {
 		return column;
+	}
+
+	@Override
+	public Statement statement() {
+		return statement;
 	}
 }

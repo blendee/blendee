@@ -12,7 +12,7 @@ import org.blendee.sql.Relationship;
  * @param <R> {@link #paren(Consumer)} 用実装サブクラス
  * @author 千葉 哲嗣
  */
-public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
+public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> extends ColumnMaker {
 
 	/**
 	 * この句に EXISTS 条件を追加します。
@@ -34,7 +34,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param subquery 追加条件
 	 * @return {@link LogicalOperators}
 	 */
-	LogicalOperators<?> IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery);
+	LogicalOperators<?> IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery);
 
 	/**
 	 * この句に NOT IN サブクエリ条件を追加します。
@@ -42,7 +42,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param subquery 追加条件
 	 * @return {@link LogicalOperators}
 	 */
-	LogicalOperators<?> NOT_IN(Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery);
+	LogicalOperators<?> NOT_IN(Vargs<AssistColumn> mainColumns, SelectStatement subquery);
 
 	/**
 	 * この句に任意のカラムを追加します。
@@ -77,7 +77,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 		WithValues values = new WithValues();
 		consumer.accept(values);
 
-		getContext().addCriteria(values.createCriteria(getStatement().getRuntimeId(), template));
+		getContext().addCriteria(values.createCriteria(statement().getRuntimeId(), template));
 	}
 
 	/**
@@ -85,7 +85,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 * @param expression カラムの文字列表現
 	 */
 	default void with(String expression) {
-		getContext().addCriteria(new CriteriaFactory(getStatement().getRuntimeId()).createCriteria(expression));
+		getContext().addCriteria(new CriteriaFactory(statement().getRuntimeId()).createCriteria(expression));
 	}
 
 	/**
@@ -94,11 +94,8 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	 */
 	CriteriaContext getContext();
 
-	/**
-	 * Query 内部処理用なので直接使用しないこと。
-	 * @return このインスタンスの大元の {@link Statement}
-	 */
-	default Statement getStatement() {
+	@Override
+	default Statement statement() {
 		return getSelectStatement();
 	}
 

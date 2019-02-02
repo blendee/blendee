@@ -11,7 +11,7 @@ import org.blendee.sql.Column;
  * このクラスのインスタンスは、テーブルのカラムに対応しています。
  * @author 千葉 哲嗣
  */
-public class SelectColumn extends AliasableOffer {
+public class SelectColumn implements AliasableOffer {
 
 	private final TableFacadeAssist assist;
 

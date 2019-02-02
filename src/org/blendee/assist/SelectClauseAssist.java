@@ -23,7 +23,7 @@ import org.blendee.sql.SQLQueryBuilder;
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public interface SelectClauseAssist {
+public interface SelectClauseAssist extends ColumnMaker {
 
 	/**
 	 * {@link SelectOfferFunction} 内で使用する SELECT 句生成用メソッドです。<br>
@@ -80,7 +80,7 @@ public interface SelectClauseAssist {
 	 * @param column {@link SelectColumn}
 	 * @return {@link ColumnExpression}
 	 */
-	default AliasableOffer AVG(AliasableOffer column) {
+	default AliasableOffer AVG(AssistColumn column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -89,7 +89,7 @@ public interface SelectClauseAssist {
 	 * @param column {@link AliasableOffer}
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer SUM(AliasableOffer column) {
+	default AliasableOffer SUM(AssistColumn column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -98,7 +98,7 @@ public interface SelectClauseAssist {
 	 * @param column {@link AliasableOffer}
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer MAX(AliasableOffer column) {
+	default AliasableOffer MAX(AssistColumn column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -107,7 +107,7 @@ public interface SelectClauseAssist {
 	 * @param column {@link AliasableOffer}
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer MIN(AliasableOffer column) {
+	default AliasableOffer MIN(AssistColumn column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -124,7 +124,7 @@ public interface SelectClauseAssist {
 	 * @param column {@link AliasableOffer}
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer COUNT(AliasableOffer column) {
+	default AliasableOffer COUNT(AssistColumn column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -133,24 +133,24 @@ public interface SelectClauseAssist {
 	 * @param columns {@link AliasableOffer}
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer COALESCE(AliasableOffer... columns) {
+	default AliasableOffer COALESCE(AssistColumn... columns) {
 		return any(Helper.createCoalesceTemplate(columns.length), columns);
 	}
 
 	/**
 	 * SELECT 句用 COALESCE
 	 * @param columns {@link AliasableOffer}
-	 * @param values カラム以外の要素
+	 * @param stringExpressions カラム以外の要素
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer COALESCE(Vargs<AliasableOffer> columns, Object... values) {
-		List<AliasableOffer> all = new ArrayList<>();
-		for (AliasableOffer column : columns.get()) {
+	default AliasableOffer COALESCE(Vargs<AssistColumn> columns, String... stringExpressions) {
+		List<AssistColumn> all = new ArrayList<>();
+		for (AssistColumn column : columns.get()) {
 			all.add(column);
 		}
 
-		for (Object value : values) {
-			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+		for (String expression : stringExpressions) {
+			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), expression, false)));
 		}
 
 		int size = all.size();
@@ -163,15 +163,27 @@ public interface SelectClauseAssist {
 	/**
 	 * SELECT 句用 COALESCE
 	 * @param column {@link AliasableOffer}
-	 * @param values カラム以外の要素
+	 * @param stringExpressions カラム以外の要素
 	 * @return {@link AliasableOffer}
 	 */
-	default AliasableOffer COALESCE(AliasableOffer column, Object... values) {
-		List<AliasableOffer> all = new ArrayList<>();
-		all.add(column);
+	default AliasableOffer COALESCE(AssistColumn column, String... stringExpressions) {
+		return COALESCE(Vargs.of(column), stringExpressions);
+	}
 
-		for (Object value : values) {
-			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), value.toString(), false)));
+	/**
+	 * SELECT 句用 COALESCE
+	 * @param columns {@link AliasableOffer}
+	 * @param numbers カラム以外の要素
+	 * @return {@link AliasableOffer}
+	 */
+	default AliasableOffer COALESCE(Vargs<AssistColumn> columns, Number... numbers) {
+		List<AssistColumn> all = new ArrayList<>();
+		for (AssistColumn column : columns.get()) {
+			all.add(column);
+		}
+
+		for (Number number : numbers) {
+			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), number.toString(), false)));
 		}
 
 		int size = all.size();
@@ -182,12 +194,22 @@ public interface SelectClauseAssist {
 	}
 
 	/**
+	 * SELECT 句用 COALESCE
+	 * @param column {@link AliasableOffer}
+	 * @param numbers カラム以外の要素
+	 * @return {@link AliasableOffer}
+	 */
+	default AliasableOffer COALESCE(AssistColumn column, Number... numbers) {
+		return COALESCE(Vargs.of(column), numbers);
+	}
+
+	/**
 	 * SELECT 句に任意のカラムを追加します。
 	 * @param template カラムのテンプレート
 	 * @param selectColumns 使用するカラム
 	 * @return {@link AliasableOffer} AS
 	 */
-	default AliasableOffer any(String template, AliasableOffer... selectColumns) {
+	default AliasableOffer any(String template, AssistColumn... selectColumns) {
 		getSelectStatement().quitRowMode();
 
 		Column[] columns = new Column[selectColumns.length];
@@ -292,4 +314,9 @@ public interface SelectClauseAssist {
 	 * @return このインスタンスの大元の {@link SelectStatement}
 	 */
 	SelectStatement getSelectStatement();
+
+	@Override
+	default Statement statement() {
+		return getSelectStatement();
+	}
 }

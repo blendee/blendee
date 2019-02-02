@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
@@ -26,6 +27,8 @@ public class Helper {
 
 	static final String COUNT_TEMPLATE = "COUNT({0})";
 
+	static final ChainPreparedStatementComplementer complementerStub = (done, statement) -> done;
+
 	public static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery) {
 		setExists(main, assist, subquery, "EXISTS");
 	}
@@ -35,7 +38,7 @@ public class Helper {
 	}
 
 	private static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery, String keyword) {
-		assist.getStatement().forSubquery(true);
+		assist.statement().forSubquery(true);
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
@@ -70,8 +73,8 @@ public class Helper {
 	 * @param mainColumns メイン側クエリの結合カラム
 	 * @param subquery 追加条件
 	 */
-	public static void addInCriteria(CriteriaClauseAssist<?> assist, boolean notIn, Vargs<CriteriaColumn<?>> mainColumns, SelectStatement subquery) {
-		CriteriaColumn<?>[] criteriaColumns = mainColumns.get();
+	public static void addInCriteria(CriteriaClauseAssist<?> assist, boolean notIn, Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
+		AssistColumn[] criteriaColumns = mainColumns.get();
 
 		Column[] columns = new Column[criteriaColumns.length];
 
@@ -79,7 +82,7 @@ public class Helper {
 			columns[i] = criteriaColumns[i].column();
 		}
 
-		assist.getContext().addCriteria(createSubqueryCriteria(assist.getStatement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
+		assist.getContext().addCriteria(createSubqueryCriteria(assist.statement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
 	}
 
 	/**

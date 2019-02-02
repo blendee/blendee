@@ -29,7 +29,7 @@ import org.blendee.sql.binder.UUIDBinder;
  * @author 千葉 哲嗣
  * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
+public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements AssistColumn {
 
 	private final CriteriaContext context;
 
@@ -48,8 +48,14 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 
 	abstract O logocalOperators();
 
-	Column column() {
+	@Override
+	public Column column() {
 		return column;
+	}
+
+	@Override
+	public Statement statement() {
+		return root;
 	}
 
 	/**
@@ -139,7 +145,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 */
 	public O eq(String value) {
 		getContext().addCriteria(
-			factory.create(column(), value));
+			factory.create(column(),new StringBinder( value)));
 
 		return logocalOperators();
 	}
@@ -185,7 +191,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O eq(ColumnSupplier another) {
+	public O eq(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} = {1}");
 	}
 
@@ -312,7 +318,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ne(ColumnSupplier another) {
+	public O ne(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} <> {1}");
 	}
 
@@ -439,7 +445,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O lt(ColumnSupplier another) {
+	public O lt(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} < {1}");
 	}
 
@@ -566,7 +572,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O gt(ColumnSupplier another) {
+	public O gt(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} > {1}");
 	}
 
@@ -693,7 +699,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O le(ColumnSupplier another) {
+	public O le(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} <= {1}");
 	}
 
@@ -820,7 +826,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> {
 	 * @param another 他方のカラム
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
-	public O ge(ColumnSupplier another) {
+	public O ge(AssistColumn another) {
 		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} >= {1}");
 	}
 
