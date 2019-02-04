@@ -23,7 +23,7 @@ import org.blendee.sql.SQLQueryBuilder;
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public interface SelectClauseAssist extends ColumnMaker {
+public interface SelectClauseAssist extends ClauseAssist {
 
 	/**
 	 * {@link SelectOfferFunction} 内で使用する SELECT 句生成用メソッドです。<br>
@@ -243,6 +243,16 @@ public interface SelectClauseAssist extends ColumnMaker {
 	}
 
 	/**
+	 * SELECT 句に任意の数値を追加します。
+	 * @param column 任意のカラム
+	 * @return {@link AliasableOffer} AS
+	 */
+	default AliasableOffer any(AssistColumn column) {
+		getSelectStatement().quitRowMode();
+		return new ColumnExpression(column);
+	}
+
+	/**
 	 * SELECT 句に任意のサブクエリを追加します。
 	 * @param subquery サブクエリ
 	 * @return {@link AliasableOffer} AS
@@ -261,7 +271,7 @@ public interface SelectClauseAssist extends ColumnMaker {
 	}
 
 	/**
-	 * SELECT 句に 関連したテーブルの * を追加します。
+	 * SELECT 句に関連したテーブルの * を追加します。
 	 * @param assists このテーブルから辿れるテーブル
 	 * @return {@link SelectOffer}
 	 */

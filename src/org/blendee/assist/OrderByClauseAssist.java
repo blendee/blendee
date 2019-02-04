@@ -8,6 +8,7 @@ import static org.blendee.assist.Helper.SUM_TEMPLATE;
 
 import java.util.Arrays;
 
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.sql.Column;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.Direction;
@@ -17,7 +18,7 @@ import org.blendee.sql.OrderByClause.Direction;
  * これらのメソッドは、内部使用を目的としていますので、直接使用しないでください。
  * @author 千葉 哲嗣
  */
-public interface OrderByClauseAssist extends ColumnMaker {
+public interface OrderByClauseAssist extends ClauseAssist {
 
 	/**
 	 * {@link OrderByOfferFunction} 内で使用する ORDER BY 句生成用メソッドです。<br>
@@ -85,6 +86,26 @@ public interface OrderByClauseAssist extends ColumnMaker {
 
 	/**
 	 * ORDER BY 句に任意のカラムを追加します。
+	 * @param orderByColumn 使用するカラム
+	 * @return {@link AscDesc} ASC か DESC
+	 */
+	default AscDesc any(AssistColumn orderByColumn) {
+		String template = "{0}";
+		Column[] columns = new Column[] { orderByColumn.column() };
+
+		OrderByClause clause = getOrderByClause();
+		return new AscDesc(
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC_NULLS_FIRST, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC_NULLS_LAST, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC_NULLS_FIRST, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC_NULLS_LAST, columns, orderByColumn)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.NONE, columns, orderByColumn)));
+	}
+
+	/**
+	 * ORDER BY 句に任意のカラムを追加します。
 	 * @param template カラムのテンプレート
 	 * @param orderByColumns 使用するカラム
 	 * @return {@link AscDesc} ASC か DESC
@@ -95,15 +116,23 @@ public interface OrderByClauseAssist extends ColumnMaker {
 			columns[i] = orderByColumns[i].column();
 		}
 
+		ChainPreparedStatementComplementer complementer = (done, statement) -> {
+			for (ChainPreparedStatementComplementer c : orderByColumns) {
+				done = c.complement(done, statement);
+			}
+
+			return done;
+		};
+
 		OrderByClause clause = getOrderByClause();
 		return new AscDesc(
-			new OrderByOffer(order -> clause.add(order, template, Direction.ASC, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.DESC, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.ASC_NULLS_FIRST, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.ASC_NULLS_LAST, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.DESC_NULLS_FIRST, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.DESC_NULLS_LAST, columns)),
-			new OrderByOffer(order -> clause.add(order, template, Direction.NONE, columns)));
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC_NULLS_FIRST, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC_NULLS_LAST, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC_NULLS_FIRST, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC_NULLS_LAST, columns, complementer)),
+			new ListClauseOffer(order -> clause.add(order, template, Direction.NONE, columns, complementer)));
 	}
 
 	/**
@@ -112,8 +141,8 @@ public interface OrderByClauseAssist extends ColumnMaker {
 	 * @param offer 対象カラム
 	 * @return {@link GroupByColumn}
 	 */
-	default OrderByOffer order(int order, Offer offer) {
-		return new OrderByOffer(offer, order);
+	default Offer order(int order, Offer offer) {
+		return new ListClauseOffer(offer, order);
 	}
 
 	/**

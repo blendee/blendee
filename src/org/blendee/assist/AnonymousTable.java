@@ -969,6 +969,11 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		private GroupByAssist(AnonymousTable query, TableFacadeContext<GroupByCol> builder) {
 			super(query, builder, CriteriaContext.NULL);
 		}
+
+		@Override
+		public GroupByClause getGroupByClause() {
+			return getSelectStatement().getGroupByClause();
+		}
 	}
 
 	/**

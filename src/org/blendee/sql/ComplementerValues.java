@@ -207,7 +207,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	 * @param values {@link Object}
 	 * @return {@link ComplementerValues}
 	 */
-	public static ComplementerValues getInstanceWithPlaceHolderValues(Object... values) {
+	public static ComplementerValues getInstanceOfPlaceHolderValues(Object... values) {
 		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 		List<ValueExtractor> extractors = Arrays.asList(new ValueExtractor[values.length]);

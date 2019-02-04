@@ -29,7 +29,7 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 	 * @return {@link SQL}
 	 */
 	public static SQL getInstanceWithPlaceholderValues(String sql, Object... values) {
-		return new SQL(Objects.requireNonNull(sql), ComplementerValues.getInstanceWithPlaceHolderValues(values));
+		return new SQL(Objects.requireNonNull(sql), ComplementerValues.getInstanceOfPlaceHolderValues(values));
 	}
 
 	/**

@@ -12,7 +12,7 @@ import org.blendee.sql.Relationship;
  * @param <R> {@link #paren(Consumer)} 用実装サブクラス
  * @author 千葉 哲嗣
  */
-public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> extends ColumnMaker {
+public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> extends ClauseAssist {
 
 	/**
 	 * この句に EXISTS 条件を追加します。

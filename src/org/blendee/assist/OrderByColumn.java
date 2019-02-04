@@ -16,34 +16,34 @@ public class OrderByColumn implements Offer, Offers<Offer>, AssistColumn {
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
 	 */
-	public final OrderByOffer ASC;
+	public final ListClauseOffer ASC;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC として追加します。
 	 */
-	public final OrderByOffer DESC;
+	public final ListClauseOffer DESC;
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC NULLS FIRST として追加します。
 	 */
-	public final OrderByOffer ASC_NULLS_FIRST;
+	public final ListClauseOffer ASC_NULLS_FIRST;
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC NULLS LAST として追加します。
 	 */
-	public final OrderByOffer ASC_NULLS_LAST;
+	public final ListClauseOffer ASC_NULLS_LAST;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC NULLS FIRST として追加します。
 	 */
-	public final OrderByOffer DESC_NULLS_FIRST;
+	public final ListClauseOffer DESC_NULLS_FIRST;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC NULLS LAST として追加します。
 	 */
-	public final OrderByOffer DESC_NULLS_LAST;
+	public final ListClauseOffer DESC_NULLS_LAST;
 
-	private final OrderByOffer NONE;
+	private final ListClauseOffer NONE;
 
 	private final Column column;
 
@@ -56,19 +56,19 @@ public class OrderByColumn implements Offer, Offers<Offer>, AssistColumn {
 	 */
 	public OrderByColumn(TableFacadeAssist assist, String name) {
 		column = assist.getRelationship().getColumn(name);
-		ASC = new OrderByOffer(
+		ASC = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC));
-		DESC = new OrderByOffer(
+		DESC = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC));
-		ASC_NULLS_FIRST = new OrderByOffer(
+		ASC_NULLS_FIRST = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_FIRST));
-		ASC_NULLS_LAST = new OrderByOffer(
+		ASC_NULLS_LAST = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC_NULLS_LAST));
-		DESC_NULLS_FIRST = new OrderByOffer(
+		DESC_NULLS_FIRST = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_FIRST));
-		DESC_NULLS_LAST = new OrderByOffer(
+		DESC_NULLS_LAST = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.DESC_NULLS_LAST));
-		NONE = new OrderByOffer(
+		NONE = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.NONE));
 
 		statement = assist.getSelectStatement();

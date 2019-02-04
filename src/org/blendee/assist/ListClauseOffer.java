@@ -11,7 +11,7 @@ import org.blendee.sql.ListClause;
  * ORDER BY 句の検索候補を表すインターフェイスです。
  * @author 千葉 哲嗣
  */
-public class OrderByOffer implements Offer, Offers<Offer> {
+public class ListClauseOffer implements Offer, Offers<Offer> {
 
 	private final Consumer<Integer> offerFunction;
 
@@ -22,13 +22,13 @@ public class OrderByOffer implements Offer, Offers<Offer> {
 	/**
 	 * @param offerFunction {@link Runnable}
 	 */
-	OrderByOffer(Consumer<Integer> offerFunction) {
+	ListClauseOffer(Consumer<Integer> offerFunction) {
 		this.offerFunction = Objects.requireNonNull(offerFunction);
 		order = ListClause.DEFAULT_ORDER;
 		offerable = null;
 	}
 
-	OrderByOffer(Offer offerable, int order) {
+	ListClauseOffer(Offer offerable, int order) {
 		this.offerable = Objects.requireNonNull(offerable);
 		this.order = order;
 		offerFunction = null;

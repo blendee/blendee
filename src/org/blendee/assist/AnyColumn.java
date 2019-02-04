@@ -74,7 +74,7 @@ class AnyColumn implements AssistColumn {
 		return statement;
 	}
 
-	private Column[] columns() {
+	Column[] columns() {
 		List<Column> list = Arrays.stream(columns).map(c -> c.column()).collect(Collectors.toList());
 		return list.toArray(new Column[list.size()]);
 	}

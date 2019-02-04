@@ -1621,6 +1621,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			TableFacadeContext<GroupByCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
+
+		@Override
+		public GroupByClause getGroupByClause() {
+			return getSelectStatement().getGroupByClause();
+		}
 	}
 
 	/**

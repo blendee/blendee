@@ -12,47 +12,47 @@ public class AscDesc implements Offer, Offers<Offer> {
 	/**
 	 * ORDER BY 句に、このカラムを ASC として追加します。
 	 */
-	public final OrderByOffer ASC;
+	public final ListClauseOffer ASC;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC として追加します。
 	 */
-	public final OrderByOffer DESC;
+	public final ListClauseOffer DESC;
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC NULLS FIRST として追加します。
 	 */
-	public final OrderByOffer ASC_NULLS_FIRST;
+	public final ListClauseOffer ASC_NULLS_FIRST;
 
 	/**
 	 * ORDER BY 句に、このカラムを ASC NULLS LAST として追加します。
 	 */
-	public final OrderByOffer ASC_NULLS_LAST;
+	public final ListClauseOffer ASC_NULLS_LAST;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC NULLS FIRST として追加します。
 	 */
-	public final OrderByOffer DESC_NULLS_FIRST;
+	public final ListClauseOffer DESC_NULLS_FIRST;
 
 	/**
 	 * ORDER BY 句に、このカラムを DESC NULLS LAST として追加します。
 	 */
-	public final OrderByOffer DESC_NULLS_LAST;
+	public final ListClauseOffer DESC_NULLS_LAST;
 
-	private final OrderByOffer NONE;
+	private final ListClauseOffer NONE;
 
 	/**
 	 * @param asc
 	 * @param desc
 	 */
 	AscDesc(
-		OrderByOffer asc,
-		OrderByOffer desc,
-		OrderByOffer ascNullsFirst,
-		OrderByOffer ascNullsLast,
-		OrderByOffer descNullsFirst,
-		OrderByOffer descNullsLast,
-		OrderByOffer none) {
+		ListClauseOffer asc,
+		ListClauseOffer desc,
+		ListClauseOffer ascNullsFirst,
+		ListClauseOffer ascNullsLast,
+		ListClauseOffer descNullsFirst,
+		ListClauseOffer descNullsLast,
+		ListClauseOffer none) {
 		ASC = asc;
 		DESC = desc;
 		ASC_NULLS_FIRST = ascNullsFirst;

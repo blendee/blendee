@@ -1842,6 +1842,11 @@ public class GenericTable
 		private GroupByAssist(GenericTable table$, TableFacadeContext<GroupByCol> builder$) {
 			super(table$, builder$, CriteriaContext.NULL);
 		}
+
+		@Override
+		public GroupByClause getGroupByClause() {
+			return getSelectStatement().getGroupByClause();
+		}
 	}
 
 	/**

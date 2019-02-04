@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.ChainPreparedStatementComplementer;
 
 /**
  * SELECT 文の ORDER BY 句を表すクラスです。
@@ -187,6 +188,25 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	}
 
 	/**
+	 * この ORDER BY 句に記述可能な SQL 文のテンプレートを追加します。
+	 * @param order JOIN したときの順序
+	 * @param template SQL 文のテンプレート
+	 * @param direction 方向
+	 * @param columns SQL 文に含まれるカラム
+	 * @param complementer {@link ChainPreparedStatementComplementer}
+	 * @see SQLFragmentFormat
+	 */
+	public void add(
+		int order,
+		String template,
+		Direction direction,
+		Column[] columns,
+		ChainPreparedStatementComplementer complementer) {
+		super.add(order, template.trim() + direction.value, columns, complementer);
+		canGetDirectionalColumns = false;
+	}
+
+	/**
 	 * この ORDER 句にカラムを追加します。
 	 * @param column 追加するカラム
 	 */
@@ -210,7 +230,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 */
 	public DirectionalColumn[] getDirectionalColumns() {
 		if (!canGetDirectionalColumns)
-			throw new IllegalStateException("複数カラムで一つの DIrection の要素が追加されたため、 DirectionalColumn は不完全です。");
+			throw new IllegalStateException("複数カラムで一つの Direction の要素が追加されたため、 DirectionalColumn は不完全です。");
 
 		return added.toArray(new DirectionalColumn[added.size()]);
 	}

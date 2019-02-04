@@ -54,6 +54,13 @@ public class ColumnExpression implements AliasableOffer {
 		this.complementer = complementer;
 	}
 
+	ColumnExpression(AssistColumn column) {
+		statement = column.statement();
+		columns = new Column[] { column.column() };
+		this.expression.append("{0}");
+		this.complementer = column;
+	}
+
 	/**
 	 * AS エイリアス となります。
 	 * @param alias エイリアス
