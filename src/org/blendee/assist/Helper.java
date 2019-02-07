@@ -1,13 +1,16 @@
 package org.blendee.assist;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
@@ -43,9 +46,7 @@ public class Helper {
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
 
-		builder.sql();
-
-		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
+		//サブクエリのFrom句からBinderを取り出す前にSQL化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
 		String subqueryString = keyword + " (" + builder.sql() + ")";
 
 		assist.getContext()
@@ -82,7 +83,17 @@ public class Helper {
 			columns[i] = criteriaColumns[i].column();
 		}
 
-		assist.getContext().addCriteria(createSubqueryCriteria(assist.statement().getRuntimeId(), subquery.toSQLQueryBuilder(), notIn, columns));
+		Binder[] values = flatValues(criteriaColumns);
+
+		assist.getContext()
+			.addCriteria(
+				merge(
+					values,
+					createSubqueryCriteria(
+						assist.statement().getRuntimeId(),
+						subquery.toSQLQueryBuilder(),
+						notIn,
+						columns)));
 	}
 
 	/**
@@ -116,5 +127,22 @@ public class Helper {
 		}
 
 		return "COALESCE(" + String.join(", ", list) + ")";
+	}
+
+	static Binder[] flatValues(AssistColumn[] columns) {
+		return flatValues(Arrays.stream(columns).map(c -> c.values()));
+	}
+
+	static Binder[] flatValues(Stream<Binder[]> binders) {
+		List<Binder> list = new LinkedList<>();
+		binders.forEach(v -> list.addAll(Arrays.asList(v)));
+
+		return list.toArray(new Binder[list.size()]);
+	}
+
+	static Criteria merge(Binder[] values, Criteria criteria) {
+		criteria.changeBinders(Helper.flatValues(Vargs.of(values, criteria.getBinders()).stream()));
+
+		return criteria;
 	}
 }

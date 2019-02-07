@@ -17,8 +17,17 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	 * @param columns 対象カラム
 	 * @return カラム
 	 */
-	default <O extends LogicalOperators<?>> OnLeftColumn<O> COALESCE(Vargs<AssistColumn> columns) {
+	default <O extends LogicalOperators<?>> OnLeftColumn<O> COALESCE(Vargs<CriteriaAssistColumn<O>> columns) {
 		return any(Helper.createCoalesceTemplate(columns.length()), columns);
+	}
+
+	/**
+	 * ON 句に任意のカラムを追加します。
+	 * @param column 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> OnLeftColumn<O> any(CriteriaAssistColumn<O> column) {
+		return any("{0}", column);
 	}
 
 	/**
@@ -30,11 +39,12 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	 */
 	default <O extends LogicalOperators<?>> OnLeftColumn<O> any(
 		String template,
-		AssistColumn column) {
+		CriteriaAssistColumn<O> column) {
 		return new OnLeftColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(template, column.column()));
+			new MultiColumn(template, column.column()),
+			column.values());
 	}
 
 	/**
@@ -46,7 +56,7 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	 */
 	default <O extends LogicalOperators<?>> OnLeftColumn<O> any(
 		String template,
-		Vargs<AssistColumn> args) {
+		Vargs<CriteriaAssistColumn<O>> args) {
 		AssistColumn[] values = args.get();
 		Column[] columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {
@@ -56,6 +66,7 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 		return new OnLeftColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(template, columns));
+			new MultiColumn(template, columns),
+			Helper.flatValues(args.get()));
 	}
 }

@@ -34,7 +34,9 @@ import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractorsConfigure;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.RuntimeIdFactory;
+import org.blendee.assist.CriteriaAnyColumn;
 import org.blendee.assist.AssistColumn;
+import org.blendee.assist.CriteriaAssistColumn;
 import org.blendee.assist.CriteriaContext;
 import org.blendee.assist.DataManipulationStatement;
 import org.blendee.assist.DataManipulationStatementBehavior;
@@ -585,7 +587,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		return new /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
 	}
-
 
 	/**
 	 * 空のインスタンスを生成します。
@@ -1554,6 +1555,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OR = or$ == null ? this : or$;
 		}
 
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<WhereLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<WhereLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
+		}
+
 		@Override
 		public WhereLogicalOperators EXISTS(SelectStatement subquery) {
 			SelectStatement statement = getSelectStatement();
@@ -1664,6 +1684,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OR = or$ == null ? this : or$;
 		}
 
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<HavingLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<HavingLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
+		}
+
 		@Override
 		public HavingLogicalOperators EXISTS(SelectStatement subquery) {
 			SelectStatement statement = getSelectStatement();
@@ -1769,6 +1808,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OR = or$ == null ? this : or$;
 		}
 
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnLeftLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnLeftLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
+		}
+
 		@Override
 		public OnLeftLogicalOperators EXISTS(SelectStatement subquery) {
 			SelectStatement statement = getSelectStatement();
@@ -1838,6 +1896,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			OnRightAssist or$) {
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnRightLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnRightLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
 		}
 
 		@Override
@@ -1967,6 +2044,25 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			DMSWhereAssist or$) {
 			super(table$, builder$, context$);
 			OR = or$ == null ? this : or$;
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<DMSWhereLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<DMSWhereLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
 		}
 
 		@Override

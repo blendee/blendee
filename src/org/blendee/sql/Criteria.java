@@ -209,6 +209,15 @@ public class Criteria extends Clause {
 	}
 
 	/**
+	 * 内部で保持する {@link Binder} を入れ替えます。
+	 * @param newBinders 新しい {@link Binder} の配列
+	 */
+	public void changeBinders(Binder[] newBinders) {
+		binders.clear();
+		binders.addAll(Arrays.asList(newBinders));
+	}
+
+	/**
 	 * このインスタンスが表す条件に、新たな条件を追加します。
 	 * @param operator 論理演算子 AND OR
 	 * @param another 追加する条件
@@ -226,11 +235,6 @@ public class Criteria extends Clause {
 
 		binders.addAll(target.binders);
 		current = operator;
-	}
-
-	void changeBinders(Binder[] newBinders) {
-		binders.clear();
-		binders.addAll(Arrays.asList(newBinders));
 	}
 
 	void setKeyword(String keyword) {
@@ -343,18 +347,18 @@ public class Criteria extends Clause {
 		}
 
 		@Override
+		public void changeBinders(Binder[] newBinders) {
+			if (inclusion == null) return;
+			inclusion.changeBinders(newBinders);
+		}
+
+		@Override
 		void append(LogicalOperator operator, Criteria clause) {
 			if (inclusion == null) {
 				inclusion = clause.replicate();
 			} else {
 				inclusion.append(operator, clause);
 			}
-		}
-
-		@Override
-		void changeBinders(Binder[] newBinders) {
-			if (inclusion == null) return;
-			inclusion.changeBinders(newBinders);
 		}
 
 		@Override

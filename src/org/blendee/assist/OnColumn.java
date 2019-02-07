@@ -1,5 +1,6 @@
 package org.blendee.assist;
 
+import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 
 /**
@@ -15,8 +16,9 @@ public abstract class OnColumn<O extends LogicalOperators<?>> extends CriteriaCo
 	 * @param root {@link SelectStatement}
 	 * @param context {@link CriteriaContext}
 	 * @param column {@link Column}
+	 * @param values {@link Binder}
 	 */
-	protected OnColumn(SelectStatement root, CriteriaContext context, Column column) {
-		super(root, context, column);
+	protected OnColumn(SelectStatement root, CriteriaContext context, Column column, Binder[] values) {
+		super(root, context, column, values);
 	}
 }

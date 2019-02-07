@@ -28,7 +28,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param column {@link HavingColumn}
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> AVG(AssistColumn column) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> AVG(CriteriaAssistColumn<O> column) {
 		return any(AVG_TEMPLATE, column);
 	}
 
@@ -38,7 +38,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param column {@link HavingColumn}
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> SUM(AssistColumn column) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> SUM(CriteriaAssistColumn<O> column) {
 		return any(SUM_TEMPLATE, column);
 	}
 
@@ -48,7 +48,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param column {@link HavingColumn}
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> MAX(AssistColumn column) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> MAX(CriteriaAssistColumn<O> column) {
 		return any(MAX_TEMPLATE, column);
 	}
 
@@ -58,7 +58,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param column {@link HavingColumn}
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> MIN(AssistColumn column) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> MIN(CriteriaAssistColumn<O> column) {
 		return any(MIN_TEMPLATE, column);
 	}
 
@@ -68,7 +68,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param column {@link HavingColumn}
 	 * @return {@link LogicalOperators}
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> COUNT(AssistColumn column) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> COUNT(CriteriaAssistColumn<O> column) {
 		return any(COUNT_TEMPLATE, column);
 	}
 
@@ -79,7 +79,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<AssistColumn> columns, Object... values) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<CriteriaAssistColumn<O>> columns, Object... values) {
 		List<Column> list = new LinkedList<>();
 		columns.stream().forEach(c -> list.add(c.column()));
 
@@ -91,7 +91,8 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])));
+			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])),
+			Helper.flatValues(columns.get()));
 	}
 
 	/**
@@ -101,7 +102,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(AssistColumn column, Object... values) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(CriteriaAssistColumn<O> column, Object... values) {
 		List<Column> list = new LinkedList<>();
 		list.add(column.column());
 
@@ -113,7 +114,8 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])));
+			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])),
+			column.values());
 	}
 
 	/**
@@ -122,8 +124,17 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @param <O> {@link LogicalOperators}
 	 * @return カラム
 	 */
-	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<AssistColumn> columns) {
+	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<CriteriaAssistColumn<O>> columns) {
 		return any(Helper.createCoalesceTemplate(columns.length()), columns);
+	}
+
+	/**
+	 * HAVING 句に任意のカラムを追加します。
+	 * @param column 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> HavingColumn<O> any(CriteriaAssistColumn<O> column) {
+		return any("{0}", column);
 	}
 
 	/**
@@ -135,11 +146,12 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> any(
 		String template,
-		AssistColumn column) {
+		CriteriaAssistColumn<O> column) {
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(template, column.column()));
+			new MultiColumn(template, column.column()),
+			column.values());
 	}
 
 	/**
@@ -151,7 +163,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> any(
 		String template,
-		Vargs<AssistColumn> args) {
+		Vargs<CriteriaAssistColumn<O>> args) {
 		AssistColumn[] values = args.get();
 		Column[] columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {
@@ -161,6 +173,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		return new HavingColumn<>(
 			getSelectStatement(),
 			getContext(),
-			new MultiColumn(template, columns));
+			new MultiColumn(template, columns),
+			Helper.flatValues(args.get()));
 	}
 }

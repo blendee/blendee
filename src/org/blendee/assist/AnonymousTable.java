@@ -909,6 +909,25 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<WhereLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<WhereLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
+		}
+
 		@Override
 		public WhereLogicalOperators EXISTS(SelectStatement subquery) {
 			SelectStatement statement = getSelectStatement();
@@ -1009,6 +1028,25 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			HavingAssist or) {
 			super(query, builder, context);
 			OR = or == null ? this : or;
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<HavingLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<HavingLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
 		}
 
 		@Override
@@ -1113,6 +1151,25 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OR = or == null ? this : or;
 		}
 
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnLeftLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnLeftLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
+		}
+
 		@Override
 		public OnLeftLogicalOperators EXISTS(SelectStatement subquery) {
 			SelectStatement statement = getSelectStatement();
@@ -1183,6 +1240,25 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 			OnRightAssist or) {
 			super(query, builder, context);
 			OR = or == null ? this : or;
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param expression SQL 内のカラムを構成する文字列
+		 * @param values プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnRightLogicalOperators> expr(String expression, Object... values) {
+			return new CriteriaAnyColumn<>(statement(), expression, values);
+		}
+
+		/**
+		 * 任意のカラムを生成します。
+		 * @param value プレースホルダの値
+		 * @return {@link CriteriaAssistColumn}
+		 */
+		public CriteriaAssistColumn<OnRightLogicalOperators> expr(Object value) {
+			return new CriteriaAnyColumn<>(statement(), value);
 		}
 
 		@Override

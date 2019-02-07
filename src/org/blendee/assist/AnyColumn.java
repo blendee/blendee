@@ -41,7 +41,7 @@ class AnyColumn implements AssistColumn {
 		this.statement = statement;
 		this.expression = "?";
 		columns = emptyColumns;
-		values = emptyValues;
+		values = new Object[] { value };
 	}
 
 	AnyColumn(Statement statement, String expression, AssistColumn[] columns, Object[] values) {

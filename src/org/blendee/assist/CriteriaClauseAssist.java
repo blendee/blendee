@@ -12,7 +12,34 @@ import org.blendee.sql.Relationship;
  * @param <R> {@link #paren(Consumer)} 用実装サブクラス
  * @author 千葉 哲嗣
  */
-public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> extends ClauseAssist {
+public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
+
+	/**
+	 * 任意のカラム表現を生成します。
+	 * @param expression テンプレート
+	 * @param columns テンプレートにセットする {@link CriteriaAssistColumn}
+	 * @return 任意のカラム
+	 */
+	@SuppressWarnings("unchecked")
+	default <O extends LogicalOperators<?>> CriteriaAssistColumn<O> expr(
+		String expression,
+		CriteriaAssistColumn<O>... columns) {
+		return new CriteriaAnyColumn<>(statement(), expression, columns);
+	}
+
+	/**
+	 * 任意のカラム表現を生成します。
+	 * @param expression テンプレート
+	 * @param columns テンプレートにセットする {@link CriteriaAssistColumn}
+	 * @param values プレースホルダの値
+	 * @return 任意のカラム
+	 */
+	default <O extends LogicalOperators<?>> CriteriaAssistColumn<O> expr(
+		String expression,
+		Vargs<CriteriaAssistColumn<O>> columns,
+		Object... values) {
+		return new CriteriaAnyColumn<>(statement(), expression, columns.get(), values);
+	}
 
 	/**
 	 * この句に EXISTS 条件を追加します。
@@ -94,7 +121,9 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> extends
 	 */
 	CriteriaContext getContext();
 
-	@Override
+	/**
+	 * @return {@link Statement}
+	 */
 	default Statement statement() {
 		return getSelectStatement();
 	}

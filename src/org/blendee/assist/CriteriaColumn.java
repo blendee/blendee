@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
+import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.CriteriaFactory.ComparisonOperator;
 import org.blendee.sql.CriteriaFactory.Match;
@@ -29,7 +30,7 @@ import org.blendee.sql.binder.UUIDBinder;
  * @author 千葉 哲嗣
  * @param <O> 論理演算用 {@link LogicalOperators}
  */
-public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements AssistColumn {
+public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements CriteriaAssistColumn<O> {
 
 	private final CriteriaContext context;
 
@@ -37,12 +38,15 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 
 	private final Statement root;
 
+	private final Binder[] values;
+
 	private final CriteriaFactory factory;
 
-	CriteriaColumn(Statement root, CriteriaContext context, Column column) {
+	CriteriaColumn(Statement root, CriteriaContext context, Column column, Binder[] values) {
 		this.root = root;
 		this.context = context;
 		this.column = column;
+		this.values = values.clone();
 		factory = new CriteriaFactory(root.getRuntimeId());
 	}
 
@@ -56,6 +60,11 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	@Override
 	public Statement statement() {
 		return root;
+	}
+
+	@Override
+	public Binder[] values() {
+		return values.clone();
 	}
 
 	/**
@@ -72,8 +81,8 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(BigDecimal value) {
-		getContext()
-			.addCriteria(factory.create(column(), new BigDecimalBinder(value)));
+		getContext().addCriteria(
+			merge(factory.create(column(), new BigDecimalBinder(value))));
 
 		return logocalOperators();
 	}
@@ -85,7 +94,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(boolean value) {
 		getContext().addCriteria(
-			factory.create(column(), new BooleanBinder(value)));
+			merge(factory.create(column(), new BooleanBinder(value))));
 
 		return logocalOperators();
 	}
@@ -97,7 +106,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(double value) {
 		getContext().addCriteria(
-			factory.create(column(), new DoubleBinder(value)));
+			merge(factory.create(column(), new DoubleBinder(value))));
 
 		return logocalOperators();
 	}
@@ -109,7 +118,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(float value) {
 		getContext().addCriteria(
-			factory.create(column(), new FloatBinder(value)));
+			merge(factory.create(column(), new FloatBinder(value))));
 
 		return logocalOperators();
 	}
@@ -121,7 +130,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(int value) {
 		getContext().addCriteria(
-			factory.create(column(), new IntBinder(value)));
+			merge(factory.create(column(), new IntBinder(value))));
 
 		return logocalOperators();
 	}
@@ -133,7 +142,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(long value) {
 		getContext().addCriteria(
-			factory.create(column(), new LongBinder(value)));
+			merge(factory.create(column(), new LongBinder(value))));
 
 		return logocalOperators();
 	}
@@ -145,7 +154,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(String value) {
 		getContext().addCriteria(
-			factory.create(column(),new StringBinder( value)));
+			merge(factory.create(column(), new StringBinder(value))));
 
 		return logocalOperators();
 	}
@@ -157,7 +166,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(Timestamp value) {
 		getContext().addCriteria(
-			factory.create(column(), new TimestampBinder(value)));
+			merge(factory.create(column(), new TimestampBinder(value))));
 
 		return logocalOperators();
 	}
@@ -169,7 +178,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(UUID value) {
 		getContext().addCriteria(
-			factory.create(column(), new UUIDBinder(value)));
+			merge(factory.create(column(), new UUIDBinder(value))));
 
 		return logocalOperators();
 	}
@@ -181,7 +190,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O eq(Bindable value) {
 		getContext().addCriteria(
-			factory.create(column(), value));
+			merge(factory.create(column(), value)));
 
 		return logocalOperators();
 	}
@@ -192,16 +201,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O eq(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} = {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの = 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O eq(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} = {1}");
+		return addAnotherColumnCriteria(another, "{0} = {1}");
 	}
 
 	/**
@@ -319,16 +319,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ne(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} <> {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの &lt;&gt; 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O ne(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} <> {1}");
+		return addAnotherColumnCriteria(another, "{0} <> {1}");
 	}
 
 	/**
@@ -446,16 +437,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O lt(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} < {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの &lt; 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O lt(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} < {1}");
+		return addAnotherColumnCriteria(another, "{0} < {1}");
 	}
 
 	/**
@@ -573,16 +555,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O gt(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} > {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの &gt; 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O gt(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} > {1}");
+		return addAnotherColumnCriteria(another, "{0} > {1}");
 	}
 
 	/**
@@ -700,16 +673,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O le(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} <= {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの &lt;= 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O le(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} <= {1}");
+		return addAnotherColumnCriteria(another, "{0} <= {1}");
 	}
 
 	/**
@@ -827,16 +791,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O ge(AssistColumn another) {
-		return addAnotherColumnCriteria(another.statement(), another.column(), "{0} >= {1}");
-	}
-
-	/**
-	 * 条件句に、このカラムの &gt;= 条件を追加します。
-	 * @param another 他方のカラム
-	 * @return 連続呼び出し用 {@link SelectStatement}
-	 */
-	public O ge(CriteriaColumn<?> another) {
-		return addAnotherColumnCriteria(another.root, another.column, "{0} >= {1}");
+		return addAnotherColumnCriteria(another, "{0} >= {1}");
 	}
 
 	/**
@@ -857,7 +812,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O compare(ComparisonOperator operator, Bindable value) {
 		getContext().addCriteria(
-			factory.create(operator, column(), value));
+			merge(factory.create(operator, column(), value)));
 
 		return logocalOperators();
 	}
@@ -870,7 +825,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O LIKE(String value) {
 		getContext().addCriteria(
-			factory.createLikeCriteria(Match.OPTIONAL, column(), value));
+			merge(factory.createLikeCriteria(Match.OPTIONAL, column(), value)));
 
 		return logocalOperators();
 	}
@@ -883,7 +838,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_LIKE(String value) {
 		getContext().addCriteria(
-			factory.createNotLikeCriteria(Match.OPTIONAL, column(), value));
+			merge(factory.createNotLikeCriteria(Match.OPTIONAL, column(), value)));
 
 		return logocalOperators();
 	}
@@ -897,7 +852,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O LIKE(Match type, String value) {
 		getContext().addCriteria(
-			factory.createLikeCriteria(type, column(), value));
+			merge(factory.createLikeCriteria(type, column(), value)));
 
 		return logocalOperators();
 	}
@@ -911,7 +866,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_LIKE(Match type, String value) {
 		getContext().addCriteria(
-			factory.createNotLikeCriteria(type, column(), value));
+			merge(factory.createNotLikeCriteria(type, column(), value)));
 
 		return logocalOperators();
 	}
@@ -923,7 +878,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IN(String... values) {
 		getContext().addCriteria(
-			factory.createInCriteria(column(), values));
+			merge(factory.createInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -935,7 +890,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IN(Number... values) {
 		getContext().addCriteria(
-			factory.createInCriteria(column(), values));
+			merge(factory.createInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -947,7 +902,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IN(Timestamp... values) {
 		getContext().addCriteria(
-			factory.createInCriteria(column(), values));
+			merge(factory.createInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -959,7 +914,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IN(Bindable... values) {
 		getContext().addCriteria(
-			factory.createInCriteria(column(), values));
+			merge(factory.createInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -970,7 +925,8 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O IN(SelectStatement subquery) {
-		getContext().addCriteria(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), false, column()));
+		getContext().addCriteria(
+			merge(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), false, column())));
 
 		return logocalOperators();
 	}
@@ -982,7 +938,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_IN(String... values) {
 		getContext().addCriteria(
-			factory.createNotInCriteria(column(), values));
+			merge(factory.createNotInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -994,7 +950,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_IN(Number... values) {
 		getContext().addCriteria(
-			factory.createNotInCriteria(column(), values));
+			merge(factory.createNotInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -1006,7 +962,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_IN(Timestamp... values) {
 		getContext().addCriteria(
-			factory.createNotInCriteria(column(), values));
+			merge(factory.createNotInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -1018,7 +974,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_IN(Bindable... values) {
 		getContext().addCriteria(
-			factory.createNotInCriteria(column(), values));
+			merge(factory.createNotInCriteria(column(), values)));
 
 		return logocalOperators();
 	}
@@ -1029,7 +985,8 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
 	public O NOT_IN(SelectStatement subquery) {
-		getContext().addCriteria(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), true, column()));
+		getContext().addCriteria(
+			merge(Helper.createSubqueryCriteria(root.getRuntimeId(), subquery.toSQLQueryBuilder(), true, column())));
 
 		return logocalOperators();
 	}
@@ -1042,7 +999,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O BETWEEN(Number v1, Number v2) {
 		getContext().addCriteria(
-			factory.createBetweenCriteria(column(), v1, v2));
+			merge(factory.createBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1055,7 +1012,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O BETWEEN(String v1, String v2) {
 		getContext().addCriteria(
-			factory.createBetweenCriteria(column(), v1, v2));
+			merge(factory.createBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1068,7 +1025,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O BETWEEN(Timestamp v1, Timestamp v2) {
 		getContext().addCriteria(
-			factory.createBetweenCriteria(column(), v1, v2));
+			merge(factory.createBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1081,7 +1038,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O BETWEEN(Binder v1, Binder v2) {
 		getContext().addCriteria(
-			factory.createBetweenCriteria(column(), v1, v2));
+			merge(factory.createBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1094,7 +1051,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_BETWEEN(Number v1, Number v2) {
 		getContext().addCriteria(
-			factory.createNotBetweenCriteria(column(), v1, v2));
+			merge(factory.createNotBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1107,7 +1064,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_BETWEEN(String v1, String v2) {
 		getContext().addCriteria(
-			factory.createNotBetweenCriteria(column(), v1, v2));
+			merge(factory.createNotBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1120,7 +1077,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_BETWEEN(Timestamp v1, Timestamp v2) {
 		getContext().addCriteria(
-			factory.createNotBetweenCriteria(column(), v1, v2));
+			merge(factory.createNotBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1133,7 +1090,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O NOT_BETWEEN(Binder v1, Binder v2) {
 		getContext().addCriteria(
-			factory.createNotBetweenCriteria(column(), v1, v2));
+			merge(factory.createNotBetweenCriteria(column(), v1, v2)));
 
 		return logocalOperators();
 	}
@@ -1144,7 +1101,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IS_NULL() {
 		getContext().addCriteria(
-			factory.create(NullComparisonOperator.IS_NULL, column()));
+			merge(factory.create(NullComparisonOperator.IS_NULL, column())));
 
 		return logocalOperators();
 	}
@@ -1155,7 +1112,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O IS_NOT_NULL() {
 		getContext().addCriteria(
-			factory.create(NullComparisonOperator.IS_NOT_NULL, column()));
+			merge(factory.create(NullComparisonOperator.IS_NOT_NULL, column())));
 
 		return logocalOperators();
 	}
@@ -1169,9 +1126,17 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 	 */
 	public O add(String clause, Bindable value) {
 		getContext().addCriteria(
-			factory.createCriteria(clause, column(), value));
+			merge(factory.createCriteria(clause, column(), value)));
 
 		return logocalOperators();
+	}
+
+	private Criteria merge(Criteria criteria) {
+		Binder[] values = values();
+
+		if (values.length == 0) return criteria;
+
+		return Helper.merge(values, criteria);
 	}
 
 	private O addSubQuery(SelectStatement subquery, ComparisonOperator operator) {
@@ -1179,20 +1144,23 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements A
 
 		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
-		getContext().addCriteria(factory.createSubquery(operator, column, builder));
+		getContext().addCriteria(merge(factory.createSubquery(operator, column, builder)));
 
 		return logocalOperators();
 	}
 
-	private O addAnotherColumnCriteria(Statement statement, Column another, String template) {
+	private O addAnotherColumnCriteria(AssistColumn another, String template) {
+		Statement statement = another.statement();
+
 		root.forSubquery(true);
 		statement.forSubquery(true);
 
 		getContext().addCriteria(
-			factory.createCriteria(
-				template,
-				new Column[] { column(), new RuntimeIdColumn(another, statement.getRuntimeId()) },
-				Bindable.EMPTY_ARRAY));
+			merge(
+				factory.createCriteria(
+					template,
+					new Column[] { column(), new RuntimeIdColumn(another.column(), statement.getRuntimeId()) },
+					another.values())));
 
 		return logocalOperators();
 	}
