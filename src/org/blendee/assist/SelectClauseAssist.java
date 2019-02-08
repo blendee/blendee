@@ -217,7 +217,13 @@ public interface SelectClauseAssist extends ClauseAssist {
 			columns[i] = selectColumns[i].column();
 		}
 
-		return new ColumnExpression(getSelectStatement(), template, columns);
+		return new ColumnExpression(getSelectStatement(), template, columns, (done, statement) -> {
+			for (AssistColumn column : selectColumns) {
+				done = column.complement(done, statement);
+			}
+
+			return done;
+		});
 	}
 
 	/**
