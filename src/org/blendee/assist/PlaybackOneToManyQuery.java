@@ -85,7 +85,7 @@ class PlaybackOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	public ComposedSQL toCountSQL() {
+	public ComposedSQL countSQL() {
 		return new ComposedSQL() {
 
 			@Override

@@ -123,7 +123,13 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * {@link #count()} で使用する SQL を返します。
 	 * @return カウント用 {@link ComposedSQL}
 	 */
-	ComposedSQL toCountSQL();
+	ComposedSQL countSQL();
+
+	/**
+	 * 集合関数を含む検索用の SQL を返します。
+	 * @return {@link ComposedSQL}
+	 */
+	ComposedSQL aggregateSQL();
 
 	/**
 	 * 検索結果として {@link Row} を使用するモードかどうかを判定します。
@@ -137,7 +143,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 */
 	default void aggregate(Consumer<BResultSet> action) {
 		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
+		try (BStatement statement = connection.getStatement(aggregateSQL())) {
 			try (BResultSet result = statement.executeQuery()) {
 				action.accept(result);
 			}
@@ -152,7 +158,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 */
 	default <T> T aggregateAndGet(Function<BResultSet, T> action) {
 		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
+		try (BStatement statement = connection.getStatement(aggregateSQL())) {
 			try (BResultSet result = statement.executeQuery()) {
 				return action.apply(result);
 			}
@@ -164,6 +170,6 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @return {@link ResultSetIterator}
 	 */
 	default ResultSetIterator aggregate() {
-		return new ResultSetIterator(this);
+		return new ResultSetIterator(aggregateSQL());
 	}
 }

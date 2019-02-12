@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
@@ -94,6 +95,11 @@ public abstract class OneToManyQuery<O extends Row, M>
 	@Override
 	public boolean rowMode() {
 		return true;
+	}
+
+	@Override
+	public ComposedSQL aggregateSQL() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

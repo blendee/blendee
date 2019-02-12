@@ -101,7 +101,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	BStatement createStatementForCount() {
-		return BlendeeManager.getConnection().getStatement(toCountSQL());
+		return BlendeeManager.getConnection().getStatement(countSQL());
 	}
 
 	@Override
@@ -195,7 +195,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 	}
 
 	@Override
-	public ComposedSQL toCountSQL() {
+	public ComposedSQL countSQL() {
 		RuntimeId id = optimizer.getRuntimeId();
 		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
 
@@ -212,7 +212,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			self,
 			route,
 			sql(),
-			toCountSQL().sql(),
+			countSQL().sql(),
 			ComplementerValues.of(composedSQL()).reproduce(placeHolderValues),
 			optimizer.getOptimizedSelectClause().getColumns());
 	}
@@ -223,7 +223,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			self,
 			route,
 			sql(),
-			toCountSQL().sql(),
+			countSQL().sql(),
 			ComplementerValues.of(composedSQL()),
 			optimizer.getOptimizedSelectClause().getColumns());
 	}

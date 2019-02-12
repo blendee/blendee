@@ -74,12 +74,10 @@ import org.blendee.assist.WhereClauseAssist;
 import org.blendee.assist.WhereColumn;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Result;
-import org.blendee.jdbc.ResultSetIterator;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
@@ -1275,28 +1273,16 @@ public class GenericTable
 	}
 
 	@Override
-	public ComposedSQL toCountSQL() {
+	public ComposedSQL countSQL() {
 		SelectBehavior selectBehavior = selectBehavior();
 		selectBehavior.checkRowMode();
-		return selectBehavior.query().toCountSQL();
+		return selectBehavior.query().countSQL();
 	}
 
 	@Override
-	public void aggregate(Consumer<BResultSet> consumer) {
+	public ComposedSQL aggregateSQL() {
 		selectBehavior().quitRowMode();
-		org.blendee.assist.Query.super.aggregate(consumer);
-	}
-
-	@Override
-	public <T> T aggregateAndGet(Function<BResultSet, T> function) {
-		selectBehavior().quitRowMode();
-		return org.blendee.assist.Query.super.aggregateAndGet(function);
-	}
-
-	@Override
-	public ResultSetIterator aggregate() {
-		selectBehavior().quitRowMode();
-		return org.blendee.assist.Query.super.aggregate();
+		return this;
 	}
 
 	@Override
@@ -2411,8 +2397,13 @@ public class GenericTable
 		}
 
 		@Override
-		public ComposedSQL toCountSQL() {
-			return inner.toCountSQL();
+		public ComposedSQL countSQL() {
+			return inner.countSQL();
+		}
+
+		@Override
+		public ComposedSQL aggregateSQL() {
+			return inner.aggregateSQL();
 		}
 
 		@Override

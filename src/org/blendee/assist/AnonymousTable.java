@@ -623,8 +623,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
-	public ComposedSQL toCountSQL() {
+	public ComposedSQL countSQL() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ComposedSQL aggregateSQL() {
+		return this;
 	}
 
 	@Override
@@ -1370,8 +1375,13 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public ComposedSQL toCountSQL() {
+		public ComposedSQL countSQL() {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public ComposedSQL aggregateSQL() {
+			return this;
 		}
 
 		@Override

@@ -36,6 +36,7 @@ import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.RuntimeId;
+import org.blendee.sql.SQL;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SQLQueryBuilder.CombineOperator;
 import org.blendee.sql.SelectClause;
@@ -594,11 +595,13 @@ public abstract class SelectStatementBehavior<
 
 	public static class PlaybackQuery implements Query<DataObjectIterator, DataObject> {
 
-		private final String sql;
+		private final String rowSQL;
 
 		private final String countSQL;
 
 		private final String fetchSQL;
+
+		private final String aggregationSQL;
 
 		private final ComplementerValues values;
 
@@ -611,17 +614,19 @@ public abstract class SelectStatementBehavior<
 		private final boolean rowMode;
 
 		private PlaybackQuery(
-			String sql,
+			String rowSQL,
 			String countSQL,
 			String fetchSQL,
+			String aggregationSQL,
 			ComplementerValues values,
 			Relationship relationship,
 			Column[] selectedColumns,
 			SelectedValuesConverter converter,
 			boolean rowMode) {
-			this.sql = sql;
+			this.rowSQL = rowSQL;
 			this.countSQL = countSQL;
 			this.fetchSQL = fetchSQL;
+			this.aggregationSQL = aggregationSQL;
 			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
@@ -630,16 +635,18 @@ public abstract class SelectStatementBehavior<
 		}
 
 		private PlaybackQuery(
-			String sql,
+			String rowSQL,
 			String countSQL,
 			String fetchSQL,
+			String aggregationSQL,
 			ComplementerValues values,
 			Relationship relationship,
 			Column[] selectedColumns,
 			boolean rowMode) {
-			this.sql = sql;
+			this.rowSQL = rowSQL;
 			this.countSQL = countSQL;
 			this.fetchSQL = fetchSQL;
+			this.aggregationSQL = aggregationSQL;
 			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
@@ -651,7 +658,7 @@ public abstract class SelectStatementBehavior<
 		public DataObjectIterator execute() {
 			checkRowMode(rowMode);
 			return DataAccessHelper.select(
-				sql,
+				rowSQL,
 				values,
 				relationship,
 				selectedColumns,
@@ -694,7 +701,7 @@ public abstract class SelectStatementBehavior<
 		}
 
 		@Override
-		public ComposedSQL toCountSQL() {
+		public ComposedSQL countSQL() {
 			checkRowMode(rowMode);
 			return new ComposedSQL() {
 
@@ -717,7 +724,7 @@ public abstract class SelectStatementBehavior<
 
 		@Override
 		public String sql() {
-			return sql;
+			return rowMode ? rowSQL : aggregationSQL;
 		}
 
 		@Override
@@ -728,9 +735,10 @@ public abstract class SelectStatementBehavior<
 		@Override
 		public PlaybackQuery reproduce(Object... placeHolderValues) {
 			return new PlaybackQuery(
-				sql,
+				rowSQL,
 				countSQL,
 				fetchSQL,
+				aggregationSQL,
 				values.reproduce(placeHolderValues),
 				relationship,
 				selectedColumns,
@@ -741,9 +749,10 @@ public abstract class SelectStatementBehavior<
 		@Override
 		public PlaybackQuery reproduce() {
 			return new PlaybackQuery(
-				sql,
+				rowSQL,
 				countSQL,
 				fetchSQL,
+				aggregationSQL,
 				values.reproduce(),
 				relationship,
 				selectedColumns,
@@ -755,68 +764,74 @@ public abstract class SelectStatementBehavior<
 		public Binder[] currentBinders() {
 			return values.currentBinders();
 		}
+
+		@Override
+		public ComposedSQL aggregateSQL() {
+			return rowMode ? SQL.getInstance(aggregationSQL, values) : this;
+		}
 	}
 
 	public PlaybackQuery query() {
-		if (rowMode) {
-			Optimizer optimizer = getOptimizer();
+		SQLQueryBuilder builder = buildBuilder();
+		String aggregationSQL = builder.sql();
 
-			Selector selector = new DataAccessHelper(id).getSelector(
-				optimizer,
-				whereClause,
-				orderByClause,
-				decorators.decorators());
-
-			selector.forSubquery(forSubquery);
-
-			ComposedSQL composedSQL = selector.composeSQL();
-
-			String sql = composedSQL.sql();
-
-			String countSQL;
-			{
-				SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
-				builder.setSelectClause(new SelectCountClause());
-				if (whereClause != null) builder.setWhereClause(whereClause);
-				countSQL = builder.sql();
-			}
-
-			String fetchSQL;
-			{
-				Selector fetchSelector = new DataAccessHelper(id).getSelector(
-					optimizer,
-					createFetchCriteria(table),
-					null,
-					decorators.decorators());
-
-				fetchSelector.forSubquery(forSubquery);
-
-				fetchSQL = fetchSelector.composeSQL().sql();
-			}
-
+		if (!rowMode) {
 			return new PlaybackQuery(
-				sql,
-				countSQL,
-				fetchSQL,
-				ComplementerValues.of(composedSQL),
-				RelationshipFactory.getInstance().getInstance(table),
-				selector.getSelectClause().getColumns(),
-				optimizer,
-				rowMode);
+				null,
+				null,
+				null,
+				aggregationSQL,
+				ComplementerValues.of(builder),
+				null,
+				Column.EMPTY_ARRAY,
+				false);
 		}
 
-		SQLQueryBuilder builder = buildBuilder();
+		Optimizer optimizer = getOptimizer();
 
-		String sql = builder.sql();
+		Selector selector = new DataAccessHelper(id).getSelector(
+			optimizer,
+			whereClause,
+			orderByClause,
+			decorators.decorators());
+
+		selector.forSubquery(forSubquery);
+
+		ComposedSQL composedSQL = selector.composeSQL();
+
+		String sql = composedSQL.sql();
+
+		String countSQL;
+		{
+			SQLQueryBuilder myBuilder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
+			myBuilder.setSelectClause(new SelectCountClause());
+			if (whereClause != null) myBuilder.setWhereClause(whereClause);
+			countSQL = myBuilder.sql();
+		}
+
+		String fetchSQL;
+		{
+			Selector fetchSelector = new DataAccessHelper(id).getSelector(
+				optimizer,
+				createFetchCriteria(table),
+				null,
+				decorators.decorators());
+
+			fetchSelector.forSubquery(forSubquery);
+
+			fetchSQL = fetchSelector.composeSQL().sql();
+		}
 
 		return new PlaybackQuery(
 			sql,
-			null,
-			null,
-			ComplementerValues.of(builder),
-			null,
-			Column.EMPTY_ARRAY,
-			rowMode);
+			countSQL,
+			fetchSQL,
+			aggregationSQL,
+			ComplementerValues.of(composedSQL),
+			RelationshipFactory.getInstance().getInstance(table),
+			selector.getSelectClause().getColumns(),
+			optimizer,
+			true);
 	}
 
 	public SQLQueryBuilder buildBuilder() {
