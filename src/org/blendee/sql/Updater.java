@@ -15,7 +15,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.blendee.internal.CollectionMap;
+import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.binder.BigDecimalBinder;
@@ -239,6 +243,25 @@ public abstract class Updater implements ComposedSQL {
 		}
 
 		return done;
+	}
+
+	/**
+	 * データ更新を実行します。
+	 * @return 対象件数
+	 */
+	public int executeUpdate() {
+		BConnection connection = BlendeeManager.getConnection();
+		try (BStatement statement = connection.getStatement(this)) {
+			return statement.executeUpdate();
+		}
+	}
+
+	/**
+	 * データ更新をバッチ実行します。
+	 * @param statement {@link BatchStatement}
+	 */
+	public void executeUpdate(BatchStatement statement) {
+		statement.addBatch(this);
 	}
 
 	@Override

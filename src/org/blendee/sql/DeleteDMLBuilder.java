@@ -3,7 +3,11 @@ package org.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
+import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
 
@@ -64,6 +68,25 @@ public class DeleteDMLBuilder implements ComposedSQL {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators.add(decorator);
 		}
+	}
+
+	/**
+	 * データ更新を実行します。
+	 * @return 対象件数
+	 */
+	public int executeUpdate() {
+		BConnection connection = BlendeeManager.getConnection();
+		try (BStatement statement = connection.getStatement(this)) {
+			return statement.executeUpdate();
+		}
+	}
+
+	/**
+	 * データ更新をバッチ実行します。
+	 * @param statement {@link BatchStatement}
+	 */
+	public void executeUpdate(BatchStatement statement) {
+		statement.addBatch(this);
 	}
 
 	@Override
