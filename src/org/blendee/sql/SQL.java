@@ -41,6 +41,14 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 		return new SQL(sql, values);
 	}
 
+	/**
+	 * @param sql {@link ComposedSQL}
+	 * @return {@link SQL}
+	 */
+	public static SQL getInstance(ComposedSQL sql) {
+		return new SQL(sql.sql(), ComplementerValues.of(sql));
+	}
+
 	private SQL(String sql, ComplementerValues values) {
 		this.sql = sql;
 		this.values = values;

@@ -8,7 +8,7 @@ import java.util.concurrent.locks.Lock;
  * 一度生成した SQL をキャッシュし、次回実行時にその SQL を使用することで処理を高速化するためのクラスです。
  * @author 千葉 哲嗣
  */
-public class AsyncRecorder extends AbstractRecorder {
+class AsyncRecorder extends Recorder {
 
 	private final Lock lock = new Lock() {
 
