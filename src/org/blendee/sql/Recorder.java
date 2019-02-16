@@ -24,7 +24,7 @@ public abstract class Recorder {
 	 * SQL キャッシュのアクセスは同期化されます。
 	 * @return {@link Recorder}
 	 */
-	public static Recorder getInstance() {
+	public static Recorder instance() {
 		return syncRecorder;
 	}
 
