@@ -8,7 +8,8 @@ import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.selector.ColumnRepositoryFactory;
-import org.blendee.util.BlendeeEnvironment.EnvironmentProcess;
+import org.blendee.util.BlendeeEnvironment.BlendeeEnvironmentConsumer;
+import org.blendee.util.BlendeeEnvironment.BlendeeEnvironmentFunction;
 
 /**
  * Blendee 全体を対象とする、簡易操作クラスです。
@@ -52,11 +53,21 @@ public class Blendee {
 
 	/**
 	 * トランザクション内で任意の処理を実行します。
-	 * @param process {@link EnvironmentProcess} の実装
+	 * @param process {@link BlendeeEnvironmentConsumer} の実装
 	 * @throws BlendeeException 処理内で起こった例外
 	 */
-	public static void execute(EnvironmentProcess process) {
+	public static void execute(BlendeeEnvironmentConsumer process) {
 		environment.execute(process);
+	}
+
+	/**
+	 * トランザクション内で任意の処理を実行します。
+	 * @param process {@link BlendeeEnvironmentConsumer} の実装
+	 * @return 戻り値
+	 * @throws BlendeeException 処理内で起こった例外
+	 */
+	public static <T> T executeAndGet(BlendeeEnvironmentFunction<T> process) {
+		return environment.executeAndGet(process);
 	}
 
 	/**

@@ -278,10 +278,10 @@ public class BlendeeEnvironment {
 
 	/**
 	 * トランザクション内で任意の処理を実行します。
-	 * @param process {@link EnvironmentProcess} の実装
+	 * @param consumer {@link BlendeeEnvironmentConsumer} の実装
 	 * @throws BlendeeException 処理内で起こった例外
 	 */
-	public void execute(EnvironmentProcess process) {
+	public void execute(BlendeeEnvironmentConsumer consumer) {
 		try {
 			ContextManager.setContext(contextName);
 			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
@@ -297,7 +297,7 @@ public class BlendeeEnvironment {
 			}
 
 			try {
-				process.execute(transaction);
+				consumer.execute(transaction);
 				if (top) transaction.commit();
 			} catch (Throwable t) {
 				try {
@@ -321,6 +321,26 @@ public class BlendeeEnvironment {
 		} finally {
 			ContextManager.releaseContext();
 		}
+	}
+
+	private static class Container<T> {
+
+		T value;
+	}
+
+	/**
+	 * トランザクション内で任意の処理を実行します。
+	 * @param function {@link BlendeeEnvironmentConsumer} の実装
+	 * @return 戻り値
+	 * @throws BlendeeException 処理内で起こった例外
+	 */
+	public <T> T executeAndGet(BlendeeEnvironmentFunction<T> function) {
+		Container<T> result = new Container<>();
+		execute(transaction -> {
+			result.value = function.execute(transaction);
+		});
+
+		return result.value;
 	}
 
 	/**
@@ -395,7 +415,7 @@ public class BlendeeEnvironment {
 	 * トランザクション内で行う任意の処理を表します。
 	 */
 	@FunctionalInterface
-	public interface EnvironmentProcess {
+	public interface BlendeeEnvironmentConsumer {
 
 		/**
 		 * トランザクション内で呼び出されます。 <br>
@@ -405,5 +425,23 @@ public class BlendeeEnvironment {
 		 * @throws Exception 処理内で起こった例外
 		 */
 		void execute(Transaction transaction) throws Exception;
+	}
+
+	/**
+	 * トランザクション内で行う任意の処理を表します。
+	 * @param <T> 戻り値
+	 */
+	@FunctionalInterface
+	public interface BlendeeEnvironmentFunction<T> {
+
+		/**
+		 * トランザクション内で呼び出されます。 <br>
+		 * 処理が終了した時点で commit が行われます。 <br>
+		 * 例外を投げた場合は rollback が行われます。
+		 * @param transaction この処理のトランザクション
+		 * @return 戻り値
+		 * @throws Exception 処理内で起こった例外
+		 */
+		T execute(Transaction transaction) throws Exception;
 	}
 }
