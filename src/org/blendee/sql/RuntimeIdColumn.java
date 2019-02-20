@@ -1,6 +1,5 @@
 package org.blendee.sql;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
@@ -27,6 +26,16 @@ public class RuntimeIdColumn implements Column {
 	@Override
 	public int compareTo(Column target) {
 		return base.compareTo(target);
+	}
+
+	@Override
+	public int hashCode() {
+		return base.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return base.equals(o);
 	}
 
 	@Override
@@ -72,18 +81,5 @@ public class RuntimeIdColumn implements Column {
 	@Override
 	public Column replicate() {
 		return new RuntimeIdColumn(base, id);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(base, id);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof RuntimeIdColumn)) return false;
-
-		RuntimeIdColumn another = (RuntimeIdColumn) o;
-		return base.equals(another.base) && id.equals(another.id);
 	}
 }

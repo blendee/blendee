@@ -15,13 +15,13 @@ public class UpdateColumn extends SetElement implements AssistColumn {
 
 	/**
 	 * 内部的にインスタンス化されるため、直接使用する必要はありません。
-	 * @param helper 条件作成に必要な情報を持った {@link TableFacadeAssist}
+	 * @param assist 条件作成に必要な情報を持った {@link TableFacadeAssist}
 	 * @param name カラム名
 	 */
-	public UpdateColumn(TableFacadeAssist helper, String name) {
-		super(helper);
-		this.column = helper.getRelationship().getColumn(name);
-		this.statement = helper.getDataManipulationStatement();
+	public UpdateColumn(TableFacadeAssist assist, String name) {
+		super(assist);
+		column = Helper.buildRuntimeIdColumnForUpdate(assist, name);
+		this.statement = assist.getDataManipulationStatement();
 		addColumn(column);
 	}
 

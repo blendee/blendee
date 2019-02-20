@@ -40,10 +40,14 @@ public interface WhereClauseAssist<R extends WhereClauseAssist<?>> extends Crite
 	default <O extends LogicalOperators<?>> WhereColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
+		Statement statement = statement();
 		return new WhereColumn<>(
-			statement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, column.column()),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				template,
+				column.column()),
 			column.values());
 	}
 
@@ -63,10 +67,14 @@ public interface WhereClauseAssist<R extends WhereClauseAssist<?>> extends Crite
 			columns[i] = values[i].column();
 		}
 
+		Statement statement = statement();
 		return new WhereColumn<>(
-			statement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, columns),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				template,
+				columns),
 			Helper.flatValues(args.get()));
 	}
 }

@@ -25,7 +25,7 @@ public interface TableFacadeContext<T> {
 		return (assist, name) -> new WhereColumn<>(
 			assist.getSelectStatement(),
 			assist.getContext(),
-			assist.getRelationship().getColumn(name));
+			Helper.buildRuntimeIdColumn(assist, name));
 	}
 
 	/**
@@ -37,7 +37,7 @@ public interface TableFacadeContext<T> {
 		return (assist, name) -> new HavingColumn<>(
 			assist.getSelectStatement(),
 			assist.getContext(),
-			assist.getRelationship().getColumn(name));
+			Helper.buildRuntimeIdColumn(assist, name));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public interface TableFacadeContext<T> {
 		return (assist, name) -> new OnLeftColumn<>(
 			assist.getSelectStatement(),
 			assist.getContext(),
-			assist.getRelationship().getColumn(name));
+			Helper.buildRuntimeIdColumn(assist, name));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public interface TableFacadeContext<T> {
 		return (assist, name) -> new OnRightColumn<>(
 			assist.getSelectStatement(),
 			assist.getContext(),
-			assist.getRelationship().getColumn(name));
+			Helper.buildRuntimeIdColumn(assist, name));
 	}
 
 	/**
@@ -73,7 +73,7 @@ public interface TableFacadeContext<T> {
 		return (assist, name) -> new WhereColumn<>(
 			assist.getDataManipulationStatement(),
 			assist.getContext(),
-			assist.getRelationship().getColumn(name));
+			Helper.buildRuntimeIdColumnForUpdate(assist, name));
 	}
 
 	/**

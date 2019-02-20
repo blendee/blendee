@@ -24,7 +24,7 @@ public class SelectColumn implements AliasableOffer {
 	 */
 	public SelectColumn(TableFacadeAssist assist, String name) {
 		this.assist = assist;
-		column = assist.getRelationship().getColumn(name);
+		column = Helper.buildRuntimeIdColumn(assist, name);
 	}
 
 	@Override

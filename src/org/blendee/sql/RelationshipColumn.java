@@ -59,7 +59,7 @@ public class RelationshipColumn implements Column {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof RelationshipColumn && id.equals(((RelationshipColumn) o).id);
+		return o instanceof Column && id.equals(((Column) o).getId());
 	}
 
 	@Override

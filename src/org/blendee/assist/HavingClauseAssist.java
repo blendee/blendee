@@ -88,10 +88,14 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		});
 
 		int size = list.size();
+		SelectStatement statement = getSelectStatement();
 		return new HavingColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				Helper.createCoalesceTemplate(size),
+				list.toArray(new Column[size])),
 			Helper.flatValues(columns.get()));
 	}
 
@@ -111,10 +115,14 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		});
 
 		int size = list.size();
+		SelectStatement statement = getSelectStatement();
 		return new HavingColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(Helper.createCoalesceTemplate(size), list.toArray(new Column[size])),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				Helper.createCoalesceTemplate(size),
+				list.toArray(new Column[size])),
 			column.values());
 	}
 
@@ -147,10 +155,14 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	default <O extends LogicalOperators<?>> HavingColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
+		SelectStatement statement = getSelectStatement();
 		return new HavingColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, column.column()),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				template,
+				column.column()),
 			column.values());
 	}
 
@@ -170,10 +182,11 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 			columns[i] = values[i].column();
 		}
 
+		SelectStatement statement = getSelectStatement();
 		return new HavingColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, columns),
+			new MultiColumn(statement.getRootRealtionship(), template, columns),
 			Helper.flatValues(args.get()));
 	}
 }

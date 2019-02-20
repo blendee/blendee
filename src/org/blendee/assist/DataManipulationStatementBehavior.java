@@ -11,6 +11,7 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
+import org.blendee.sql.Relationship;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
@@ -28,6 +29,8 @@ public abstract class DataManipulationStatementBehavior<
 
 	private final TablePath table;
 
+	private final Relationship root;
+
 	private final RuntimeId id;
 
 	private final SQLDecorators decorators;
@@ -44,8 +47,9 @@ public abstract class DataManipulationStatementBehavior<
 
 	private boolean forSubquery;
 
-	public DataManipulationStatementBehavior(TablePath table, RuntimeId id, SQLDecorators decorators) {
+	public DataManipulationStatementBehavior(TablePath table, Relationship root, RuntimeId id, SQLDecorators decorators) {
 		this.table = table;
+		this.root = root;
 		this.id = id;
 		this.decorators = decorators;
 	}
@@ -118,6 +122,11 @@ public abstract class DataManipulationStatementBehavior<
 	public LogicalOperators<?> getWhereLogicalOperators() {
 		return whereOperators();
 	}
+
+	@Override
+	public Relationship getRootRealtionship() {
+		return root;
+	};
 
 	public void resetInsert() {
 		insertColumns = null;

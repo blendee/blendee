@@ -22,39 +22,16 @@ public class MultiColumn implements Column {
 
 	/**
 	 * コンストラクタです。
+	 * @param root ルート{@link  Relationship}
 	 * @param template カラムの代わりに使用する文字列表現のテンプレート
 	 * @param columns テンプレートに埋め込まれるカラム
 	 */
-	public MultiColumn(String template, Column... columns) {
+	public MultiColumn(Relationship root, String template, Column... columns) {
 		Objects.requireNonNull(template);
-
-		Relationship root = null;
-		for (Column column : columns) {
-			Relationship myRoot = column.getRootRelationship();
-			if (root != null && !root.equals(myRoot)) {
-				throw new IllegalArgumentException("columns のルート Relationship は同一である必要があります");
-			}
-
-			root = myRoot;
-		}
 
 		this.root = root;
 		this.template = template;
 		this.columns = columns;
-	}
-
-	/**
-	 * コンストラクタです。
-	 * @param rootRelationship ルート Relatihonship
-	 * @param template カラムの代わりに使用する文字列表現のテンプレート
-	 */
-	public MultiColumn(Relationship rootRelationship, String template) {
-		Objects.requireNonNull(rootRelationship);
-		Objects.requireNonNull(template);
-
-		root = rootRelationship;
-		this.template = template;
-		this.columns = Column.EMPTY_ARRAY;
 	}
 
 	@Override

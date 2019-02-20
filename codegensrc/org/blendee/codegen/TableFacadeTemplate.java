@@ -547,7 +547,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private class DMSBehavior extends DataManipulationStatementBehavior<InsertAssist, ListInsertAssist, UpdateAssist, ListUpdateAssist, DMSWhereAssist> {
 
 		public DMSBehavior() {
-			super($TABLE, /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this.getRuntimeId(), /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
+			super(
+				$TABLE,
+				relationship$,
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this.getRuntimeId(),
+				/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/.this);
 		}
 
 		@Override
@@ -1605,10 +1609,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		@Override
 		public WhereColumn<WhereLogicalOperators> any(String template) {
+			SelectStatement statement = getSelectStatement();
 			return new WhereColumn<>(
-				getSelectStatement(),
+				statement,
 				getContext(),
-				new MultiColumn(template));
+				new MultiColumn(statement.getRootRealtionship(), template));
 		}
 
 		/**
@@ -1734,10 +1739,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		@Override
 		public HavingColumn<HavingLogicalOperators> any(String template) {
+			SelectStatement statement = getSelectStatement();
 			return new HavingColumn<>(
-				getSelectStatement(),
+				statement,
 				getContext(),
-				new MultiColumn(template));
+				new MultiColumn(statement.getRootRealtionship(), template));
 		}
 
 		/**
@@ -1858,10 +1864,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		@Override
 		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
+			SelectStatement statement = getSelectStatement();
 			return new OnLeftColumn<>(
-				getSelectStatement(),
+				statement,
 				getContext(),
-				new MultiColumn(template));
+				new MultiColumn(statement.getRootRealtionship(), template));
 		}
 
 		/**
@@ -1948,10 +1955,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		@Override
 		public OnRightColumn<OnRightLogicalOperators> any(String template) {
+			SelectStatement statement = getSelectStatement();
 			return new OnRightColumn<>(
-				getSelectStatement(),
+				statement,
 				getContext(),
-				new MultiColumn(template));
+				new MultiColumn(statement.getRootRealtionship(), template));
 		}
 
 		/**
@@ -2096,10 +2104,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 */
 		@Override
 		public WhereColumn<DMSWhereLogicalOperators> any(String template) {
+			DataManipulationStatement statement = getDataManipulationStatement();
 			return new WhereColumn<>(
-				getDataManipulationStatement(),
+				statement,
 				getContext(),
-				new MultiColumn(template));
+				new MultiColumn(statement.getRootRealtionship(), template));
 		}
 
 		/**

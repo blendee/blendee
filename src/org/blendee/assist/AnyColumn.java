@@ -66,7 +66,7 @@ class AnyColumn implements AssistColumn {
 
 	@Override
 	public Column column() {
-		return new MultiColumn(expression, columns());
+		return new MultiColumn(statement.getRootRealtionship(), expression, columns());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ class AnyColumn implements AssistColumn {
 		return statement;
 	}
 
-	Column[] columns() {
+	private Column[] columns() {
 		List<Column> list = Arrays.stream(columns).map(c -> c.column()).collect(Collectors.toList());
 		return list.toArray(new Column[list.size()]);
 	}

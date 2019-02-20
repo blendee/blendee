@@ -6,7 +6,6 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.Relationship;
 import org.blendee.sql.SQLQueryBuilder;
 
 /**
@@ -45,12 +44,6 @@ public interface SelectStatement extends Statement, SQLDecorators {
 	 * @return 現在の WHERE 句
 	 */
 	Criteria getWhereClause();
-
-	/**
-	 * この Query のルート {@link Relationship} を返します。
-	 * @return ルート {@link Relationship}
-	 */
-	Relationship getRootRealtionship();
 
 	/**
 	 * この Query の HAVING 句用 {@link LogicalOperators} を返します。

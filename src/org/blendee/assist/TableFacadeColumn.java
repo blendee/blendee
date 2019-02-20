@@ -1,6 +1,7 @@
 package org.blendee.assist;
 
 import org.blendee.sql.Column;
+import org.blendee.sql.Relationship;
 import org.blendee.sql.RuntimeId;
 
 /**
@@ -21,7 +22,7 @@ public class TableFacadeColumn implements AssistColumn {
 	 */
 	public TableFacadeColumn(TableFacadeAssist assist, String name) {
 		statement = new TableFacadeStatement(assist.getSelectStatement().getRuntimeId());
-		column = assist.getRelationship().getColumn(name);
+		column = Helper.buildRuntimeIdColumn(assist, name);
 	}
 
 	@Override
@@ -44,6 +45,11 @@ public class TableFacadeColumn implements AssistColumn {
 
 		private TableFacadeStatement(RuntimeId id) {
 			this.id = id;
+		}
+
+		@Override
+		public Relationship getRootRealtionship() {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

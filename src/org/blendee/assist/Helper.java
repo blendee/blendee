@@ -15,6 +15,7 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.RuntimeId;
+import org.blendee.sql.RuntimeIdColumn;
 import org.blendee.sql.SQLQueryBuilder;
 
 @SuppressWarnings("javadoc")
@@ -144,5 +145,17 @@ public class Helper {
 		criteria.changeBinders(Helper.flatValues(Vargs.of(values, criteria.getBinders()).stream()));
 
 		return criteria;
+	}
+
+	static RuntimeIdColumn buildRuntimeIdColumn(TableFacadeAssist assist, String name) {
+		return new RuntimeIdColumn(
+			assist.getRelationship().getColumn(name),
+			assist.getSelectStatement().getRuntimeId());
+	}
+
+	static RuntimeIdColumn buildRuntimeIdColumnForUpdate(TableFacadeAssist assist, String name) {
+		return new RuntimeIdColumn(
+			assist.getRelationship().getColumn(name),
+			assist.getDataManipulationStatement().getRuntimeId());
 	}
 }

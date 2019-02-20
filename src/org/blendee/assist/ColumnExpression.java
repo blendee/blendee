@@ -86,7 +86,7 @@ public class ColumnExpression implements AliasableOffer {
 
 	@Override
 	public Column column() {
-		return new MultiColumn(expression.toString(), columns);
+		return new MultiColumn(statement.getRootRealtionship(), expression.toString(), columns);
 	}
 
 	@Override

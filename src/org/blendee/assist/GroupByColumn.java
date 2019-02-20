@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.sql.Column;
+import org.blendee.sql.RuntimeIdColumn;
 
 /**
  * GROUP BY 句に新しい要素を追加するクラスです。<br>
@@ -14,7 +15,7 @@ public class GroupByColumn implements Offer, Offers<Offer>, AssistColumn {
 
 	private final TableFacadeAssist assist;
 
-	private final Column column;
+	private final RuntimeIdColumn column;
 
 	private final Statement statement;
 
@@ -25,7 +26,7 @@ public class GroupByColumn implements Offer, Offers<Offer>, AssistColumn {
 	 */
 	public GroupByColumn(TableFacadeAssist assist, String name) {
 		this.assist = assist;
-		column = assist.getRelationship().getColumn(name);
+		column = Helper.buildRuntimeIdColumn(assist, name);
 		statement = assist.getSelectStatement();
 	}
 

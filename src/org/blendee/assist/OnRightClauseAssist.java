@@ -40,10 +40,14 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 	default <O extends LogicalOperators<?>> OnRightColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
+		SelectStatement statement = getSelectStatement();
 		return new OnRightColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, column.column()),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				template,
+				column.column()),
 			column.values());
 	}
 
@@ -63,10 +67,14 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 			columns[i] = values[i].column();
 		}
 
+		SelectStatement statement = getSelectStatement();
 		return new OnRightColumn<>(
-			getSelectStatement(),
+			statement,
 			getContext(),
-			new MultiColumn(template, columns),
+			new MultiColumn(
+				statement.getRootRealtionship(),
+				template,
+				columns),
 			Helper.flatValues(args.get()));
 	}
 }

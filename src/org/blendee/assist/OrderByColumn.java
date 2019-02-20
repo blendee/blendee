@@ -55,7 +55,7 @@ public class OrderByColumn implements Offer, Offers<Offer>, AssistColumn {
 	 * @param name カラム名
 	 */
 	public OrderByColumn(TableFacadeAssist assist, String name) {
-		column = assist.getRelationship().getColumn(name);
+		column = Helper.buildRuntimeIdColumn(assist, name);
 		ASC = new ListClauseOffer(
 			order -> assist.getSelectStatement().getOrderByClause().add(order, column, Direction.ASC));
 		DESC = new ListClauseOffer(
