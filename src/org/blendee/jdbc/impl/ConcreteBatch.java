@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
  * @author 千葉 哲嗣
  */
-class ConcreteBatchStatement implements BatchStatement {
+class ConcreteBatch implements Batch {
 
 	private static final PreparedStatementComplementer nullComplementer = statement -> {};
 
@@ -29,17 +29,17 @@ class ConcreteBatchStatement implements BatchStatement {
 
 	private int[] currentResults = new int[0];
 
-	ConcreteBatchStatement(ConcreteConnection connection) {
+	ConcreteBatch(ConcreteConnection connection) {
 		this.connection = connection;
 	}
 
 	@Override
-	public void addBatch(String sql) {
-		addBatch(sql, nullComplementer);
+	public void add(String sql) {
+		add(sql, nullComplementer);
 	}
 
 	@Override
-	public void addBatch(String sql, PreparedStatementComplementer complementer) {
+	public void add(String sql, PreparedStatementComplementer complementer) {
 		if (isThresholdCrossed()) flushBatch();
 		BatchResultHolder holder = batchMap.get(sql);
 		BatchPreparedStatement statement;
@@ -58,7 +58,7 @@ class ConcreteBatchStatement implements BatchStatement {
 	}
 
 	@Override
-	public int[] executeBatch() {
+	public int[] execute() {
 		flushBatch();
 		batchOrder = 0;
 		int[] results = currentResults;

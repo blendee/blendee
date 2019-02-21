@@ -5,7 +5,7 @@ import java.sql.Connection;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.StatementWrapper;
@@ -38,8 +38,8 @@ public abstract class ConnectionBase implements BConnection {
 	}
 
 	@Override
-	public BatchStatement getBatchStatement() {
-		return base().getBatchStatement();
+	public Batch getBatch() {
+		return base().getBatch();
 	}
 
 	@Override

@@ -22,9 +22,9 @@ public interface StatementWrapper {
 	BPreparedStatement wrap(BPreparedStatement statement);
 
 	/**
-	 * {@link BatchStatement} が生成されたときに呼び出されます。
-	 * @param statement 元の {@link BatchStatement}
-	 * @return ラップされた {@link BatchStatement}
+	 * {@link Batch} が生成されたときに呼び出されます。
+	 * @param batch 元の {@link Batch}
+	 * @return ラップされた {@link Batch}
 	 */
-	BatchStatement wrap(BatchStatement statement);
+	Batch wrap(Batch batch);
 }

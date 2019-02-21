@@ -8,7 +8,7 @@ import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
@@ -128,9 +128,9 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 
 	/**
 	 * データ更新をバッチ実行します。
-	 * @param statement {@link BatchStatement}
+	 * @param batch {@link Batch}
 	 */
-	public void executeUpdate(BatchStatement statement) {
-		statement.addBatch(this);
+	public void executeUpdate(Batch batch) {
+		batch.add(this);
 	}
 }

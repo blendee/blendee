@@ -8,7 +8,7 @@ import org.blendee.internal.U;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
@@ -226,14 +226,14 @@ public class DataAccessHelper {
 
 	/**
 	 * このスレッドが {@link ThreadBatchCallback} 内で行う更新処理を全てバッチ実行します。
-	 * @param batchStatement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param callback 更新処理を定義したコールバック
 	 * @throws BlendeeException コールバック内で例外が発生した場合
 	 */
 	public static void startThreadBatch(
-		BatchStatement batchStatement,
+		Batch batch,
 		ThreadBatchCallback callback) {
-		threadStatement.set(new BatchStatementFacade(batchStatement));
+		threadStatement.set(new BatchFacade(batch));
 		try {
 			callback.execute();
 		} catch (Throwable t) {
@@ -258,17 +258,17 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータのテーブルに対して INSERT をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 * @param updatable INSERT する値を持つ {@link Updatable}
 	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
 	public void insert(
-		BatchStatement statement,
+		Batch batch,
 		TablePath path,
 		Updatable updatable,
 		SQLDecorator... options) {
-		insertInternal(new BatchStatementFacade(statement), path, updatable, options);
+		insertInternal(new BatchFacade(batch), path, updatable, options);
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class DataAccessHelper {
 	/**
 	 * 連続値を持つテーブルに対して INSERT をバッチ実行します。<br>
 	 * バッチ実行では、実際に値が登録されるのは後になるので、そのことを考慮した {@link SequenceGenerator} を用意する必要があります。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param updatable INSERT する値を持つ {@link Updatable}
@@ -307,14 +307,14 @@ public class DataAccessHelper {
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
-		BatchStatement statement,
+		Batch batch,
 		TablePath path,
 		SequenceGenerator generator,
 		Updatable updatable,
 		int retry,
 		SQLDecorator... options) {
 		return insertInternal(
-			new BatchStatementFacade(statement),
+			new BatchFacade(batch),
 			path,
 			generator,
 			updatable,
@@ -345,20 +345,20 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、条件に該当するレコードに対して UPDATE をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param criteria WHERE 句となる条件
 	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
-		BatchStatement statement,
+		Batch batch,
 		TablePath path,
 		Updatable updatable,
 		Criteria criteria,
 		SQLDecorator... options) {
 		updateInternal(
-			new BatchStatementFacade(statement),
+			new BatchFacade(batch),
 			path,
 			updatable,
 			criteria,
@@ -387,18 +387,18 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルの、全レコードに対して UPDATE をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
 	public void update(
-		BatchStatement statement,
+		Batch batch,
 		TablePath path,
 		Updatable updatable,
 		SQLDecorator... options) {
 		updateInternalFinally(
-			new BatchStatementFacade(statement),
+			new BatchFacade(batch),
 			path,
 			updatable,
 			null,
@@ -417,16 +417,16 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、条件に該当するレコードに対する DELETE をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 * @param criteria WHERE 句となる条件
 	 */
 	public void delete(
-		BatchStatement statement,
+		Batch batch,
 		TablePath path,
 		Criteria criteria) {
 		deleteInternal(
-			new BatchStatementFacade(statement),
+			new BatchFacade(batch),
 			path,
 			criteria);
 	}
@@ -442,11 +442,11 @@ public class DataAccessHelper {
 
 	/**
 	 * 対象となるテーブルに対して、全レコードに対する DELETE をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param path 対象となるテーブル
 	 */
-	public void delete(BatchStatement statement, TablePath path) {
-		deleteInternalFinally(new BatchStatementFacade(statement), path, null);
+	public void delete(Batch batch, TablePath path) {
+		deleteInternalFinally(new BatchFacade(batch), path, null);
 	}
 
 	/**
@@ -706,19 +706,19 @@ public class DataAccessHelper {
 		abstract int execute();
 	}
 
-	static class BatchStatementFacade extends StatementFacade {
+	static class BatchFacade extends StatementFacade {
 
 		static final int DUMMY_RESULT = -1;
 
-		private BatchStatement statement;
+		private Batch batch;
 
-		BatchStatementFacade(BatchStatement statement) {
-			this.statement = statement;
+		BatchFacade(Batch statement) {
+			this.batch = statement;
 		}
 
 		@Override
 		void process(ComposedSQL sql) {
-			statement.addBatch(sql);
+			batch.add(sql);
 		}
 
 		@Override

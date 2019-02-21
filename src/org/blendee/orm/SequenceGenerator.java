@@ -1,6 +1,6 @@
 package org.blendee.orm;
 
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
@@ -11,7 +11,7 @@ import org.blendee.sql.Updatable;
  * 連続した値をもつカラムに対する新規の値を払い出す機能を定義したインターフェイスです。
  * @author 千葉 哲嗣
  * @see DataAccessHelper#insert(TablePath, SequenceGenerator, Updatable, int, SQLDecorator...)
- * @see DataAccessHelper#insert(BatchStatement, TablePath, SequenceGenerator, Updatable, int, SQLDecorator...)
+ * @see DataAccessHelper#insert(Batch, TablePath, SequenceGenerator, Updatable, int, SQLDecorator...)
  */
 public interface SequenceGenerator {
 

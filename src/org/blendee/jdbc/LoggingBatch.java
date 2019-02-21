@@ -2,46 +2,44 @@ package org.blendee.jdbc;
 
 import java.util.Objects;
 
-import org.blendee.jdbc.wrapperbase.BatchStatementBase;
+import org.blendee.jdbc.wrapperbase.BatchBase;
 
 /**
  * @author 千葉 哲嗣
  */
-class LoggingBatchStatement extends BatchStatementBase {
+class LoggingBatch extends BatchBase {
 
 	private final SQLLogger logger;
 
-	private final BatchStatement base;
+	private final Batch base;
 
-	LoggingBatchStatement(BatchStatement statement, SQLLogger logger) {
-		Objects.requireNonNull(statement);
-		Objects.requireNonNull(logger);
-		base = statement;
-		this.logger = logger;
+	LoggingBatch(Batch base, SQLLogger logger) {
+		this.base = Objects.requireNonNull(base);
+		this.logger = Objects.requireNonNull(logger);
 	}
 
 	@Override
-	protected BatchStatement base() {
+	protected Batch base() {
 		return base;
 	}
 
 	@Override
-	public void addBatch(String sql) {
+	public void add(String sql) {
 		logger.setSql(sql);
-		super.addBatch(sql);
+		super.add(sql);
 		logger.flush();
 	}
 
 	@Override
-	public void addBatch(String sql, PreparedStatementComplementer complementer) {
-		super.addBatch(sql, new LoggingComplementer(sql, logger, complementer));
+	public void add(String sql, PreparedStatementComplementer complementer) {
+		super.add(sql, new LoggingComplementer(sql, logger, complementer));
 	}
 
 	@Override
-	public int[] executeBatch() {
+	public int[] execute() {
 		long start = System.nanoTime();
 		try {
-			return super.executeBatch();
+			return super.execute();
 		} finally {
 			logger.logElapsed(start);
 		}

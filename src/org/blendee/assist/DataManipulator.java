@@ -1,6 +1,6 @@
 package org.blendee.assist;
 
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.sql.Reproducible;
 
@@ -18,9 +18,9 @@ public interface DataManipulator extends ComposedSQL, Reproducible<DataManipulat
 
 	/**
 	 * データ操作をバッチ実行します。
-	 * @param statement {@link BatchStatement}
+	 * @param batch {@link Batch}
 	 */
-	default void execute(BatchStatement statement) {
-		statement.addBatch(this);
+	default void execute(Batch batch) {
+		batch.add(this);
 	}
 }

@@ -59,7 +59,7 @@ class LoggingConnection extends ConnectionBase implements StatementWrapper {
 	}
 
 	@Override
-	public BatchStatement wrap(BatchStatement statement) {
-		return new LoggingBatchStatement(statement, logger);
+	public Batch wrap(Batch statement) {
+		return new LoggingBatch(statement, logger);
 	}
 }

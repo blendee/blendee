@@ -17,9 +17,9 @@ import org.blendee.internal.Traversable;
 import org.blendee.internal.TraversableNode;
 import org.blendee.internal.Traverser;
 import org.blendee.internal.TraverserOperator;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.Result;
-import org.blendee.orm.DataAccessHelper.BatchStatementFacade;
+import org.blendee.orm.DataAccessHelper.BatchFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
 import org.blendee.selector.ColumnNameSelectedValuesBuilder;
 import org.blendee.selector.Optimizer;
@@ -644,11 +644,11 @@ public class DataObject
 	/**
 	 * 更新された値をデータベースに反映させるため、 UPDATE をバッチ実行します。<br>
 	 * 更新された値が一件も無かった場合、このメソッドは何もせず false を返します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
-	public void update(BatchStatement statement) {
-		updateInternal(new BatchStatementFacade(statement));
+	public void update(Batch batch) {
+		updateInternal(new BatchFacade(batch));
 	}
 
 	/**
@@ -705,7 +705,7 @@ public class DataObject
 		statement.process(builder);
 		int result = statement.execute();
 
-		if (result == 1 || result == BatchStatementFacade.DUMMY_RESULT) return true;
+		if (result == 1 || result == BatchFacade.DUMMY_RESULT) return true;
 
 		throw new IllegalStateException("更新結果が " + result + " 件です");
 	}

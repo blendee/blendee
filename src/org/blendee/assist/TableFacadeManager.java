@@ -3,7 +3,7 @@ package org.blendee.assist;
 import java.util.Optional;
 
 import org.blendee.dialect.RowLockOption;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -207,12 +207,12 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの {@link Row} の INSERT をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param row INSERT 対象
 	 * @param options INSERT 文を調整する {@link SQLDecorator}
 	 */
-	public void insert(BatchStatement statement, T row, SQLDecorator... options) {
-		new DataAccessHelper().insert(statement, getTablePath(), row, options);
+	public void insert(Batch batch, T row, SQLDecorator... options) {
+		new DataAccessHelper().insert(batch, getTablePath(), row, options);
 	}
 
 	/**
@@ -228,14 +228,14 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの {@link Row} の INSERT をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
 	 * @return INSERT された実際の連続値
 	 */
-	public Bindable insert(BatchStatement statement, SequenceGenerator generator, T row, int retry) {
-		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry);
+	public Bindable insert(Batch batch, SequenceGenerator generator, T row, int retry) {
+		return new DataAccessHelper().insert(batch, getTablePath(), generator, row, retry);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの {@link Row} の INSERT をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param generator 対象となる項目と値を持つ {@link SequenceGenerator}
 	 * @param row INSERT 対象
 	 * @param retry {@link SequenceGenerator} のリトライ回数
@@ -260,12 +260,12 @@ public class TableFacadeManager<T extends Row> {
 	 * @return INSERT された実際の連続値
 	 */
 	public Bindable insert(
-		BatchStatement statement,
+		Batch batch,
 		SequenceGenerator generator,
 		T row,
 		int retry,
 		SQLDecorator... options) {
-		return new DataAccessHelper().insert(statement, getTablePath(), generator, row, retry, options);
+		return new DataAccessHelper().insert(batch, getTablePath(), generator, row, retry, options);
 	}
 
 	/**
@@ -280,12 +280,12 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 */
-	public void update(BatchStatement statement, Criteria criteria, Updatable updatable) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria);
+	public void update(Batch batch, Criteria criteria, Updatable updatable) {
+		new DataAccessHelper().update(batch, getTablePath(), updatable, criteria);
 	}
 
 	/**
@@ -301,13 +301,13 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の更新をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param criteria WHERE 句となる条件
 	 * @param updatable UPDATE する値を持つ {@link Updatable}
 	 * @param options UPDATE 文を調整する {@link SQLDecorator}
 	 */
-	public void update(BatchStatement statement, Criteria criteria, Updatable updatable, SQLDecorator... options) {
-		new DataAccessHelper().update(statement, getTablePath(), updatable, criteria, options);
+	public void update(Batch batch, Criteria criteria, Updatable updatable, SQLDecorator... options) {
+		new DataAccessHelper().update(batch, getTablePath(), updatable, criteria, options);
 	}
 
 	/**
@@ -321,11 +321,11 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの条件に該当する行の削除をバッチ実行します。
-	 * @param statement バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 * @param criteria WHERE 句となる条件
 	 */
-	public void delete(BatchStatement statement, Criteria criteria) {
-		new DataAccessHelper().delete(statement, getTablePath(), criteria);
+	public void delete(Batch batch, Criteria criteria) {
+		new DataAccessHelper().delete(batch, getTablePath(), criteria);
 	}
 
 	private T createRow(DataObject object) {

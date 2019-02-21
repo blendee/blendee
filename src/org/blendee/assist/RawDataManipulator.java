@@ -1,7 +1,7 @@
 package org.blendee.assist;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ComposedSQL;
@@ -33,12 +33,12 @@ class RawDataManipulator implements DataManipulator {
 
 	@Override
 	public int execute() {
-		return BlendeeManager.getConnection().executeAndGet(sql, s -> s.executeUpdate());
+		return BlendeeManager.getConnection().createStatementAndGet(sql, s -> s.executeUpdate());
 	}
 
 	@Override
-	public void execute(BatchStatement statement) {
-		statement.addBatch(sql);
+	public void execute(Batch batch) {
+		batch.add(sql);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package org.blendee.assist;
 
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.TablePath;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
@@ -37,9 +37,9 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} のバッチ更新用メソッドです。
-	 * @param batch バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 */
-	default void update(BatchStatement batch) {
+	default void update(Batch batch) {
 		dataObject().update(batch);
 	}
 
@@ -54,9 +54,9 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} の INSERT をバッチ実行します。
-	 * @param batch バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 */
-	default void insert(BatchStatement batch) {
+	default void insert(Batch batch) {
 		new DataAccessHelper().insert(
 			batch,
 			tablePath(),
@@ -76,9 +76,9 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} が検索された場合 UPDATE 、そうでなければ INSERT を行います。
-	 * @param batch バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 */
-	default void save(BatchStatement batch) {
+	default void save(Batch batch) {
 		if (dataObject().selected()) {
 			update(batch);
 		} else {
@@ -100,9 +100,9 @@ public interface Row extends Updatable {
 
 	/**
 	 * この {@link Row} の DELETE をバッチ実行します。
-	 * @param batch バッチ実行を依頼する {@link BatchStatement}
+	 * @param batch バッチ実行を依頼する {@link Batch}
 	 */
-	default void delete(BatchStatement batch) {
+	default void delete(Batch batch) {
 		new DataAccessHelper().delete(
 			batch,
 			tablePath(),

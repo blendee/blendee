@@ -1,33 +1,33 @@
 package org.blendee.jdbc.wrapperbase;
 
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.PreparedStatementComplementer;
 
 /**
- * {@link BatchStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
+ * {@link Batch} のラッパーを実装するベースとなる、抽象基底クラスです。
  * @author 千葉 哲嗣
  */
-public abstract class BatchStatementBase implements BatchStatement {
+public abstract class BatchBase implements Batch {
 
 	/**
 	 * ベースとなるインスタンスを返します。
 	 * @return ベースとなるインスタンス
 	 */
-	protected abstract BatchStatement base();
+	protected abstract Batch base();
 
 	@Override
-	public void addBatch(String sql) {
-		base().addBatch(sql);
+	public void add(String sql) {
+		base().add(sql);
 	}
 
 	@Override
-	public void addBatch(String sql, PreparedStatementComplementer complementer) {
-		base().addBatch(sql, complementer);
+	public void add(String sql, PreparedStatementComplementer complementer) {
+		base().add(sql, complementer);
 	}
 
 	@Override
-	public int[] executeBatch() {
-		return base().executeBatch();
+	public int[] execute() {
+		return base().execute();
 	}
 
 	@Override

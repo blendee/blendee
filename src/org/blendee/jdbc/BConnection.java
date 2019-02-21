@@ -24,7 +24,7 @@ public interface BConnection {
 	 * @param sql プレースホルダを持たない SQL
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
-	default void executeStatement(String sql, Consumer<BStatement> consumer) {
+	default void createStatement(String sql, Consumer<BStatement> consumer) {
 		try (BStatement statement = getStatement(sql)) {
 			consumer.accept(statement);
 		}
@@ -37,7 +37,7 @@ public interface BConnection {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeStatementAndGet(String sql, Function<BStatement, T> function) {
+	default <T> T createStatementAndGet(String sql, Function<BStatement, T> function) {
 		try (BStatement statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
@@ -67,7 +67,7 @@ public interface BConnection {
 	 * @param complementer プレースホルダに結びつける値を持つ
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
-	default void execute(
+	default void createStatement(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Consumer<BStatement> consumer) {
@@ -81,7 +81,7 @@ public interface BConnection {
 	 * @param sql SQL とプレースホルダの値
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
-	default void execute(ComposedSQL sql, Consumer<BStatement> consumer) {
+	default void createStatement(ComposedSQL sql, Consumer<BStatement> consumer) {
 		try (BStatement statement = getStatement(sql)) {
 			consumer.accept(statement);
 		}
@@ -95,7 +95,7 @@ public interface BConnection {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeAndGet(
+	default <T> T createStatementAndGet(
 		String sql,
 		PreparedStatementComplementer complementer,
 		Function<BStatement, T> function) {
@@ -111,7 +111,7 @@ public interface BConnection {
 	 * @param function {@link BStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeAndGet(ComposedSQL sql, Function<BStatement, T> function) {
+	default <T> T createStatementAndGet(ComposedSQL sql, Function<BStatement, T> function) {
 		try (BStatement statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
@@ -130,7 +130,7 @@ public interface BConnection {
 	 * @param sql プレースホルダを持つ SQL
 	 * @param consumer {@link BPreparedStatement} を受け取る {@link Consumer}
 	 */
-	default void execute(String sql, Consumer<BPreparedStatement> consumer) {
+	default void prepareStatement(String sql, Consumer<BPreparedStatement> consumer) {
 		try (BPreparedStatement statement = prepareStatement(sql)) {
 			consumer.accept(statement);
 		}
@@ -143,17 +143,17 @@ public interface BConnection {
 	 * @param function {@link BPreparedStatement} を受け取る {@link Function}
 	 * @return T
 	 */
-	default <T> T executeAndGet(String sql, Function<BPreparedStatement, T> function) {
+	default <T> T prepareStatementAndGet(String sql, Function<BPreparedStatement, T> function) {
 		try (BPreparedStatement statement = prepareStatement(sql)) {
 			return function.apply(statement);
 		}
 	}
 
 	/**
-	 * {@link BatchStatement} のインスタンスを生成し、返します。
-	 * @return {@link BatchStatement} のインスタンス
+	 * {@link Batch} のインスタンスを生成し、返します。
+	 * @return {@link Batch} のインスタンス
 	 */
-	BatchStatement getBatchStatement();
+	Batch getBatch();
 
 	/**
 	 * {@link StatementWrapper} を設定し、この接続が生成する各 BPreparedStatement をラップさせます。

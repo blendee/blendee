@@ -11,7 +11,7 @@ import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
@@ -81,9 +81,9 @@ public class ConcreteConnection implements BConnection {
 	}
 
 	@Override
-	public BatchStatement getBatchStatement() {
-		ConcreteBatchStatement statement = new ConcreteBatchStatement(this);
-		return wrap(statement, statementWrappers);
+	public Batch getBatch() {
+		ConcreteBatch batch = new ConcreteBatch(this);
+		return wrap(batch, statementWrappers);
 	}
 
 	@Override
@@ -133,12 +133,12 @@ public class ConcreteConnection implements BConnection {
 		return statement;
 	}
 
-	private static BatchStatement wrap(
-		BatchStatement statement,
+	private static Batch wrap(
+		Batch batch,
 		Set<StatementWrapper> wrappers) {
 		for (StatementWrapper wrapper : wrappers)
-			statement = wrapper.wrap(statement);
-		return statement;
+			batch = wrapper.wrap(batch);
+		return batch;
 	}
 
 	private PreparedStatement createStatement(String sql) {

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BatchStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.sql.Binder;
 import org.blendee.sql.ComplementerValues;
@@ -26,12 +26,12 @@ class PlaybackDataManipulator implements DataManipulator {
 
 	@Override
 	public int execute() {
-		return BlendeeManager.getConnection().executeAndGet(this, s -> s.executeUpdate());
+		return BlendeeManager.getConnection().createStatementAndGet(this, s -> s.executeUpdate());
 	}
 
 	@Override
-	public void execute(BatchStatement statement) {
-		statement.addBatch(this);
+	public void execute(Batch batch) {
+		batch.add(this);
 	}
 
 	@Override

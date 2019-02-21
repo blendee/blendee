@@ -10,7 +10,7 @@ import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.Configure;
 
 /**
- * {@link ConcreteBatchStatement} で使用する {@link BPreparedStatement} の実装クラスです。
+ * {@link ConcreteBatch} で使用する {@link BPreparedStatement} の実装クラスです。
  * @author 千葉 哲嗣
  */
 class BatchPreparedStatement extends ConcretePreparedStatement {

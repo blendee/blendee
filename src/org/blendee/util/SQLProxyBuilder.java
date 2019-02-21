@@ -7,9 +7,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BatchStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
+import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
@@ -72,22 +72,22 @@ public class SQLProxyBuilder {
 		return buildProxyObject(sourceInterface, Charset.forName(sqlCharset));
 	}
 
-	private static final ThreadLocal<BatchStatement> batchStatement = new ThreadLocal<>();
+	private static final ThreadLocal<Batch> batchThreadLocal = new ThreadLocal<>();
 
 	/**
-	 * 現在実行中のスレッドに、引数の {@link BatchStatement} を紐づけます。<br>
-	 * {@link BatchStatement} は、戻り値が int の、更新を指定された場合のみ使用されます。
-	 * @param batch {@link BatchStatement}
+	 * 現在実行中のスレッドに、引数の {@link Batch} を紐づけます。<br>
+	 * {@link Batch} は、戻り値が int の、更新を指定された場合のみ使用されます。
+	 * @param batch {@link Batch}
 	 */
-	public static void setBatchStatement(BatchStatement batch) {
-		batchStatement.set(batch);
+	public static void setBatch(Batch batch) {
+		batchThreadLocal.set(batch);
 	}
 
 	/**
-	 * 現在実行中のスレッドに紐づけられた {@link BatchStatement} を開放します。
+	 * 現在実行中のスレッドに紐づけられた {@link Batch} を開放します。
 	 */
-	public static void removeBatchStatement() {
-		batchStatement.remove();
+	public static void removeBatch() {
+		batchThreadLocal.remove();
 	}
 
 	private static class SQLProxyInvocationHandler implements InvocationHandler {
@@ -140,10 +140,10 @@ public class SQLProxyBuilder {
 			if (returnType.equals(BResultSet.class)) {
 				return statement(sql, complementer).executeQuery();
 			} else if (returnType.equals(int.class)) {
-				BatchStatement batch = batchStatement.get();
+				Batch batch = batchThreadLocal.get();
 				if (batch == null) return statement(sql, complementer).executeUpdate();
 
-				batch.addBatch(sql, complementer);
+				batch.add(sql, complementer);
 				return 0;
 			} else if (returnType.equals(boolean.class)) {
 				return statement(sql, complementer).execute();
