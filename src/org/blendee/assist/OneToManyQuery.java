@@ -51,7 +51,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 	abstract BStatement createStatementForCount();
 
 	@Override
-	public Many<O, M> execute() {
+	public Many<O, M> search() {
 		List<OneToManyBehavior> route = route();
 		return new Many<>(
 			new DataObjectManager(iterator(), route),

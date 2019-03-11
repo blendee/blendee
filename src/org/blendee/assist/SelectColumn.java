@@ -37,7 +37,7 @@ public class SelectColumn implements AliasableOffer {
 
 	/**
 	 * カラムに別名を付けます。<br>
-	 * 別名をつけてしまうと {@link Query#aggregate(Consumer)} しか使用できなくなります。
+	 * 別名をつけてしまうと {@link Query#execute(Consumer)} しか使用できなくなります。
 	 * @param alias 別名
 	 * @return {@link SelectOffer}
 	 */

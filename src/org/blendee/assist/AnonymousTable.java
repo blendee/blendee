@@ -598,7 +598,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
-	public AutoCloseableIterator<Void> execute() {
+	public AutoCloseableIterator<Void> search() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -1364,7 +1364,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		}
 
 		@Override
-		public AutoCloseableIterator<Void> execute() {
+		public AutoCloseableIterator<Void> search() {
 			throw new UnsupportedOperationException();
 		}
 

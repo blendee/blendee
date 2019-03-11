@@ -116,7 +116,8 @@ public final class Initializer {
 		if (schemaName == null) throw new NullPointerException();
 		schemaName = schemaName.trim();
 		if (schemaNames.size() == 1 && (schemaNames.get(0).length() == 0 || schemaName.length() == 0))
-			throw new IllegalArgumentException("スキーマ名を複数件使用する場合、空のスキーマ名は使用できません");
+			//スキーマ名を複数件使用する場合、空のスキーマ名は使用できません
+			throw new IllegalArgumentException("If you use more than one schema, you can not use an empty schema name.");
 		schemaNames.add(schemaName);
 	}
 
@@ -177,7 +178,8 @@ public final class Initializer {
 	 * @param max 一接続あたりの最大ステートメント数
 	 */
 	public synchronized void setMaxStatementsPerConnection(int max) {
-		if (max < 1) throw new IllegalArgumentException("0 以下の値は設定できません");
+		//0 以下の値は設定できません
+		if (max < 1) throw new IllegalArgumentException("max < 1");
 		maxStatementsPerConnection = max;
 	}
 
@@ -195,7 +197,8 @@ public final class Initializer {
 	}
 
 	synchronized Configure createConfigure() {
-		if (schemaNames.size() == 0) throw new IllegalArgumentException("スキーマ名は最低一つ必要です");
+		//スキーマ名は最低一つ必要です
+		if (schemaNames.size() == 0) throw new IllegalArgumentException("At least one schema name is required.");
 		freeze = true;
 		return new Configure(
 			transactionFactoryClass,

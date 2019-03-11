@@ -22,7 +22,8 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public void initialize(Initializer initializer) {
 		synchronized (lock) {
-			if (config != null) throw new IllegalStateException("既に initialize が実行されています");
+			//既に initialize が実行されています
+			if (config != null) throw new IllegalStateException(BlendeeManager.class.getSimpleName() + " is already initialized");
 
 			config = initializer.createConfigure();
 
@@ -54,7 +55,8 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public Configure getConfigure() {
 		synchronized (lock) {
-			if (config == null) throw new IllegalStateException("設定が完了していません");
+			//設定が完了していません
+			if (config == null) throw new IllegalStateException(BlendeeManager.class.getSimpleName() + " is not initialized.");
 			return config;
 		}
 	}
@@ -84,7 +86,8 @@ public class BlendeeManager implements ManagementSubject {
 	 * @throws IllegalStateException 既にこのスレッド用にトランザクションが開始されている場合
 	 */
 	public Transaction startTransaction() {
-		if (startsTransaction()) throw new IllegalStateException("既にこのスレッド用にトランザクションが開始されています");
+		//既にこのスレッド用にトランザクションが開始されています
+		if (startsTransaction()) throw new IllegalStateException(Transaction.class.getSimpleName() + " is already started for current thread.");
 
 		config.initialize();
 
@@ -112,7 +115,8 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public Transaction getCurrentTransaction() {
 		Transaction transaction = transactionThreadLocal.get();
-		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
+		//このスレッドのトランザクションが開始されていません
+		if (transaction == null) throw new IllegalStateException(Transaction.class.getSimpleName() + " is not started for current thread.");
 
 		return transaction;
 	}
@@ -157,10 +161,12 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public static BConnection getConnection() {
 		Transaction transaction = get().transactionThreadLocal.get();
-		if (transaction == null) throw new IllegalStateException("このスレッドのトランザクションが開始されていません");
+		//このスレッドのトランザクションが開始されていません
+		if (transaction == null) throw new IllegalStateException(Transaction.class.getSimpleName() + " is not started for current thread.");
 
 		BConnection connection = transaction.getConnection();
-		if (connection == null) throw new IllegalStateException("このスレッドの接続が作成されていません");
+		//このスレッドの接続が作成されていません
+		if (connection == null) throw new IllegalStateException(BConnection.class.getSimpleName() + " is not created for current thread.");
 
 		return connection;
 	}

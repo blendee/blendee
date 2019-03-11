@@ -655,7 +655,7 @@ public abstract class SelectStatementBehavior<
 		}
 
 		@Override
-		public DataObjectIterator execute() {
+		public DataObjectIterator search() {
 			checkRowMode(rowMode);
 			return DataAccessHelper.select(
 				rowSQL,

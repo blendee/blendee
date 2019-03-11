@@ -55,13 +55,15 @@ public class JDBCMetadata implements Metadata {
 	@Override
 	public TablePath[] getTables(String schemaName) {
 		if (!config.containsSchemaName(schemaName))
-			throw new IllegalArgumentException("設定されていないスキーマ名です");
+			//設定されていないスキーマ名です
+			throw new IllegalArgumentException("Schema name [" + schemaName + "] is not found in current configure.");
 
-		try (ResultSet result = connection().getMetaData().getTables(
-			null,
-			identifier.regularize(schemaName),
-			null,
-			tableTypes)) {
+		try (ResultSet result = connection().getMetaData()
+			.getTables(
+				null,
+				identifier.regularize(schemaName),
+				null,
+				tableTypes)) {
 			List<String> tables = new ArrayList<>();
 			while (result.next()) {
 				String tableName = result.getString("TABLE_NAME");
@@ -112,10 +114,11 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
-		try (ResultSet result = connection().getMetaData().getPrimaryKeys(
-			null,
-			identifier.regularize(path.getSchemaName()),
-			identifier.regularize(path.getTableName()))) {
+		try (ResultSet result = connection().getMetaData()
+			.getPrimaryKeys(
+				null,
+				identifier.regularize(path.getSchemaName()),
+				identifier.regularize(path.getTableName()))) {
 
 			String name = null;
 			List<Column> columnList = new ArrayList<>();
@@ -144,10 +147,11 @@ public class JDBCMetadata implements Metadata {
 	public TablePath[] getResourcesOfImportedKey(TablePath path) {
 		try {
 			return getOtherResources(
-				connection().getMetaData().getImportedKeys(
-					null,
-					identifier.regularize(path.getSchemaName()),
-					identifier.regularize(path.getTableName())),
+				connection().getMetaData()
+					.getImportedKeys(
+						null,
+						identifier.regularize(path.getSchemaName()),
+						identifier.regularize(path.getTableName())),
 				"PKTABLE_SCHEM",
 				"PKTABLE_NAME");
 		} catch (SQLException e) {
@@ -159,10 +163,11 @@ public class JDBCMetadata implements Metadata {
 	public TablePath[] getResourcesOfExportedKey(TablePath path) {
 		try {
 			return getOtherResources(
-				connection().getMetaData().getExportedKeys(
-					null,
-					identifier.regularize(path.getSchemaName()),
-					identifier.regularize(path.getTableName())),
+				connection().getMetaData()
+					.getExportedKeys(
+						null,
+						identifier.regularize(path.getSchemaName()),
+						identifier.regularize(path.getTableName())),
 				"FKTABLE_SCHEM",
 				"FKTABLE_NAME");
 		} catch (SQLException e) {
@@ -173,13 +178,14 @@ public class JDBCMetadata implements Metadata {
 	@Override
 	public CrossReference[] getCrossReferences(TablePath exportedTable, TablePath importedTable) {
 		List<CrossReferenceResult> resultList = new LinkedList<>();
-		try (ResultSet jdbcResult = connection().getMetaData().getCrossReference(
-			null,
-			identifier.regularize(exportedTable.getSchemaName()),
-			identifier.regularize(exportedTable.getTableName()),
-			null,
-			identifier.regularize(importedTable.getSchemaName()),
-			identifier.regularize(importedTable.getTableName()))) {
+		try (ResultSet jdbcResult = connection().getMetaData()
+			.getCrossReference(
+				null,
+				identifier.regularize(exportedTable.getSchemaName()),
+				identifier.regularize(exportedTable.getTableName()),
+				null,
+				identifier.regularize(importedTable.getSchemaName()),
+				identifier.regularize(importedTable.getTableName()))) {
 
 			while (jdbcResult.next()) {
 				resultList.add(new CrossReferenceResult(jdbcResult));
@@ -198,7 +204,8 @@ public class JDBCMetadata implements Metadata {
 				builders.add(builder);
 			}
 
-			if (builder == null) throw new IllegalStateException("KEY_SEQ に 1 がありません");
+			//KEY_SEQ に 1 がありません
+			if (builder == null) throw new IllegalStateException("KEY_SEQ=1 not found.");
 			builder.add(result);
 		}
 
@@ -305,7 +312,8 @@ public class JDBCMetadata implements Metadata {
 			}
 			result = seq.compareTo(target.seq);
 			if (result != 0) return result;
-			throw new IllegalStateException("FK_NAME が未設定のため、同一テーブルへの複数 FK 参照が解決できません");
+			//FK_NAME が未設定のため、同一テーブルへの複数 FK 参照が解決できません
+			throw new IllegalStateException("Multiple FK references to the same table can not be resolved because FK_NAME has not been set yet.");
 		}
 	}
 

@@ -75,7 +75,8 @@ public class TablePath implements Comparable<TablePath> {
 
 		//Blendee 初期化以前にインスタンス化されても大丈夫なように、デフォルトスキーマ名は、この時点で取得する
 		String[] schemaNames = ContextManager.get(BlendeeManager.class).getConfigure().getSchemaNames();
-		if (schemaNames.length > 1) throw new IllegalStateException("スキーマ名が複数設定されています");
+		//スキーマ名が複数設定されています
+		if (schemaNames.length > 1) throw new IllegalStateException("Multiple schema names are set.");
 
 		return schemaNames[0];
 	}

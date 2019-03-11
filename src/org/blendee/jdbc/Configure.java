@@ -242,7 +242,8 @@ public final class Configure {
 	}
 
 	void check() {
-		if (!isCurrent()) throw new IllegalStateException("古い設定を使用しています");
+		//古い設定を使用しています
+		if (!isCurrent()) throw new IllegalStateException("This " + Configure.class.getSimpleName() + " is old.");
 	}
 
 	synchronized TransactionFactory getTransactionFactoryWithoutCheck() {

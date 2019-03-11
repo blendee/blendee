@@ -31,14 +31,14 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * 検索結果が、複数件になることを想定しているメソッドです。
 	 * @return 検索結果
 	 */
-	I execute();
+	I search();
 
 	/**
 	 * 検索を実行します。
 	 * @param action {@link Consumer}
 	 */
-	default void execute(Consumer<I> action) {
-		try (I iterator = execute()) {
+	default void search(Consumer<I> action) {
+		try (I iterator = search()) {
 			action.accept(iterator);
 		}
 	}
@@ -49,8 +49,8 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param <T> 戻り値の型
 	 * @return 任意の型の戻り値
 	 */
-	default <T> T executeAndGet(Function<I, T> action) {
-		try (I iterator = execute()) {
+	default <T> T searchAndGet(Function<I, T> action) {
+		try (I iterator = search()) {
 			return action.apply(iterator);
 		}
 	}
@@ -60,7 +60,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param action {@link Consumer}
 	 */
 	default void forEach(Consumer<R> action) {
-		try (I iterator = execute()) {
+		try (I iterator = search()) {
 			iterator.forEach(action);
 		}
 	}
@@ -72,7 +72,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
 	default Optional<R> willUnique() {
-		return Helper.unique(execute());
+		return Helper.unique(search());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * 集合関数を含む検索を実行します。
 	 * @param action {@link Consumer}
 	 */
-	default void aggregate(Consumer<BResultSet> action) {
+	default void execute(Consumer<BResultSet> action) {
 		BConnection connection = BlendeeManager.getConnection();
 		try (BStatement statement = connection.getStatement(aggregateSQL())) {
 			try (BResultSet result = statement.executeQuery()) {
@@ -156,7 +156,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param <T> 戻り値の型
 	 * @return 任意の型の戻り値
 	 */
-	default <T> T aggregateAndGet(Function<BResultSet, T> action) {
+	default <T> T executeAndGet(Function<BResultSet, T> action) {
 		BConnection connection = BlendeeManager.getConnection();
 		try (BStatement statement = connection.getStatement(aggregateSQL())) {
 			try (BResultSet result = statement.executeQuery()) {
@@ -169,7 +169,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * 集合関数を含む検索を実行します。
 	 * @return {@link ResultSetIterator}
 	 */
-	default ResultSetIterator aggregate() {
+	default ResultSetIterator execute() {
 		return new ResultSetIterator(aggregateSQL());
 	}
 }

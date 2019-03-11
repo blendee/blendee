@@ -65,7 +65,7 @@ public interface SelectStatement extends Statement, SQLDecorators {
 
 	/**
 	 * {@link Row} で検索結果を受け取ることができなくなります。<br>
-	 * 代わりに{@link Query#aggregate} で結果を取得することになります。
+	 * 代わりに{@link Query#execute} で結果を取得することになります。
 	 */
 	void quitRowMode();
 

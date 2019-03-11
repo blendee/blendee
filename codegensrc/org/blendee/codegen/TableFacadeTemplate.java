@@ -1021,10 +1021,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public Iterator execute() {
+	public Iterator search() {
 		SelectBehavior selectBehavior = selectBehavior();
 		selectBehavior.checkRowMode();
-		return wrap(selectBehavior.query().execute());
+		return wrap(selectBehavior.query().search());
 	}
 
 	@Override
@@ -2191,8 +2191,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		}
 
 		@Override
-		public Iterator execute() {
-			return wrap(inner.execute());
+		public Iterator search() {
+			return wrap(inner.search());
 		}
 
 		@Override
