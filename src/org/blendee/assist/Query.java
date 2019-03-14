@@ -31,14 +31,14 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * 検索結果が、複数件になることを想定しているメソッドです。
 	 * @return 検索結果
 	 */
-	I search();
+	I retrieve();
 
 	/**
 	 * 検索を実行します。
 	 * @param action {@link Consumer}
 	 */
-	default void search(Consumer<I> action) {
-		try (I iterator = search()) {
+	default void retrieve(Consumer<I> action) {
+		try (I iterator = retrieve()) {
 			action.accept(iterator);
 		}
 	}
@@ -49,8 +49,8 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param <T> 戻り値の型
 	 * @return 任意の型の戻り値
 	 */
-	default <T> T searchAndGet(Function<I, T> action) {
-		try (I iterator = search()) {
+	default <T> T retrieveAndGet(Function<I, T> action) {
+		try (I iterator = retrieve()) {
 			return action.apply(iterator);
 		}
 	}
@@ -60,7 +60,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param action {@link Consumer}
 	 */
 	default void forEach(Consumer<R> action) {
-		try (I iterator = search()) {
+		try (I iterator = retrieve()) {
 			iterator.forEach(action);
 		}
 	}
@@ -72,7 +72,7 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @throws NotUniqueException 検索結果が複数件あった場合
 	 */
 	default Optional<R> willUnique() {
-		return Helper.unique(search());
+		return Helper.unique(retrieve());
 	}
 
 	/**
