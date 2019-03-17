@@ -17,7 +17,7 @@ public class SelectCountClause extends SelectClause {
 	 * @param alias 別名
 	 */
 	public SelectCountClause(String alias) {
-		super(RuntimeIdFactory.getInstance());
+		super(RuntimeIdFactory.stubInstance());
 		Objects.requireNonNull(alias);
 		clause = clauseBase + "AS " + alias.trim() + " ";
 	}
@@ -26,7 +26,7 @@ public class SelectCountClause extends SelectClause {
 	 * 別名無しのコンストラクタです。
 	 */
 	public SelectCountClause() {
-		super(RuntimeIdFactory.getInstance());
+		super(RuntimeIdFactory.stubInstance());
 		clause = clauseBase;
 	}
 

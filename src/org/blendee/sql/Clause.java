@@ -3,6 +3,7 @@ package org.blendee.sql;
 import static org.blendee.sql.FromClause.JoinType.LEFT_OUTER_JOIN;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
 
@@ -21,7 +22,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 * @param runtimeId {@link RuntimeId}
 	 */
 	protected Clause(RuntimeId runtimeId) {
-		this.runtimeId = runtimeId;
+		this.runtimeId = Objects.requireNonNull(runtimeId);
 	}
 
 	/**

@@ -407,7 +407,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	private class SelectAsteriskClause extends SelectClause {
 
 		private SelectAsteriskClause() {
-			super(RuntimeIdFactory.getInstance());
+			super(RuntimeIdFactory.stubInstance());
 		}
 
 		@Override

@@ -40,7 +40,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, String... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class TableFacadeManager<T extends Row> {
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.getRuntimeInstance()), options, primaryKeyMembers);
+		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.runtimeInstance()), options, primaryKeyMembers);
 	}
 
 	/**

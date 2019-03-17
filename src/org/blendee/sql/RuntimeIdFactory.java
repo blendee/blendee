@@ -33,7 +33,7 @@ public class RuntimeIdFactory {
 	 * エイリアスは一時的にこのインスタンスで確保され、このインスタンスが破棄されると再利用されます。
 	 * @return instance
 	 */
-	public static RuntimeId getRuntimeInstance() {
+	public static RuntimeId runtimeInstance() {
 		synchronized (lock) {
 			int allSize = allIds.size();
 			if (allSize == 0 || allSize < threshold) {
@@ -57,7 +57,7 @@ public class RuntimeIdFactory {
 	 * スタブインスタンスは、 ID 文字列を持ちません。
 	 * @return スタブインスタンス
 	 */
-	public static RuntimeId getInstance() {
+	public static RuntimeId stubInstance() {
 		return stubInstance;
 	}
 

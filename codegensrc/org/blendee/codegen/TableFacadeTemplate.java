@@ -15,7 +15,6 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
-import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
@@ -462,7 +461,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	@Override
 	public RuntimeId getRuntimeId() {
-		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
+		return id$ == null ? (id$ = RuntimeIdFactory.runtimeInstance()) : id$;
 	}
 
 	private class SelectBehavior extends SelectStatementBehavior<
@@ -589,20 +588,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	/**
-	 * このクラスのインスタンスを生成します。<br>
-	 * インスタンスは ID として、引数で渡された id を使用します。<br>
-	 * フィールド定義の必要がなく、簡易に使用できますが、 ID は呼び出し側クラス内で一意である必要があります。
-	 * @param id {@link SelectStatement} を使用するクラス内で一意の ID
-	 * @return このクラスのインスタンス
-	 */
-	public static /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ of(String id) {
-		if (id == null || id.equals(""))
-			throw new IllegalArgumentException("id が空です");
-
-		return new /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(getUsing(new Throwable().getStackTrace()[1]), id);
-	}
-
-	/**
 	 * 空のインスタンスを生成します。
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/() {}
@@ -614,11 +599,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	 */
 	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
 		selectBehavior().setOptimizer(Objects.requireNonNull(optimizer));
-	}
-
-	private /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Class<?> using, String id) {
-		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getRuntimeId(), $TABLE, using));
 	}
 
 	@Override
@@ -1327,14 +1307,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@Override
 	public String toString() {
 		return selectBehavior().toString();
-	}
-
-	private static Class<?> getUsing(StackTraceElement element) {
-		try {
-			return Class.forName(element.getClassName());
-		} catch (Exception e) {
-			throw new IllegalStateException(e.toString());
-		}
 	}
 
 	/**

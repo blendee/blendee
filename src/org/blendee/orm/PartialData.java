@@ -1,5 +1,7 @@
 package org.blendee.orm;
 
+import java.util.Objects;
+
 import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
@@ -45,7 +47,7 @@ public class PartialData implements Updatable {
 		Bindable[] bindables) {
 		if (columnNames.length != bindables.length)
 			throw new IllegalArgumentException("columnNames と bindables の要素数が一致しません");
-		this.path = path;
+		this.path = Objects.requireNonNull(path);
 		this.columnNames = columnNames.clone();
 		this.bindables = bindables.clone();
 	}

@@ -72,7 +72,6 @@ import org.blendee.assist.UpdateStatementIntermediate;
 import org.blendee.assist.Vargs;
 import org.blendee.assist.WhereClauseAssist;
 import org.blendee.assist.WhereColumn;
-import org.blendee.internal.U;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.ComposedSQL;
@@ -83,7 +82,6 @@ import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.orm.NullPrimaryKeyException;
-import org.blendee.selector.AnchorOptimizerFactory;
 import org.blendee.selector.Optimizer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
@@ -703,7 +701,7 @@ public class GenericTable
 
 	@Override
 	public RuntimeId getRuntimeId() {
-		return id$ == null ? (id$ = RuntimeIdFactory.getRuntimeInstance()) : id$;
+		return id$ == null ? (id$ = RuntimeIdFactory.runtimeInstance()) : id$;
 	}
 
 	//@formatter:off
@@ -808,21 +806,6 @@ public class GenericTable
 	}
 
 	/**
-	 * このクラスのインスタンスを生成します。<br>
-	 * インスタンスは ID として、引数で渡された id を使用します。<br>
-	 * フィールド定義の必要がなく、簡易に使用できますが、 ID は呼び出し側クラス内で一意である必要があります。
-	 * @param id {@link Query} を使用するクラス内で一意の ID
-	 * @param tablePath 検索対象テーブル
-	 * @return このクラスのインスタンス
-	 */
-	public static GenericTable of(String id, TablePath tablePath) {
-		if (!U.presents(id))
-			throw new IllegalArgumentException("id が空です");
-
-		return new GenericTable(tablePath, getUsing(new Throwable().getStackTrace()[1]), id);
-	}
-
-	/**
 	 * 空のインスタンスを生成します。
 	 * @param tablePath 検索対象テーブル
 	 */
@@ -839,12 +822,6 @@ public class GenericTable
 	public GenericTable(Optimizer optimizer) {
 		this(optimizer.getTablePath());
 		selectBehavior().setOptimizer(Objects.requireNonNull(optimizer));
-	}
-
-	private GenericTable(TablePath tablePath, Class<?> using, String id) {
-		this(tablePath);
-		selectBehavior().setOptimizer(
-			ContextManager.get(AnchorOptimizerFactory.class).getInstance(id, getRuntimeId(), tablePath, using));
 	}
 
 	@Override
@@ -1544,14 +1521,6 @@ public class GenericTable
 	@Override
 	public String toString() {
 		return selectBehavior().toString();
-	}
-
-	private static Class<?> getUsing(StackTraceElement element) {
-		try {
-			return Class.forName(element.getClassName());
-		} catch (Exception e) {
-			throw new IllegalStateException(e.toString());
-		}
 	}
 
 	/**

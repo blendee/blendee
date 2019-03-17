@@ -801,7 +801,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	private void careEmptySelect() {
 		SelectClause select = behavior().getSelectClause();
 		if (select == null || select.getColumnsSize() == 0) {
-			select = new SelectClause(RuntimeIdFactory.getInstance());
+			select = new SelectClause(RuntimeIdFactory.stubInstance());
 			select.add("{0}", new PseudoColumn(relationship, "*", true));
 			behavior().setSelectClause(select);
 		}

@@ -7,7 +7,6 @@ import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.TransactionFactory;
-import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.util.BlendeeEnvironment.BlendeeEnvironmentConsumer;
 import org.blendee.util.BlendeeEnvironment.BlendeeEnvironmentFunction;
 
@@ -109,23 +108,6 @@ public class Blendee {
 	public static void setDefaultTransactionFactoryClass(
 		Class<? extends TransactionFactory> defaultTransactionFactoryClass) {
 		environment.setDefaultTransactionFactoryClass(defaultTransactionFactoryClass);
-	}
-
-	/**
-	 * デフォルト {@link ColumnRepositoryFactory} を返します。
-	 * @return デフォルト {@link ColumnRepositoryFactory}
-	 */
-	public static Class<? extends ColumnRepositoryFactory> getDefaultColumnRepositoryFactoryClass() {
-		return environment.getDefaultColumnRepositoryFactoryClass();
-	}
-
-	/**
-	 * デフォルト {@link ColumnRepositoryFactory} をセットします。
-	 * @param defaultColumnRepositoryFactoryClass デフォルト {@link ColumnRepositoryFactory}
-	 */
-	public static void setDefaultColumnRepositoryFactoryClass(
-		Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass) {
-		environment.setDefaultColumnRepositoryFactoryClass(defaultColumnRepositoryFactoryClass);
 	}
 
 	/**

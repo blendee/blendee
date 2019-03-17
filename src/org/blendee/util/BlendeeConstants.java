@@ -6,15 +6,13 @@ import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_INTEGER;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING;
 import static org.blendee.util.ParsableOptionKey.OptionValueParser.TO_STRING_ARRAY;
 
+import org.blendee.jdbc.BLogger;
 import org.blendee.jdbc.DefaultErrorConverter;
 import org.blendee.jdbc.DefaultLogger;
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
-import org.blendee.jdbc.BLogger;
 import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.TransactionFactory;
-import org.blendee.selector.AnchorOptimizerFactory;
-import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.sql.DefaultValueExtractors;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.ValueExtractorsConfigure;
@@ -130,42 +128,6 @@ public interface BlendeeConstants {
 	 */
 	public static final ParsableOptionKey<Class<? extends ValueExtractors>> VALUE_EXTRACTORS_CLASS = new ParsableOptionKey<>(
 		"value-extractors-class",
-		TO_CLASS);
-
-	/**
-	 * default: false
-	 * (Boolean) CAN_ADD_NEW_ENTRIES
-	 * @see AnchorOptimizerFactory#setCanAddNewEntries(boolean)
-	 */
-	public static final ParsableOptionKey<Boolean> CAN_ADD_NEW_ENTRIES = new ParsableOptionKey<>(
-		"can-add-new-entries",
-		TO_BOOLEAN);
-
-	/**
-	 * default: DEFAULT
-	 * (String) HOME_STORAGE_IDENTIFIER
-	 * @see FileColumnRepositoryFactory
-	 */
-	public static final ParsableOptionKey<String> HOME_STORAGE_IDENTIFIER = new ParsableOptionKey<>(
-		"home-storage-identifier",
-		TO_STRING);
-
-	/**
-	 * default: org.blendee.repository
-	 * (String) COLUMN_REPOSITORY_FILE
-	 * @see FileColumnRepositoryFactory
-	 */
-	public static final ParsableOptionKey<String> COLUMN_REPOSITORY_FILE = new ParsableOptionKey<>(
-		"column-repository-file",
-		TO_STRING);
-
-	/**
-	 * default: {@link FileColumnRepositoryFactory}
-	 * (Class&lt;ColumnRepositoryFactory&gt;) COLUMN_REPOSITORY_FACTORY_CLASS
-	 * @see AnchorOptimizerFactory#setColumnRepositoryFactoryClass(Class)
-	 */
-	public static final ParsableOptionKey<Class<? extends ColumnRepositoryFactory>> COLUMN_REPOSITORY_FACTORY_CLASS = new ParsableOptionKey<>(
-		"column-repository-factory-class",
 		TO_CLASS);
 
 	/**

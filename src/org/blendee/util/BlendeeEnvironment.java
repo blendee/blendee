@@ -19,8 +19,6 @@ import org.blendee.jdbc.MetadataFactory;
 import org.blendee.jdbc.OptionKey;
 import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
-import org.blendee.selector.AnchorOptimizerFactory;
-import org.blendee.selector.ColumnRepositoryFactory;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.sql.ValueExtractorsConfigure;
 
@@ -33,8 +31,6 @@ public class BlendeeEnvironment {
 	private Class<? extends MetadataFactory> defaultMetadataFactoryClass = AnnotationMetadataFactory.class;
 
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
-
-	private Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass = FileColumnRepositoryFactory.class;
 
 	private final Consumer<Initializer> consumer;
 
@@ -234,19 +230,6 @@ public class BlendeeEnvironment {
 			BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 				.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
 
-			AnchorOptimizerFactory anchorOptimizerFactory = ContextManager.get(AnchorOptimizerFactory.class);
-
-			BlendeeConstants.CAN_ADD_NEW_ENTRIES.extract(initValues)
-				.ifPresent(flag -> anchorOptimizerFactory.setCanAddNewEntries(flag));
-
-			anchorOptimizerFactory.setColumnRepositoryFactoryClass(
-				BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
-					.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
-
-			anchorOptimizerFactory.setColumnRepositoryFactoryClass(
-				BlendeeConstants.COLUMN_REPOSITORY_FACTORY_CLASS.extract(initValues)
-					.orElseGet(() -> getDefaultColumnRepositoryFactoryClass()));
-
 			BlendeeManager.getLogger().log(Level.INFO, "Blendee [" + contextName + "] started.");
 
 			return this;
@@ -375,23 +358,6 @@ public class BlendeeEnvironment {
 	public synchronized void setDefaultTransactionFactoryClass(
 		Class<? extends TransactionFactory> defaultTransactionFactoryClass) {
 		this.defaultTransactionFactoryClass = defaultTransactionFactoryClass;
-	}
-
-	/**
-	 * デフォルト {@link ColumnRepositoryFactory} を返します。
-	 * @return デフォルト {@link ColumnRepositoryFactory}
-	 */
-	public synchronized Class<? extends ColumnRepositoryFactory> getDefaultColumnRepositoryFactoryClass() {
-		return defaultColumnRepositoryFactoryClass;
-	}
-
-	/**
-	 * デフォルト {@link ColumnRepositoryFactory} をセットします。
-	 * @param defaultColumnRepositoryFactoryClass デフォルト {@link ColumnRepositoryFactory}
-	 */
-	public synchronized void setDefaultColumnRepositoryFactoryClass(
-		Class<? extends ColumnRepositoryFactory> defaultColumnRepositoryFactoryClass) {
-		this.defaultColumnRepositoryFactoryClass = defaultColumnRepositoryFactoryClass;
 	}
 
 	/**

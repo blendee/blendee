@@ -700,7 +700,7 @@ public class DataObject
 			}
 		}
 
-		builder.setCriteria(PartialData.createCriteria(RuntimeIdFactory.getInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
+		builder.setCriteria(PartialData.createCriteria(RuntimeIdFactory.stubInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
 
 		statement.process(builder);
 		int result = statement.execute();

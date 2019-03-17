@@ -14,7 +14,7 @@ public class UpdateDMLBuilder extends Updater {
 
 	private final RelationshipFactory factory = RelationshipFactory.getInstance();
 
-	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.getInstance()).create();
+	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.stubInstance()).create();
 
 	private final String alias;
 

@@ -117,7 +117,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(DataObject data, Consumer<BResultSet> consumer, String... columnNames) {
-		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
+		update(data.getRelationship().getTablePath(), data, data.getPrimaryKey().getCriteria(RuntimeIdFactory.stubInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void update(Row row, Consumer<BResultSet> consumer, String... columnNames) {
-		update(row.tablePath(), row, row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
+		update(row.tablePath(), row, row.primaryKey().getCriteria(RuntimeIdFactory.stubInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class ReturningUtilities {
 		return updateAndReturn(
 			data.getRelationship().getTablePath(),
 			data,
-			data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			data.getPrimaryKey().getCriteria(RuntimeIdFactory.stubInstance()),
 			function,
 			columnNames);
 	}
@@ -172,7 +172,7 @@ public class ReturningUtilities {
 		return updateAndReturn(
 			row.tablePath(),
 			row,
-			row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			row.primaryKey().getCriteria(RuntimeIdFactory.stubInstance()),
 			function,
 			columnNames);
 	}
@@ -221,7 +221,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(DataObject data, Consumer<BResultSet> consumer, String... columnNames) {
-		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
+		delete(data.getRelationship().getTablePath(), data.getPrimaryKey().getCriteria(RuntimeIdFactory.stubInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class ReturningUtilities {
 	 * @param columnNames RETURNING で使用する項目
 	 */
 	public static void delete(Row row, Consumer<BResultSet> consumer, String... columnNames) {
-		delete(row.tablePath(), row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()), consumer, columnNames);
+		delete(row.tablePath(), row.primaryKey().getCriteria(RuntimeIdFactory.stubInstance()), consumer, columnNames);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class ReturningUtilities {
 	public static <T> T deleteAndReturn(DataObject data, Function<BResultSet, T> function, String... columnNames) {
 		return deleteAndReturn(
 			data.getRelationship().getTablePath(),
-			data.getPrimaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			data.getPrimaryKey().getCriteria(RuntimeIdFactory.stubInstance()),
 			function,
 			columnNames);
 	}
@@ -273,7 +273,7 @@ public class ReturningUtilities {
 	public static <T> T deleteAndReturn(Row row, Function<BResultSet, T> function, String... columnNames) {
 		return deleteAndReturn(
 			row.tablePath(),
-			row.primaryKey().getCriteria(RuntimeIdFactory.getInstance()),
+			row.primaryKey().getCriteria(RuntimeIdFactory.stubInstance()),
 			function,
 			columnNames);
 	}

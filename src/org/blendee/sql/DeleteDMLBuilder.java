@@ -25,7 +25,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 
 	private final List<SQLDecorator> decorators = new LinkedList<>();
 
-	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.getInstance()).create();
+	private Criteria criteria = new CriteriaFactory(RuntimeIdFactory.stubInstance()).create();
 
 	/**
 	 * パラメータのテーブルを対象にするインスタンスを生成します。

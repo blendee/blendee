@@ -85,7 +85,7 @@ public class DataAccessHelper {
 	 * インスタンスを生成します。
 	 */
 	public DataAccessHelper() {
-		this(RuntimeIdFactory.getInstance(), false);
+		this(RuntimeIdFactory.stubInstance(), false);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class DataAccessHelper {
 	 * @param useCache select 文をキャッシュするかどうか
 	 */
 	public DataAccessHelper(boolean useCache) {
-		this(RuntimeIdFactory.getInstance(), useCache);
+		this(RuntimeIdFactory.stubInstance(), useCache);
 	}
 
 	/**

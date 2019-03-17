@@ -211,7 +211,7 @@ public class PrimaryKey extends PartialData {
 				builder.addSQLFragment(columnName, "NULL");
 			}
 
-			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria(RuntimeIdFactory.getInstance()));
+			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria(RuntimeIdFactory.stubInstance()));
 
 			try (BStatement statement = BlendeeManager
 				.getConnection()
@@ -247,7 +247,7 @@ public class PrimaryKey extends PartialData {
 			if (references.length == 0) break;
 			copy(reference.getForeignKeyTable(), from, to);
 			switchAllReferences(references, from, to);
-			DataAccessHelper.deleteInternal(from.path, from.getCriteria(RuntimeIdFactory.getInstance()));
+			DataAccessHelper.deleteInternal(from.path, from.getCriteria(RuntimeIdFactory.stubInstance()));
 			return;
 		}
 		update(reference, from, to);
@@ -269,7 +269,7 @@ public class PrimaryKey extends PartialData {
 		sql.append(String.join(", ", columnNames));
 		sql.append(" FROM ");
 		sql.append(foreignKeyTable);
-		final Criteria criteria = from.getCriteria(RuntimeIdFactory.getInstance());
+		final Criteria criteria = from.getCriteria(RuntimeIdFactory.stubInstance());
 		sql.append(criteria.toString(false));
 
 		try (BStatement statement = BlendeeManager
@@ -291,7 +291,7 @@ public class PrimaryKey extends PartialData {
 		PartialData from,
 		PartialData to) {
 		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
-		builder.setCriteria(from.getCriteria(RuntimeIdFactory.getInstance()));
+		builder.setCriteria(from.getCriteria(RuntimeIdFactory.stubInstance()));
 		builder.add(to);
 		try (BStatement statement = BlendeeManager
 			.getConnection()

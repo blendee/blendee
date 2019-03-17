@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -184,7 +185,7 @@ public class CriteriaFactory {
 
 	@SuppressWarnings("javadoc")
 	public CriteriaFactory(RuntimeId id) {
-		this.id = id;
+		this.id = Objects.requireNonNull(id);
 	}
 
 	/**

@@ -67,7 +67,7 @@ public class Criteria extends Clause {
 
 	Criteria(RuntimeId id, String clause, Column[] columns, Binder[] binders) {
 		super(id);
-		this.clause = clause;
+		this.clause = Objects.requireNonNull(clause);
 		this.columns.addAll(Arrays.asList(columns));
 		this.binders.addAll(Arrays.asList(binders));
 	}
