@@ -56,7 +56,6 @@ import org.blendee.sql.binder.UUIDBinder;
  * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, SQLDecorator...)
- * @see DataAccessHelper#regetDataObject(Optimizer)
  * @see DataObjectIterator#next()
  */
 public class DataObject

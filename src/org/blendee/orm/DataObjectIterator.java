@@ -18,7 +18,6 @@ import org.blendee.sql.SQLDecorator;
  * 検索結果から {@link DataObject} を生成するクラスです。
  * @author 千葉 哲嗣
  * @see DataAccessHelper#getDataObjects(Optimizer, Criteria, OrderByClause, SQLDecorator...)
- * @see DataAccessHelper#regetDataObjects(Optimizer)
  */
 public class DataObjectIterator implements Iterable<DataObject>, AutoCloseableIterator<DataObject> {
 

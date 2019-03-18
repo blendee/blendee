@@ -3,7 +3,6 @@ package org.blendee.orm;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.blendee.internal.LRUCache;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
@@ -57,43 +56,21 @@ public class DataAccessHelper {
 
 	private final RelationshipFactory factory = RelationshipFactory.getInstance();
 
-	private final LRUCache<Optimizer, Selector> selectorCache = LRUCache.newInstance(50);
-
 	private final RuntimeId id;
-
-	private final boolean useCache;
 
 	/**
 	 * インスタンスを生成します。
 	 * @param id {@link RuntimeId}
 	 */
 	public DataAccessHelper(RuntimeId id) {
-		this(id, false);
-	}
-
-	/**
-	 * インスタンスを生成します。
-	 * @param id {@link RuntimeId}
-	 * @param useCache select 文をキャッシュするかどうか
-	 */
-	public DataAccessHelper(RuntimeId id, boolean useCache) {
 		this.id = id;
-		this.useCache = useCache;
 	}
 
 	/**
 	 * インスタンスを生成します。
 	 */
 	public DataAccessHelper() {
-		this(RuntimeIdFactory.stubInstance(), false);
-	}
-
-	/**
-	 * インスタンスを生成します。
-	 * @param useCache select 文をキャッシュするかどうか
-	 */
-	public DataAccessHelper(boolean useCache) {
-		this(RuntimeIdFactory.stubInstance(), useCache);
+		this(RuntimeIdFactory.stubInstance());
 	}
 
 	/**
@@ -134,75 +111,6 @@ public class DataAccessHelper {
 		SQLDecorator... options) {
 		adjustArgument(optimizer, criteria, order);
 		return select(optimizer, criteria, order, options, false);
-	}
-
-	/**
-	 * パラメータの主キーの値を持つ {@link DataObject} を検索する SQL 文をあらかじめこのインスタンスにキャッシュしておきます。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param primaryKey 主キー
-	 * @param options 検索オプション
-	 */
-	public void study(
-		Optimizer optimizer,
-		PrimaryKey primaryKey,
-		SQLDecorator... options) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		checkArgument(optimizer, primaryKey);
-		getSelector(optimizer, primaryKey.getCriteria(id), null, options);
-	}
-
-	/**
-	 * パラメータの条件にマッチする {@link DataObject} を検索する SQL 文をあらかじめこのインスタンスにキャッシュしておきます。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
-	 * @param criteria WHERE 句となる条件
-	 * @param order ORDER 句
-	 * @param options 検索オプション
-	 */
-	public void study(
-		Optimizer optimizer,
-		Criteria criteria,
-		OrderByClause order,
-		SQLDecorator... options) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		adjustArgument(optimizer, criteria, order);
-		getSelector(optimizer, criteria, order, options);
-	}
-
-	/**
-	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 * @param optimizer キーとなる {@link Optimizer}
-	 * @return 再実行結果の {@link DataObject}
-	 * @throws DataObjectNotFoundException データが存在しなかった場合
-	 * @throws IllegalStateException 検索結果が複数件存在した場合
-	 */
-	public DataObject regetDataObject(Optimizer optimizer) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		synchronized (selectorCache) {
-			Selector selector = selectorCache.get(optimizer);
-			if (selector == null)
-				throw new IllegalStateException("この optimizer を使用して、一度 getDataObject か study を実行してください");
-
-			return getFirst(select(selector, false));
-		}
-	}
-
-	/**
-	 * パラメータの {@link Optimizer} を使用して前回行われた検索を再実行します。
-	 * @param optimizer キーとなる {@link Optimizer}
-	 * @return 再実行結果の {@link DataObject} を持つ {@link DataObjectIterator}
-	 */
-	public DataObjectIterator regetDataObjects(Optimizer optimizer) {
-		if (!useCache) throw new UnsupportedOperationException("キャッシュが使用できないと、この操作はできません");
-
-		synchronized (selectorCache) {
-			Selector selector = selectorCache.get(optimizer);
-			if (selector == null) throw new IllegalStateException("この optimizer を使用して、一度 select か study を実行してください");
-
-			return select(selector, false);
-		}
 	}
 
 	/**
@@ -450,25 +358,6 @@ public class DataAccessHelper {
 	}
 
 	/**
-	 * このインスタンスの SELECT 文のキャッシュ容量を変更します。
-	 * @param capacity 新しいキャッシュ容量
-	 */
-	public void ensureCacheCapacity(int capacity) {
-		synchronized (selectorCache) {
-			selectorCache.ensureCapacity(capacity);
-		}
-	}
-
-	/**
-	 * このインスタンスのキャッシュを空にします。
-	 */
-	public void clearCache() {
-		synchronized (selectorCache) {
-			selectorCache.clear();
-		}
-	}
-
-	/**
 	 * {@link Selector} を取得します。
 	 * @param optimizer SELECT 句
 	 * @param criteria WHERE 句
@@ -483,18 +372,7 @@ public class DataAccessHelper {
 		SQLDecorator... options) {
 		if (optimizer == null) throw new NullPointerException("optimizer は必須です");
 
-		Selector selector;
-		if (useCache) {
-			synchronized (selectorCache) {
-				selector = selectorCache.get(optimizer);
-				if (selector == null) {
-					selector = new Selector(optimizer);
-					selectorCache.cache(optimizer, selector);
-				}
-			}
-		} else {
-			selector = new Selector(optimizer);
-		}
+		Selector selector = new Selector(optimizer);
 
 		if (criteria != null) selector.setCriteria(criteria);
 		if (order != null) selector.setOrder(order);
@@ -647,7 +525,8 @@ public class DataAccessHelper {
 				statement.process(builder);
 				statement.execute();
 				return bindable;
-			} catch (UniqueConstraintViolationException e) {}
+			} catch (UniqueConstraintViolationException e) {
+			}
 		}
 
 		throw new IllegalStateException("retry 回数を超えてしまいました");

@@ -1,8 +1,5 @@
 package org.blendee.selector;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.blendee.internal.U;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
@@ -13,13 +10,12 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.SelectClause;
-import org.blendee.sql.WindowFunction;
 
 /**
  * {@link Optimizer} を使用して SELECT 句を定義し、データベースの検索を行うクラスです。
@@ -37,10 +33,6 @@ public class Selector {
 	private final SQLQueryBuilder builder;
 
 	private final Optimizer optimizer;
-
-	private final List<WindowFunctionContainer> windowFunctions = new LinkedList<>();
-
-	private final Object lock = new Object();
 
 	/**
 	 * パラメータのテーブルをルートテーブルとしたインスタンスを生成します。<br>
@@ -105,17 +97,6 @@ public class Selector {
 	}
 
 	/**
-	 * SELECT 句にウィンドウ関数を追加します。
-	 * @param function {@link WindowFunction}
-	 * @param alias 別名
-	 */
-	public void addWindowFunction(WindowFunction function, String alias) {
-		synchronized (lock) {
-			windowFunctions.add(new WindowFunctionContainer(function, alias));
-		}
-	}
-
-	/**
 	 * 検索を実行します。
 	 * @return 検索結果
 	 */
@@ -170,24 +151,6 @@ public class Selector {
 	}
 
 	private void prepareBuilder(SelectClause clause) {
-		synchronized (lock) {
-			windowFunctions.forEach(container -> {
-				clause.add(container.function, container.alias);
-			});
-
-			builder.setSelectClause(clause);
-		}
-	}
-
-	private static class WindowFunctionContainer {
-
-		private final WindowFunction function;
-
-		private final String alias;
-
-		private WindowFunctionContainer(WindowFunction function, String alias) {
-			this.function = function;
-			this.alias = alias;
-		}
+		builder.setSelectClause(clause);
 	}
 }
