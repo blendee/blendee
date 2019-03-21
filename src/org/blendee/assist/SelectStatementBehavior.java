@@ -17,7 +17,6 @@ import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.orm.DataObjectNotFoundException;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.SelectedValuesConverter;
 import org.blendee.selector.Selector;
 import org.blendee.selector.SimpleOptimizer;
@@ -71,7 +70,7 @@ public abstract class SelectStatementBehavior<
 
 	private Optimizer optimizer;
 
-	private RuntimeOptimizer optimizerForSelect;
+	private SimpleOptimizer optimizerForSelect;
 
 	private SelectClause selectClause;
 
@@ -202,7 +201,7 @@ public abstract class SelectStatementBehavior<
 
 		if (rowMode) {
 			if (optimizerForSelect == null)
-				optimizerForSelect = new RuntimeOptimizer(table, id);
+				optimizerForSelect = new SimpleOptimizer(table, id);
 
 			offers.get().forEach(c -> c.accept(optimizerForSelect));
 

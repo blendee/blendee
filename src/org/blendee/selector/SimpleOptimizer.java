@@ -1,5 +1,7 @@
 package org.blendee.selector;
 
+import java.util.Objects;
+
 import org.blendee.internal.U;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
@@ -14,27 +16,47 @@ import org.blendee.sql.SelectClause;
  */
 public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Optimizer {
 
-	private final Relationship root;
+	private final TablePath path;
 
 	private final RuntimeId id;
 
 	private final SelectClause select;
 
 	/**
-	 * {@link Relationship} のルートとなるテーブルを元にインスタンスを生成します。<br>
-	 * {@link #add(Column)} によるカラムの追加が行われない場合、 SELECT 句は path の全カラムが使用されます。
-	 * @param path SELECT 句に使用するカラムを持つテーブル
+	 * インスタンスを生成します。
+	 * @param path 対象テーブル
 	 * @param id {@link RuntimeId}
 	 */
 	public SimpleOptimizer(TablePath path, RuntimeId id) {
-		root = RelationshipFactory.getInstance().getInstance(path);
-		this.id = id;
+		this.path = Objects.requireNonNull(path);
+		this.id = Objects.requireNonNull(id);
 		select = new SelectClause(id);
+	}
+
+	/**
+	 * SELECT 句に含めるカラムを追加します。
+	 * @param column SELECT 対象
+	 */
+	public void add(Column column) {
+		Objects.requireNonNull(column);
+		check(column.getRootRelationship());
+		select.add(column);
+	}
+
+	/**
+	 * SELECT 句に含めるカラムを追加します。<br>
+	 * {@link Relationship} の全カラムが対象となります。
+	 * @param relation SELECT 対象
+	 */
+	public void add(Relationship relation) {
+		Objects.requireNonNull(relation);
+		check(relation.getRoot());
+		select.add(relation);
 	}
 
 	@Override
 	public TablePath getTablePath() {
-		return root.getTablePath();
+		return path;
 	}
 
 	@Override
@@ -44,27 +66,21 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 
 	@Override
 	public SelectClause getOptimizedSelectClause() {
-		SelectClause result;
-		synchronized (select) {
-			result = select.replicate();
+		if (select.getColumnsSize() == 0) {
+			select.add(RelationshipFactory.getInstance().getInstance(path));
 		}
-		if (result.getColumnsSize() > 0) return result;
-		result.add(root);
-		return result;
-	}
 
-	/**
-	 * SELECT 句を構成するカラムを追加します。
-	 * @param column SELECT 句に含めるカラム
-	 */
-	public void add(Column column) {
-		synchronized (select) {
-			select.add(column);
-		}
+		return select;
 	}
 
 	@Override
 	public String toString() {
 		return U.toString(this);
+	}
+
+	void check(Relationship root) {
+		if (!path.equals(root.getTablePath()))
+			//path でなければなりません
+			throw new IllegalArgumentException(path + " is required.");
 	}
 }

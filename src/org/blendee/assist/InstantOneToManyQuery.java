@@ -17,8 +17,8 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.selector.Optimizer;
-import org.blendee.selector.RuntimeOptimizer;
 import org.blendee.selector.Selector;
+import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
@@ -140,7 +140,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			}
 		});
 
-		RuntimeOptimizer runtimeOptimizer = new RuntimeOptimizer(optimizer.getTablePath(), id);
+		SimpleOptimizer runtimeOptimizer = new SimpleOptimizer(optimizer.getTablePath(), id);
 		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
 		return runtimeOptimizer;

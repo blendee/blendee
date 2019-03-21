@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
-import org.blendee.selector.RuntimeOptimizer;
+import org.blendee.selector.SimpleOptimizer;
 import org.blendee.sql.Column;
 import org.blendee.sql.ListClause;
 import org.blendee.sql.MultiColumn;
@@ -94,7 +94,7 @@ public class ColumnExpression implements AliasableOffer {
 		return statement;
 	}
 
-	void accept(RuntimeOptimizer optimizer) {
+	void accept(SimpleOptimizer optimizer) {
 		for (Column column : columns) {
 			optimizer.add(column);
 		}
