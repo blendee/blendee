@@ -9,7 +9,7 @@ import org.blendee.assist.SelectStatementBehavior.PlaybackQuery;
 import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.selector.Optimizer;
+import org.blendee.orm.SelectContext;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
@@ -73,7 +73,8 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public class WhereLogicalOperators implements LogicalOperators<WhereAssist> {
 
-		private WhereLogicalOperators() {}
+		private WhereLogicalOperators() {
+		}
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -96,7 +97,8 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public class HavingLogicalOperators implements LogicalOperators<HavingAssist> {
 
-		private HavingLogicalOperators() {}
+		private HavingLogicalOperators() {
+		}
 
 		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -119,7 +121,8 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftAssist> {
 
-		private OnLeftLogicalOperators() {}
+		private OnLeftLogicalOperators() {
+		}
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -142,7 +145,8 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	 */
 	public class OnRightLogicalOperators implements LogicalOperators<OnRightAssist> {
 
-		private OnRightLogicalOperators() {}
+		private OnRightLogicalOperators() {
+		}
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -490,7 +494,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	@Override
-	public Optimizer getOptimizer() {
+	public SelectContext getSelectContext() {
 		throw new UnsupportedOperationException();
 	}
 

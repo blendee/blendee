@@ -142,10 +142,12 @@ public class PhantomColumn implements Column {
 	 */
 	@Override
 	public void prepareForSQL(Relationship sqlRoot) {
-		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " はルートではありません");
+		//sqlRoot + " はルートではありません"
+		if (!sqlRoot.isRoot()) throw new IllegalStateException(sqlRoot + " is not root.");
 		synchronized (lock) {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))
-				throw new IllegalStateException("このインスタンスは既に " + substance + " として使われています");
+				//"このインスタンスは既に " + substance + " として使われています"
+				throw new IllegalStateException("This instance is already used as " + substance + ".");
 
 			substance = sqlRoot.getColumn(name);
 		}

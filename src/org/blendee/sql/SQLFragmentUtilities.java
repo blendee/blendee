@@ -13,7 +13,8 @@ public class SQLFragmentUtilities {
 
 	private static final Pattern innerPattern = Pattern.compile("^([^']*)(''?)");
 
-	private SQLFragmentUtilities() {}
+	private SQLFragmentUtilities() {
+	}
 
 	/**
 	 * SQL 文を解析し、結果を {@link SQLFragmentListener} に通知します。
@@ -60,7 +61,8 @@ public class SQLFragmentUtilities {
 				constants.append(innerMatcher.group());
 			}
 
-			if (!terminated) throw new IllegalStateException("文字定数が終了していません");
+			//文字定数が終了していません
+			if (!terminated) throw new IllegalStateException("\"'\" was not found.");
 		}
 
 		if (sqlFragment.length() > 0) listener.receiveSQLFragment(sqlFragment);

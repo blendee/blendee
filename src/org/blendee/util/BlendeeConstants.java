@@ -172,7 +172,8 @@ public interface BlendeeConstants {
 	 */
 	public static <T> ParsableOptionKey<T> convert(String key) {
 		ParsableOptionKey<T> converted = ParsableOptionKey.convert(key);
-		if (converted == null) throw new IllegalStateException("[" + key + "] は不明なキーです");
+		//"[" + key + "] は不明なキーです"
+		if (converted == null) throw new IllegalStateException("[" + key + "] is unknown.");
 		return converted;
 	}
 }

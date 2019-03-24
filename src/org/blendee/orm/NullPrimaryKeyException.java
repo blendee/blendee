@@ -12,10 +12,14 @@ public class NullPrimaryKeyException extends BlendeeException {
 	private static final long serialVersionUID = -2160138773158624947L;
 
 	NullPrimaryKeyException(Relationship relationship) {
+		//relationship.getTablePath()
+		//+ " ("
+		//+ relationship.getId()
+		//+ ") は PK に値を持たないので、使用できません"
 		super(
 			relationship.getTablePath()
 				+ " ("
 				+ relationship.getId()
-				+ ") は PK に値を持たないので、使用できません");
+				+ ") can not be used because it has no value in PK.");
 	}
 }

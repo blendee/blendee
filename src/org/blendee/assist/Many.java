@@ -46,7 +46,8 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 
 	@Override
 	public One<O, M> next() {
-		if (!manager.prepared()) throw new IllegalStateException("hasNext() が実行されていません");
+		//hasNext() が実行されていません
+		if (!manager.prepared()) throw new IllegalStateException("Do hasNext() first.");
 
 		DataObject current = manager.current(selfAsMany.getRelationship());
 

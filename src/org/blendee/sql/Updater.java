@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -54,7 +55,7 @@ public abstract class Updater implements ComposedSQL {
 	 * @param path 対象となるテーブル
 	 */
 	protected Updater(TablePath path) {
-		this.path = path;
+		this.path = Objects.requireNonNull(path);
 	}
 
 	/**
@@ -226,7 +227,8 @@ public abstract class Updater implements ComposedSQL {
 
 	@Override
 	public String sql() {
-		if (columns.size() == 0) throw new IllegalStateException("保存対象が設定されていません");
+		//保存対象が設定されていません
+		if (columns.size() == 0) throw new IllegalStateException("Size of columns is zero.");
 
 		String sql = build();
 		for (SQLDecorator decorator : decorators) {

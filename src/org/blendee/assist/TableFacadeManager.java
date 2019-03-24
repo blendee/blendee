@@ -9,9 +9,9 @@ import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectNotFoundException;
 import org.blendee.orm.PrimaryKey;
+import org.blendee.orm.SelectContext;
 import org.blendee.orm.SequenceGenerator;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.SimpleOptimizer;
+import org.blendee.orm.SimpleSelectContext;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.RuntimeIdFactory;
@@ -34,29 +34,29 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, String... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
+		return select(new SimpleSelectContext(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
 	}
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
+		return select(new SimpleSelectContext(getTablePath(), RuntimeIdFactory.stubInstance()), options, primaryKeyMembers);
 	}
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -66,7 +66,7 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -76,18 +76,18 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
 	public Optional<T> select(Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
-		return select(new SimpleOptimizer(getTablePath(), RuntimeIdFactory.runtimeInstance()), options, primaryKeyMembers);
+		return select(new SimpleSelectContext(getTablePath(), RuntimeIdFactory.runtimeInstance()), options, primaryKeyMembers);
 	}
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。<br>
-	 * {@link Optimizer} には {@link SimpleOptimizer} が使用されます。
+	 * {@link SelectContext} には {@link SimpleSelectContext} が使用されます。
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
@@ -97,15 +97,15 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, String... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, Vargs<SQLDecorator> options, String... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
+			object = new DataAccessHelper(optimizer.runtimeId()).getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				options.get());
@@ -118,15 +118,15 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, Vargs<SQLDecorator> options, Number... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
+			object = new DataAccessHelper(optimizer.runtimeId()).getDataObject(
 				optimizer,
 				PrimaryKey.getInstance(getTablePath(), primaryKeyMembers),
 				options.get());
@@ -139,35 +139,35 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param primaryKeyMembers 主キーを構成する文字列
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, String... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, String... primaryKeyMembers) {
 		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param primaryKeyMembers 主キーを構成する数値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, Number... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, Number... primaryKeyMembers) {
 		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param options 行ロックオプション {@link RowLockOption} 等
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, Vargs<SQLDecorator> options, Bindable... primaryKeyMembers) {
 		DataObject object;
 		try {
-			object = new DataAccessHelper(optimizer.getRuntimeId()).getDataObject(
+			object = new DataAccessHelper(optimizer.runtimeId()).getDataObject(
 				optimizer,
 				new PrimaryKey(getTablePath(), primaryKeyMembers),
 				options.get());
@@ -179,11 +179,11 @@ public class TableFacadeManager<T extends Row> {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link Row} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param optimizer SELECT 句を制御する {@link SelectContext}
 	 * @param primaryKeyMembers 主キーを構成する値
 	 * @return {@link Row} 存在しなければ null
 	 */
-	public Optional<T> select(Optimizer optimizer, Bindable... primaryKeyMembers) {
+	public Optional<T> select(SelectContext optimizer, Bindable... primaryKeyMembers) {
 		return select(optimizer, Vargs.of(), primaryKeyMembers);
 	}
 

@@ -5,7 +5,6 @@ encoding//src/org/blendee/dialect/postgresql/package-info.java=UTF-8
 encoding//src/org/blendee/internal/package-info.java=UTF-8
 encoding//src/org/blendee/jdbc/package-info.java=UTF-8
 encoding//src/org/blendee/orm/package-info.java=UTF-8
-encoding//src/org/blendee/selector/package-info.java=UTF-8
 encoding//src/org/blendee/sql/package-info.java=UTF-8
 encoding//src/org/blendee/util/package-info.java=UTF-8
 encoding/<project>=UTF-8

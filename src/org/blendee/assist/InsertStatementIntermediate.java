@@ -36,7 +36,9 @@ public class InsertStatementIntermediate {
 	public DataManipulator VALUES(Object... values) {
 		prepareColumns();
 
-		if (columns.size() != values.length) throw new IllegalStateException("カラム数と値の数が違います");
+		if (columns.size() != values.length)
+			//カラム数と値の数が違います
+			throw new IllegalStateException("The number of columns and the number of values ​​are different.");
 
 		BinderExtractor extractor = new BinderExtractor();
 

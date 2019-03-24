@@ -230,7 +230,8 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 */
 	public DirectionalColumn[] getDirectionalColumns() {
 		if (!canGetDirectionalColumns)
-			throw new IllegalStateException("複数カラムで一つの Direction の要素が追加されたため、 DirectionalColumn は不完全です。");
+			//複数カラムで一つの Direction の要素が追加されたため、 DirectionalColumn は不完全です
+			throw new IllegalStateException("DirectionalColumn is incomplete because one Direction element is added in multiple columns.");
 
 		return added.toArray(new DirectionalColumn[added.size()]);
 	}

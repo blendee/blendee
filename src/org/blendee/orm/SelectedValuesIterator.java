@@ -1,4 +1,4 @@
-package org.blendee.selector;
+package org.blendee.orm;
 
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -15,7 +15,6 @@ import org.blendee.sql.Column;
 /**
  * 検索結果から {@link SelectedValues} を生成するクラスです。
  * @author 千葉 哲嗣
- * @see Selector#select()
  */
 public class SelectedValuesIterator implements AutoCloseableIterator<SelectedValues> {
 

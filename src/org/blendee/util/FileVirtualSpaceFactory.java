@@ -23,7 +23,8 @@ import org.xml.sax.InputSource;
  */
 class FileVirtualSpaceFactory {
 
-	private FileVirtualSpaceFactory() {}
+	private FileVirtualSpaceFactory() {
+	}
 
 	/**
 	 * パラメータの {@link URL} の指し示す XML ファイルを読み込み {@link VirtualSpace} を生成します。
@@ -72,7 +73,8 @@ class FileVirtualSpaceFactory {
 		String tableName = tableMetadata.getName();
 
 		if (!isJavaIdentifierPart(tableName))
-			throw new IllegalStateException("テーブル名 " + tableName + " は使用できない文字を含んでいます");
+			//"テーブル名 " + tableName + " は使用できない文字を含んでいます"
+			throw new IllegalStateException("Table name " + tableName + " contains invalid characters.");
 
 		TablePath path = new TablePath(tableMetadata.getSchemaName(), tableName);
 
@@ -83,7 +85,8 @@ class FileVirtualSpaceFactory {
 
 		for (ColumnMetadata columnMetadata : columnMetadatas) {
 			if (!isJavaIdentifierPart(columnMetadata.getName())) throw new IllegalStateException(
-				"テーブル名 " + tableName + " 項目名 " + columnMetadata.getName() + " は使用できない文字を含んでいます");
+				//"テーブル名 " + tableName + " 項目名 " + columnMetadata.getName() + " は使用できない文字を含んでいます"
+				"Column name " + tableName + "." + columnMetadata.getName() + " contains invalid characters.");
 		}
 
 		PrimaryKeySource pk;
@@ -92,7 +95,8 @@ class FileVirtualSpaceFactory {
 			String primaryKeyName = xpath.evaluate("primary-key/@name", table);
 
 			if (!isJavaIdentifierPart(primaryKeyName))
-				throw new IllegalStateException("テーブル名 " + tableName + " 主キー名 " + primaryKeyName + " は使用できない文字を含んでいます");
+				//"テーブル名 " + tableName + " 主キー名 " + primaryKeyName + " は使用できない文字を含んでいます"
+				throw new IllegalStateException("PK name " + primaryKeyName + " contains invalid characters.");
 
 			pk = new PrimaryKeySource(
 				primaryKeyName,
@@ -113,7 +117,8 @@ class FileVirtualSpaceFactory {
 			String foreignKeyName = xpath.evaluate("@name", node);
 
 			if (!isJavaIdentifierPart(foreignKeyName)) throw new IllegalStateException(
-				"テーブル名 " + tableName + " 外部キー名 " + foreignKeyName + " は使用できない文字を含んでいます");
+				//"テーブル名 " + tableName + " 外部キー名 " + foreignKeyName + " は使用できない文字を含んでいます"
+				"FK name " + foreignKeyName + " contains invalid characters.");
 
 			fks[i] = new ForeignKeySource(
 				foreignKeyName,

@@ -15,7 +15,7 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
-import org.blendee.selector.Optimizer;
+import org.blendee.orm.SelectContext;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
@@ -594,11 +594,11 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
-	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link Optimizer} に依存します。
-	 * @param optimizer SELECT 句を決定する
+	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link SelectContext} に依存します。
+	 * @param context SELECT 句を決定する
 	 */
-	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(Optimizer optimizer) {
-		selectBehavior().setOptimizer(Objects.requireNonNull(optimizer));
+	public /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/(SelectContext context) {
+		selectBehavior().setSelectContext(Objects.requireNonNull(context));
 	}
 
 	@Override
@@ -951,8 +951,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	}
 
 	@Override
-	public Optimizer getOptimizer() {
-		return selectBehavior().getOptimizer();
+	public SelectContext getSelectContext() {
+		return selectBehavior().getSelectContext();
 	}
 
 	@Override
@@ -1459,8 +1459,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		 * @return {@link OneToManyQuery}
 		 */
 		public OneToManyQuery<Row, M> intercept() {
-			if (super.table$ != null) throw new IllegalStateException("このインスタンスでは直接使用することはできません");
-			if (!getSelectStatement().rowMode()) throw new IllegalStateException("集計モードでは実行できない処理です");
+			//このインスタンスでは直接使用することはできません
+			if (super.table$ != null) throw new IllegalStateException("It can not be used directly in this instance.");
+			//集計モードでは実行できない処理です
+			if (!getSelectStatement().rowMode()) throw new IllegalStateException("This operation can only in \"Row Mode\".");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
 		}
 

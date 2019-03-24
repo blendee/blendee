@@ -312,6 +312,7 @@ public class ReturningUtilities {
 	}
 
 	private static void checkColumnNames(String... columnNames) {
-		if (columnNames.length == 0) throw new IllegalStateException("RETURNING 項目が 0 です");
+		//RETURNING 項目が 0 です
+		if (columnNames.length == 0) throw new IllegalStateException("The number of RETURNING columns is 0.");
 	}
 }

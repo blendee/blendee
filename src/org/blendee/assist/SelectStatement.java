@@ -1,7 +1,7 @@
 package org.blendee.assist;
 
 import org.blendee.jdbc.ComposedSQL;
-import org.blendee.selector.Optimizer;
+import org.blendee.orm.SelectContext;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause.JoinType;
 import org.blendee.sql.GroupByClause;
@@ -23,9 +23,9 @@ public interface SelectStatement extends Statement, SQLDecorators {
 
 	/**
 	 * 内部処理用なので直接使用しないこと。
-	 * @return 現在の検索に使用する {@link Optimizer}
+	 * @return 現在の検索に使用する {@link SelectContext}
 	 */
-	Optimizer getOptimizer();
+	SelectContext getSelectContext();
 
 	/**
 	 * 内部処理用なので直接使用しないこと。

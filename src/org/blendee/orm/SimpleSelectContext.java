@@ -1,20 +1,26 @@
-package org.blendee.selector;
+package org.blendee.orm;
 
 import java.util.Objects;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.ContextManager;
+import org.blendee.jdbc.Result;
 import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SelectClause;
+import org.blendee.sql.ValueExtractors;
+import org.blendee.sql.ValueExtractorsConfigure;
 
 /**
- * 指定されたカラムで検索を行う {@link Optimizer} です。
+ * 指定されたカラムで検索を行う {@link SelectContext} です。
  * @author 千葉 哲嗣
  */
-public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Optimizer {
+public class SimpleSelectContext implements SelectContext {
+
+	private final ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
 	private final TablePath path;
 
@@ -27,7 +33,7 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	 * @param path 対象テーブル
 	 * @param id {@link RuntimeId}
 	 */
-	public SimpleOptimizer(TablePath path, RuntimeId id) {
+	public SimpleSelectContext(TablePath path, RuntimeId id) {
 		this.path = Objects.requireNonNull(path);
 		this.id = Objects.requireNonNull(id);
 		select = new SelectClause(id);
@@ -55,17 +61,22 @@ public class SimpleOptimizer extends SimpleSelectedValuesConverter implements Op
 	}
 
 	@Override
-	public TablePath getTablePath() {
+	public SelectedValues convert(Result result, Column[] columns) {
+		return new ConcreteSelectedValues(result, columns, extractors);
+	}
+
+	@Override
+	public TablePath tablePath() {
 		return path;
 	}
 
 	@Override
-	public RuntimeId getRuntimeId() {
+	public RuntimeId runtimeId() {
 		return id;
 	}
 
 	@Override
-	public SelectClause getOptimizedSelectClause() {
+	public SelectClause selectClause() {
 		if (select.getColumnsSize() == 0) {
 			select.add(RelationshipFactory.getInstance().getInstance(path));
 		}

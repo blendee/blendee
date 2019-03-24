@@ -34,7 +34,8 @@ public class RelationshipFactory implements ManagementSubject {
 	 * {@link ContextManager} 管理対象です。
 	 * @see ContextManager#get(Class)
 	 */
-	public RelationshipFactory() {}
+	public RelationshipFactory() {
+	}
 
 	/**
 	 * {@link TablePath} が表すテーブルをルートとするテーブルツリーを作成します。
@@ -47,7 +48,8 @@ public class RelationshipFactory implements ManagementSubject {
 			Relationship relationship = relationshipCache.get(path);
 			if (relationship == null) {
 				String pathId = pathIdMap.get(path);
-				if (pathId == null) throw new IllegalArgumentException(path + " は使用できるテーブルに含まれていません");
+				//path + " は使用できるテーブルに含まれていません"
+				if (pathId == null) throw new IllegalArgumentException(path + "is not included in the usable tables.");
 
 				relationship = createRelationship(path, pathId);
 				relationshipCache.put(path, relationship);

@@ -1,4 +1,4 @@
-package org.blendee.selector;
+package org.blendee.orm;
 
 import org.blendee.jdbc.Result;
 import org.blendee.sql.Relationship;

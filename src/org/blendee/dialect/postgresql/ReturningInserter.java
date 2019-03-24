@@ -38,7 +38,8 @@ public class ReturningInserter<T> {
 		PrimaryKeyMetadata pkMetadata = metadata.getPrimaryKeyMetadata(path);
 
 		String[] columnNames = pkMetadata.getColumnNames();
-		if (columnNames.length != 1) throw new IllegalStateException("PK の項目が複数あります table=[" + path + "]");
+		//"PK の項目が複数あります table=[" + path + "]"
+		if (columnNames.length != 1) throw new IllegalStateException("Multiple columns in PK of table=[" + path + "]");
 
 		columnName = columnNames[0];
 
@@ -63,7 +64,8 @@ public class ReturningInserter<T> {
 	public T insertAndGetSequencePK(DataObject data) {
 		TablePath myPath = data.getPrimaryKey().getTablePath();
 		if (!myPath.equals(path))
-			throw new IllegalStateException("data のテーブルが不正です table=[" + myPath + "]");
+			//"data のテーブルが不正です table=[" + myPath + "]"
+			throw new IllegalStateException("Table of \"data\" is incorrect. table=[" + myPath + "]");
 
 		return insertAndGetSequencePKInternal(data);
 	}
@@ -75,7 +77,8 @@ public class ReturningInserter<T> {
 	public T insertAndGetSequencePK(Row row) {
 		TablePath myPath = row.tablePath();
 		if (!myPath.equals(path))
-			throw new IllegalStateException("row のテーブルが不正です table=[" + myPath + "]");
+			//"row のテーブルが不正です table=[" + myPath + "]"
+			throw new IllegalStateException("Table of \"row\" is incorrect. table=[" + myPath + "]");
 
 		return insertAndGetSequencePKInternal(row);
 	}
@@ -84,7 +87,9 @@ public class ReturningInserter<T> {
 	private T insertAndGetSequencePKInternal(Updatable data) {
 		Object[] pk = new Object[] { null };
 		ReturningUtilities.insert(path, data, (result) -> {
-			if (pk[0] != null) throw new IllegalStateException("PK を指定した検索で、結果が複数あります PK=[" + pk[0] + "]");
+			//Search with PK has multiple results
+			//"PK を指定した検索で、結果が複数あります PK=[" + pk[0] + "]"
+			if (pk[0] != null) throw new IllegalStateException("Search with PK has multiple results. PK=[" + pk[0] + "]");
 			pk[0] = extractor.extract(result, 1);
 		}, columnName);
 

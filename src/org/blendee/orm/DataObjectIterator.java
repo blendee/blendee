@@ -7,8 +7,6 @@ import java.util.stream.StreamSupport;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableIterator;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValuesIterator;
 import org.blendee.sql.Criteria;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.Relationship;
@@ -17,7 +15,7 @@ import org.blendee.sql.SQLDecorator;
 /**
  * 検索結果から {@link DataObject} を生成するクラスです。
  * @author 千葉 哲嗣
- * @see DataAccessHelper#getDataObjects(Optimizer, Criteria, OrderByClause, SQLDecorator...)
+ * @see DataAccessHelper#getDataObjects(SelectContext, Criteria, OrderByClause, SQLDecorator...)
  */
 public class DataObjectIterator implements Iterable<DataObject>, AutoCloseableIterator<DataObject> {
 

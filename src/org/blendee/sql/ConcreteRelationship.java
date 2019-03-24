@@ -85,7 +85,8 @@ final class ConcreteRelationship implements Relationship {
 	@Override
 	public boolean equals(Object o) {
 		if (o != null && o.getClass().equals(TablePath.class))
-			throw new IllegalStateException(TablePath.class.getName() + " と比較することはできません");
+			//TablePath.class.getName() + " と比較することはできません"
+			throw new IllegalStateException(o.getClass().getName() + " can not be compared to " + TablePath.class.getName() + ".");
 
 		return o instanceof ConcreteRelationship && id.equals(((ConcreteRelationship) o).id);
 	}
@@ -160,7 +161,8 @@ final class ConcreteRelationship implements Relationship {
 	@Override
 	public Column getColumn(String columnName) {
 		Column column = columnMap.get(MetadataUtilities.regularize(columnName));
-		if (column == null) throw new NotFoundException(this + " に " + columnName + " が見つかりません");
+		//this + " に " + columnName + " が見つかりません"
+		if (column == null) throw new NotFoundException(columnName + " can not be found in " + this + ".");
 		return column;
 	}
 
@@ -248,7 +250,8 @@ final class ConcreteRelationship implements Relationship {
 	}
 
 	private String createErrorMessage(String base) {
-		return this + " では " + base + " は使用できません";
+		//this + " では " + base + " は使用できません"
+		return base + " can not be used in " + this + ".";
 	}
 
 	private static String createForeignKeyId(String[] foreignKeyColumnNames) {

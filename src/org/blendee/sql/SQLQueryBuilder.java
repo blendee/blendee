@@ -107,7 +107,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている FROM 句を返します。
 	 * @return FROM 句
 	 */
-	public synchronized FromClause getFromClause() {
+	public FromClause getFromClause() {
 		return fromClause.replicate();
 	}
 
@@ -115,7 +115,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * SELECT 句を設定します。
 	 * @param clause SELECT 句
 	 */
-	public synchronized void setSelectClause(SelectClause clause) {
+	public void setSelectClause(SelectClause clause) {
 		if (selectClause.equals(clause)) return;
 		selectClause = clause.replicate();
 		query = null;
@@ -125,7 +125,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている SELECT 句を返します。
 	 * @return SELECT 句
 	 */
-	public synchronized SelectClause getSelectClause() {
+	public SelectClause getSelectClause() {
 		return selectClause.replicate();
 	}
 
@@ -133,7 +133,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている SELECT 句にカラムが設定されているかどうかを判定します。
 	 * @return SELECT 句にカラムが設定されているかどうか
 	 */
-	public synchronized boolean hasSelectColumns() {
+	public boolean hasSelectColumns() {
 		return selectClause.isValid();
 	}
 
@@ -141,7 +141,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * WHERE 句を設定します。
 	 * @param clause WHERE 句
 	 */
-	public synchronized void setWhereClause(Criteria clause) {
+	public void setWhereClause(Criteria clause) {
 		if (whereClause.equals(clause)) return;
 		whereClause = clause.replicate();
 		query = null;
@@ -151,7 +151,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている WHERE 句を返します。
 	 * @return WHERE 句
 	 */
-	public synchronized Criteria getWhereClause() {
+	public Criteria getWhereClause() {
 		return whereClause.replicate();
 	}
 
@@ -159,7 +159,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * GROUP BY 句を設定します。
 	 * @param clause GROUP BY 句
 	 */
-	public synchronized void setGroupByClause(GroupByClause clause) {
+	public void setGroupByClause(GroupByClause clause) {
 		if (groupClause.equals(clause)) return;
 		groupClause = clause.replicate();
 		query = null;
@@ -169,7 +169,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている GROUP BY 句を返します。
 	 * @return GROUP BY 句
 	 */
-	public synchronized GroupByClause getGroupByClause() {
+	public GroupByClause getGroupByClause() {
 		return groupClause.replicate();
 	}
 
@@ -177,7 +177,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * HAVING 句を設定します。
 	 * @param clause HAVING 句
 	 */
-	public synchronized void setHavingClause(Criteria clause) {
+	public void setHavingClause(Criteria clause) {
 		if (havingClause.equals(clause)) return;
 		havingClause = clause.replicate();
 		query = null;
@@ -187,7 +187,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている HAVING 句を返します。
 	 * @return HAVING 句
 	 */
-	public synchronized Criteria getHavingClause() {
+	public Criteria getHavingClause() {
 		return havingClause.replicate();
 	}
 
@@ -197,7 +197,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * @param operator UNION の種類
 	 * @param query UNION 対象
 	 */
-	public synchronized void combine(CombineOperator operator, ComposedSQL query) {
+	public void combine(CombineOperator operator, ComposedSQL query) {
 		combiningQueries.add(new CombiningQuery(operator, query));
 		query = null;
 	}
@@ -206,7 +206,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 保持する {@link CombiningQuery} を返します。
 	 * @return {@link CombiningQuery}
 	 */
-	public synchronized CombiningQuery[] getCombiningQueries() {
+	public CombiningQuery[] getCombiningQueries() {
 		return combiningQueries.toArray(new CombiningQuery[combiningQueries.size()]);
 	}
 
@@ -214,7 +214,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * ORDER BY 句を設定します。
 	 * @param clause ORDER BY 句
 	 */
-	public synchronized void setOrderByClause(OrderByClause clause) {
+	public void setOrderByClause(OrderByClause clause) {
 		if (orderClause.equals(clause)) return;
 		orderClause = clause.replicate();
 		query = null;
@@ -224,7 +224,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * 現在設定されている ORDER BY 句を返します。
 	 * @return ORDER BY 句
 	 */
-	public synchronized OrderByClause getOrderByClause() {
+	public OrderByClause getOrderByClause() {
 		return orderClause.replicate();
 	}
 
@@ -232,7 +232,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * {@link SQLDecorator} を設定します。
 	 * @param decorators {@link SQLDecorator}
 	 */
-	public synchronized void addDecorator(SQLDecorator... decorators) {
+	public void addDecorator(SQLDecorator... decorators) {
 		for (SQLDecorator decorator : decorators) {
 			this.decorators.add(decorator);
 		}
@@ -247,9 +247,10 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * @param another 取り込まれる側
 	 * @param onCriteria ON 句
 	 */
-	public synchronized void join(JoinType joinType, SQLQueryBuilder another, Criteria onCriteria) {
+	public void join(JoinType joinType, SQLQueryBuilder another, Criteria onCriteria) {
 		if (combiningQueries.size() > 0 || another.combiningQueries.size() > 0)
-			throw new IllegalArgumentException("UNION されたクエリはマージできません");
+			//UNION されたクエリはマージできません
+			throw new IllegalArgumentException("UNIONed queries can not be merged.");
 
 		joins.add(new JoinContainer(joinType, another, onCriteria));
 
@@ -261,7 +262,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * サブクエリで使用すると、すべてのカラムにテーブル ID が補完されます。
 	 * @param forSubquery true の場合、サブクエリとして使用
 	 */
-	public synchronized void forSubquery(boolean forSubquery) {
+	public void forSubquery(boolean forSubquery) {
 		fromClause.forSubquery(forSubquery);
 		query = null;
 	}
@@ -269,7 +270,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	/**
 	 * @return 現在の設定値
 	 */
-	public synchronized boolean forSubquery() {
+	public boolean forSubquery() {
 		return fromClause.forSubquery();
 	}
 
@@ -278,7 +279,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * @return SELECT 文
 	 */
 	@Override
-	public synchronized String sql() {
+	public String sql() {
 		prepareForComposedSQL();
 
 		String currentQuery = query;
@@ -290,7 +291,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	}
 
 	@Override
-	public synchronized int complement(int done, BPreparedStatement statement) {
+	public int complement(int done, BPreparedStatement statement) {
 		prepareForComposedSQL();
 
 		done = selectClause.complement(done, statement);

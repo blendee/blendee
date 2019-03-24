@@ -1,14 +1,9 @@
 package org.blendee.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 内部使用ユーティリティクラス
@@ -40,7 +33,8 @@ public class U {
 
 	private static final ThreadLocal<Set<Container>> cycleCheckerThreadLocal = new ThreadLocal<Set<Container>>();
 
-	private U() {}
+	private U() {
+	}
 
 	public static boolean equals(Object[] objects, Object[] others) {
 		if (objects == null && others == null) return true;
@@ -108,31 +102,6 @@ public class U {
 		return concat;
 	}
 
-	/**
-	 * in から読み込めるだけ読み込み、out へ出力します。
-	 * @param in input
-	 * @param out output
-	 * @throws IOException I/O 中の例外
-	 */
-	public static void sendBytes(InputStream in, OutputStream out) throws IOException {
-		byte[] b = new byte[BUFFER_SIZE];
-		int readed;
-		while ((readed = in.read(b, 0, BUFFER_SIZE)) > 0) {
-			out.write(b, 0, readed);
-		}
-		out.flush();
-	}
-
-	/**
-	 * クラスをロードするために使用される検索パスから、指定された名前のリソースをファイルとして取得します。
-	 * このメソッドは実ファイルを対象とする場合のみ有効です。
-	 * @param resource リソースの名前
-	 * @return リソースに対応する {@link File} オブジェクト。リソースが見つからなかった場合は null
-	 */
-	public static File getResourceAsFile(String resource) {
-		return getResourceAsFile(U.class.getResource(resource));
-	}
-
 	public static void close(Connection connection) {
 		if (connection == null) return;
 		try {
@@ -180,26 +149,6 @@ public class U {
 		return concat;
 	}
 
-	/**
-	 * {@link URL} として指定されたリソースをファイルとして取得します。
-	 * このメソッドは実ファイルを対象とする場合のみ有効です。
-	 * @param resource リソースの {@link URL}
-	 * @return リソースに対応する {@link File} オブジェクト。リソースが見つからなかった場合は null
-	 */
-	private static File getResourceAsFile(URL resource) {
-		if (resource == null) return null;
-
-		Matcher matcher = Pattern.compile("^file:(.*)$").matcher(resource.toString());
-		if (matcher.find()) {
-			try {
-				return new File(URLDecoder.decode(matcher.group(1), "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				throw new Error(e);
-			}
-		}
-		return null;
-	}
-
 	private static void getFields(
 		Class<?> clazz,
 		Object object,
@@ -224,19 +173,6 @@ public class U {
 			}
 
 			map.put(field.getName(), value);
-		}
-	}
-
-	public static class CloseFailedException extends RuntimeException {
-
-		private static final long serialVersionUID = -748991448426048317L;
-
-		private CloseFailedException(IOException e) {
-			super(e);
-		}
-
-		private CloseFailedException(String message) {
-			super(message);
 		}
 	}
 

@@ -16,9 +16,8 @@ import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObjectIterator;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.Selector;
-import org.blendee.selector.SimpleOptimizer;
+import org.blendee.orm.SelectContext;
+import org.blendee.orm.SimpleSelectContext;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.ComplementerValues;
@@ -48,7 +47,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private final RuntimeId id;
 
-	private final Optimizer optimizer;
+	private final SelectContext optimizer;
 
 	private final Criteria criteria;
 
@@ -80,7 +79,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 		SelectStatement select = relation.getSelectStatement();
 		order = convertOrderByClause(id, route, select.getOrderByClause());
-		optimizer = convertOptimizer(select.getOptimizer(), id, route, root);
+		optimizer = convertOptimizer(select.getSelectContext(), id, route, root);
 		criteria = select.getWhereClause();
 
 		this.options = options;
@@ -90,13 +89,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 		this.route = Collections.unmodifiableList(route);
 
-		Selector selector = helper.getSelector(
-			optimizer,
-			criteria,
-			order,
-			options);
-
-		composedSQL = selector.composeSQL();
+		composedSQL = helper.buildSQLQueryBuilder(optimizer, criteria, order, options);
 	}
 
 	@Override
@@ -130,9 +123,9 @@ public class InstantOneToManyQuery<O extends Row, M>
 		return getRoot(parent, relations);
 	}
 
-	private static Optimizer convertOptimizer(Optimizer optimizer, RuntimeId id, List<OneToManyBehavior> route, OneToManyBehavior root) {
+	private static SelectContext convertOptimizer(SelectContext optimizer, RuntimeId id, List<OneToManyBehavior> route, OneToManyBehavior root) {
 		Set<Column> selectColumns = new LinkedHashSet<>();
-		SelectClause select = optimizer.getOptimizedSelectClause();
+		SelectClause select = optimizer.selectClause();
 		Arrays.stream(select.getColumns()).forEach(c -> selectColumns.add(c));
 		route.forEach(r -> {
 			for (Column column : r.getRelationship().getPrimaryKeyColumns()) {
@@ -140,7 +133,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			}
 		});
 
-		SimpleOptimizer runtimeOptimizer = new SimpleOptimizer(optimizer.getTablePath(), id);
+		SimpleSelectContext runtimeOptimizer = new SimpleSelectContext(optimizer.tablePath(), id);
 		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
 		return runtimeOptimizer;
@@ -196,8 +189,8 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL countSQL() {
-		RuntimeId id = optimizer.getRuntimeId();
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
+		RuntimeId id = optimizer.runtimeId();
+		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.tablePath(), id));
 
 		builder.setSelectClause(createCountClause(id, self.getRelationship().getPrimaryKeyColumns()));
 
@@ -214,7 +207,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			sql(),
 			countSQL().sql(),
 			ComplementerValues.of(composedSQL()).reproduce(placeHolderValues),
-			optimizer.getOptimizedSelectClause().getColumns());
+			optimizer.selectClause().getColumns());
 	}
 
 	@Override
@@ -225,7 +218,7 @@ public class InstantOneToManyQuery<O extends Row, M>
 			sql(),
 			countSQL().sql(),
 			ComplementerValues.of(composedSQL()),
-			optimizer.getOptimizedSelectClause().getColumns());
+			optimizer.selectClause().getColumns());
 	}
 
 	@Override
@@ -250,13 +243,11 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private ComposedSQL composedSQL() {
 		if (composedSQL == null) {
-			Selector selector = new DataAccessHelper().getSelector(
+			composedSQL = new DataAccessHelper().buildSQLQueryBuilder(
 				optimizer,
 				criteria,
 				order,
 				options);
-
-			composedSQL = selector.composeSQL();
 		}
 
 		return composedSQL;

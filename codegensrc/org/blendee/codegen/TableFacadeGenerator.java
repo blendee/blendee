@@ -208,7 +208,8 @@ public class TableFacadeGenerator {
 
 			//使用できない名前の場合
 			if (!isGeneratableTableName(tableName)) {
-				BlendeeManager.getLogger().log(Level.WARNING, "使用できない名前: " + tableName);
+				//"使用できない名前: " + tableName
+				BlendeeManager.getLogger().log(Level.WARNING, "invalid name: " + tableName);
 				return;
 			}
 
@@ -269,7 +270,8 @@ public class TableFacadeGenerator {
 	 * @return 生成されたソース
 	 */
 	public String build(Relationship relation) {
-		if (!relation.isRoot()) throw new IllegalArgumentException("relation はルートでなければなりません");
+		//relation はルートでなければなりません
+		if (!relation.isRoot()) throw new IllegalArgumentException("\"relation\" is must be root.");
 
 		TablePath target = relation.getTablePath();
 

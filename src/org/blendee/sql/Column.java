@@ -110,7 +110,8 @@ public interface Column extends Comparable<Column> {
 			myRelation = myRelation.getParent();
 		}
 
-		throw new NotFoundException("このカラムを含む Relationship が another のツリーから見つかりませんでした");
+		//このカラムを含む Relationship が another のツリーから見つかりませんでした
+		throw new NotFoundException(getRelationship() + " not found in " + another);
 	}
 
 	/**
@@ -131,5 +132,6 @@ public interface Column extends Comparable<Column> {
 	 * SQL 生成のために、このカラムが属している（はずの） {@link Relationship} root の通知を受けます。
 	 * @param sqlRoot {@link Relationship} の root 要素
 	 */
-	default void prepareForSQL(Relationship sqlRoot) {}
+	default void prepareForSQL(Relationship sqlRoot) {
+	}
 }

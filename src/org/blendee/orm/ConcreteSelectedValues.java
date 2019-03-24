@@ -1,4 +1,4 @@
-package org.blendee.selector;
+package org.blendee.orm;
 
 import java.math.BigDecimal;
 import java.sql.Blob;

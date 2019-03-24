@@ -49,7 +49,8 @@ public class SQLProxyBuilder {
 	 */
 	public static <T> T buildProxyObject(Class<T> sourceInterface, Charset sqlCharset) {
 		if (!sourceInterface.isInterface())
-			throw new IllegalArgumentException(sourceInterface + " はインターフェイスではありません");
+			//sourceInterface + " はインターフェイスではありません"
+			throw new IllegalArgumentException(sourceInterface + " is not interface.");
 
 		@SuppressWarnings("unchecked")
 		T result = (T) Proxy.newProxyInstance(
@@ -108,7 +109,8 @@ public class SQLProxyBuilder {
 				+ ".sql";
 
 			URL url = proxyClass.getResource(sqlFileName);
-			if (url == null) throw new IllegalStateException(sqlFileName + " が見つかりません");
+			//sqlFileName + " が見つかりません"
+			if (url == null) throw new IllegalStateException(sqlFileName + " was not found.");
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
 
@@ -150,7 +152,8 @@ public class SQLProxyBuilder {
 			} else if (returnType.equals(void.class)) {
 				return statement(sql, complementer).execute();
 			} else {
-				throw new IllegalStateException("戻り値の型が不正です");
+				//戻り値の型が不正です
+				throw new IllegalStateException("Return type is incorrect.");
 			}
 		}
 	}

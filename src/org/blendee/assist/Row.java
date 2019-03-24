@@ -94,7 +94,8 @@ public interface Row extends Updatable {
 		int result = new DataAccessHelper().delete(
 			tablePath(),
 			primaryKey().getCriteria(RuntimeIdFactory.stubInstance()));
-		if (result > 1) throw new IllegalStateException("削除件数が複数件あります。");
+		//削除件数が複数件あります。
+		if (result > 1) throw new IllegalStateException("There are multiple deletions.");
 		return result == 1;
 	}
 

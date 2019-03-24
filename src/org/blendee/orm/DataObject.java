@@ -21,9 +21,6 @@ import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.Result;
 import org.blendee.orm.DataAccessHelper.BatchFacade;
 import org.blendee.orm.DataAccessHelper.StatementFacade;
-import org.blendee.selector.ColumnNameSelectedValuesBuilder;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValues;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
@@ -55,7 +52,7 @@ import org.blendee.sql.binder.UUIDBinder;
  * データベースの一行を表すクラスです。<br>
  * このクラスのインスタンスを使用して、データベースの一行に対する参照と更新が可能です。
  * @author 千葉 哲嗣
- * @see DataAccessHelper#getDataObject(Optimizer, PrimaryKey, SQLDecorator...)
+ * @see DataAccessHelper#getDataObject(SelectContext, PrimaryKey, SQLDecorator...)
  * @see DataObjectIterator#next()
  */
 public class DataObject
@@ -706,7 +703,8 @@ public class DataObject
 
 		if (result == 1 || result == BatchFacade.DUMMY_RESULT) return true;
 
-		throw new IllegalStateException("更新結果が " + result + " 件です");
+		//"更新結果が " + result + " 件です"
+		throw new IllegalStateException("There are " + result + " update results.");
 	}
 
 	/**
@@ -718,7 +716,8 @@ public class DataObject
 	private Binder[] getPrimaryKeyBinders() {
 		Column[] columns = relationship.getPrimaryKeyColumns();
 		if (columns.length == 0)
-			throw new IllegalStateException(relationship.getTablePath() + " は PK を持ちません");
+			//relationship.getTablePath() + " は PK を持ちません"
+			throw new IllegalStateException(relationship.getTablePath() + " has not PK.");
 
 		Binder[] binders = new Binder[columns.length];
 		for (int i = 0; i < columns.length; i++) {
@@ -808,7 +807,8 @@ public class DataObject
 	 */
 	private class DataObjectsMap implements Map<String, DataObject> {
 
-		private DataObjectsMap() {}
+		private DataObjectsMap() {
+		}
 
 		@Override
 		public void clear() {
@@ -900,7 +900,8 @@ public class DataObject
 	 */
 	private class ValuesMap implements Map<String, Object> {
 
-		private ValuesMap() {}
+		private ValuesMap() {
+		}
 
 		@Override
 		public void clear() {

@@ -16,11 +16,9 @@ import org.blendee.orm.DataAccessHelper;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.orm.DataObjectNotFoundException;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValuesConverter;
-import org.blendee.selector.Selector;
-import org.blendee.selector.SimpleOptimizer;
-import org.blendee.selector.SimpleSelectedValuesConverter;
+import org.blendee.orm.SelectContext;
+import org.blendee.orm.SelectedValuesConverter;
+import org.blendee.orm.SimpleSelectContext;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
@@ -68,9 +66,9 @@ public abstract class SelectStatementBehavior<
 
 	private boolean rowMode = true;
 
-	private Optimizer optimizer;
+	private SelectContext selectContext;
 
-	private SimpleOptimizer optimizerForSelect;
+	private SimpleSelectContext contextForSelect;
 
 	private SelectClause selectClause;
 
@@ -200,12 +198,12 @@ public abstract class SelectStatementBehavior<
 		Offers<ColumnExpression> offers = function.apply(select());
 
 		if (rowMode) {
-			if (optimizerForSelect == null)
-				optimizerForSelect = new SimpleOptimizer(table, id);
+			if (contextForSelect == null)
+				contextForSelect = new SimpleSelectContext(table, id);
 
-			offers.get().forEach(c -> c.accept(optimizerForSelect));
+			offers.get().forEach(c -> c.accept(contextForSelect));
 
-			optimizer = optimizerForSelect;
+			selectContext = contextForSelect;
 		}
 
 		if (selectClause == null)
@@ -439,17 +437,18 @@ public abstract class SelectStatementBehavior<
 	}
 
 	public static void checkRowMode(boolean rowMode) {
-		if (!rowMode) throw new IllegalStateException("集計モードでは実行できない処理です");
+		//集計モードでは実行できない処理です
+		if (!rowMode) throw new IllegalStateException("This operation is deny in \"Row Mode\".");
 	}
 
-	public Optimizer getOptimizer() {
-		if (optimizer != null) return optimizer;
-		optimizer = new SimpleOptimizer(table, id);
-		return optimizer;
+	public SelectContext getSelectContext() {
+		if (selectContext != null) return selectContext;
+		selectContext = new SimpleSelectContext(table, id);
+		return selectContext;
 	}
 
-	public void setOptimizer(Optimizer optimizer) {
-		this.optimizer = optimizer;
+	public void setSelectContext(SelectContext selectContext) {
+		this.selectContext = selectContext;
 	}
 
 	public SelectClause getSelectClause() {
@@ -480,7 +479,8 @@ public abstract class SelectStatementBehavior<
 	 */
 	public void setGroupByClause(GroupByClause groupByClause) {
 		if (groupByClause != null)
-			throw new IllegalStateException("既に GROUP BY 句がセットされています");
+			//既に GROUP BY 句がセットされています
+			throw new IllegalStateException("GROUP BY clause has already been set.");
 
 		quitRowMode();
 		this.groupByClause = groupByClause;
@@ -506,7 +506,8 @@ public abstract class SelectStatementBehavior<
 	 */
 	public void setOrderByClause(OrderByClause orderByClause) {
 		if (orderByClause != null)
-			throw new IllegalStateException("既に ORDER BY 句がセットされています");
+			//既に ORDER BY 句がセットされています
+			throw new IllegalStateException("ORDER BY clause has already been set.");
 		this.orderByClause = orderByClause;
 	}
 
@@ -528,8 +529,8 @@ public abstract class SelectStatementBehavior<
 	 * 現在保持している SELECT 句をリセットします。
 	 */
 	public void resetSelect() {
-		optimizer = null;
-		optimizerForSelect = null;
+		selectContext = null;
+		contextForSelect = null;
 		selectClause = null;
 	}
 
@@ -594,6 +595,10 @@ public abstract class SelectStatementBehavior<
 
 	public static class PlaybackQuery implements Query<DataObjectIterator, DataObject> {
 
+		private static final SelectedValuesConverter disabledSelectContext = (r, c) -> {
+			throw new UnsupportedOperationException();
+		};
+
 		private final String rowSQL;
 
 		private final String countSQL;
@@ -649,7 +654,7 @@ public abstract class SelectStatementBehavior<
 			this.values = values;
 			this.relationship = relationship;
 			this.selectedColumns = selectedColumns;
-			converter = new SimpleSelectedValuesConverter();
+			converter = disabledSelectContext;
 			this.rowMode = rowMode;
 		}
 
@@ -786,23 +791,21 @@ public abstract class SelectStatementBehavior<
 				false);
 		}
 
-		Optimizer optimizer = getOptimizer();
+		SelectContext context = getSelectContext();
 
-		Selector selector = new DataAccessHelper(id).getSelector(
-			optimizer,
+		SQLQueryBuilder selector = new DataAccessHelper(id).buildSQLQueryBuilder(
+			context,
 			whereClause,
 			orderByClause,
 			decorators.decorators());
 
 		selector.forSubquery(forSubquery);
 
-		ComposedSQL composedSQL = selector.composeSQL();
-
-		String sql = composedSQL.sql();
+		String sql = selector.sql();
 
 		String countSQL;
 		{
-			SQLQueryBuilder myBuilder = new SQLQueryBuilder(new FromClause(optimizer.getTablePath(), id));
+			SQLQueryBuilder myBuilder = new SQLQueryBuilder(new FromClause(context.tablePath(), id));
 			myBuilder.setSelectClause(new SelectCountClause());
 			if (whereClause != null) myBuilder.setWhereClause(whereClause);
 			countSQL = myBuilder.sql();
@@ -810,15 +813,15 @@ public abstract class SelectStatementBehavior<
 
 		String fetchSQL;
 		{
-			Selector fetchSelector = new DataAccessHelper(id).getSelector(
-				optimizer,
+			SQLQueryBuilder fetchSelector = new DataAccessHelper(id).buildSQLQueryBuilder(
+				context,
 				createFetchCriteria(table),
 				null,
 				decorators.decorators());
 
 			fetchSelector.forSubquery(forSubquery);
 
-			fetchSQL = fetchSelector.composeSQL().sql();
+			fetchSQL = fetchSelector.sql();
 		}
 
 		return new PlaybackQuery(
@@ -826,10 +829,10 @@ public abstract class SelectStatementBehavior<
 			countSQL,
 			fetchSQL,
 			aggregationSQL,
-			ComplementerValues.of(composedSQL),
+			ComplementerValues.of(selector),
 			RelationshipFactory.getInstance().getInstance(table),
 			selector.getSelectClause().getColumns(),
-			optimizer,
+			context,
 			true);
 	}
 
@@ -838,7 +841,7 @@ public abstract class SelectStatementBehavior<
 
 		//builder同士JOINしてもなおSELECT句が空の場合
 		if (!builder.hasSelectColumns())
-			builder.setSelectClause(getOptimizer().getOptimizedSelectClause());
+			builder.setSelectClause(getSelectContext().selectClause());
 
 		return builder;
 	}
@@ -853,15 +856,15 @@ public abstract class SelectStatementBehavior<
 
 	private ComposedSQL createComposedSQL() {
 		if (rowMode) {
-			Selector selector = new DataAccessHelper(id).getSelector(
-				getOptimizer(),
+			SQLQueryBuilder selector = new DataAccessHelper(id).buildSQLQueryBuilder(
+				getSelectContext(),
 				whereClause,
 				orderByClause,
 				decorators.decorators());
 
 			selector.forSubquery(forSubquery);
 
-			return selector.composeSQL();
+			return selector;
 		}
 
 		return buildBuilder();

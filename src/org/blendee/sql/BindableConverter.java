@@ -69,7 +69,8 @@ public class BindableConverter {
 			Object keyMember = members[i];
 			ValueExtractor extractor = extractors.selectValueExtractor(keyMember.getClass());
 
-			if (extractor == null) throw new IllegalStateException(keyMember.getClass() + " に対応する Extractor がありません");
+			//keyMember.getClass() + " に対応する Extractor がありません"
+			if (extractor == null) throw new IllegalStateException("There is no ValueExtractor of " + keyMember.getClass() + ".");
 
 			bindables[i] = extractor.extractAsBinder(keyMember);
 		}

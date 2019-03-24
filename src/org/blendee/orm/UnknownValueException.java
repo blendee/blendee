@@ -14,6 +14,7 @@ public class UnknownValueException extends BlendeeException {
 	private static final long serialVersionUID = -7319512583543487531L;
 
 	UnknownValueException(String columnName, String sqlFragment) {
-		super(columnName + " に " + sqlFragment + " をセットしたので、現在の値が不明です");
+		//The current value is unknown because setting "B" to "A".
+		super("The current value is unknown because setting \"sqlFragment\" to \"columnName\".");
 	}
 }

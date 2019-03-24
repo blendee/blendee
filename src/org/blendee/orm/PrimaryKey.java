@@ -132,7 +132,8 @@ public class PrimaryKey extends PartialData {
 				return getReferencesInternal(reference);
 		}
 
-		throw new IllegalArgumentException("外部キーが見つかりません");
+		//外部キーが見つかりません
+		throw new IllegalArgumentException("FK is not found.");
 	}
 
 	/**
@@ -153,7 +154,9 @@ public class PrimaryKey extends PartialData {
 				foreignKeyName.equals(reference.getForeignKeyName()))
 				return getReferencesInternal(reference);
 		}
-		throw new IllegalArgumentException("外部キーが見つかりません");
+
+		//外部キーが見つかりません
+		throw new IllegalArgumentException("FK is not found.");
 	}
 
 	/**

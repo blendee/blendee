@@ -2,6 +2,8 @@ package org.blendee.orm;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BConnection;
@@ -14,9 +16,6 @@ import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.jdbc.TablePath;
 import org.blendee.jdbc.exception.UniqueConstraintViolationException;
-import org.blendee.selector.Optimizer;
-import org.blendee.selector.SelectedValuesConverter;
-import org.blendee.selector.Selector;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
@@ -36,8 +35,7 @@ import org.blendee.sql.Updatable;
 import org.blendee.sql.UpdateDMLBuilder;
 
 /**
- * データベースに対する CRUD 処理を簡易に行うためのユーティリティクラスです。<br>
- * このクラスのインスタンスで検索を行うと、使用した SQL 文をパラメータで渡す {@link Optimizer} をキーとしてキャッシュします。
+ * データベースに対する CRUD 処理を簡易に行うためのユーティリティクラスです。
  * @author 千葉 哲嗣
  */
 public class DataAccessHelper {
@@ -75,7 +73,7 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの主キーの値を持つ {@link DataObject} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param context SELECT 句を制御する {@link SelectContext}
 	 * @param primaryKey 主キー
 	 * @param options 検索オプション
 	 * @return 主キーにマッチする {@link DataObject}
@@ -83,12 +81,12 @@ public class DataAccessHelper {
 	 * @throws IllegalStateException 検索結果が複数件存在した場合
 	 */
 	public DataObject getDataObject(
-		Optimizer optimizer,
+		SelectContext context,
 		PrimaryKey primaryKey,
 		SQLDecorator... options) {
-		checkArgument(optimizer, primaryKey);
+		checkArgument(context, primaryKey);
 		DataObjectIterator iterator = select(
-			optimizer,
+			context,
 			primaryKey.getCriteria(id),
 			null,
 			options,
@@ -98,19 +96,19 @@ public class DataAccessHelper {
 
 	/**
 	 * パラメータの条件にマッチする {@link DataObject} を検索し返します。
-	 * @param optimizer SELECT 句を制御する {@link Optimizer}
+	 * @param context SELECT 句を制御する {@link SelectContext}
 	 * @param criteria WHERE 句となる条件
 	 * @param order ORDER 句
 	 * @param options 検索オプション
 	 * @return 条件にマッチする {@link DataObject} を持つ {@link DataObjectIterator}
 	 */
 	public DataObjectIterator getDataObjects(
-		Optimizer optimizer,
+		SelectContext context,
 		Criteria criteria,
 		OrderByClause order,
 		SQLDecorator... options) {
-		adjustArgument(optimizer, criteria, order);
-		return select(optimizer, criteria, order, options, false);
+		adjustArgument(context, criteria, order);
+		return select(context, criteria, order, options, false);
 	}
 
 	/**
@@ -358,28 +356,50 @@ public class DataAccessHelper {
 	}
 
 	/**
-	 * {@link Selector} を取得します。
-	 * @param optimizer SELECT 句
+	 * {@link SQLQueryBuilder} を生成します。
+	 * @param context SELECT 句
 	 * @param criteria WHERE 句
 	 * @param order ORDER BY 句
 	 * @param options オプション
-	 * @return {@link Selector}
+	 * @return {@link SQLQueryBuilder}
 	 */
-	public Selector getSelector(
-		Optimizer optimizer,
+	public SQLQueryBuilder buildSQLQueryBuilder(
+		SelectContext context,
 		Criteria criteria,
 		OrderByClause order,
 		SQLDecorator... options) {
-		if (optimizer == null) throw new NullPointerException("optimizer は必須です");
+		Objects.requireNonNull(context);
 
-		Selector selector = new Selector(optimizer);
+		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(context.tablePath(), context.runtimeId()));
 
-		if (criteria != null) selector.setCriteria(criteria);
-		if (order != null) selector.setOrder(order);
+		if (criteria != null) builder.setWhereClause(criteria);
+		if (order != null) builder.setOrderByClause(order);
+		if (options != null) builder.addDecorator(options);
 
-		if (options != null) selector.addDecorator(options);
+		builder.setSelectClause(context.selectClause());
 
-		return selector;
+		return builder;
+	}
+
+	/**
+	 * 検索を実行します。
+	 * @param sql SQL
+	 * @param complementer {@link PreparedStatementComplementer}
+	 * @param selectColumns SELECT 句で選択されたカラム
+	 * @param converter {@link SelectContext}
+	 * @return 検索結果
+	 */
+	public static SelectedValuesIterator select(
+		String sql,
+		PreparedStatementComplementer complementer,
+		Column[] selectColumns,
+		SelectContext converter) {
+		BStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		return new SelectedValuesIterator(
+			statement,
+			statement.executeQuery(),
+			selectColumns,
+			converter);
 	}
 
 	@Override
@@ -398,20 +418,15 @@ public class DataAccessHelper {
 	}
 
 	private DataObjectIterator select(
-		Optimizer optimizer,
+		SelectContext context,
 		Criteria criteria,
 		OrderByClause order,
 		SQLDecorator[] options,
 		boolean readonly) {
-		return select(getSelector(optimizer, criteria, order, options), readonly);
-	}
-
-	private DataObjectIterator select(
-		Selector selector,
-		boolean readonly) {
+		SQLQueryBuilder builder = buildSQLQueryBuilder(context, criteria, order, options);
 		return new DataObjectIterator(
-			factory.getInstance(selector.getTablePath()),
-			selector.select(),
+			factory.getInstance(context.tablePath()),
+			selectInternal(builder.sql(), builder, builder.getSelectClause().getColumns(), context),
 			readonly);
 	}
 
@@ -432,8 +447,29 @@ public class DataAccessHelper {
 		SelectedValuesConverter converter) {
 		return new DataObjectIterator(
 			relationship,
-			Selector.select(sql, complementer, selectColumns, converter),
+			selectInternal(sql, complementer, selectColumns, converter),
 			false);
+	}
+
+	/**
+	 * 検索を実行します。
+	 * @param sql SQL
+	 * @param complementer {@link PreparedStatementComplementer}
+	 * @param selectColumns SELECT 句で選択されたカラム
+	 * @param converter {@link SelectedValuesConverter}
+	 * @return 検索結果
+	 */
+	private static SelectedValuesIterator selectInternal(
+		String sql,
+		PreparedStatementComplementer complementer,
+		Column[] selectColumns,
+		SelectedValuesConverter converter) {
+		BStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		return new SelectedValuesIterator(
+			statement,
+			statement.executeQuery(),
+			selectColumns,
+			converter);
 	}
 
 	/**
@@ -445,9 +481,11 @@ public class DataAccessHelper {
 		DataObjectIterator iterator) {
 		DataObject dataObject;
 		try {
-			if (!iterator.hasNext()) throw new DataObjectNotFoundException("検索結果が 0 件です");
+			//検索結果が 0 件です
+			if (!iterator.hasNext()) throw new DataObjectNotFoundException("The number of results is zero.");
 			dataObject = iterator.next();
-			if (iterator.hasNext()) throw new IllegalStateException("検索結果が 1 件以上あります");
+			//検索結果が 1 件以上あります
+			if (iterator.hasNext()) throw new IllegalStateException("There are 1 or more search results.");
 		} finally {
 			iterator.close();
 		}
@@ -455,17 +493,18 @@ public class DataAccessHelper {
 		return dataObject;
 	}
 
-	private static void checkArgument(Optimizer optimizer, PrimaryKey primaryKey) {
-		if (!optimizer.getTablePath().equals(primaryKey.getTablePath()))
-			throw new IllegalArgumentException("optimizer と primaryKey のテーブルが違います");
+	private static void checkArgument(SelectContext context, PrimaryKey primaryKey) {
+		if (!context.tablePath().equals(primaryKey.getTablePath()))
+			//context と primaryKey のテーブルが違います
+			throw new IllegalArgumentException("The tables of \"context\" and \"primaryKey\" are different.");
 	}
 
 	private void adjustArgument(
-		Optimizer optimizer,
+		SelectContext context,
 		Criteria criteria,
 		OrderByClause order) {
-		if (criteria != null) criteria.prepareColumns(factory.getInstance(optimizer.getTablePath()));
-		if (order != null) order.prepareColumns(factory.getInstance(optimizer.getTablePath()));
+		if (criteria != null) criteria.prepareColumns(factory.getInstance(context.tablePath()));
+		if (order != null) order.prepareColumns(factory.getInstance(context.tablePath()));
 	}
 
 	private static void insertInternal(
@@ -529,7 +568,8 @@ public class DataAccessHelper {
 			}
 		}
 
-		throw new IllegalStateException("retry 回数を超えてしまいました");
+		//retry 回数を超えてしまいました
+		throw new IllegalStateException("The retry is up to " + retry + " times.");
 	}
 
 	private static int updateInternal(
@@ -538,7 +578,8 @@ public class DataAccessHelper {
 		Updatable updatable,
 		Criteria criteria,
 		SQLDecorator... options) {
-		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
+		//条件がありません
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria is not available.");
 		return updateInternalFinally(statement, path, updatable, criteria, options);
 	}
 
@@ -564,7 +605,8 @@ public class DataAccessHelper {
 		StatementFacade statement,
 		TablePath path,
 		Criteria criteria) {
-		if (!criteria.isAvailable()) throw new IllegalArgumentException("条件がありません");
+		//条件がありません
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria is not available.");
 		return deleteInternalFinally(statement, path, criteria);
 	}
 
@@ -624,6 +666,47 @@ public class DataAccessHelper {
 				statement.close();
 			}
 			return result;
+		}
+	}
+
+	private static class EmptyDataObjectIterator extends DataObjectIterator {
+
+		EmptyDataObjectIterator() {
+			super(null, null, false);
+		}
+
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		@Override
+		public DataObject next() {
+			throw new NoSuchElementException();
+		}
+
+		@Override
+		public DataObject nextDataObject() {
+			throw new NoSuchElementException();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public int getCounter() {
+			return 0;
+		}
+
+		@Override
+		public void close() {
+		}
+
+		@Override
+		public String toString() {
+			return U.toString(this);
 		}
 	}
 }

@@ -82,7 +82,7 @@ import org.blendee.orm.ColumnNameDataObjectBuilder;
 import org.blendee.orm.DataObject;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.orm.NullPrimaryKeyException;
-import org.blendee.selector.Optimizer;
+import org.blendee.orm.SelectContext;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Criteria;
@@ -579,7 +579,8 @@ public class GenericTable
 	 */
 	public class WhereLogicalOperators implements LogicalOperators<WhereAssist> {
 
-		private WhereLogicalOperators() {}
+		private WhereLogicalOperators() {
+		}
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -602,7 +603,8 @@ public class GenericTable
 	 */
 	public class HavingLogicalOperators implements LogicalOperators<HavingAssist> {
 
-		private HavingLogicalOperators() {}
+		private HavingLogicalOperators() {
+		}
 
 		/**
 		 * HAVING 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -625,7 +627,8 @@ public class GenericTable
 	 */
 	public class OnLeftLogicalOperators implements LogicalOperators<OnLeftAssist> {
 
-		private OnLeftLogicalOperators() {}
+		private OnLeftLogicalOperators() {
+		}
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -648,7 +651,8 @@ public class GenericTable
 	 */
 	public class OnRightLogicalOperators implements LogicalOperators<OnRightAssist> {
 
-		private OnRightLogicalOperators() {}
+		private OnRightLogicalOperators() {
+		}
 
 		/**
 		 * ON 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -671,7 +675,8 @@ public class GenericTable
 	 */
 	public class DMSWhereLogicalOperators implements LogicalOperators<DMSWhereAssist> {
 
-		private DMSWhereLogicalOperators() {}
+		private DMSWhereLogicalOperators() {
+		}
 
 		/**
 		 * WHERE 句に OR 結合する条件用のカラムを選択するための {@link TableFacadeAssist} です。
@@ -816,12 +821,12 @@ public class GenericTable
 
 	/**
 	 * このクラスのインスタンスを生成します。<br>
-	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link Optimizer} に依存します。
-	 * @param optimizer SELECT 句を決定する
+	 * このコンストラクタで生成されたインスタンス の SELECT 句で使用されるカラムは、 パラメータの {@link SelectContext} に依存します。
+	 * @param context SELECT 句を決定する
 	 */
-	public GenericTable(Optimizer optimizer) {
-		this(optimizer.getTablePath());
-		selectBehavior().setOptimizer(Objects.requireNonNull(optimizer));
+	public GenericTable(SelectContext context) {
+		this(context.tablePath());
+		selectBehavior().setSelectContext(Objects.requireNonNull(context));
 	}
 
 	@Override
@@ -1165,8 +1170,8 @@ public class GenericTable
 	}
 
 	@Override
-	public Optimizer getOptimizer() {
-		return selectBehavior().getOptimizer();
+	public SelectContext getSelectContext() {
+		return selectBehavior().getSelectContext();
 	}
 
 	@Override
@@ -1667,9 +1672,11 @@ public class GenericTable
 		 */
 		public OneToManyQuery<Row, M> intercept() {
 			if (super.table$ != null)
-				throw new IllegalStateException("このインスタンスでは直接使用することはできません");
+				//このインスタンスでは直接使用することはできません
+				throw new IllegalStateException("It can not be used directly in this instance.");
 			if (!getSelectStatement().rowMode())
-				throw new IllegalStateException("集計モードでは実行できない処理です");
+				//集計モードでは実行できない処理です
+				throw new IllegalStateException("This operation can only in \"Row Mode\".");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
 		}
 

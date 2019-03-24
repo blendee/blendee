@@ -46,7 +46,8 @@ public class PartialData implements Updatable {
 		String[] columnNames,
 		Bindable[] bindables) {
 		if (columnNames.length != bindables.length)
-			throw new IllegalArgumentException("columnNames と bindables の要素数が一致しません");
+			//columnNames と bindables の要素数が一致しません
+			throw new IllegalArgumentException("Number of elements of \"columnNames\" and \"bindables\" is not same.");
 		this.path = Objects.requireNonNull(path);
 		this.columnNames = columnNames.clone();
 		this.bindables = bindables.clone();

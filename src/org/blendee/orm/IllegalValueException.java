@@ -1,4 +1,4 @@
-package org.blendee.selector;
+package org.blendee.orm;
 
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.TablePath;
@@ -21,11 +21,18 @@ public class IllegalValueException extends BlendeeException {
 	static final String buildMessage(Column column) {
 		Relationship relationship = column.getRelationship();
 
-		return "SELECT 句にないカラム "
+		//"SELECT 句にないカラム "
+		//+ relationship.getTablePath().getTableName()
+		//+ "."
+		//+ column.getName()
+		//+ " を使用することはできません ["
+		//+ buildRelationshipPart(column.getRelationship())
+		//+ "]";
+		return "Can not use column "
 			+ relationship.getTablePath().getTableName()
 			+ "."
 			+ column.getName()
-			+ " を使用することはできません ["
+			+ " that is not in the SELECT clause. ["
 			+ buildRelationshipPart(column.getRelationship())
 			+ "]";
 	}

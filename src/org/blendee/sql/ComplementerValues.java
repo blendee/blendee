@@ -279,6 +279,6 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	}
 
 	private static void checkParameterIndex(int i) {
-		if (i < 1) throw new IllegalStateException("不正な parameterIndex: " + i);
+		if (i < 1) throw new IllegalStateException("invalid parameterIndex: " + i);
 	}
 }

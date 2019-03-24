@@ -65,7 +65,8 @@ public abstract class OneToManyQuery<O extends Row, M>
 		Column[] columns = self.getRelationship().getPrimaryKeyColumns();
 
 		if (columns.length != primaryKeyMembers.length)
-			throw new IllegalArgumentException("primaryKeyMembers の数が正しくありません");
+			//primaryKeyMembers の数が正しくありません
+			throw new IllegalArgumentException("The number of \"primaryKeyMembers\" is incorrect.");
 
 		Criteria criteria = new CriteriaFactory(runtimeId()).create();
 		for (int i = 0; i < columns.length; i++) {
