@@ -13,7 +13,8 @@ public class NotNullConstraintViolationException extends ConstraintViolationExce
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public NotNullConstraintViolationException() {}
+	public NotNullConstraintViolationException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。

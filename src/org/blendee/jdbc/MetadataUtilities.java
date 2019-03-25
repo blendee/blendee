@@ -10,7 +10,8 @@ import java.util.List;
  */
 public class MetadataUtilities {
 
-	private MetadataUtilities() {}
+	private MetadataUtilities() {
+	}
 
 	/**
 	 * パラメータのスキーマに存在する全てのテーブルを返します。

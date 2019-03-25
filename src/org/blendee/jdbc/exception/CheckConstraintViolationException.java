@@ -13,7 +13,8 @@ public class CheckConstraintViolationException extends ConstraintViolationExcept
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public CheckConstraintViolationException() {}
+	public CheckConstraintViolationException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。

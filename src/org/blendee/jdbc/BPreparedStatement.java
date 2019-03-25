@@ -131,5 +131,6 @@ public interface BPreparedStatement extends BStatement {
 	/**
 	 * {@link PreparedStatementBorrower} 用 {@link JDBCBorrower}
 	 */
-	interface PreparedStatementBorrower extends JDBCBorrower<PreparedStatement> {}
+	interface PreparedStatementBorrower extends JDBCBorrower<PreparedStatement> {
+	}
 }

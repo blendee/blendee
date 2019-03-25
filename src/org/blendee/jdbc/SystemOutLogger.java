@@ -21,6 +21,7 @@ public class SystemOutLogger implements BLogger {
 	}
 
 	@Override
-	public void flush(Level level) {}
+	public void flush(Level level) {
+	}
 
 }

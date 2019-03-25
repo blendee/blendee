@@ -63,6 +63,7 @@ public class TableFacadeColumn implements AssistColumn {
 		}
 
 		@Override
-		public void forSubquery(boolean forSubquery) {}
+		public void forSubquery(boolean forSubquery) {
+		}
 	}
 }

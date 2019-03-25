@@ -15,7 +15,8 @@ public class ConstraintViolationException extends BSQLException {
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public ConstraintViolationException() {}
+	public ConstraintViolationException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。

@@ -9,7 +9,7 @@ import org.blendee.jdbc.BlendeeException;
  */
 public class NotUniqueException extends BlendeeException {
 
-	private static final long serialVersionUID = 6530027126490925906L;
+	private static final long serialVersionUID = -2908580016495229526L;
 
 	/**
 	 * この例外のコンストラクタです。

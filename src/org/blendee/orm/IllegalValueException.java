@@ -12,7 +12,7 @@ import org.blendee.sql.Relationship;
  */
 public class IllegalValueException extends BlendeeException {
 
-	private static final long serialVersionUID = 3625853710624675746L;
+	private static final long serialVersionUID = -5391436397301623589L;
 
 	IllegalValueException(String message) {
 		super(message);

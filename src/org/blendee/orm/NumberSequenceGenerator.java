@@ -97,14 +97,15 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 	public Bindable next(Criteria depends) {
 		BStatement statement;
 		if (depends.isAvailable()) {
-			statement = BlendeeManager.getConnection().getStatement(
-				"SELECT MAX("
-					+ getTargetColumnName()
-					+ ") FROM "
-					+ path
-					+ " WHERE "
-					+ depends.toString(false).trim(),
-				depends);
+			statement = BlendeeManager.getConnection()
+				.getStatement(
+					"SELECT MAX("
+						+ getTargetColumnName()
+						+ ") FROM "
+						+ path
+						+ " WHERE "
+						+ depends.toString(false).trim(),
+					depends);
 		} else {
 			statement = BlendeeManager.getConnection()
 				.getStatement("SELECT MAX(" + getTargetColumnName() + ") FROM " + path);

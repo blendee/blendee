@@ -15,7 +15,8 @@ import org.blendee.jdbc.PreparedStatementComplementer;
  */
 class ConcreteBatch implements Batch {
 
-	private static final PreparedStatementComplementer nullComplementer = statement -> {};
+	private static final PreparedStatementComplementer nullComplementer = statement -> {
+	};
 
 	private final ConcreteConnection connection;
 

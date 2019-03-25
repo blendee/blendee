@@ -14,7 +14,7 @@ import org.blendee.sql.Updatable;
  */
 public class SequenceOverflowException extends BlendeeException {
 
-	private static final long serialVersionUID = 3904838153376025915L;
+	private static final long serialVersionUID = 6956090644471457842L;
 
 	/**
 	 * エラーメッセージとして最大値を超えた項目名を持つインスタンスを生成します。

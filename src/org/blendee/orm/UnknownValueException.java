@@ -11,7 +11,7 @@ import org.blendee.sql.Bindable;
  */
 public class UnknownValueException extends BlendeeException {
 
-	private static final long serialVersionUID = -7319512583543487531L;
+	private static final long serialVersionUID = -2842517856307860363L;
 
 	UnknownValueException(String columnName, String sqlFragment) {
 		//The current value is unknown because setting "B" to "A".

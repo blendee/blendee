@@ -14,8 +14,10 @@ public class VoidLogger implements BLogger {
 	}
 
 	@Override
-	public void println(String message) {}
+	public void println(String message) {
+	}
 
 	@Override
-	public void flush(Level level) {}
+	public void flush(Level level) {
+	}
 }

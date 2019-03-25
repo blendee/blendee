@@ -13,7 +13,8 @@ class AsyncRecorder extends Recorder {
 	private final Lock lock = new Lock() {
 
 		@Override
-		public void lock() {}
+		public void lock() {
+		}
 
 		@Override
 		public void lockInterruptibly() throws InterruptedException {
@@ -31,7 +32,8 @@ class AsyncRecorder extends Recorder {
 		}
 
 		@Override
-		public void unlock() {}
+		public void unlock() {
+		}
 
 		@Override
 		public Condition newCondition() {

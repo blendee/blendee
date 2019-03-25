@@ -8,7 +8,7 @@ import org.blendee.jdbc.BlendeeException;
  */
 public class SubqueryException extends BlendeeException {
 
-	private static final long serialVersionUID = 6839245167162134546L;
+	private static final long serialVersionUID = -5400536289651284137L;
 
 	/**
 	 * 唯一のコンストラクタです。

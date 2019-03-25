@@ -94,7 +94,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final BigDecimalValueExtractor singleton = new BigDecimalValueExtractor();
 
-		private BigDecimalValueExtractor() {}
+		private BigDecimalValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -111,7 +112,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final BinaryStreamValueExtractor singleton = new BinaryStreamValueExtractor();
 
-		private BinaryStreamValueExtractor() {}
+		private BinaryStreamValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -128,7 +130,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final BlobValueExtractor singleton = new BlobValueExtractor();
 
-		private BlobValueExtractor() {}
+		private BlobValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -145,7 +148,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final BooleanValueExtractor singleton = new BooleanValueExtractor();
 
-		private BooleanValueExtractor() {}
+		private BooleanValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -165,7 +169,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final ByteArrayValueExtractor singleton = new ByteArrayValueExtractor();
 
-		private ByteArrayValueExtractor() {}
+		private ByteArrayValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -182,7 +187,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final CharacterStreamValueExtractor singleton = new CharacterStreamValueExtractor();
 
-		private CharacterStreamValueExtractor() {}
+		private CharacterStreamValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -199,7 +205,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final ClobValueExtractor singleton = new ClobValueExtractor();
 
-		private ClobValueExtractor() {}
+		private ClobValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -216,7 +223,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final DoubleValueExtractor singleton = new DoubleValueExtractor();
 
-		private DoubleValueExtractor() {}
+		private DoubleValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -236,7 +244,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final FloatValueExtractor singleton = new FloatValueExtractor();
 
-		private FloatValueExtractor() {}
+		private FloatValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -256,7 +265,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final IntValueExtractor singleton = new IntValueExtractor();
 
-		private IntValueExtractor() {}
+		private IntValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -276,7 +286,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final LongValueExtractor singleton = new LongValueExtractor();
 
-		private LongValueExtractor() {}
+		private LongValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -296,7 +307,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final ObjectValueExtractor singleton = new ObjectValueExtractor();
 
-		private ObjectValueExtractor() {}
+		private ObjectValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -313,7 +325,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final StringValueExtractor singleton = new StringValueExtractor();
 
-		private StringValueExtractor() {}
+		private StringValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -330,7 +343,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final TimestampValueExtractor singleton = new TimestampValueExtractor();
 
-		private TimestampValueExtractor() {}
+		private TimestampValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -347,7 +361,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final UUIDValueExtractor singleton = new UUIDValueExtractor();
 
-		private UUIDValueExtractor() {}
+		private UUIDValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
@@ -364,7 +379,8 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		private static final PlaceholderValueExtractor singleton = new PlaceholderValueExtractor();
 
-		private PlaceholderValueExtractor() {}
+		private PlaceholderValueExtractor() {
+		}
 
 		@Override
 		public Object extract(Result result, int columnIndex) {

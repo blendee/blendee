@@ -13,7 +13,8 @@ public class ForeignKeyConstraintViolationException extends ConstraintViolationE
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public ForeignKeyConstraintViolationException() {}
+	public ForeignKeyConstraintViolationException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。

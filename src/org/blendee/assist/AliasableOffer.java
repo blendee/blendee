@@ -9,7 +9,7 @@ public interface AliasableOffer extends SelectOffer, AssistColumn {
 	/**
 	 * SQL AS
 	 * @param alias 別名
-	 * @return alias
+	 * @return {@link SelectOffer}
 	 */
 	SelectOffer AS(String alias);
 }

@@ -9,7 +9,7 @@ import org.blendee.sql.Relationship;
  */
 public class NullPrimaryKeyException extends BlendeeException {
 
-	private static final long serialVersionUID = -2160138773158624947L;
+	private static final long serialVersionUID = 6679884962495612526L;
 
 	NullPrimaryKeyException(Relationship relationship) {
 		//relationship.getTablePath()

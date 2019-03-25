@@ -49,7 +49,8 @@ class LazyTransaction extends Transaction {
 	}
 
 	@Override
-	void prepareConnection() {}
+	void prepareConnection() {
+	}
 
 	private Transaction prepareTransaction() {
 		if (transaction == null) {

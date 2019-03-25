@@ -112,7 +112,8 @@ class AnonymousRelationship implements Relationship, ComposedSQL {
 	}
 
 	@Override
-	public void addParentTo(Collection<Relationship> parents) {}
+	public void addParentTo(Collection<Relationship> parents) {
+	}
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {

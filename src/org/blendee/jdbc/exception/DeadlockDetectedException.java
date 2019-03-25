@@ -15,7 +15,8 @@ public class DeadlockDetectedException extends BSQLException {
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public DeadlockDetectedException() {}
+	public DeadlockDetectedException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。

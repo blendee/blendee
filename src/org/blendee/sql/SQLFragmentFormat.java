@@ -9,7 +9,8 @@ import java.text.MessageFormat;
  */
 public class SQLFragmentFormat {
 
-	private SQLFragmentFormat() {}
+	private SQLFragmentFormat() {
+	}
 
 	/**
 	 * 変換を実行します。

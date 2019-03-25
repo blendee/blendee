@@ -8,7 +8,7 @@ import org.blendee.jdbc.BlendeeException;
  */
 public class DataObjectNotFoundException extends BlendeeException {
 
-	private static final long serialVersionUID = 2041164796528717847L;
+	private static final long serialVersionUID = 6254543215086264829L;
 
 	DataObjectNotFoundException(String message) {
 		super(message);

@@ -37,12 +37,14 @@ public interface UpdateClauseAssist extends TableFacadeAssist {
 	 * パラメータの項目と順序を UPDATE 文に割り当てます。
 	 * @param proofs INSERT 文に含めるテーブルおよびカラム
 	 */
-	default void list(SetProof... proofs) {}
+	default void list(SetProof... proofs) {
+	}
 
 	/**
 	 * {@link #list} の短縮形です。
 	 * パラメータの項目と順序を UPDATE 文に割り当てます。
 	 * @param proofs INSERT 文に含めるテーブルおよびカラム
 	 */
-	default void ls(SetProof... proofs) {}
+	default void ls(SetProof... proofs) {
+	}
 }

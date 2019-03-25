@@ -13,7 +13,8 @@ public class UniqueConstraintViolationException extends ConstraintViolationExcep
 	/**
 	 * メッセージ無しのコンストラクタです。
 	 */
-	public UniqueConstraintViolationException() {}
+	public UniqueConstraintViolationException() {
+	}
 
 	/**
 	 * メッセージのあるコンストラクタです。
