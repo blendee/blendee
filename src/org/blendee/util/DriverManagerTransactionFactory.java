@@ -26,15 +26,18 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 
 	/**
 	 * このクラスのコンストラクタです。
-	 * @throws Exception ドライバークラスのロード時に発生した例外
+	 * @throws IllegalStateException ドライバークラスのロード時に発生した例外
 	 */
-	public DriverManagerTransactionFactory() throws Exception {
+	public DriverManagerTransactionFactory() {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 
-		Class.forName(
-			config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get(),
-			false,
-			getClassLoader());
+		config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).ifPresent(c -> {
+			try {
+				Class.forName(c, false, getClassLoader());
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		});
 
 		url = config.getOption(BlendeeConstants.JDBC_URL).get();
 

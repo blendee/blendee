@@ -19,7 +19,7 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>../src, ../codegensrc</sourceDirectory>
+		<sourceDirectory>../codegensrc</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -46,4 +46,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.blendee</groupId>
+			<artifactId>blendee</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+	</dependencies>
 </project>

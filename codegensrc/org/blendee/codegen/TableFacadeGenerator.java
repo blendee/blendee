@@ -46,7 +46,8 @@ import org.blendee.util.DatabaseInfo;
  */
 public class TableFacadeGenerator {
 
-	private static final CodeFormatter defaultCodeFormatter = new CodeFormatter() {};
+	private static final CodeFormatter defaultCodeFormatter = new CodeFormatter() {
+	};
 
 	private static final String template;
 
@@ -255,7 +256,7 @@ public class TableFacadeGenerator {
 
 		Properties properties = new Properties();
 
-		info.setStoredIdentifier(properties, metadata.getStoredIdentifier());
+		DatabaseInfo.setStoredIdentifier(properties, metadata.getStoredIdentifier());
 
 		info.write(home, properties);
 	}

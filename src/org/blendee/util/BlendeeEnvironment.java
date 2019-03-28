@@ -30,7 +30,7 @@ public class BlendeeEnvironment {
 
 	private Class<? extends MetadataFactory> defaultMetadataFactoryClass = AnnotationMetadataFactory.class;
 
-	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverTransactionFactory.class;
+	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverManagerTransactionFactory.class;
 
 	private final Consumer<Initializer> consumer;
 
@@ -217,7 +217,7 @@ public class BlendeeEnvironment {
 					.orElseGet(
 						() -> Optional.of(getDefaultTransactionFactoryClass())
 							.filter(
-								c -> BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues)
+								c -> BlendeeConstants.JDBC_URL.extract(initValues)
 									.filter(name -> name.length() > 0)
 									.isPresent())
 							.orElse(null)))

@@ -47,7 +47,7 @@ public class DatabaseInfo {
 		Properties prop = new Properties();
 		InputStream input = loader.getResourceAsStream(path);
 		//path + " が存在しません"
-		if (input == null) throw new IllegalStateException(path + " is not available.");
+		if (input == null) throw new IllegalStateException(path + " not found.");
 
 		try {
 			prop.load(new BufferedReader(new InputStreamReader(input, defaultCharset)));
@@ -61,11 +61,9 @@ public class DatabaseInfo {
 	public boolean write(File homeDir, Properties properties) throws IOException {
 		if (!needsOverwrite(properties)) return false;
 
-		File dir = new File(homeDir, String.join("/", rootPackageName.split("\\.")));
-
 		try (Writer writer = new BufferedWriter(
 			new OutputStreamWriter(
-				new FileOutputStream(new File(dir, fileName)),
+				new FileOutputStream(file(homeDir)),
 				defaultCharset))) {
 			properties.store(writer, null);
 		}
@@ -73,11 +71,22 @@ public class DatabaseInfo {
 		return true;
 	}
 
-	public void setStoredIdentifier(Properties properties, StoredIdentifier value) {
+	public boolean exists() {
+		String path = rootPackageName.replace('.', '/') + "/" + fileName;
+		return loader.getResource(path) != null;
+	}
+
+	private File file(File homeDir) {
+		return new File(
+			new File(homeDir, String.join("/", rootPackageName.split("\\."))),
+			fileName);
+	}
+
+	public static void setStoredIdentifier(Properties properties, StoredIdentifier value) {
 		properties.setProperty(storedIdentifierKey, value.name());
 	}
 
-	public boolean hasStoredIdentifier(Properties properties) {
+	public static boolean hasStoredIdentifier(Properties properties) {
 		String value = properties.getProperty(storedIdentifierKey);
 		return value != null;
 	}
@@ -87,6 +96,8 @@ public class DatabaseInfo {
 	}
 
 	private boolean needsOverwrite(Properties newOne) throws IOException {
+		if (!exists()) return true;
+
 		Properties oldOne = read();
 
 		if (hasStoredIdentifier(oldOne) && hasStoredIdentifier(newOne)) {
