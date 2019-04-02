@@ -32,6 +32,8 @@ public class BlendeeEnvironment {
 
 	private Class<? extends TransactionFactory> defaultTransactionFactoryClass = DriverManagerTransactionFactory.class;
 
+	private Class<? extends DriverTransactionFactory> defaultDriverTransactionFactoryClass = DriverTransactionFactory.class;
+
 	private final Consumer<Initializer> consumer;
 
 	private final String contextName;
@@ -214,13 +216,17 @@ public class BlendeeEnvironment {
 
 			Optional.ofNullable(
 				BlendeeConstants.TRANSACTION_FACTORY_CLASS.extract(initValues)
-					.orElseGet(
-						() -> Optional.of(getDefaultTransactionFactoryClass())
-							.filter(
-								c -> BlendeeConstants.JDBC_URL.extract(initValues)
-									.filter(name -> name.length() > 0)
-									.isPresent())
-							.orElse(null)))
+					.orElseGet(() -> {
+						if (!BlendeeConstants.JDBC_URL.extract(initValues).filter(s -> s.length() > 0).isPresent()) {
+							return null;
+						}
+
+						if (BlendeeConstants.JDBC_DRIVER_CLASS_NAME.extract(initValues).filter(s -> s.length() > 0).isPresent()) {
+							return getDefaultDriverTransactionFactoryClass();
+						}
+
+						return getDefaultTransactionFactoryClass();
+					}))
 				.ifPresent(clazz -> init.setTransactionFactoryClass(clazz));
 
 			if (consumer != null) consumer.accept(init);
@@ -358,6 +364,23 @@ public class BlendeeEnvironment {
 	public synchronized void setDefaultTransactionFactoryClass(
 		Class<? extends TransactionFactory> defaultTransactionFactoryClass) {
 		this.defaultTransactionFactoryClass = defaultTransactionFactoryClass;
+	}
+
+	/**
+	 * デフォルト {@link TransactionFactory} を返します。
+	 * @return デフォルト {@link TransactionFactory}
+	 */
+	public synchronized Class<? extends DriverTransactionFactory> getDefaultDriverTransactionFactoryClass() {
+		return defaultDriverTransactionFactoryClass;
+	}
+
+	/**
+	 * デフォルト {@link TransactionFactory} をセットします。
+	 * @param defaultDriverTransactionFactoryClass デフォルト {@link DriverTransactionFactory}
+	 */
+	public synchronized void setDefaultDriverTransactionFactoryClass(
+		Class<? extends DriverTransactionFactory> defaultDriverTransactionFactoryClass) {
+		this.defaultDriverTransactionFactoryClass = defaultDriverTransactionFactoryClass;
 	}
 
 	/**
