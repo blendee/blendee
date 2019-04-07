@@ -20,6 +20,6 @@ public class NullPrimaryKeyException extends BlendeeException {
 			relationship.getTablePath()
 				+ " ("
 				+ relationship.getId()
-				+ ") can not be used because it has no value in PK.");
+				+ ") can not be used. (no value in PK)");
 	}
 }

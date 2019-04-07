@@ -92,6 +92,6 @@ public class SimpleSelectContext implements SelectContext {
 	void check(Relationship root) {
 		if (!path.equals(root.getTablePath()))
 			//path でなければなりません
-			throw new IllegalArgumentException(path + " is required.");
+			throw new IllegalArgumentException("required " + path);
 	}
 }

@@ -49,7 +49,7 @@ public class RelationshipFactory implements ManagementSubject {
 			if (relationship == null) {
 				String pathId = pathIdMap.get(path);
 				//path + " は使用できるテーブルに含まれていません"
-				if (pathId == null) throw new IllegalArgumentException(path + "is not included in the usable tables.");
+				if (pathId == null) throw new IllegalArgumentException(path + " is not included in the usable tables.");
 
 				relationship = createRelationship(path, pathId);
 				relationshipCache.put(path, relationship);

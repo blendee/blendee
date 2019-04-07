@@ -31,7 +31,7 @@ public class VirtualTableMetadata implements TableMetadata {
 		this.schemaName = schemaName;
 		this.name = name;
 		this.type = type;
-		this.remarks = remarks;;
+		this.remarks = remarks;
 	}
 
 	@Override

@@ -228,7 +228,7 @@ public abstract class Updater implements ComposedSQL {
 	@Override
 	public String sql() {
 		//保存対象が設定されていません
-		if (columns.size() == 0) throw new IllegalStateException("Size of columns is zero.");
+		if (columns.size() == 0) throw new IllegalStateException("empty columns");
 
 		String sql = build();
 		for (SQLDecorator decorator : decorators) {

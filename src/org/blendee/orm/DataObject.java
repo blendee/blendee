@@ -704,7 +704,7 @@ public class DataObject
 		if (result == 1 || result == BatchFacade.DUMMY_RESULT) return true;
 
 		//"更新結果が " + result + " 件です"
-		throw new IllegalStateException("There are " + result + " update results.");
+		throw new IllegalStateException("update results: " + result);
 	}
 
 	/**
@@ -717,7 +717,7 @@ public class DataObject
 		Column[] columns = relationship.getPrimaryKeyColumns();
 		if (columns.length == 0)
 			//relationship.getTablePath() + " は PK を持ちません"
-			throw new IllegalStateException(relationship.getTablePath() + " has not PK.");
+			throw new IllegalStateException(relationship.getTablePath() + " has not PK");
 
 		Binder[] binders = new Binder[columns.length];
 		for (int i = 0; i < columns.length; i++) {

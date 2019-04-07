@@ -117,7 +117,7 @@ public final class Initializer {
 		schemaName = schemaName.trim();
 		if (schemaNames.size() == 1 && (schemaNames.get(0).length() == 0 || schemaName.length() == 0))
 			//スキーマ名を複数件使用する場合、空のスキーマ名は使用できません
-			throw new IllegalArgumentException("If you use more than one schema, you can not use an empty schema name.");
+			throw new IllegalArgumentException("Can not use an empty schema name in multiple schema names.");
 		schemaNames.add(schemaName);
 	}
 
@@ -198,7 +198,7 @@ public final class Initializer {
 
 	synchronized Configure createConfigure() {
 		//スキーマ名は最低一つ必要です
-		if (schemaNames.size() == 0) throw new IllegalArgumentException("At least one schema name is required.");
+		if (schemaNames.size() == 0) throw new IllegalArgumentException("At least one schema name required.");
 		freeze = true;
 		return new Configure(
 			transactionFactoryClass,

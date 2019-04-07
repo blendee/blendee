@@ -147,7 +147,7 @@ public class PhantomColumn implements Column {
 		synchronized (lock) {
 			if (substance != null && !substance.getRootRelationship().equals(sqlRoot))
 				//"このインスタンスは既に " + substance + " として使われています"
-				throw new IllegalStateException("This instance is already used as " + substance + ".");
+				throw new IllegalStateException("already used as " + substance);
 
 			substance = sqlRoot.getColumn(name);
 		}

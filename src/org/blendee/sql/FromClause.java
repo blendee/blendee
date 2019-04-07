@@ -124,7 +124,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			if (forSubquery) return;
 
 			//同一ルートではないので、結合できません
-			throw new IllegalStateException("These can not be joined because they are not same root.");
+			throw new IllegalStateException(relationship + " has not same root");
 		}
 
 		Set<Relationship> set = new HashSet<>();

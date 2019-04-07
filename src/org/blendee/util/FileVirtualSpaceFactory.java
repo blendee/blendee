@@ -74,7 +74,7 @@ class FileVirtualSpaceFactory {
 
 		if (!isJavaIdentifierPart(tableName))
 			//"テーブル名 " + tableName + " は使用できない文字を含んでいます"
-			throw new IllegalStateException("Table name " + tableName + " contains invalid characters.");
+			throw new IllegalStateException("Table name " + tableName + " contains invalid characters");
 
 		TablePath path = new TablePath(tableMetadata.getSchemaName(), tableName);
 
@@ -86,7 +86,7 @@ class FileVirtualSpaceFactory {
 		for (ColumnMetadata columnMetadata : columnMetadatas) {
 			if (!isJavaIdentifierPart(columnMetadata.getName())) throw new IllegalStateException(
 				//"テーブル名 " + tableName + " 項目名 " + columnMetadata.getName() + " は使用できない文字を含んでいます"
-				"Column name " + tableName + "." + columnMetadata.getName() + " contains invalid characters.");
+				"Column name " + tableName + "." + columnMetadata.getName() + " contains invalid characters");
 		}
 
 		PrimaryKeySource pk;
@@ -96,7 +96,7 @@ class FileVirtualSpaceFactory {
 
 			if (!isJavaIdentifierPart(primaryKeyName))
 				//"テーブル名 " + tableName + " 主キー名 " + primaryKeyName + " は使用できない文字を含んでいます"
-				throw new IllegalStateException("PK name " + primaryKeyName + " contains invalid characters.");
+				throw new IllegalStateException("PK name " + primaryKeyName + " contains invalid characters");
 
 			pk = new PrimaryKeySource(
 				primaryKeyName,

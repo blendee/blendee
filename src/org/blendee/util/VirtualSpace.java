@@ -166,7 +166,7 @@ public class VirtualSpace implements Metadata {
 
 	private void checkStarted() {
 		//既にスタートしています
-		if (started) throw new IllegalStateException("VirtualSpace is already started.");
+		if (started) throw new IllegalStateException("already started");
 	}
 
 	private synchronized VirtualTable getTable(TablePath path) {
@@ -227,6 +227,9 @@ public class VirtualSpace implements Metadata {
 			TableSource pkTable;
 			if (pkTableBase == null || pkTableBase.getPrimaryKeySource() == null) {
 				pkTable = createPrimaryKeyTableInformation(depends, importedTable);
+
+				//addされなかった参照テーブルも追加対象に
+				tables.put(importedTable, pkTable);
 			} else {
 				pkTable = pkTableBase;
 			}
@@ -256,7 +259,7 @@ public class VirtualSpace implements Metadata {
 		String[] pkColumnNames = pkMetadata.getColumnNames();
 		//PK is not set to the reference "A".
 		//"参照先の " + path + " に PK が設定されていません"
-		if (pkColumnNames.length == 0) throw new IllegalStateException("PK is not found from " + path + ".");
+		if (pkColumnNames.length == 0) throw new IllegalStateException("PK is not found from " + path);
 
 		return new TableSource(
 			path,

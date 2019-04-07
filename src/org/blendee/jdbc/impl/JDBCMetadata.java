@@ -56,7 +56,7 @@ public class JDBCMetadata implements Metadata {
 	public TablePath[] getTables(String schemaName) {
 		if (!config.containsSchemaName(schemaName))
 			//設定されていないスキーマ名です
-			throw new IllegalArgumentException("Schema name [" + schemaName + "] is not found in current configure.");
+			throw new IllegalArgumentException("Schema name [" + schemaName + "] not found");
 
 		try (ResultSet result = connection().getMetaData()
 			.getTables(
@@ -205,7 +205,7 @@ public class JDBCMetadata implements Metadata {
 			}
 
 			//KEY_SEQ に 1 がありません
-			if (builder == null) throw new IllegalStateException("KEY_SEQ=1 not found.");
+			if (builder == null) throw new IllegalStateException("KEY_SEQ=1 not found");
 			builder.add(result);
 		}
 
@@ -313,7 +313,7 @@ public class JDBCMetadata implements Metadata {
 			result = seq.compareTo(target.seq);
 			if (result != 0) return result;
 			//FK_NAME が未設定のため、同一テーブルへの複数 FK 参照が解決できません
-			throw new IllegalStateException("Multiple FK references to the same table can not be resolved because FK_NAME has not been set yet.");
+			throw new IllegalStateException("Multiple FK references to the same table can not be resolved. (FK_NAME not set)");
 		}
 	}
 

@@ -480,7 +480,7 @@ public abstract class SelectStatementBehavior<
 	public void setGroupByClause(GroupByClause groupByClause) {
 		if (groupByClause != null)
 			//既に GROUP BY 句がセットされています
-			throw new IllegalStateException("GROUP BY clause has already been set.");
+			throw new IllegalStateException("GROUP BY clause already set");
 
 		quitRowMode();
 		this.groupByClause = groupByClause;
@@ -507,7 +507,7 @@ public abstract class SelectStatementBehavior<
 	public void setOrderByClause(OrderByClause orderByClause) {
 		if (orderByClause != null)
 			//既に ORDER BY 句がセットされています
-			throw new IllegalStateException("ORDER BY clause has already been set.");
+			throw new IllegalStateException("ORDER BY clause already set");
 		this.orderByClause = orderByClause;
 	}
 

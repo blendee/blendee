@@ -39,7 +39,7 @@ public class ReturningInserter<T> {
 
 		String[] columnNames = pkMetadata.getColumnNames();
 		//"PK の項目が複数あります table=[" + path + "]"
-		if (columnNames.length != 1) throw new IllegalStateException("Multiple columns in PK of table=[" + path + "]");
+		if (columnNames.length != 1) throw new IllegalStateException("multiple columns in PK of table=[" + path + "]");
 
 		columnName = columnNames[0];
 

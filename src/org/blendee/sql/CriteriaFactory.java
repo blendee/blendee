@@ -1097,7 +1097,7 @@ public class CriteriaFactory {
 		if (!mainRelationship.getTablePath().equals(subqueryRelationship.getTablePath()))
 			//I'm trying to join different tables
 			//異なるテーブルを結合しようとしています
-			throw new SubqueryException("Can not join different tables.");
+			throw new SubqueryException("Can not join different tables");
 
 		return createSubquery(
 			mainRelationship.getPrimaryKeyColumns(),
@@ -1120,7 +1120,7 @@ public class CriteriaFactory {
 		Column[] subqueryColumns,
 		Criteria subquery) {
 		//subQueryColumns が空です
-		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns is empty.");
+		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns is empty");
 
 		SQLQueryBuilder builder = new SQLQueryBuilder(
 			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath(), id));
@@ -1149,19 +1149,19 @@ public class CriteriaFactory {
 		SQLQueryBuilder subquery,
 		boolean notIn) {
 		//columns が空です
-		if (columns.length == 0) throw new SubqueryException("columns is empty.");
+		if (columns.length == 0) throw new SubqueryException("columns is empty");
 
 		Column[] subQueryColumns = subquery.getSelectClause().getColumns();
 
 		if (columns.length != subQueryColumns.length) {
 			//項目数が一致しません
-			throw new SubqueryException("The number of items does not match.");
+			throw new SubqueryException("The number of items does not match");
 		}
 
 		for (Column column : subQueryColumns) {
 			if (!column.getColumnMetadata().isNotNull())
 				//IN を使用しているため、サブクエリの select 句のカラムは、すべて NOT NULL である必要があります
-				throw new SubqueryException("Using IN, all columns in the subquery select clause must be NOT NULL.");
+				throw new SubqueryException("Using IN, all columns in the subquery select clause must be NOT NULL");
 		}
 
 		return createSubqueryWithoutCheck(columns, subquery, notIn);
@@ -1182,7 +1182,7 @@ public class CriteriaFactory {
 		SQLQueryBuilder subquery,
 		boolean notIn) {
 		//columns が空です
-		if (columns.length == 0) throw new SubqueryException("columns is empty.");
+		if (columns.length == 0) throw new SubqueryException("empty columns");
 
 		List<String> columnPartList = new LinkedList<>();
 		for (int i = 0; i < columns.length; i++) {

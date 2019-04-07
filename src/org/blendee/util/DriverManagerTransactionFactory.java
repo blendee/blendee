@@ -5,6 +5,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.blendee.jdbc.BSQLException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
@@ -47,11 +48,7 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 
 	@Override
 	public Transaction createTransaction() {
-		try {
-			return new JDBCTransaction(getConnection(url, user, password));
-		} catch (SQLException e) {
-			throw new IllegalStateException(e);
-		}
+		return new JDBCTransaction(getJDBCConnection());
 	}
 
 	/**
@@ -64,13 +61,37 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 
 	/**
 	 * {@link Connection} を取得します。
-	 * @param url 接続先
-	 * @param user ユーザー
-	 * @param password パスワード
 	 * @return {@link Connection}
-	 * @throws SQLException 接続時の例外
 	 */
-	protected Connection getConnection(String url, String user, String password) throws SQLException {
-		return DriverManager.getConnection(url, user, password);
+	protected Connection getJDBCConnection() {
+		try {
+			return DriverManager.getConnection(url(), user(), password());
+		} catch (SQLException e) {
+			throw new BSQLException(e);
+		}
+	}
+
+	/**
+	 * 接続先
+	 * @return URL
+	 */
+	protected String url() {
+		return url;
+	}
+
+	/**
+	 * ユーザー
+	 * @return ユーザー
+	 */
+	protected String user() {
+		return user;
+	}
+
+	/**
+	 * パスワード
+	 * @return パスワード
+	 */
+	protected String password() {
+		return password;
 	}
 }

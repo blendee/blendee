@@ -190,7 +190,7 @@ public abstract class Recorder {
 		private Reproducible<?> reproduce(Object[] newValues) {
 			if (newValues.length != placeholderIndexes.length)
 				//"値の数は " + placeholderIndexes.length + " である必要があります"
-				throw new IllegalStateException("The number of values ​​must be " + placeholderIndexes.length + ".");
+				throw new IllegalStateException("the number of values ​​must be " + placeholderIndexes.length);
 
 			Object[] clone = values.clone();
 

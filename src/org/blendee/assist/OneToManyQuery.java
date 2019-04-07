@@ -66,7 +66,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 
 		if (columns.length != primaryKeyMembers.length)
 			//primaryKeyMembers の数が正しくありません
-			throw new IllegalArgumentException("The number of \"primaryKeyMembers\" is incorrect.");
+			throw new IllegalArgumentException("primaryKeyMembers size must be " + columns.length);
 
 		Criteria criteria = new CriteriaFactory(runtimeId()).create();
 		for (int i = 0; i < columns.length; i++) {

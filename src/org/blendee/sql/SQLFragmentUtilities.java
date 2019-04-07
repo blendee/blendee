@@ -62,7 +62,7 @@ public class SQLFragmentUtilities {
 			}
 
 			//文字定数が終了していません
-			if (!terminated) throw new IllegalStateException("\"'\" was not found.");
+			if (!terminated) throw new IllegalStateException("\"'\" not found");
 		}
 
 		if (sqlFragment.length() > 0) listener.receiveSQLFragment(sqlFragment);

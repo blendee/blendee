@@ -272,7 +272,7 @@ public class TableFacadeGenerator {
 	 */
 	public String build(Relationship relation) {
 		//relation はルートでなければなりません
-		if (!relation.isRoot()) throw new IllegalArgumentException("\"relation\" is must be root.");
+		if (!relation.isRoot()) throw new IllegalArgumentException("\"relation\" must be root");
 
 		TablePath target = relation.getTablePath();
 

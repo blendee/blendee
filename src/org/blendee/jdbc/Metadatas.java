@@ -3,8 +3,6 @@ package org.blendee.jdbc;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -40,12 +38,14 @@ public class Metadatas extends MetadataBase {
 
 	@Override
 	public TablePath[] getTables(String schemaName) {
-		List<TablePath> tables = new LinkedList<>();
+		Set<TablePath> set = new LinkedHashSet<>();
 		for (Metadata metadata : metadatas) {
-			Arrays.stream(metadata.getTables(schemaName)).forEach(tables::add);
+			Arrays.stream(metadata.getTables(schemaName)).forEach(t -> {
+				if (!set.contains(t)) set.add(t);
+			});
 		}
 
-		return tables.toArray(new TablePath[tables.size()]);
+		return set.toArray(new TablePath[set.size()]);
 	}
 
 	/**

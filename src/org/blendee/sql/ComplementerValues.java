@@ -245,7 +245,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			try {
 				binders.add(extractor.extractAsBinder(placeHolderValues[index]));
 			} catch (ClassCastException e) {
-				throw new IllegalStateException("ClassCastException at index:" + (index + 1), e);
+				throw new IllegalStateException("ClassCastException at index: " + (index + 1), e);
 			}
 			index++;
 		}

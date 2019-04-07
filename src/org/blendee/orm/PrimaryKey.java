@@ -133,7 +133,7 @@ public class PrimaryKey extends PartialData {
 		}
 
 		//外部キーが見つかりません
-		throw new IllegalArgumentException("FK is not found.");
+		throw new IllegalArgumentException("FK not found");
 	}
 
 	/**

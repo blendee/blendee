@@ -496,7 +496,7 @@ public class DataAccessHelper {
 	private static void checkArgument(SelectContext context, PrimaryKey primaryKey) {
 		if (!context.tablePath().equals(primaryKey.getTablePath()))
 			//context と primaryKey のテーブルが違います
-			throw new IllegalArgumentException("The tables of \"context\" and \"primaryKey\" are different.");
+			throw new IllegalArgumentException("different tables: context=" + context.tablePath() + ", primaryKey=" + primaryKey.getTablePath());
 	}
 
 	private void adjustArgument(
@@ -579,7 +579,7 @@ public class DataAccessHelper {
 		Criteria criteria,
 		SQLDecorator... options) {
 		//条件がありません
-		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria is not available.");
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria not available");
 		return updateInternalFinally(statement, path, updatable, criteria, options);
 	}
 
@@ -606,7 +606,7 @@ public class DataAccessHelper {
 		TablePath path,
 		Criteria criteria) {
 		//条件がありません
-		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria is not available.");
+		if (!criteria.isAvailable()) throw new IllegalArgumentException("Criteria not available");
 		return deleteInternalFinally(statement, path, criteria);
 	}
 

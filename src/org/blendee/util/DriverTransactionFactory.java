@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BSQLException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
@@ -76,7 +77,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 
 			return connection;
 		} catch (SQLException e) {
-			throw new IllegalStateException(e);
+			throw new BSQLException(e);
 		}
 	}
 }

@@ -69,10 +69,10 @@ final class ConcreteRelationship implements Relationship {
 		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
 		columns = new Column[metadatas.length];
 		for (int i = 0; i < metadatas.length; i++) {
-			ColumnMetadata metadata = metadatas[i];
-			Column column = new RelationshipColumn(this, metadata, converter, String.valueOf(i));
+			ColumnMetadata columnMetadata = metadatas[i];
+			Column column = new RelationshipColumn(this, columnMetadata, converter, String.valueOf(i));
 			columns[i] = column;
-			columnMap.put(metadata.getName(), column);
+			columnMap.put(columnMetadata.getName(), column);
 		}
 
 		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
@@ -86,7 +86,7 @@ final class ConcreteRelationship implements Relationship {
 	public boolean equals(Object o) {
 		if (o != null && o.getClass().equals(TablePath.class))
 			//TablePath.class.getName() + " と比較することはできません"
-			throw new IllegalStateException(o.getClass().getName() + " can not be compared to " + TablePath.class.getName() + ".");
+			throw new IllegalStateException(o.getClass().getName() + " can not be compared to " + TablePath.class.getName());
 
 		return o instanceof ConcreteRelationship && id.equals(((ConcreteRelationship) o).id);
 	}
@@ -132,7 +132,7 @@ final class ConcreteRelationship implements Relationship {
 			for (int i = 0; i < references.length; i++) {
 				CrossReference element = references[i];
 				ConcreteRelationship child = new ConcreteRelationship(
-					this.root,
+					root,
 					this,
 					element,
 					element.getPrimaryKeyTable(),
@@ -162,7 +162,7 @@ final class ConcreteRelationship implements Relationship {
 	public Column getColumn(String columnName) {
 		Column column = columnMap.get(MetadataUtilities.regularize(columnName));
 		//this + " に " + columnName + " が見つかりません"
-		if (column == null) throw new NotFoundException(columnName + " can not be found in " + this + ".");
+		if (column == null) throw new NotFoundException(columnName + " not found in " + this);
 		return column;
 	}
 
@@ -251,7 +251,7 @@ final class ConcreteRelationship implements Relationship {
 
 	private String createErrorMessage(String base) {
 		//this + " では " + base + " は使用できません"
-		return base + " can not be used in " + this + ".";
+		return base + " can not be used in " + this;
 	}
 
 	private static String createForeignKeyId(String[] foreignKeyColumnNames) {

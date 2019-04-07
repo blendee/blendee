@@ -95,7 +95,7 @@ public interface Row extends Updatable {
 			tablePath(),
 			primaryKey().getCriteria(RuntimeIdFactory.stubInstance()));
 		//削除件数が複数件あります。
-		if (result > 1) throw new IllegalStateException("There are multiple deletions.");
+		if (result > 1) throw new IllegalStateException("multiple deletions");
 		return result == 1;
 	}
 

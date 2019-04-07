@@ -183,7 +183,7 @@ public class Values {
 
 	private String columnName() {
 		//カラム数と値の数が違います
-		if (columns.size() == 0) throw new IllegalStateException("The number of columns and the number of values ​​are different.");
+		if (columns.size() == 0) throw new IllegalStateException("columns size is 0");
 		return columns.pop().getName();
 	}
 }
