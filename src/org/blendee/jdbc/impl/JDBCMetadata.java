@@ -205,7 +205,7 @@ public class JDBCMetadata implements Metadata {
 			}
 
 			//KEY_SEQ に 1 がありません
-			if (builder == null) throw new IllegalStateException("KEY_SEQ=1 not found");
+			if (builder == null) throw new IllegalStateException("KEY_SEQ: 1 not found");
 			builder.add(result);
 		}
 
@@ -217,7 +217,7 @@ public class JDBCMetadata implements Metadata {
 		return references;
 	}
 
-	/**
+	/*
 	 * DatabaseMetaData の各検索に条件として使用するスキーマ名、テーブル名の識別子パターンは、 JDBC の実装によっては
 	 * 大文字小文字が厳密に適用される可能性があり、その場合は実際には存在するにもかかわらず結果が取得できない
 	 * そこで、 DatabaseMetaData の情報を使用して登録された識別子名に変換後検索に使用するようにする
@@ -264,7 +264,8 @@ public class JDBCMetadata implements Metadata {
 	}
 
 	/**
-	 * あるテーブルから他の同一テーブルを複数参照している場合、{@link DatabaseMetaData#getCrossReference(String, String, String, String, String, String)}の結果順序がおかしくなるのを防ぐクラスです。
+	 * あるテーブルから他の同一テーブルを複数参照している場合、<br>
+	 * {@link DatabaseMetaData#getCrossReference(String, String, String, String, String, String)} の結果順序がおかしくなるのを防ぐクラスです。
 	 * <p>
 	 * このクラスのインスタンスが正しく機能するためには、外部キーに名前がつけられている必要があります。
 	 */

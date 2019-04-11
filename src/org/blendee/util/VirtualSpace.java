@@ -86,7 +86,8 @@ public class VirtualSpace implements Metadata {
 			}
 		};
 
-		for (TableSource table : tables.values())
+		//processForExported内でtablesに追加が発生するためtablesを退避
+		for (TableSource table : new HashMap<>(tables).values())
 			processForExported(table, exported, depends);
 
 		for (TableSource table : tables.values())
@@ -247,7 +248,7 @@ public class VirtualSpace implements Metadata {
 						tablePath,
 						pkColumns,
 						fk.getFKColumns(),
-						true));
+						pkTable.getPrimaryKeySource().isPseudo()));
 		}
 	}
 

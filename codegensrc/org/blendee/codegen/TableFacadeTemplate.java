@@ -90,15 +90,14 @@ import org.blendee.assist.ListUpdateClauseAssist;
 import org.blendee.assist.annotation.Column;
 import org.blendee.assist.Helper;
 import org.blendee.assist.Vargs;
-/*--*/import org.blendee.assist.annotation.ForeignKey;/*--*/
-/*--*/import org.blendee.assist.annotation.PrimaryKey;/*--*/
 import org.blendee.assist.annotation.Table;
-
+/*--*/import org.blendee.assist.annotation.ForeignKey;import org.blendee.assist.annotation.PrimaryKey;/*--*/
 /**
  * 自動生成されたテーブル操作クラスです。
 [[TABLE_COMMENT]]
  */
-@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]", type = "[[TYPE]]", remarks = "[[REMARKS]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
+@Table(name = "[[TABLE]]", schema = "[[SCHEMA]]", type = "[[TYPE]]", remarks = "[[REMARKS]]")/*++[[PRIMARY_KEY_PART]]++*//*==PrimaryKeyPart==*/
+@PrimaryKey(name = "[[PK]]", columns = { /*++[[PK_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)/*==PrimaryKeyPart==*/
 public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	extends /*++[[PARENT]]++*//*--*/Object/*--*/
 	implements
@@ -126,11 +125,9 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	private final Relationship relationship$ = RelationshipFactory.getInstance().getInstance($TABLE);
 
 	private final List<SQLDecorator> decorators$ = new LinkedList<SQLDecorator>();
-
-/*++[[COLUMN_NAMES_PART]]++*/
-/*==ColumnNamesPart==*/
+/*++[[COLUMN_NAMES_PART]]++*//*==ColumnNamesPart==*/
 	/**
-[[COMMENT]]
+[[COMMENT_1]]
 	 */
 	@Column(
 		name = "[[COLUMN]]",
@@ -144,10 +141,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		ordinalPosition = /*++[[ORDINAL_POSITION]]++*//*--*/0/*--*/,
 		notNull = /*++[[NOT_NULL]]++*//*--*/true/*--*/)
 	public static final String /*++[[COLUMN]]++*//*--*/columnName/*--*/ = "[[COLUMN]]";
-/*==ColumnNamesPart==*/
-
-/*++[[FOREIGN_KEYS_PART]]++*/
-/*==ForeignKeysPart==*/
+/*==ColumnNamesPart==*//*++[[FOREIGN_KEYS_PART]]++*//*==ForeignKeysPart==*/
 	/**
 	 * name: [[FK]]<br>
 	 * references: [[REFERENCE]]<br>
@@ -156,7 +150,6 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 	@ForeignKey(name = "[[FK]]", references = "[[REFERENCE_PATH]]", columns = { /*++[[ANNOTATION_FK_COLUMNS]]++*//*--*/""/*--*/ }, refColumns = { /*++[[REF_COLUMNS]]++*//*--*/""/*--*/ }/*++[[PSEUDO]]++*/)
 	public static final String /*++[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/ = "[[FK]]";
 /*==ForeignKeysPart==*/
-
 	/**
 	 * 登録用コンストラクタです。
 	 * @return {@link Row}
@@ -227,12 +220,10 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public TablePath tablePath() {
 			return $TABLE;
 		}
-
-/*++[[ROW_PROPERTY_ACCESSOR_PART]]++*/
-/*==RowPropertyAccessorPart==*/
+/*++[[ROW_PROPERTY_ACCESSOR_PART]]++*//*==RowPropertyAccessorPart==*/
 		/**
 		 * setter
-	[[COMMENT]]
+[[COMMENT_2]]
 		 * @param value [[TYPE]]
 		 */
 		public void set/*++[[METHOD]]++*/(/*++[[TYPE]]++*//*--*/Object/*--*/ value) {
@@ -243,17 +234,15 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 
 		/**
 		 * getter
-	[[COMMENT]]
+[[COMMENT_2]]
 		 * @return [[TYPE]]
 		 */
 		public /*++[[RETURN_TYPE]]++*/ /*--*/String/*--*/get/*++[[METHOD]]++*/() {
 			Binder binder = data$.getValue("[[COLUMN]]");
 			return /*++[[PREFIX]]++*//*++[[CAST]]++*//*--*/(String)/*--*/binder.getValue()/*++[[SUFFIX]]++*/;
 		}
+/*==RowPropertyAccessorPart==*//*++[[ROW_RELATIONSHIP_PART]]++*//*==RowRelationshipPart==*/
 
-/*==RowPropertyAccessorPart==*/
-/*++[[ROW_RELATIONSHIP_PART]]++*/
-/*==RowRelationshipPart==*/
 		/**
 		 * このレコードが参照しているレコードの Row を返します。<br>
 		 * 参照先テーブル名 [[REFERENCE]]<br>
@@ -264,9 +253,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		public /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/Row /*++[[METHOD]]++*//*--*/getRelatedRow/*--*/() {
 			return /*++[[REFERENCE_PACKAGE]].[[REFERENCE]].++*/row(
 				data$.getDataObject(/*++[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/));
-		}
-
-/*==RowRelationshipPart==*/
+		}/*==RowRelationshipPart==*/
 	}
 
 	private static final TableFacadeContext<SelectCol> selectContext$ = (assist, name) -> new SelectCol(assist, name);
@@ -1324,16 +1311,12 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 		private final TableFacadeAssist parent$;
 
 		private final String fkName$;
-
-/*++[[COLUMN_PART1]]++*/
-/*==ColumnPart1==*/
+/*++[[COLUMN_PART1]]++*//*==ColumnPart1==*/
 		/**
 		 * 項目名 [[COLUMN]]
 		 */
 		public final T /*++[[COLUMN]]++*//*--*/columnName/*--*/;
-
 /*==ColumnPart1==*/
-
 		private Assist(
 			/*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/ table$,
 			TableFacadeContext<T> builder$,
@@ -1344,11 +1327,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			this.context$ = context$;
 			this.parent$ = parent$;
 			this.fkName$ = fkName$;
-
-			/*++[[COLUMN_PART2]]++*/
-			/*==ColumnPart2==*/this./*++[[COLUMN]]++*//*--*/columnName/*--*/ = builder$.buildColumn(
-							this, /*++[[PACKAGE]].[[TABLE]].[[COLUMN]]++*//*--*/TableFacadeTemplate.columnName/*--*/);
-			/*==ColumnPart2==*/
+/*++[[COLUMN_PART2]]++*//*==ColumnPart2==*/
+			this./*++[[COLUMN]]++*//*--*/columnName/*--*/ = builder$.buildColumn(this, /*++[[PACKAGE]].[[TABLE]].[[COLUMN]]++*//*--*/TableFacadeTemplate.columnName/*--*/);/*==ColumnPart2==*/
 		}
 
 		/**
@@ -1464,10 +1444,8 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 			//集計モードでは実行できない処理です
 			if (!getSelectStatement().rowMode()) throw new IllegalStateException("This operation can only in \"Row Mode\".");
 			return new InstantOneToManyQuery<>(this, getSelectStatement().decorators());
-		}
+		}/*++[[TABLE_RELATIONSHIP_PART]]++*//*==TableRelationshipPart==*/
 
-/*++[[TABLE_RELATIONSHIP_PART]]++*/
-/*==TableRelationshipPart==*/
 		/**
 		 * 参照先テーブル名 [[REFERENCE]]<br>
 		 * 外部キー名 [[FK]]<br>
@@ -1479,8 +1457,7 @@ public class /*++[[TABLE]]++*//*--*/TableFacadeTemplate/*--*/
 				builder$,
 				this,
 				/*++[[PACKAGE]].[[TABLE]].[[REFERENCE_FIELD]]$[[FK]]++*//*--*/FK/*--*/);
-		}
-/*==TableRelationshipPart==*/
+		}/*==TableRelationshipPart==*/
 	}
 
 	/**

@@ -236,7 +236,7 @@ public class BlendeeEnvironment {
 			BlendeeConstants.VALUE_EXTRACTORS_CLASS.extract(initValues)
 				.ifPresent(clazz -> ContextManager.get(ValueExtractorsConfigure.class).setValueExtractorsClass(clazz));
 
-			BlendeeManager.getLogger().log(Level.INFO, "Blendee [" + contextName + "] started.");
+			BlendeeManager.getLogger().log(Level.INFO, "Blendee [" + contextName + "] start");
 
 			return this;
 		} finally {

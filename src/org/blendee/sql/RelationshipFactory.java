@@ -49,7 +49,7 @@ public class RelationshipFactory implements ManagementSubject {
 			if (relationship == null) {
 				String pathId = pathIdMap.get(path);
 				//path + " は使用できるテーブルに含まれていません"
-				if (pathId == null) throw new IllegalArgumentException(path + " is not included in the usable tables.");
+				if (pathId == null) throw new IllegalArgumentException(path + " is not in the usable tables.");
 
 				relationship = createRelationship(path, pathId);
 				relationshipCache.put(path, relationship);
@@ -70,7 +70,7 @@ public class RelationshipFactory implements ManagementSubject {
 	}
 
 	private void preparePathIdMap() {
-		String[] schemaNames = ContextManager.get(BlendeeManager.class).getConfigure().getSchemaNames();
+		String[] schemaNames = BlendeeManager.get().getConfigure().getSchemaNames();
 		int counter = 0;
 		for (String name : schemaNames) {
 			TablePath[] paths = MetadataUtilities.getTables(name);

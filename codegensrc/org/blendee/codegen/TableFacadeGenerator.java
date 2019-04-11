@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -265,6 +266,10 @@ public class TableFacadeGenerator {
 		return new File(home, String.join("/", rootPackageName.split("\\.")));
 	}
 
+	private static String createIndent(int n) {
+		return String.join("", Collections.nCopies(n, "\t"));
+	}
+
 	/**
 	 * Table クラスを一件作成します。
 	 * @param relation 対象となるテーブルをあらわす {@link Relationship}
@@ -319,7 +324,7 @@ public class TableFacadeGenerator {
 				boolean returnOptional = false;
 				if (useNullGuard) {
 					if (notNull || column.isPrimaryKey()) {
-						nullCheck = Objects.class.getSimpleName() + ".requireNonNull(value);" + U.LINE_SEPARATOR;
+						nullCheck = Objects.class.getSimpleName() + ".requireNonNull(value);" + U.LINE_SEPARATOR + "\t\t\t";
 					} else {
 						String optional = Optional.class.getSimpleName();
 						returnPrefix = optional + ".ofNullable(";
@@ -338,7 +343,11 @@ public class TableFacadeGenerator {
 				args.put("COLUMN", columnName);
 				args.put("TYPE", classNameString);
 				args.put("CAST", cast);
-				args.put("COMMENT", buildColumnComment(column));
+
+				String commentBase = buildColumnComment(column);
+				args.put("COMMENT_1", decorate(commentBase, createIndent(1)));
+				args.put("COMMENT_2", decorate(commentBase, createIndent(2)));
+
 				args.put("NULL_CHECK", nullCheck);
 				args.put("RETURN_TYPE", returnType);
 				args.put("PREFIX", returnPrefix);
@@ -624,7 +633,7 @@ public class TableFacadeGenerator {
 
 		builder.append("not null: " + metadata.isNotNull());
 
-		return decorate(builder.toString(), "\t");
+		return builder.toString();
 	}
 
 	private static String decorate(String base, String top) {

@@ -230,7 +230,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private static PrimaryKeySource createSource(PrimaryKey annotation) {
-		return new PrimaryKeySource(annotation.name(), annotation.columns(), true);
+		return new PrimaryKeySource(annotation.name(), annotation.columns(), annotation.pseudo());
 	}
 
 	private static ForeignKeySource createSource(ForeignKey annotation) {
