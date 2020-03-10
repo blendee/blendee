@@ -51,7 +51,26 @@ public abstract class Recorder {
 	public <E extends Reproducible<E>> E play(Supplier<E> supplier, Object... playbackPlaceHolderValues) {
 		if (playbackPlaceHolderValues.length == 0)
 			return (E) prepare(supplier, lock()).reproduce();
+
 		return (E) prepare(supplier, lock()).reproduce(playbackPlaceHolderValues);
+	}
+
+	/**
+	 * {@link Reproducible} を生成する処理を実行します。<br>
+	 * 既に一度 {@link Reproducible} が生成されていた場合、新たに {@link Reproducible} を生成せず、以前の {@link Reproducible} を返します。<br>
+	 * 以前の {@link Reproducible} を返す場合、プレースホルダにセットする値として、引数の playbackPlaceHolderValues を使用します。
+	 * また、プレースホルダを使用しているのに playbackPlaceHolderValues を指定しない場合、このメソッドが返すのは {@link Reproducible#reproduce(Object...)} をまだ行っていない（プレースホルダの値を持っていない） {@link Reproducible} となります。<br>
+	 * @param keySupplier {@link Reproducible} をキャッシュする際のキーを返す処理
+	 * @param supplier {@link Reproducible} を生成する処理
+	 * @param playbackPlaceHolderValues supplier で使用した {@link Placeholder} に、再実行時セットする値
+	 * @param <E> {@link Reproducible} の実装
+	 * @return {@link Reproducible}
+	 */
+	public <R, E extends Reproducible<E>> E play(
+		Supplier<R> keySupplier,
+		Supplier<E> supplier,
+		Object... playbackPlaceHolderValues) {
+		return play(keySupplier, r -> supplier.get(), r -> playbackPlaceHolderValues, lock());
 	}
 
 	/**
