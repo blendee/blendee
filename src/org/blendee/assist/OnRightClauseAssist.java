@@ -53,6 +53,57 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 
 	/**
 	 * ON 句に任意のカラムを追加します。
+	 * @param <O> {@link LogicalOperators}
+	 * @param template カラムのテンプレート
+	 * @param column1 使用するカラム
+	 * @param column2 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> OnRightColumn<O> any(
+		String template,
+		CriteriaAssistColumn<O> column1,
+		CriteriaAssistColumn<O> column2) {
+		return any(template, Vargs.of(column1, column2));
+	}
+
+	/**
+	 * ON 句に任意のカラムを追加します。
+	 * @param <O> {@link LogicalOperators}
+	 * @param template カラムのテンプレート
+	 * @param column1 使用するカラム
+	 * @param column2 使用するカラム
+	 * @param column3 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> OnRightColumn<O> any(
+		String template,
+		CriteriaAssistColumn<O> column1,
+		CriteriaAssistColumn<O> column2,
+		CriteriaAssistColumn<O> column3) {
+		return any(template, Vargs.of(column1, column2, column3));
+	}
+
+	/**
+	 * ON 句に任意のカラムを追加します。
+	 * @param <O> {@link LogicalOperators}
+	 * @param template カラムのテンプレート
+	 * @param column1 使用するカラム
+	 * @param column2 使用するカラム
+	 * @param column3 使用するカラム
+	 * @param column4 使用するカラム
+	 * @return {@link LogicalOperators} AND か OR
+	 */
+	default <O extends LogicalOperators<?>> OnRightColumn<O> any(
+		String template,
+		CriteriaAssistColumn<O> column1,
+		CriteriaAssistColumn<O> column2,
+		CriteriaAssistColumn<O> column3,
+		CriteriaAssistColumn<O> column4) {
+		return any(template, Vargs.of(column1, column2, column3, column4));
+	}
+
+	/**
+	 * ON 句に任意のカラムを追加します。
 	 * @param <O> operator
 	 * @param template カラムのテンプレート
 	 * @param args 使用するカラム
