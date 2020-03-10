@@ -16,29 +16,29 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 
 	/**
 	 * 任意のカラム表現を生成します。
-	 * @param expression テンプレート
+	 * @param template テンプレート
 	 * @param columns テンプレートにセットする {@link CriteriaAssistColumn}
 	 * @return 任意のカラム
 	 */
 	@SuppressWarnings("unchecked")
 	default <O extends LogicalOperators<?>> CriteriaAssistColumn<O> expr(
-		String expression,
+		String template,
 		CriteriaAssistColumn<O>... columns) {
-		return new CriteriaAnyColumn<>(statement(), expression, columns);
+		return new CriteriaAnyColumn<>(statement(), template, columns);
 	}
 
 	/**
 	 * 任意のカラム表現を生成します。
-	 * @param expression テンプレート
+	 * @param template テンプレート
 	 * @param columns テンプレートにセットする {@link CriteriaAssistColumn}
 	 * @param values プレースホルダの値
 	 * @return 任意のカラム
 	 */
 	default <O extends LogicalOperators<?>> CriteriaAssistColumn<O> expr(
-		String expression,
+		String template,
 		Vargs<CriteriaAssistColumn<O>> columns,
 		Object... values) {
-		return new CriteriaAnyColumn<>(statement(), expression, columns.get(), values);
+		return new CriteriaAnyColumn<>(statement(), template, columns.get(), values);
 	}
 
 	/**
@@ -73,10 +73,10 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 
 	/**
 	 * この句に任意のカラムを追加します。
-	 * @param template カラムのテンプレート
+	 * @param expression カラムの文字列表現
 	 * @return {@link CriteriaColumn}
 	 */
-	CriteriaColumn<?> any(String template);
+	CriteriaColumn<?> any(String expression);
 
 	/**
 	 * Consumer に渡された条件句を () で囲みます。

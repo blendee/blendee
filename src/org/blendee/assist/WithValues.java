@@ -25,7 +25,7 @@ public class WithValues {
 	 * @param columns template にセットするカラム
 	 * @return self
 	 */
-	public WithValues columns(CriteriaColumn<?>... columns) {
+	public WithValues columns(AssistColumn... columns) {
 		Arrays.stream(columns).map(c -> c.column()).forEach(this.columns::add);
 		return this;
 	}

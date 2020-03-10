@@ -326,8 +326,8 @@ public abstract class SelectStatementBehavior<
 		return joinAndCreateOnClause(JoinType.FULL_OUTER_JOIN, right, query);
 	}
 
-	public <R extends OnRightClauseAssist<?>, Q extends SelectStatement> void CROSS_JOIN(RightTable<R> right, Q query) {
-		joinInternal(JoinType.CROSS_JOIN, right, query).onCriteria = new CriteriaFactory(id).create();
+	public <R extends OnRightClauseAssist<?>, Q extends SelectStatement> void CROSS_JOIN(RightTable<R> right) {
+		joinInternal(JoinType.CROSS_JOIN, right).onCriteria = new CriteriaFactory(id).create();
 	}
 
 	public void UNION(SelectStatement select) {
@@ -900,8 +900,7 @@ public abstract class SelectStatementBehavior<
 
 	private <R extends OnRightClauseAssist<?>, Q extends SelectStatement> JoinResource joinInternal(
 		JoinType joinType,
-		RightTable<R> right,
-		Q query) {
+		RightTable<R> right) {
 		quitRowMode();
 
 		JoinResource joinResource = new JoinResource();
@@ -917,7 +916,7 @@ public abstract class SelectStatementBehavior<
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {
-		JoinResource joinResource = joinInternal(joinType, right, query);
+		JoinResource joinResource = joinInternal(joinType, right);
 
 		return new OnClause<>(
 			joinResource,
