@@ -249,7 +249,7 @@ public interface SelectClauseAssist extends ClauseAssist {
 	}
 
 	/**
-	 * SELECT 句に任意の数値を追加します。
+	 * SELECT 句に任意のカラムを追加します。
 	 * @param column 任意のカラム
 	 * @return {@link AliasableOffer} AS
 	 */

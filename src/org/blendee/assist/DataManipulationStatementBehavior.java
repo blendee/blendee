@@ -232,6 +232,7 @@ public abstract class DataManipulationStatementBehavior<
 	}
 
 	private String buildInsertStatement(SQLQueryBuilder builder) {
+		List<Column> insertColumns = getInsertColumns();
 		String columnsClause = insertColumns.size() > 0
 			? " ("
 				+ insertColumns.stream().map(c -> c.getName()).collect(Collectors.joining(", "))
