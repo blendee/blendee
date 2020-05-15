@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -40,6 +41,7 @@ import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
 import org.blendee.util.DatabaseInfo;
+import org.blendee.util.DatabaseInfoWriter;
 
 /**
  * データベースの構成を読み取り、各テーブルクラスの Java ソースを生成するジェネレータクラスです。
@@ -237,29 +239,16 @@ public class TableFacadeGenerator {
 	 * @param home 生成された Java ソースを保存するためのルートとなる場所
 	 * @throws IOException ファイル書き込みに失敗した場合
 	 */
-	public void writeDatabaseInfo(File home) throws IOException {
-		writeDatabaseInfo(home, new DatabaseInfo(rootPackageName));
-	}
+	public void writeDatabaseInfo(Path home) throws IOException {
+		DatabaseInfoWriter info = new DatabaseInfoWriter(home, rootPackageName);
 
-	/**
-	 * データベース全体の情報をファイルに保存します。
-	 * @param home 生成された Java ソースを保存するためのルートとなる場所
-	 * @param loader database-info ファイルをロード可能な {@link ClassLoader}
-	 * @throws IOException ファイル書き込みに失敗した場合
-	 */
-	public void writeDatabaseInfo(File home, ClassLoader loader) throws IOException {
-		writeDatabaseInfo(home, new DatabaseInfo(rootPackageName, loader));
-	}
-
-	private void writeDatabaseInfo(File home, DatabaseInfo info) throws IOException {
-		File rootPackageDir = getRootPackageDir(home);
-		rootPackageDir.mkdirs();
+		info.mkdirs();
 
 		Properties properties = new Properties();
 
 		DatabaseInfo.setStoredIdentifier(properties, metadata.getStoredIdentifier());
 
-		info.write(home, properties);
+		info.write(properties);
 	}
 
 	private File getRootPackageDir(File home) {

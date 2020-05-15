@@ -153,14 +153,14 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
 		String rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
 
-		DatabaseInfo info = new DatabaseInfo(rootPackage, getClassLoader());
+		DatabaseInfoReader info = new DatabaseInfoReader(rootPackage, getClassLoader());
 
 		if (info.exists()) {
 			try {
 				Properties properties = info.read();
 
 				if (DatabaseInfo.hasStoredIdentifier(properties))
-					virtualSpace.setStoredIdentifier(info.getStoredIdentifier(properties));
+					virtualSpace.setStoredIdentifier(DatabaseInfo.getStoredIdentifier(properties));
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}

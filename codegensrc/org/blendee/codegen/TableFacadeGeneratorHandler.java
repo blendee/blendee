@@ -1,7 +1,7 @@
 package org.blendee.codegen;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,7 +34,7 @@ public abstract class TableFacadeGeneratorHandler {
 
 	protected abstract void end();
 
-	protected abstract File getOutputRoot();
+	protected abstract Path getOutputRoot();
 
 	public void execute(TableFacadeGenerator generator) throws IOException {
 		RelationshipFactory factory = RelationshipFactory.getInstance();
