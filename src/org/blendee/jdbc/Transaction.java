@@ -51,7 +51,7 @@ public abstract class Transaction implements AutoCloseable {
 		try {
 			closeInternal();
 		} finally {
-			BlendeeManager.get().removeThreadLocal();
+			BlendeeManager.optional().ifPresent(m -> m.removeThreadLocal());
 		}
 	}
 

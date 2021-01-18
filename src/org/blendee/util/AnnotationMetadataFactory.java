@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -109,12 +110,22 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			}
 
 			@Override
+			public Optional<TableMetadata> tableMetadata(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
 			public ColumnMetadata[] getColumnMetadatas(TablePath path) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
 			public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path) {
 				throw new UnsupportedOperationException();
 			}
 

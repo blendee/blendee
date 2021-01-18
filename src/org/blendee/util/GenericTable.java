@@ -232,12 +232,30 @@ public class GenericTable
 		}
 
 		/**
+		 * 指定されたカラムの値を文字列として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<String> string(String columnName) {
+			return Optional.ofNullable(data.getString(columnName));
+		}
+
+		/**
 		 * 指定されたカラムの値を {@link Timestamp} として返します。
 		 * @param columnName カラム名
 		 * @return カラムの値
 		 */
 		public Timestamp getTimestamp(String columnName) {
 			return data.getTimestamp(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Timestamp} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<Timestamp> timestamp(String columnName) {
+			return Optional.ofNullable(data.getTimestamp(columnName));
 		}
 
 		/**
@@ -250,12 +268,30 @@ public class GenericTable
 		}
 
 		/**
+		 * 指定されたカラムの値を {@link BigDecimal} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<BigDecimal> bigDecimal(String columnName) {
+			return Optional.ofNullable(data.getBigDecimal(columnName));
+		}
+
+		/**
 		 * 指定されたカラムの値を {@link UUID} として返します。
 		 * @param columnName カラム名
 		 * @return カラムの値
 		 */
 		public UUID getUUID(String columnName) {
 			return data.getUUID(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link UUID} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<UUID> UUID(String columnName) {
+			return Optional.ofNullable(data.getUUID(columnName));
 		}
 
 		/**
@@ -268,12 +304,30 @@ public class GenericTable
 		}
 
 		/**
+		 * 指定されたカラムの値を {@link Object} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<Object> object(String columnName) {
+			return Optional.ofNullable(data.getObject(columnName));
+		}
+
+		/**
 		 * 指定されたカラムの値をバイトの配列として返します。
 		 * @param columnName カラム名
 		 * @return カラムの値
 		 */
 		public byte[] getBytes(String columnName) {
 			return data.getBytes(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値をバイトの配列として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<byte[]> bytes(String columnName) {
+			return Optional.ofNullable(data.getBytes(columnName));
 		}
 
 		/**
@@ -286,12 +340,30 @@ public class GenericTable
 		}
 
 		/**
+		 * 指定されたカラムの値を {@link Blob} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<Blob> blob(String columnName) {
+			return Optional.ofNullable(data.getBlob(columnName));
+		}
+
+		/**
 		 * 指定されたカラムの値を {@link Clob} として返します。
 		 * @param columnName カラム名
 		 * @return カラムの値
 		 */
 		public Clob getClob(String columnName) {
 			return data.getClob(columnName);
+		}
+
+		/**
+		 * 指定されたカラムの値を {@link Clob} として返します。
+		 * @param columnName カラム名
+		 * @return カラムの値
+		 */
+		public Optional<Clob> clob(String columnName) {
+			return Optional.ofNullable(data.getClob(columnName));
 		}
 
 		/**

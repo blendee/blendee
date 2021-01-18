@@ -1,5 +1,7 @@
 package org.blendee.jdbc;
 
+import java.util.Optional;
+
 /**
  * データベースの主にテーブルに関するメタデータを保持し、参照することが可能であることを表すインターフェイスです。
  * @author 千葉 哲嗣
@@ -23,8 +25,16 @@ public interface Metadata {
 	 * パラメータで指定されたテーブルの、定義情報を返します。
 	 * @param path 対象となるテーブル
 	 * @return テーブル定義情報
+	 * @throws IllegalArgumentException path に対する情報が存在しない場合
 	 */
 	TableMetadata getTableMetadata(TablePath path);
+
+	/**
+	 * パラメータで指定されたテーブルの、定義情報を返します。
+	 * @param path 対象となるテーブル
+	 * @return テーブル定義情報
+	 */
+	Optional<TableMetadata> tableMetadata(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルに存在するカラムの、定義情報を返します。
@@ -37,8 +47,16 @@ public interface Metadata {
 	 * パラメータで指定されたテーブルに存在する主キーを構成する情報を返します。
 	 * @param path 対象となるテーブル
 	 * @return 主キーを構成する情報
+	 * @throws IllegalArgumentException path に対する情報が存在しない場合
 	 */
 	PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path);
+
+	/**
+	 * パラメータで指定されたテーブルに存在する主キーを構成する情報を返します。
+	 * @param path 対象となるテーブル
+	 * @return 主キーを構成する情報
+	 */
+	Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path);
 
 	/**
 	 * パラメータで指定されたテーブルが外部キー参照しているテーブルを返します。

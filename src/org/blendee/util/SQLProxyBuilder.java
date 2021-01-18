@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.function.Consumer;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BResultSet;
@@ -89,6 +90,19 @@ public class SQLProxyBuilder {
 	 */
 	public static void removeBatch() {
 		batchThreadLocal.remove();
+	}
+
+	/**
+	 * @param consumer
+	 */
+	public static void execute(Consumer<Batch> consumer) {
+		Batch batch = BlendeeManager.getConnection().getBatch();
+		batchThreadLocal.set(batch);
+		try {
+			consumer.accept(batch);
+		} finally {
+			batchThreadLocal.remove();
+		}
 	}
 
 	private static class SQLProxyInvocationHandler implements InvocationHandler {

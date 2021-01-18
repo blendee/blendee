@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.blendee.internal.CollectionMap;
@@ -124,6 +125,11 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
+		return getTable(path).getTableMetadata().orElseThrow(() -> new IllegalArgumentException(path.toString()));
+	}
+
+	@Override
+	public Optional<TableMetadata> tableMetadata(TablePath path) {
 		return getTable(path).getTableMetadata();
 	}
 
@@ -134,6 +140,11 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+		return getTable(path).getPrimaryKey().orElseThrow(() -> new IllegalArgumentException(path.toString()));
+	}
+
+	@Override
+	public Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path) {
 		return getTable(path).getPrimaryKey();
 	}
 
@@ -295,16 +306,16 @@ public class VirtualSpace implements Metadata {
 			this.exportedKeyResources = exportedKeyResources;
 		}
 
-		TableMetadata getTableMetadata() {
-			return tableMetadata;
+		Optional<TableMetadata> getTableMetadata() {
+			return Optional.of(tableMetadata);
 		}
 
 		ColumnMetadata[] getColumnMetadatas() {
 			return columnMetadatas.clone();
 		}
 
-		PrimaryKeyMetadata getPrimaryKey() {
-			return primaryKey;
+		Optional<PrimaryKeyMetadata> getPrimaryKey() {
+			return Optional.of(primaryKey);
 		}
 
 		TablePath[] getResourcesOfImportedKey() {
@@ -325,13 +336,18 @@ public class VirtualSpace implements Metadata {
 		}
 
 		@Override
+		Optional<TableMetadata> getTableMetadata() {
+			return Optional.empty();
+		}
+
+		@Override
 		ColumnMetadata[] getColumnMetadatas() {
 			return emptyColumnMetadataArray;
 		}
 
 		@Override
-		PrimaryKeyMetadata getPrimaryKey() {
-			return null;
+		Optional<PrimaryKeyMetadata> getPrimaryKey() {
+			return Optional.empty();
 		}
 
 		@Override

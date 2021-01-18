@@ -1,5 +1,8 @@
 package org.blendee.jdbc;
 
+import java.util.Objects;
+import java.util.Optional;
+
 /**
  * Blendee の設定を管理し、トランザクションの生成、接続の管理等をおこなうハブクラスです。
  * @author 千葉 哲嗣
@@ -67,7 +70,8 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public AutoCloseableFinalizer getAutoCloseableFinalizer() {
 		synchronized (lock) {
-			return autoCloseableFinalizer;
+			//autoCloseableFinalizer==nullの場合、初期化されていないので、エラーとする
+			return Objects.requireNonNull(autoCloseableFinalizer);
 		}
 	}
 
@@ -99,7 +103,7 @@ public class BlendeeManager implements ManagementSubject {
 		if (config.usesLazyTransaction()) {
 			transaction = new LazyTransaction(factory);
 		} else {
-			transaction = factory.createTransaction();
+			transaction = Objects.requireNonNull(factory.createTransaction());
 		}
 
 		transaction.prepareConnection();
@@ -128,10 +132,12 @@ public class BlendeeManager implements ManagementSubject {
 	public Metadata getMetadata() {
 		synchronized (lock) {
 			if (metadata == null) {
+				//不明な実装が返すオブジェクトなのでチェック
+				Metadata metadata = Objects.requireNonNull(config.getMetadataFactory().createMetadata());
 				if (config.usesMetadataCache()) {
-					metadata = new CacheMetadata(config.getMetadataFactory().createMetadata());
+					this.metadata = new CacheMetadata(metadata);
 				} else {
-					metadata = config.getMetadataFactory().createMetadata();
+					this.metadata = metadata;
 				}
 			}
 
@@ -144,7 +150,15 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return {@link BlendeeManager}
 	 */
 	public static BlendeeManager get() {
-		return ContextManager.get(BlendeeManager.class);
+		return Objects.requireNonNull(ContextManager.get(BlendeeManager.class));
+	}
+
+	/**
+	 * 現在のコンテキストの {@link BlendeeManager} を返します。
+	 * @return {@link BlendeeManager}
+	 */
+	public static Optional<BlendeeManager> optional() {
+		return Optional.ofNullable(ContextManager.get(BlendeeManager.class));
 	}
 
 	/**
@@ -169,6 +183,25 @@ public class BlendeeManager implements ManagementSubject {
 		if (connection == null) throw new IllegalStateException(BConnection.class.getSimpleName() + ": not created for current thread");
 
 		return connection;
+	}
+
+	/**
+	 * 現在のスレッドが持つ接続を返します。
+	 * @return 接続
+	 */
+	public static Optional<BConnection> connection() {
+		Optional<BlendeeManager> manager = optional();
+		if (manager.isPresent()) {
+			Transaction transaction = manager.get().transactionThreadLocal.get();
+			if (transaction == null) return Optional.empty();
+
+			BConnection connection = transaction.getConnection();
+			if (connection == null) return Optional.empty();
+
+			return Optional.of(connection);
+		}
+
+		return Optional.empty();
 	}
 
 	/**

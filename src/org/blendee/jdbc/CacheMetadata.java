@@ -17,8 +17,7 @@ class CacheMetadata extends MetadataBase {
 	private final Metadata base;
 
 	CacheMetadata(Metadata metadata) {
-		Objects.requireNonNull(metadata);
-		base = metadata;
+		base = Objects.requireNonNull(metadata);
 	}
 
 	@Override
@@ -42,6 +41,22 @@ class CacheMetadata extends MetadataBase {
 		});
 
 		return tables.clone();
+	}
+
+	@Override
+	public TableMetadata getTableMetadata(TablePath path) {
+		return cache.getTableMetadata(new Request<TablePath, TableMetadata>() {
+
+			@Override
+			TablePath createCacheKey() {
+				return path;
+			}
+
+			@Override
+			TableMetadata createCacheTarget() {
+				return CacheMetadata.super.getTableMetadata(path);
+			}
+		});
 	}
 
 	@Override

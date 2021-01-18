@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -85,12 +86,17 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
+		return tableMetadata(path).orElseThrow(() -> new IllegalArgumentException(path.toString()));
+	}
+
+	@Override
+	public Optional<TableMetadata> tableMetadata(TablePath path) {
 		try (ResultSet result = connection().getMetaData()
 			.getTables(null, identifier.regularize(path.getSchemaName()), identifier.regularize(path.getTableName()), null)) {
 
-			result.next();
+			if (!result.next()) return Optional.empty();
 
-			return new ConcreteTableMetadata(result);
+			return Optional.of(new ConcreteTableMetadata(result));
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}
@@ -114,6 +120,11 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
+		return primaryKeyMetadata(path).orElseThrow(() -> new IllegalArgumentException(path.toString()));
+	}
+
+	@Override
+	public Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path) {
 		try (ResultSet result = connection().getMetaData()
 			.getPrimaryKeys(
 				null,
@@ -130,6 +141,8 @@ public class JDBCMetadata implements Metadata {
 						result.getString("COLUMN_NAME")));
 			}
 
+			if (columnList.size() == 0) return Optional.empty();
+
 			Collections.sort(columnList);
 			int size = columnList.size();
 			String[] columnNames = new String[size];
@@ -137,7 +150,7 @@ public class JDBCMetadata implements Metadata {
 				columnNames[i] = columnList.get(i).name;
 			}
 
-			return new SimplePrimaryKeyMetadata(name, columnNames, false);
+			return Optional.of(new SimplePrimaryKeyMetadata(name, columnNames, false));
 		} catch (SQLException e) {
 			throw config.getErrorConverter().convert(e);
 		}

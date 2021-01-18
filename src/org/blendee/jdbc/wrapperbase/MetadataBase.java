@@ -1,5 +1,7 @@
 package org.blendee.jdbc.wrapperbase;
 
+import java.util.Optional;
+
 import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
@@ -31,6 +33,11 @@ public abstract class MetadataBase implements Metadata {
 	}
 
 	@Override
+	public Optional<TableMetadata> tableMetadata(TablePath path) {
+		return base().tableMetadata(path);
+	}
+
+	@Override
 	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
 		return base().getColumnMetadatas(path);
 	}
@@ -38,6 +45,11 @@ public abstract class MetadataBase implements Metadata {
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
 		return base().getPrimaryKeyMetadata(path);
+	}
+
+	@Override
+	public Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path) {
+		return base().primaryKeyMetadata(path);
 	}
 
 	@Override

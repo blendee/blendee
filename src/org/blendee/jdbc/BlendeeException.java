@@ -42,9 +42,4 @@ public class BlendeeException extends RuntimeException {
 	public BlendeeException(String message, Throwable t) {
 		super(message, t);
 	}
-
-	@Override
-	public Throwable getCause() {
-		return super.getCause();
-	}
 }

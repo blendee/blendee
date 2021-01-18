@@ -11,6 +11,8 @@ public class MetadataCache implements ManagementSubject {
 
 	private final Map<String, TablePath[]> tableNamesCache = new HashMap<>();
 
+	private final Map<TablePath, TableMetadata> tableCache = new HashMap<>();
+
 	private final Map<TablePath, ColumnMetadata[]> columnMetadatasCache = new HashMap<>();
 
 	private final Map<TablePath, PrimaryKeyMetadata> primaryKeyCache = new HashMap<>();
@@ -26,6 +28,7 @@ public class MetadataCache implements ManagementSubject {
 	 */
 	public void clearCache() {
 		clearCacheInternal(tableNamesCache);
+		clearCacheInternal(tableCache);
 		clearCacheInternal(columnMetadatasCache);
 		clearCacheInternal(primaryKeyCache);
 		clearCacheInternal(importedKeyCache);
@@ -35,6 +38,10 @@ public class MetadataCache implements ManagementSubject {
 
 	TablePath[] getTables(Request<String, TablePath[]> request) {
 		return execute(tableNamesCache, request);
+	}
+
+	TableMetadata getTableMetadata(Request<TablePath, TableMetadata> request) {
+		return execute(tableCache, request);
 	}
 
 	ColumnMetadata[] getColumnMetadatas(Request<TablePath, ColumnMetadata[]> request) {
