@@ -116,6 +116,7 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COUNT() {
+		getSelectStatement().quitRowMode();
 		return new ColumnExpression(getSelectStatement(), COUNT_TEMPLATE, new PseudoColumn(getRelationship(), "*", false));
 	}
 
