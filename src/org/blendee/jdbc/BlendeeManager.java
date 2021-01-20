@@ -70,8 +70,7 @@ public class BlendeeManager implements ManagementSubject {
 	 */
 	public AutoCloseableFinalizer getAutoCloseableFinalizer() {
 		synchronized (lock) {
-			//autoCloseableFinalizer==nullの場合、初期化されていないので、エラーとする
-			return Objects.requireNonNull(autoCloseableFinalizer);
+			return autoCloseableFinalizer;
 		}
 	}
 
