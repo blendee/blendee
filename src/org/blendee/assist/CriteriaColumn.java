@@ -912,6 +912,18 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements C
 	 * @param values 検索条件の値
 	 * @return 連続呼び出し用 {@link SelectStatement}
 	 */
+	public O IN(UUID... values) {
+		getContext().addCriteria(
+			merge(factory.createInCriteria(column(), values)));
+
+		return logocalOperators();
+	}
+
+	/**
+	 * 条件句に、このカラムの IN 条件を追加します。
+	 * @param values 検索条件の値
+	 * @return 連続呼び出し用 {@link SelectStatement}
+	 */
 	public O IN(Bindable... values) {
 		getContext().addCriteria(
 			merge(factory.createInCriteria(column(), values)));

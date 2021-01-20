@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -321,6 +322,21 @@ public class CriteriaFactory {
 	public Criteria createInCriteria(
 		Column column,
 		Timestamp... values) {
+		return createCriteria(
+			buildInClause(values.length),
+			new Column[] { column },
+			BindableConverter.convert(values));
+	}
+
+	/**
+	 * IN を使用した条件句を生成します。
+	 * @param column 対象となるカラム
+	 * @param values 比較する値
+	 * @return 作成されたインスタンス
+	 */
+	public Criteria createInCriteria(
+		Column column,
+		UUID... values) {
 		return createCriteria(
 			buildInClause(values.length),
 			new Column[] { column },
