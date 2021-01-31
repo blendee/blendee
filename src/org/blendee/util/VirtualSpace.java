@@ -125,7 +125,7 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
-		return getTable(path).getTableMetadata().orElseThrow(() -> new IllegalArgumentException(path.toString()));
+		return getTable(path).getTableMetadata().orElse(null);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
-		return getTable(path).getPrimaryKey().orElseThrow(() -> new IllegalArgumentException(path.toString()));
+		return getTable(path).getPrimaryKey().orElse(null);
 	}
 
 	@Override

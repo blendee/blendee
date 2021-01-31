@@ -86,7 +86,7 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
-		return tableMetadata(path).orElseThrow(() -> new IllegalArgumentException(path.toString()));
+		return tableMetadata(path).orElse(null);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
-		return primaryKeyMetadata(path).orElseThrow(() -> new IllegalArgumentException(path.toString()));
+		return primaryKeyMetadata(path).orElse(null);
 	}
 
 	@Override
