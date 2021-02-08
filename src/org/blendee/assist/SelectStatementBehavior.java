@@ -1,6 +1,7 @@
 package org.blendee.assist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -678,8 +679,18 @@ public abstract class SelectStatementBehavior<
 					DataAccessHelper.select(
 						fetchSQL,
 						s -> {
-							for (int i = 0; i < primaryKeyMembers.length; i++) {
-								primaryKeyMembers[i].toBinder().bind(i + 1, s);
+							List<Binder> binders = values.binders();
+							if (binders.size() > 0) {
+								List<Bindable> bindables = new ArrayList<>();
+								bindables.addAll(values.binders());
+								bindables.addAll(Arrays.asList(primaryKeyMembers));
+								for (int i = 0; i < bindables.size(); i++) {
+									bindables.get(i).toBinder().bind(i + 1, s);
+								}
+							} else {
+								for (int i = 0; i < primaryKeyMembers.length; i++) {
+									primaryKeyMembers[i].toBinder().bind(i + 1, s);
+								}
 							}
 						},
 						relationship,
@@ -813,9 +824,10 @@ public abstract class SelectStatementBehavior<
 
 		String fetchSQL;
 		{
+			Criteria criteria = createFetchCriteria(table);
 			SQLQueryBuilder fetchSelector = new DataAccessHelper(id).buildSQLQueryBuilder(
 				context,
-				createFetchCriteria(table),
+				whereClause == null ? criteria : whereClause.and(criteria),
 				null,
 				decorators.decorators());
 
