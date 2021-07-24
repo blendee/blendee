@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 /**
@@ -123,14 +124,15 @@ public interface BPreparedStatement extends BStatement {
 	void setNull(int parameterIndex, int type);
 
 	/**
-	 * このクラスのインスタンスが内部に {@link PreparedStatementBorrower} を持つ場合、それを貸します。
+	 * このクラスのインスタンスが内部に {@link PreparedStatement} を持つ場合、それを貸します。
 	 * @param borrower 借り手
 	 */
-	void lend(PreparedStatementBorrower borrower);
+	void lendPreparedStatement(JDBCBorrower<PreparedStatement> borrower);
 
 	/**
-	 * {@link PreparedStatementBorrower} 用 {@link JDBCBorrower}
+	 * このクラスのインスタンスが内部に {@link Statement} を持つ場合、それを貸します。
+	 * @param borrower 借り手
+	 * @return 戻り値
 	 */
-	interface PreparedStatementBorrower extends JDBCBorrower<PreparedStatement> {
-	}
+	<R> R lendPreparedStatementAndGet(ReturningJDBCBorrower<PreparedStatement, R> borrower);
 }

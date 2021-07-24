@@ -14,7 +14,7 @@ import org.blendee.internal.U;
 /**
  * @author 千葉 哲嗣
  */
-class SQLLogger {
+public class SQLLogger {
 
 	private final List<BindingValue> values = new LinkedList<>();
 
@@ -24,20 +24,35 @@ class SQLLogger {
 
 	private String sql;
 
-	SQLLogger(BLogger logger, Pattern stackTracePattern) {
+	/**
+	 * @param logger
+	 * @param stackTracePattern
+	 */
+	public SQLLogger(BLogger logger, Pattern stackTracePattern) {
 		this.logger = logger;
 		this.stackTracePattern = stackTracePattern;
 	}
 
-	void setSql(String sql) {
+	/**
+	 * @param sql
+	 */
+	public void setSql(String sql) {
 		this.sql = sql;
 	}
 
-	void addBindingValue(String type, int index, Object value) {
+	/**
+	 * @param type
+	 * @param index
+	 * @param value
+	 */
+	public void addBindingValue(String type, int index, Object value) {
 		values.add(new BindingValue(type, index, value));
 	}
 
-	void logElapsed(long startNanos) {
+	/**
+	 * @param startNanos
+	 */
+	public void logElapsed(long startNanos) {
 		synchronized (getClass()) {
 			float elapsed = (System.nanoTime() - startNanos) / 1000000f;
 			logger.println("elapsed: " + new BigDecimal(elapsed).setScale(2, RoundingMode.DOWN) + "ms");
@@ -45,7 +60,11 @@ class SQLLogger {
 		}
 	}
 
-	void flush() {
+	/**
+	 * flush log
+	 */
+	public void flush() {
+		//ログ出力が輻輳した場合でもSQL単位でまとまって出力するようにsynchronized
 		synchronized (getClass()) {
 			if (logger == null) return;
 			logger.println("Blendee SQL Log: [" + new Date() + "]");

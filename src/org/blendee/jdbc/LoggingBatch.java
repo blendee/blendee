@@ -7,13 +7,17 @@ import org.blendee.jdbc.wrapperbase.BatchBase;
 /**
  * @author 千葉 哲嗣
  */
-class LoggingBatch extends BatchBase {
+public class LoggingBatch extends BatchBase {
 
 	private final SQLLogger logger;
 
 	private final Batch base;
 
-	LoggingBatch(Batch base, SQLLogger logger) {
+	/**
+	 * @param base
+	 * @param logger
+	 */
+	public LoggingBatch(Batch base, SQLLogger logger) {
 		this.base = Objects.requireNonNull(base);
 		this.logger = Objects.requireNonNull(logger);
 	}

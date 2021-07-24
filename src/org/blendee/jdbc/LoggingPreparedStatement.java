@@ -11,13 +11,17 @@ import org.blendee.jdbc.wrapperbase.PreparedStatementBase;
 /**
  * @author 千葉 哲嗣
  */
-class LoggingPreparedStatement extends PreparedStatementBase {
+public class LoggingPreparedStatement extends PreparedStatementBase {
 
 	private final SQLLogger logger;
 
 	private final BPreparedStatement base;
 
-	LoggingPreparedStatement(BPreparedStatement statement, SQLLogger logger) {
+	/**
+	 * @param statement
+	 * @param logger
+	 */
+	public LoggingPreparedStatement(BPreparedStatement statement, SQLLogger logger) {
 		Objects.requireNonNull(statement);
 		Objects.requireNonNull(logger);
 

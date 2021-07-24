@@ -7,13 +7,17 @@ import org.blendee.jdbc.wrapperbase.StatementBase;
 /**
  * @author 千葉 哲嗣
  */
-class LoggingStatement extends StatementBase {
+public class LoggingStatement extends StatementBase {
 
 	private final SQLLogger logger;
 
 	private final BStatement base;
 
-	LoggingStatement(BStatement statement, SQLLogger logger) {
+	/**
+	 * @param statement
+	 * @param logger
+	 */
+	public LoggingStatement(BStatement statement, SQLLogger logger) {
 		Objects.requireNonNull(statement);
 		Objects.requireNonNull(logger);
 

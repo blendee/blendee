@@ -5,12 +5,14 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.JDBCBorrower;
+import org.blendee.jdbc.ReturningJDBCBorrower;
 
 /**
  * {@link BPreparedStatement} のラッパーを実装するベースとなる、抽象基底クラスです。
@@ -150,12 +152,22 @@ public abstract class PreparedStatementBase implements BPreparedStatement {
 	}
 
 	@Override
-	public void lend(JDBCBorrower<Statement> borrower) {
-		base().lend(borrower);
+	public void lendStatement(JDBCBorrower<Statement> borrower) {
+		base().lendStatement(borrower);
 	}
 
 	@Override
-	public void lend(PreparedStatementBorrower borrower) {
-		base().lend(borrower);
+	public <R> R lendStatementAndGet(ReturningJDBCBorrower<Statement, R> borrower) {
+		return base().lendStatementAndGet(borrower);
+	}
+
+	@Override
+	public void lendPreparedStatement(JDBCBorrower<PreparedStatement> borrower) {
+		base().lendPreparedStatement(borrower);
+	}
+
+	@Override
+	public <R> R lendPreparedStatementAndGet(ReturningJDBCBorrower<PreparedStatement, R> borrower) {
+		return base().lendPreparedStatementAndGet(borrower);
 	}
 }

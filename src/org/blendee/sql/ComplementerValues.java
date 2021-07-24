@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import org.blendee.jdbc.ChainPreparedStatementComplementer;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.jdbc.ReturningJDBCBorrower;
 
 /**
  * {@link BPreparedStatement} にセットする値を持つ入れ物クラスです。
@@ -179,12 +181,22 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			}
 
 			@Override
-			public void lend(JDBCBorrower<Statement> borrower) {
+			public void lendStatement(JDBCBorrower<Statement> borrower) {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public void lend(PreparedStatementBorrower borrower) {
+			public void lendPreparedStatement(JDBCBorrower<PreparedStatement> borrower) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public <R> R lendStatementAndGet(ReturningJDBCBorrower<Statement, R> borrower) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public <R> R lendPreparedStatementAndGet(ReturningJDBCBorrower<PreparedStatement, R> borrower) {
 				throw new UnsupportedOperationException();
 			}
 		});

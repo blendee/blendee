@@ -15,8 +15,9 @@ import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BlendeeException;
-import org.blendee.jdbc.JDBCBorrower;
 import org.blendee.jdbc.Configure;
+import org.blendee.jdbc.JDBCBorrower;
+import org.blendee.jdbc.ReturningJDBCBorrower;
 
 /**
  * Blendee が使用する {@link BPreparedStatement} の標準実装クラスです。
@@ -234,7 +235,7 @@ public class ConcretePreparedStatement implements BPreparedStatement {
 	}
 
 	@Override
-	public void lend(JDBCBorrower<Statement> borrower) {
+	public void lendStatement(JDBCBorrower<Statement> borrower) {
 		try {
 			borrower.accept(statement);
 		} catch (SQLException e) {
@@ -243,9 +244,27 @@ public class ConcretePreparedStatement implements BPreparedStatement {
 	}
 
 	@Override
-	public void lend(PreparedStatementBorrower borrower) {
+	public <R> R lendStatementAndGet(ReturningJDBCBorrower<Statement, R> borrower) {
+		try {
+			return borrower.apply(statement);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
+		}
+	}
+
+	@Override
+	public void lendPreparedStatement(JDBCBorrower<PreparedStatement> borrower) {
 		try {
 			borrower.accept(statement);
+		} catch (SQLException e) {
+			throw new BlendeeException(e);
+		}
+	}
+
+	@Override
+	public <R> R lendPreparedStatementAndGet(ReturningJDBCBorrower<PreparedStatement, R> borrower) {
+		try {
+			return borrower.apply(statement);
 		} catch (SQLException e) {
 			throw new BlendeeException(e);
 		}
