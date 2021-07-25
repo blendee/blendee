@@ -12,6 +12,7 @@ import org.blendee.jdbc.DefaultLogger;
 import org.blendee.jdbc.ErrorConverter;
 import org.blendee.jdbc.Initializer;
 import org.blendee.jdbc.MetadataFactory;
+import org.blendee.jdbc.SQLExtractor;
 import org.blendee.jdbc.TransactionFactory;
 import org.blendee.sql.DefaultValueExtractors;
 import org.blendee.sql.ValueExtractors;
@@ -110,6 +111,15 @@ public interface BlendeeConstants {
 	 */
 	public static final ParsableOptionKey<Class<? extends BLogger>> LOGGER_CLASS = new ParsableOptionKey<>(
 		"logger-class",
+		TO_CLASS);
+
+	/**
+	 * default: {@link DefaultLogger}
+	 * (Class&lt;Logger&gt;) LOGGER_CLASS
+	 * @see Initializer#setLoggerClass(Class)
+	 */
+	public static final ParsableOptionKey<Class<? extends SQLExtractor>> SQL_EXTRACTOR_CLASS = new ParsableOptionKey<>(
+		"sql-extractor-class",
 		TO_CLASS);
 
 	/**

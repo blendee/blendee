@@ -28,6 +28,8 @@ public final class Initializer {
 
 	private Class<? extends BLogger> loggerClass = DefaultLogger.class;
 
+	private Class<? extends SQLExtractor> sqlExtractorClass = DefaultSQLExtractor.class;
+
 	private boolean useAutoCommit = false;
 
 	private boolean useLazyTransaction = false;
@@ -103,6 +105,18 @@ public final class Initializer {
 		if (freeze) throw new IllegalStateException();
 		Objects.requireNonNull(loggerClass);
 		this.loggerClass = loggerClass;
+	}
+
+	/**
+	 * Blendee が使用する {@link SQLExtractor} を設定します。
+	 * @param sqlExtractorClass {@link SQLExtractor} を実装したクラス
+	 * @throws IllegalStateException 既に {@link BlendeeManager#initialize(Initializer)} を実行している場合
+	 */
+	public synchronized void setSQLExtractorClass(
+		Class<? extends SQLExtractor> sqlExtractorClass) {
+		if (freeze) throw new IllegalStateException();
+		Objects.requireNonNull(sqlExtractorClass);
+		this.sqlExtractorClass = sqlExtractorClass;
 	}
 
 	/**
@@ -206,6 +220,7 @@ public final class Initializer {
 			dataTypeConverterClass,
 			metadataFactoryClass,
 			loggerClass,
+			sqlExtractorClass,
 			schemaNames.toArray(new String[schemaNames.size()]),
 			useAutoCommit,
 			useLazyTransaction,

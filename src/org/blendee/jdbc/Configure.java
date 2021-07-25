@@ -25,6 +25,8 @@ public final class Configure {
 
 	private final Class<? extends BLogger> loggerClass;
 
+	private final Class<? extends SQLExtractor> sqlExtractorClass;
+
 	private final String[] schemaNames;
 
 	private final boolean useAutoCommit;
@@ -47,6 +49,8 @@ public final class Configure {
 
 	private BLogger logger;
 
+	private SQLExtractor sqlExtractor;
+
 	private ErrorConverter errorConverter;
 
 	private DataTypeConverter dataTypeConverter;
@@ -59,6 +63,7 @@ public final class Configure {
 		Class<? extends DataTypeConverter> dataTypeConverterClass,
 		Class<? extends MetadataFactory> metadataFactoryClass,
 		Class<? extends BLogger> loggerClass,
+		Class<? extends SQLExtractor> sqlExtractorClass,
 		String[] schemaNames,
 		boolean useAutoCommit,
 		boolean useLazyTransaction,
@@ -72,6 +77,7 @@ public final class Configure {
 		this.dataTypeConverterClass = dataTypeConverterClass;
 		this.metadataFactoryClass = metadataFactoryClass;
 		this.loggerClass = loggerClass;
+		this.sqlExtractorClass = sqlExtractorClass;
 		this.schemaNames = schemaNames.clone();
 		this.useAutoCommit = useAutoCommit;
 		this.useLazyTransaction = useLazyTransaction;
@@ -132,6 +138,16 @@ public final class Configure {
 	public BLogger getLogger() {
 		check();
 		return getLoggerWithoutCheck();
+	}
+
+	/**
+	 * この設定で使用している {@link SQLExtractor} を返します。
+	 * @return この設定で使用している {@link SQLExtractor}
+	 * @throws IllegalStateException 古い設定を使用している場合
+	 */
+	public SQLExtractor getSQLExtractor() {
+		check();
+		return getSQLExtractorWithoutCheck();
 	}
 
 	/**
@@ -261,6 +277,11 @@ public final class Configure {
 		return logger;
 	}
 
+	synchronized SQLExtractor getSQLExtractorWithoutCheck() {
+		if (!initialized) initialize();
+		return sqlExtractor;
+	}
+
 	Pattern getLogStackTracePatternWithoutCheck() {
 		return logStackTracePattern;
 	}
@@ -273,6 +294,7 @@ public final class Configure {
 		errorConverter = createInstance(errorConverterClass);
 		dataTypeConverter = createInstance(dataTypeConverterClass);
 		logger = createInstance(loggerClass);
+		sqlExtractor = createInstance(sqlExtractorClass);
 
 		initialized = true;
 	}

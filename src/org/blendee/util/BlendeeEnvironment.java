@@ -202,6 +202,8 @@ public class BlendeeEnvironment {
 
 			BlendeeConstants.LOGGER_CLASS.extract(initValues).ifPresent(clazz -> init.setLoggerClass(clazz));
 
+			BlendeeConstants.SQL_EXTRACTOR_CLASS.extract(initValues).ifPresent(clazz -> init.setSQLExtractorClass(clazz));
+
 			BlendeeConstants.LOG_STACKTRACE_FILTER.extract(initValues).ifPresent(filter -> init.setLogStackTraceFilter(Pattern.compile(filter)));
 
 			BlendeeConstants.ERROR_CONVERTER_CLASS.extract(initValues).ifPresent(clazz -> init.setErrorConverterClass(clazz));
