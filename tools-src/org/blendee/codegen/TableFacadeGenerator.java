@@ -4,9 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -99,56 +97,56 @@ public class TableFacadeGenerator {
 	}
 
 	static {
-		String source = readTemplate(TableFacadeTemplate.class, "UTF-8");
+		String source = Formatter.readTemplate(TableFacadeTemplate.class, "UTF-8");
 		{
 			String[] result = pickupFromSource(source, "ColumnNamesPart");
-			columnNamesPartTemplate = convertToTemplate(result[0]);
+			columnNamesPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "PrimaryKeyPart");
-			primaryKeyPartTemplate = convertToTemplate(result[0]);
+			primaryKeyPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "ForeignKeysPart");
-			foreignKeysPartTemplate = convertToTemplate(result[0]);
+			foreignKeysPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "RowPropertyAccessorPart");
-			rowPropertyAccessorPartTemplate = convertToTemplate(result[0]);
+			rowPropertyAccessorPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "RowRelationshipPart");
-			rowRelationshipPartTemplate = convertToTemplate(result[0]);
+			rowRelationshipPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "ColumnPart1");
-			relationshipColumnPart1Template = convertToTemplate(result[0]);
+			relationshipColumnPart1Template = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "ColumnPart2");
-			relationshipColumnPart2Template = convertToTemplate(result[0]);
+			relationshipColumnPart2Template = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
 		{
 			String[] result = pickupFromSource(source, "TableRelationshipPart");
-			tableRelationshipPartTemplate = convertToTemplate(result[0]);
+			tableRelationshipPartTemplate = Formatter.convertToTemplate(result[0]);
 			source = result[1];
 		}
 
-		template = convertToTemplate(source);
+		template = Formatter.convertToTemplate(source);
 	}
 
 	/**
@@ -641,24 +639,11 @@ public class TableFacadeGenerator {
 		return new String[] { matcher.group(1), matcher.replaceAll("") };
 	}
 
-	private static String convertToTemplate(String source) {
-		source = source.replaceAll("/\\*--\\*/.+?/\\*--\\*/", "");
-		return source.replaceAll("/\\*\\+\\+(.+?)\\+\\+\\*/", "$1");
-	}
-
 	private static String erase(String source, boolean erase) {
 		if (erase)
 			return source.replaceAll("/\\*--\\?--\\*/.+?/\\*--\\?--\\*/", "");
 
 		return source.replaceAll("/\\*--\\?--\\*/", "");
-	}
-
-	private static String readTemplate(Class<?> target, String charset) {
-		try (InputStream input = target.getResourceAsStream(target.getSimpleName() + ".java")) {
-			return new String(U.readBytes(input), charset);
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
 	}
 
 	/**

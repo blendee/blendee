@@ -4,9 +4,9 @@
 /blendee-src.jar
 /blendee-api
 /blendee-api.zip
-/blende-codegen.jar
-/blende-codegen-src.jar
-/blendee-codegen-api.zip
-/blendee-codegen.jar
+/blende-tools.jar
+/blende-tools-src.jar
+/blendee-tools-api.zip
+/blendee-tools.jar
 /target
-/codegen/target
+/tools/target

@@ -4,9 +4,9 @@
 <!--
 Blendee build.xml
 -->
-<project name="blendee-codegen" default="all">
+<project name="blendee-tools" default="all">
 
-	<property name="title" value="blendee-codegen" />
+	<property name="title" value="blendee-tools" />
 	<property name="version" value="0.7.0" />
 	<property name="vendor" value="blendee.org" />
 
@@ -15,47 +15,47 @@ Blendee build.xml
 	</path>
 
 	<!--
-	blendee-codegen.jar を生成します。
+	blendee-tools.jar を生成します。
 	-->
 	<target name="all" depends="cleanup">
 		<antcall target="compile" />
 		<copy todir="build">
 			<fileset dir="src" includes="**/*.java" />
-			<fileset dir="codegensrc" includes="**/*.java" />
+			<fileset dir="tools-src" includes="**/*.java" />
 		</copy>
-		<jar basedir="build" jarfile="blendee-codegen.jar">
+		<jar basedir="build" jarfile="blendee-tools.jar">
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
 
 	<!--
-	ソースファイルを含まない blendee-codegen.jar を生成します。
+	ソースファイルを含まない blendee-tools.jar を生成します。
 	-->
 	<target name="class-jar" depends="cleanup">
 		<antcall target="compile" />
-		<jar basedir="build" jarfile="blendee-codegen.jar">
+		<jar basedir="build" jarfile="blendee-tools.jar">
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
 
 	<!--
-	ソースファイルのみの jar ファイル blendee-codegen-src.jar を生成します。
+	ソースファイルのみの jar ファイル blendee-tools-src.jar を生成します。
 	-->
 	<target name="src-jar" depends="cleanup">
-		<jar basedir="src; codegensrc" jarfile="blendee-codegen-src.jar">
+		<jar basedir="src; tools-src" jarfile="blendee-tools-src.jar">
 			<include name="**/*.java" />
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -67,10 +67,10 @@ Blendee build.xml
 	<target name="javadoc" depends="cleanup">
 		<mkdir dir="blendee-api" />
 		<javadoc classpathref="develop.classpath" packagenames="org.blendee.*" destdir="blendee-api" windowtitle="Blendee API" doctitle="Blendee API" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
-			<sourcepath path="src; codegensrc" />
+			<sourcepath path="src; tools-src" />
 			<link offline="true" href="https://docs.oracle.com/javase/jp/8/docs/api/" packagelistLoc="." />
 		</javadoc>
-		<zip zipfile="blendee-codegen-api.zip" basedir="blendee-api" />
+		<zip zipfile="blendee-tools-api.zip" basedir="blendee-api" />
 	</target>
 
 	<!--
@@ -79,10 +79,10 @@ Blendee build.xml
 	<target name="cleanup">
 		<delete dir="build" />
 		<delete dir="blendee.jar" />
-		<delete file="blendee-codegen.jar" />
-		<delete file="blendee-codegen-src.jar" />
+		<delete file="blendee-tools.jar" />
+		<delete file="blendee-tools-src.jar" />
 		<delete dir="blendee-api" />
-		<delete file="blendee-codegen-api.zip" />
+		<delete file="blendee-tools-api.zip" />
 	</target>
 
 	<!--
@@ -90,7 +90,7 @@ Blendee build.xml
 	-->
 	<target name="compile">
 		<mkdir dir="build" />
-		<javac srcdir="src; codegensrc" destdir="build" debug="true" optimize="true" deprecation="true" encoding="UTF-8" includeantruntime="false">
+		<javac srcdir="src; tools-src" destdir="build" debug="true" optimize="true" deprecation="true" encoding="UTF-8" includeantruntime="false">
 			<classpath refid="develop.classpath" />
 			<include name="**/*.java" />
 			<exclude name="**/package-info.java" />

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.blendee</groupId>
-	<artifactId>blendee-codegen</artifactId>
+	<artifactId>blendee-tools</artifactId>
 	<version>0.8.0</version>
 	<packaging>jar</packaging>
 
@@ -19,7 +19,7 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>../codegensrc</sourceDirectory>
+		<sourceDirectory>../tools-src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

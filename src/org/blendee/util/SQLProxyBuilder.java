@@ -31,6 +31,9 @@ import org.blendee.sql.ValueExtractorsConfigure;
  */
 public class SQLProxyBuilder {
 
+	@SuppressWarnings("javadoc")
+	public static final String METADATA_CLASS_SUFFIX = "$SQLProxyMetadata";
+
 	/**
 	 * SQL 文の文字セットとして、デフォルトの {@link Charset} を使用して ProxyObject を生成します。
 	 * @param <T> 生成される ProxyObject の型

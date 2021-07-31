@@ -24,9 +24,9 @@ Blendee build.xml
 		</copy>
 		<jar basedir="build" jarfile="blendee.jar">
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -38,9 +38,9 @@ Blendee build.xml
 		<antcall target="compile" />
 		<jar basedir="build" jarfile="blendee.jar">
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -52,9 +52,9 @@ Blendee build.xml
 		<jar basedir="src" jarfile="blendee-src.jar">
 			<include name="**/*.java" />
 			<manifest>
-				<attribute name="Implementation-Title"   value="${title}"/>
-				<attribute name="Implementation-Version" value="${version}"/>
-				<attribute name="Implementation-Vendor"  value="${vendor}"/>
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
