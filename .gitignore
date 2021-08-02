@@ -1,12 +1,1 @@
-/bin/
-/build
-/blendee.jar
-/blendee-src.jar
-/blendee-api
-/blendee-api.zip
-/blende-tools.jar
-/blende-tools-src.jar
-/blendee-tools-api.zip
-/blendee-tools.jar
-/target
-/tools/target
+target/
