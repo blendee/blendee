@@ -5,18 +5,27 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.blendee.internal.U;
+import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.PreparedStatementComplementer;
+import org.blendee.sql.Bindable;
+import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Binder;
-import org.blendee.sql.ValueExtractors;
-import org.blendee.sql.ValueExtractorsConfigure;
+import org.blendee.util.annotation.SQLProxy;
+import org.blendee.util.annotation.processor.Methods;
 
 /**
  * あらかじめ用意しておいた SQL 文を実行する Proxy クラスを生成するビルダクラスです。<br>
@@ -120,7 +129,13 @@ public class SQLProxyBuilder {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			Class<?> proxyClass = proxy.getClass().getInterfaces()[0];
 
-			String sqlFileName = proxyClass.getName().replaceAll(".+?([^\\.]+)$", "$1")
+			if (!proxyClass.isAnnotationPresent(SQLProxy.class)) throw new IllegalStateException("annotation SQLProxy not found");
+
+			String proxyClassName = proxyClass.getName();
+
+			int packageNameLength = proxyClass.getPackage().getName().length();
+
+			String sqlFileName = proxyClassName.substring(packageNameLength == 0 ? 0 : packageNameLength + 1)
 				+ "."
 				+ method.getName()
 				+ ".sql";
@@ -131,43 +146,26 @@ public class SQLProxyBuilder {
 
 			String sql = new String(U.readBytes(url.openStream()), charset);
 
-			Class<?>[] parameterTypes = method.getParameterTypes();
-
-			PreparedStatementComplementer complementer;
-
-			if (parameterTypes.length == 1 && PreparedStatementComplementer.class.isAssignableFrom(parameterTypes[0])) {
-				//パラメータ数が1でそのクラスがPreparedStatementComplementerの場合、そのまま使用する
-				complementer = (PreparedStatementComplementer) args[0];
-			} else {
-				//そうでなければ実際の引数であると判断しPreparedStatementComplementerを作成
-				ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
-				final Binder[] binders = new Binder[parameterTypes.length];
-				for (int i = 0; i < parameterTypes.length; i++) {
-					Class<?> parameterType = parameterTypes[i];
-					binders[i] = extractors.selectValueExtractor(parameterType).extractAsBinder(args[i]);
-				}
-
-				complementer = s -> {
-					for (int i = 0; i < binders.length; i++) {
-						binders[i].bind(i + 1, s);
-					}
-				};
-			}
+			Methods methods = Class.forName(proxyClassName + METADATA_CLASS_SUFFIX).getAnnotation(Methods.class);
+			SQLProxyHelper helper = new SQLProxyHelper(
+				sql,
+				Arrays.asList(methods.value()).stream().filter(m -> m.name().equals(method.getName())).findFirst().get().args(),
+				args);
 
 			Class<?> returnType = method.getReturnType();
 
 			if (returnType.equals(BResultSet.class)) {
-				return statement(sql, complementer).executeQuery();
+				return statement(helper).executeQuery();
 			} else if (returnType.equals(int.class)) {
 				Batch batch = batchThreadLocal.get();
-				if (batch == null) return statement(sql, complementer).executeUpdate();
+				if (batch == null) return statement(helper).executeUpdate();
 
-				batch.add(sql, complementer);
+				batch.add(sql, helper);
 				return 0;
 			} else if (returnType.equals(boolean.class)) {
-				return statement(sql, complementer).execute();
+				return statement(helper).execute();
 			} else if (returnType.equals(void.class)) {
-				return statement(sql, complementer).execute();
+				return statement(helper).execute();
 			} else {
 				//戻り値の型が不正です
 				throw new IllegalStateException("Return type is incorrect: " + returnType);
@@ -175,7 +173,60 @@ public class SQLProxyBuilder {
 		}
 	}
 
-	private static BStatement statement(String sql, PreparedStatementComplementer complementer) {
-		return BlendeeManager.getConnection().getStatement(sql, complementer);
+	private static class SQLProxyHelper implements PreparedStatementComplementer {
+
+		private static final Pattern placeholder = Pattern.compile("\\$\\{ *([a-zA-Z_$][a-zA-Z\\d_$]*) *\\}");
+
+		private final String sql;
+
+		private final List<Binder> binders = new ArrayList<>();
+
+		private SQLProxyHelper(String sql, String[] argNames, Object[] args) {
+			Bindable[] bindables = BindableConverter.convertAllTypes(args);
+
+			Map<String, Bindable> argMap = new HashMap<>();
+			for (int i = 0; i < argNames.length; i++) {
+				argMap.put(argNames[i], bindables[i]);
+			}
+
+			int position = 0;
+			StringBuilder converted = new StringBuilder();
+			while (true) {
+				Matcher matcher = placeholder.matcher(sql);
+
+				if (!matcher.find()) break;
+
+				converted.append(sql.substring(0, matcher.start()));
+				converted.append("?");
+
+				position = matcher.end();
+
+				sql = sql.substring(position);
+
+				String placeholder = matcher.group(1);
+				Bindable value = argMap.get(placeholder);
+
+				if (value == null) throw new IllegalStateException("place holder [" + placeholder + "] was not found");
+
+				binders.add(value.toBinder());
+			}
+
+			converted.append(sql);
+
+			this.sql = converted.toString();
+		}
+
+		@Override
+		public void complement(BPreparedStatement statement) {
+			int i = 0;
+			int size = binders.size();
+			for (; i < size; i++) {
+				binders.get(i).bind(i + 1, statement);
+			}
+		}
+	}
+
+	private static BStatement statement(SQLProxyHelper helper) {
+		return BlendeeManager.getConnection().getStatement(helper.sql, helper);
 	}
 }
