@@ -19,7 +19,7 @@ import org.blendee.jdbc.wrapperbase.PreparedStatementBase;
 /**
  * @author 千葉 哲嗣
  */
-public class ToStringLoggingConnection extends ConnectionBase implements StatementWrapper {
+class ToStringLoggingConnection extends ConnectionBase implements StatementWrapper {
 
 	static final Level level = Level.INFO;
 
