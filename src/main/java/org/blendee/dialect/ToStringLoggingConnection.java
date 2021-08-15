@@ -1,4 +1,4 @@
-package org.blendee.dialect.postgresql;
+package org.blendee.dialect;
 
 import java.util.Objects;
 import java.util.logging.Level;
@@ -19,7 +19,7 @@ import org.blendee.jdbc.wrapperbase.PreparedStatementBase;
 /**
  * @author 千葉 哲嗣
  */
-public class PostgreSQLLoggingConnection extends ConnectionBase implements StatementWrapper {
+public class ToStringLoggingConnection extends ConnectionBase implements StatementWrapper {
 
 	static final Level level = Level.INFO;
 
@@ -27,7 +27,7 @@ public class PostgreSQLLoggingConnection extends ConnectionBase implements State
 
 	private final BConnection base;
 
-	PostgreSQLLoggingConnection(BConnection conn, SQLLogger logger) {
+	ToStringLoggingConnection(BConnection conn, SQLLogger logger) {
 		Objects.requireNonNull(logger);
 		base = conn;
 		conn.setStatementWrapper(this);
