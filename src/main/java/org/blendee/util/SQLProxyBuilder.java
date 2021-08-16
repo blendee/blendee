@@ -24,6 +24,7 @@ import org.blendee.jdbc.PreparedStatementComplementer;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Binder;
+import org.blendee.util.annotation.SQL;
 import org.blendee.util.annotation.SQLProxy;
 import org.blendee.util.annotation.processor.Methods;
 
@@ -133,18 +134,25 @@ public class SQLProxyBuilder {
 
 			String proxyClassName = proxyClass.getName();
 
-			int packageNameLength = proxyClass.getPackage().getName().length();
+			String sql;
 
-			String sqlFileName = proxyClassName.substring(packageNameLength == 0 ? 0 : packageNameLength + 1)
-				+ "."
-				+ method.getName()
-				+ ".sql";
+			SQL sqlContainer = method.getAnnotation(SQL.class);
+			if (sqlContainer != null) {
+				sql = sqlContainer.value();
+			} else {
+				int packageNameLength = proxyClass.getPackage().getName().length();
 
-			URL url = proxyClass.getResource(sqlFileName);
-			//sqlFileName + " が見つかりません"
-			if (url == null) throw new IllegalStateException(sqlFileName + " not found");
+				String sqlFileName = proxyClassName.substring(packageNameLength == 0 ? 0 : packageNameLength + 1)
+					+ "."
+					+ method.getName()
+					+ ".sql";
 
-			String sql = new String(U.readBytes(url.openStream()), charset);
+				URL url = proxyClass.getResource(sqlFileName);
+				//sqlFileName + " が見つかりません"
+				if (url == null) throw new IllegalStateException(sqlFileName + " not found");
+
+				sql = new String(U.readBytes(url.openStream()), charset);
+			}
 
 			Methods methods = Class.forName(proxyClassName + METADATA_CLASS_SUFFIX).getAnnotation(Methods.class);
 			SQLProxyHelper helper = new SQLProxyHelper(
@@ -156,6 +164,8 @@ public class SQLProxyBuilder {
 
 			if (returnType.equals(BResultSet.class)) {
 				return statement(helper).executeQuery();
+			} else if (returnType.equals(SQLProxy.ResultSet.class)) {
+				return new SQLProxy.ResultSet(statement(helper).executeQuery());
 			} else if (returnType.equals(int.class)) {
 				Batch batch = batchThreadLocal.get();
 				if (batch == null) return statement(helper).executeUpdate();
