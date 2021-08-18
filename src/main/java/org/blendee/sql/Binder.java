@@ -39,7 +39,7 @@ public abstract class Binder implements Bindable {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Binder)) return false;
-		Binder target = (Binder) o;
+		var target = (Binder) o;
 		if (target.overridesEquals()) return target.equals(this);
 		if (!canEvalValue() || !target.canEvalValue()) return false;
 		return equals(getSpecificallyValue(), target.getSpecificallyValue());
@@ -47,7 +47,7 @@ public abstract class Binder implements Bindable {
 
 	@Override
 	public int hashCode() {
-		Object value = getSpecificallyValue();
+		var value = getSpecificallyValue();
 		if (value == null) return getClass().hashCode();
 		return value.hashCode();
 	}

@@ -1,8 +1,6 @@
 package org.blendee.util;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -22,7 +20,7 @@ public class DatabaseInfoWriter {
 	public boolean write(Properties properties) throws IOException {
 		if (!needsOverwrite(properties)) return false;
 
-		try (Writer writer = Files.newBufferedWriter(file, DatabaseInfo.defaultCharset)) {
+		try (var writer = Files.newBufferedWriter(file, DatabaseInfo.defaultCharset)) {
 			properties.store(writer, null);
 		}
 
@@ -38,8 +36,8 @@ public class DatabaseInfoWriter {
 	}
 
 	private Properties read() throws IOException {
-		Properties prop = new Properties();
-		try (Reader reader = Files.newBufferedReader(file, DatabaseInfo.defaultCharset)) {
+		var prop = new Properties();
+		try (var reader = Files.newBufferedReader(file, DatabaseInfo.defaultCharset)) {
 			prop.load(reader);
 		}
 
@@ -49,7 +47,7 @@ public class DatabaseInfoWriter {
 	private boolean needsOverwrite(Properties newOne) throws IOException {
 		if (!exists()) return true;
 
-		Properties oldOne = read();
+		var oldOne = read();
 
 		if (DatabaseInfo.hasStoredIdentifier(oldOne) && DatabaseInfo.hasStoredIdentifier(newOne)) {
 			if (DatabaseInfo.getStoredIdentifier(oldOne).equals(DatabaseInfo.getStoredIdentifier(newOne))) return false;

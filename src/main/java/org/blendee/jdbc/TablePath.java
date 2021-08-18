@@ -61,7 +61,7 @@ public class TablePath implements Comparable<TablePath> {
 	 * @see TablePath#toString()
 	 */
 	public static TablePath parse(String tablePath) {
-		int index = tablePath.indexOf(delimiter);
+		var index = tablePath.indexOf(delimiter);
 		if (index == -1) return new TablePath(tablePath);
 		return new TablePath(tablePath.substring(0, index), tablePath.substring(index + 1));
 	}
@@ -74,7 +74,7 @@ public class TablePath implements Comparable<TablePath> {
 		if (schemaName != null) return schemaName;
 
 		//Blendee 初期化以前にインスタンス化されても大丈夫なように、デフォルトスキーマ名は、この時点で取得する
-		String[] schemaNames = BlendeeManager.get().getConfigure().getSchemaNames();
+		var schemaNames = BlendeeManager.get().getConfigure().getSchemaNames();
 		//スキーマ名が複数設定されています
 		if (schemaNames.length > 1) throw new IllegalStateException("Multiple schema names are set.");
 

@@ -9,7 +9,6 @@ import java.util.Properties;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BSQLException;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
@@ -32,7 +31,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	 * @throws Exception ドライバークラスのロード時に発生した例外
 	 */
 	public DriverTransactionFactory() throws Exception {
-		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
+		var config = ContextManager.get(BlendeeManager.class).getConfigure();
 
 		driver = U.getInstance(Objects.requireNonNull(config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).get()));
 		properties.setProperty("user", config.getOption(BlendeeConstants.JDBC_USER).get());
@@ -71,7 +70,7 @@ public class DriverTransactionFactory implements TransactionFactory {
 	 */
 	protected Connection getJDBCConnection() {
 		try {
-			Connection connection = driver().connect(url(), properties());
+			var connection = driver().connect(url(), properties());
 
 			if (connection == null) throw new IllegalStateException(driver.getClass() + "#connect(String, Properties) returns null");
 

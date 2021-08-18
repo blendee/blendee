@@ -54,7 +54,7 @@ public class SQLLogger {
 	 */
 	public void logElapsed(long startNanos) {
 		synchronized (getClass()) {
-			float elapsed = (System.nanoTime() - startNanos) / 1000000f;
+			var elapsed = (System.nanoTime() - startNanos) / 1000000f;
 			logger.println("elapsed: " + new BigDecimal(elapsed).setScale(2, RoundingMode.DOWN) + "ms");
 			logger.flush(Level.INFO);
 		}
@@ -72,9 +72,9 @@ public class SQLLogger {
 
 			if (stackTracePattern != null) {
 				logger.println("call from:");
-				StackTraceElement[] elements = new Throwable().getStackTrace();
-				for (StackTraceElement element : elements) {
-					String elementString = element.toString();
+				var elements = new Throwable().getStackTrace();
+				for (var element : elements) {
+					var elementString = element.toString();
 					if (stackTracePattern.matcher(elementString).find()) logger.println(" " + elementString);
 				}
 			}
@@ -84,7 +84,7 @@ public class SQLLogger {
 
 			Collections.sort(values);
 			if (values.size() > 0) logger.println("binding value:");
-			for (BindingValue value : values) {
+			for (var value : values) {
 				logger.println(" " + value.createLog());
 			}
 

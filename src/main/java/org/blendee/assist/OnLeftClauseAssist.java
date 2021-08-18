@@ -40,7 +40,7 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	default <O extends LogicalOperators<?>> OnLeftColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new OnLeftColumn<>(
 			statement,
 			getContext(),
@@ -112,13 +112,13 @@ public interface OnLeftClauseAssist<R extends OnLeftClauseAssist<?>> extends Cri
 	default <O extends LogicalOperators<?>> OnLeftColumn<O> any(
 		String template,
 		Vargs<CriteriaAssistColumn<O>> args) {
-		AssistColumn[] values = args.get();
-		Column[] columns = new Column[values.length];
+		var values = args.get();
+		var columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {
 			columns[i] = values[i].column();
 		}
 
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new OnLeftColumn<>(
 			statement,
 			getContext(),

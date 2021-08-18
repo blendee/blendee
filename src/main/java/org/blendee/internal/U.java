@@ -2,7 +2,6 @@ package org.blendee.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,7 +41,7 @@ public class U {
 		if (objects.length != others.length) return false;
 		objects = objects.clone();
 		others = others.clone();
-		for (int i = 0; i < objects.length; i++) {
+		for (var i = 0; i < objects.length; i++) {
 			if (objects[i] == null && others[i] == null) continue;
 			if (objects[i] == null || !objects[i].equals(others[i])) return false;
 		}
@@ -61,10 +60,10 @@ public class U {
 	 * @return object の文字列表現
 	 */
 	public static String toString(Object object) {
-		Map<String, Object> map = new TreeMap<>();
+		var map = new TreeMap<String, Object>();
 
-		boolean top = false;
-		Set<Container> checker = cycleCheckerThreadLocal.get();
+		var top = false;
+		var checker = cycleCheckerThreadLocal.get();
 		if (checker == null) {
 			checker = new HashSet<>();
 			checker.add(new Container(object));
@@ -93,12 +92,13 @@ public class U {
 	 * @throws IOException 読み込み時に発生した例外
 	 */
 	public static byte[] readBytes(InputStream in) throws IOException {
-		byte[] concat = BYTE_EMPTY_ARRAY;
-		byte[] b = new byte[BUFFER_SIZE];
+		var concat = BYTE_EMPTY_ARRAY;
+		var b = new byte[BUFFER_SIZE];
 		int readed;
 		while ((readed = in.read(b, 0, BUFFER_SIZE)) > 0) {
 			concat = concatByteArray(concat, concat.length, b, readed);
 		}
+
 		return concat;
 	}
 
@@ -131,7 +131,7 @@ public class U {
 
 	public static <T> T getInstance(String className) {
 		try {
-			Class<?> clazz = Class.forName(className);
+			var clazz = Class.forName(className);
 
 			@SuppressWarnings("unchecked")
 			T instance = (T) clazz.getDeclaredConstructor().newInstance();
@@ -143,7 +143,7 @@ public class U {
 	}
 
 	private static byte[] concatByteArray(byte[] array1, int lengthof1, byte[] array2, int lengthof2) {
-		byte[] concat = new byte[lengthof1 + lengthof2];
+		var concat = new byte[lengthof1 + lengthof2];
 		System.arraycopy(array1, 0, concat, 0, lengthof1);
 		System.arraycopy(array2, 0, concat, lengthof1, lengthof2);
 		return concat;
@@ -155,20 +155,21 @@ public class U {
 		Map<String, Object> map,
 		Set<Container> checker)
 		throws IllegalAccessException {
-		Class<?> superclass = clazz.getSuperclass();
+		var superclass = clazz.getSuperclass();
 		if (superclass != null) getFields(superclass, object, map, checker);
-		Field[] fields = clazz.getDeclaredFields();
-		for (Field field : fields) {
+		var fields = clazz.getDeclaredFields();
+		for (var field : fields) {
 			if (Modifier.isStatic(field.getModifiers())) continue;
 			field.setAccessible(true);
-			Object value = field.get(object);
+			var value = field.get(object);
 			//循環参照を避けるため、一度調査したオブジェクトは使用しない
 			if (value != null) {
-				Container container = new Container(value);
+				var container = new Container(value);
 				if (checker.contains(container)) {
 					map.put(field.getName(), "{repetition}");
 					continue;
 				}
+
 				checker.add(container);
 			}
 

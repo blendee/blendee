@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -24,7 +23,8 @@ public class CollectionMap<K, V> implements Cloneable {
 	}
 
 	public static <V, K> CollectionMap<K, V> newInstance(
-		@SuppressWarnings("rawtypes") Class<? extends Map> mapClass) {
+		@SuppressWarnings("rawtypes")
+		Class<? extends Map> mapClass) {
 		return new CollectionMap<>(mapClass);
 	}
 
@@ -34,7 +34,8 @@ public class CollectionMap<K, V> implements Cloneable {
 
 	@SuppressWarnings("unchecked")
 	public CollectionMap(
-		@SuppressWarnings("rawtypes") Class<? extends Map> mapClass) {
+		@SuppressWarnings("rawtypes")
+		Class<? extends Map> mapClass) {
 		try {
 			this.map = mapClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
@@ -43,7 +44,7 @@ public class CollectionMap<K, V> implements Cloneable {
 	}
 
 	public void put(K key, V value) {
-		Collection<V> collection = get(key);
+		var collection = get(key);
 		collection.add(value);
 	}
 
@@ -85,9 +86,9 @@ public class CollectionMap<K, V> implements Cloneable {
 	@Override
 	public CollectionMap<K, V> clone() {
 		CollectionMap<K, V> clone = newInstance(map.getClass());
-		for (Entry<K, Collection<V>> entry : map.entrySet()) {
-			K key = entry.getKey();
-			for (V value : entry.getValue()) {
+		for (var entry : map.entrySet()) {
+			var key = entry.getKey();
+			for (var value : entry.getValue()) {
 				clone.put(key, value);
 			}
 		}

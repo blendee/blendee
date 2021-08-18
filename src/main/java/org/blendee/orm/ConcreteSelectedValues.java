@@ -17,7 +17,6 @@ import org.blendee.jdbc.Result;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
-import org.blendee.sql.ValueExtractor;
 import org.blendee.sql.ValueExtractors;
 import org.blendee.sql.binder.NullBinder;
 
@@ -38,8 +37,8 @@ class ConcreteSelectedValues implements SelectedValues {
 		ValueExtractors extractors) {
 		this.extractors = extractors;
 		for (int i = 0; i < selected.length; i++) {
-			Column column = selected[i];
-			ValueExtractor extractor = extractors.selectValueExtractor(column.getType());
+			var column = selected[i];
+			var extractor = extractors.selectValueExtractor(column.getType());
 			values.put(column, extractor.extract(result, i + 1));
 			if (result.wasNull()) nullValues.put(column, new NullBinder(result.getColumnType(i + 1)));
 		}
@@ -51,18 +50,18 @@ class ConcreteSelectedValues implements SelectedValues {
 		ValueExtractors extractors) {
 		this.extractors = extractors;
 
-		Map<String, Integer> columnMap = new LinkedHashMap<>();
-		int columnCount = result.getColumnCount();
-		for (int i = 0; i < columnCount; i++) {
-			int index = i + 1;
+		var columnMap = new LinkedHashMap<String, Integer>();
+		var columnCount = result.getColumnCount();
+		for (var i = 0; i < columnCount; i++) {
+			var index = i + 1;
 			columnMap.put(result.getColumnName(index), index);
 		}
 
 		Arrays.stream(relation.getColumns())
 			.filter(c -> columnMap.containsKey(c.getName()))
 			.forEach(c -> {
-				ValueExtractor extractor = extractors.selectValueExtractor(c.getType());
-				int index = columnMap.get(c.getName());
+				var extractor = extractors.selectValueExtractor(c.getType());
+				var index = columnMap.get(c.getName());
 				values.put(c, extractor.extract(result, index));
 				if (result.wasNull()) nullValues.put(c, new NullBinder(result.getColumnType(index)));
 			});
@@ -70,37 +69,37 @@ class ConcreteSelectedValues implements SelectedValues {
 
 	@Override
 	public boolean getBoolean(Column column) {
-		Boolean value = (Boolean) getObject(column);
+		var value = (Boolean) getObject(column);
 		return value != null ? value.booleanValue() : false;
 	}
 
 	@Override
 	public double getDouble(Column column) {
-		Number value = (Number) getObject(column);
+		var value = (Number) getObject(column);
 		return value != null ? value.doubleValue() : 0;
 	}
 
 	@Override
 	public float getFloat(Column column) {
-		Number value = (Number) getObject(column);
+		var value = (Number) getObject(column);
 		return value != null ? value.floatValue() : 0;
 	}
 
 	@Override
 	public int getInt(Column column) {
-		Number value = (Number) getObject(column);
+		var value = (Number) getObject(column);
 		return value != null ? value.intValue() : 0;
 	}
 
 	@Override
 	public long getLong(Column column) {
-		Number value = (Number) getObject(column);
+		var value = (Number) getObject(column);
 		return value != null ? value.longValue() : 0;
 	}
 
 	@Override
 	public String getString(Column column) {
-		Object value = getObject(column);
+		var value = getObject(column);
 		if (value != null) return value.toString();
 		return null;
 	}
@@ -137,10 +136,10 @@ class ConcreteSelectedValues implements SelectedValues {
 
 	@Override
 	public Binder getBinder(Column column) {
-		NullBinder nullBinder = nullValues.get(column);
+		var nullBinder = nullValues.get(column);
 		if (nullBinder != null) return nullBinder;
 
-		Object value = getObject(column);
+		var value = getObject(column);
 		return extractors.selectValueExtractor(value.getClass()).extractAsBinder(value);
 	}
 
@@ -173,7 +172,7 @@ class ConcreteSelectedValues implements SelectedValues {
 
 	private void checkContains(Column column) {
 		if (!values.containsKey(column)) {
-			String message = IllegalValueException.buildMessage(column);
+			var message = IllegalValueException.buildMessage(column);
 			BlendeeManager.getLogger().log(Level.WARNING, message);
 			throw new IllegalValueException(message);
 		}

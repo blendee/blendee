@@ -38,7 +38,7 @@ public interface SelectOfferFunction<S extends SelectClauseAssist> {
 		 * @param columns 追加カラム
 		 */
 		public void add(Column... columns) {
-			for (Column column : columns) {
+			for (var column : columns) {
 				expressions.add(new ColumnExpression(statement, column));
 			}
 		}

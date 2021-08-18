@@ -32,7 +32,7 @@ public class ForeignKey extends PartialData {
 		super(path, columnNames, bindables);
 		this.name = name;
 		this.reference = reference;
-		Object[] objects = new Object[columnNames.length + bindables.length + 1];
+		var objects = new Object[columnNames.length + bindables.length + 1];
 		objects[0] = path;
 		System.arraycopy(columnNames, 0, objects, 1, columnNames.length);
 		System.arraycopy(bindables, 0, objects, columnNames.length + 1, bindables.length);
@@ -58,7 +58,7 @@ public class ForeignKey extends PartialData {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof ForeignKey)) return false;
-		ForeignKey target = (ForeignKey) o;
+		var target = (ForeignKey) o;
 		return path.equals(target.path)
 			&& U.equals(columnNames, target.columnNames)
 			&& U.equals(bindables, target.bindables);

@@ -21,7 +21,7 @@ public class PostgreSQLErrorConverter implements ErrorConverter {
 	public BlendeeException convert(SQLException e) {
 		e = ErrorConverter.strip(e);
 
-		String state = e.getSQLState();
+		var state = e.getSQLState();
 
 		switch (state) {
 		case "23502":

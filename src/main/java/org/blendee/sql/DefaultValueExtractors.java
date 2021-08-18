@@ -77,7 +77,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 	@Override
 	public ValueExtractor selectValueExtractor(Class<?> valueClass) {
-		ValueExtractor extractor = map.get(valueClass);
+		var extractor = map.get(valueClass);
 		if (extractor != null) return extractor;
 
 		if (Placeholder.class.isAssignableFrom(valueClass)) return PlaceholderValueExtractor.singleton;
@@ -153,7 +153,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
-			boolean value = result.getBoolean(columnIndex);
+			var value = result.getBoolean(columnIndex);
 			if (result.wasNull()) return null;
 			return Boolean.valueOf(value);
 		}
@@ -228,7 +228,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
-			double value = result.getDouble(columnIndex);
+			var value = result.getDouble(columnIndex);
 			if (result.wasNull()) return null;
 			return Double.valueOf(value);
 		}
@@ -249,7 +249,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
-			float value = result.getFloat(columnIndex);
+			var value = result.getFloat(columnIndex);
 			if (result.wasNull()) return null;
 			return Float.valueOf(value);
 		}
@@ -270,7 +270,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
-			int value = result.getInt(columnIndex);
+			var value = result.getInt(columnIndex);
 			if (result.wasNull()) return null;
 			return Integer.valueOf(value);
 		}
@@ -291,7 +291,7 @@ public class DefaultValueExtractors implements ValueExtractors {
 
 		@Override
 		public Object extract(Result result, int columnIndex) {
-			long value = result.getLong(columnIndex);
+			var value = result.getLong(columnIndex);
 			if (result.wasNull()) return null;
 			return Long.valueOf(value);
 		}

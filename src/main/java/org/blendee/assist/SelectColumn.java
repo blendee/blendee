@@ -29,7 +29,7 @@ public class SelectColumn implements AliasableOffer {
 
 	@Override
 	public List<ColumnExpression> get() {
-		List<ColumnExpression> list = new LinkedList<>();
+		var list = new LinkedList<ColumnExpression>();
 		list.add(new ColumnExpression(assist.getSelectStatement(), column));
 
 		return list;
@@ -44,7 +44,7 @@ public class SelectColumn implements AliasableOffer {
 	@Override
 	public SelectOffer AS(String alias) {
 		assist.getSelectStatement().quitRowMode();
-		ColumnExpression expression = new ColumnExpression(assist.getSelectStatement(), column);
+		var expression = new ColumnExpression(assist.getSelectStatement(), column);
 		expression.AS(alias);
 		return expression;
 	}

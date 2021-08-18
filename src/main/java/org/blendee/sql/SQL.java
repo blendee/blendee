@@ -4,10 +4,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
@@ -84,9 +82,9 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 	 * @param action {@link Consumer}
 	 */
 	public void executeQuery(Consumer<BResultSet> action) {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
-			try (BResultSet result = statement.executeQuery()) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(this)) {
+			try (var result = statement.executeQuery()) {
 				action.accept(result);
 			}
 		}
@@ -99,9 +97,9 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 	 * @return 任意の型の戻り値
 	 */
 	public <T> T executeQuery(Function<BResultSet, T> action) {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
-			try (BResultSet result = statement.executeQuery()) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(this)) {
+			try (var result = statement.executeQuery()) {
 				return action.apply(result);
 			}
 		}
@@ -120,8 +118,8 @@ public class SQL implements ComposedSQL, Reproducible<SQL> {
 	 * @return 対象件数
 	 */
 	public int executeUpdate() {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(this)) {
 			return statement.executeUpdate();
 		}
 	}

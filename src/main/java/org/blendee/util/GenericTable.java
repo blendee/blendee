@@ -585,8 +585,8 @@ public class GenericTable
 		 * @return このインスタンスのテーブルが参照している全テーブルの {@link DataObject} の {@link Map}
 		 */
 		public Map<String, Row> getRows() {
-			Map<String, DataObject> source = data.getDataObjects();
-			Map<String, Row> dest = new HashMap<>();
+			var source = data.getDataObjects();
+			var dest = new HashMap<String, Row>();
 			source.forEach((key, value) -> dest.put(key, new Row(value)));
 
 			return dest;
@@ -1234,7 +1234,7 @@ public class GenericTable
 	 */
 	@Override
 	public GenericTable accept(SQLDecorator... decorators) {
-		for (SQLDecorator decorator : decorators) {
+		for (var decorator : decorators) {
 			this.decorators$.add(decorator);
 		}
 
@@ -1834,14 +1834,14 @@ public class GenericTable
 
 		@Override
 		public WhereLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
 
 		@Override
 		public WhereLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
@@ -1865,7 +1865,7 @@ public class GenericTable
 		 */
 		@Override
 		public WhereColumn<WhereLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new WhereColumn<>(
 				statement,
 				getContext(),
@@ -1879,7 +1879,7 @@ public class GenericTable
 		 */
 		@Override
 		public WhereLogicalOperators paren(Consumer<WhereAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
@@ -1961,14 +1961,14 @@ public class GenericTable
 
 		@Override
 		public HavingLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
 
 		@Override
 		public HavingLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
@@ -1992,7 +1992,7 @@ public class GenericTable
 		 */
 		@Override
 		public HavingColumn<HavingLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new HavingColumn<>(
 				statement,
 				getContext(),
@@ -2006,7 +2006,7 @@ public class GenericTable
 		 */
 		@Override
 		public HavingLogicalOperators paren(Consumer<HavingAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
@@ -2083,14 +2083,14 @@ public class GenericTable
 
 		@Override
 		public OnLeftLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
 
 		@Override
 		public OnLeftLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
@@ -2114,7 +2114,7 @@ public class GenericTable
 		 */
 		@Override
 		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new OnLeftColumn<>(
 				statement,
 				getContext(),
@@ -2128,7 +2128,7 @@ public class GenericTable
 		 */
 		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
@@ -2175,14 +2175,14 @@ public class GenericTable
 
 		@Override
 		public OnRightLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
 
 		@Override
 		public OnRightLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
@@ -2206,7 +2206,7 @@ public class GenericTable
 		 */
 		@Override
 		public OnRightColumn<OnRightLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new OnRightColumn<>(
 				statement,
 				getContext(),
@@ -2220,7 +2220,7 @@ public class GenericTable
 		 */
 		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
@@ -2317,14 +2317,14 @@ public class GenericTable
 
 		@Override
 		public DMSWhereLogicalOperators EXISTS(SelectStatement subquery) {
-			DataManipulationStatement statement = getDataManipulationStatement();
+			var statement = getDataManipulationStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (DMSWhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
 
 		@Override
 		public DMSWhereLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			DataManipulationStatement statement = getDataManipulationStatement();
+			var statement = getDataManipulationStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (DMSWhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
@@ -2348,7 +2348,7 @@ public class GenericTable
 		 */
 		@Override
 		public WhereColumn<DMSWhereLogicalOperators> any(String template) {
-			DataManipulationStatement statement = getDataManipulationStatement();
+			var statement = getDataManipulationStatement();
 			return new WhereColumn<>(
 				statement,
 				getContext(),
@@ -2362,7 +2362,7 @@ public class GenericTable
 		 */
 		@Override
 		public DMSWhereLogicalOperators paren(Consumer<DMSWhereAssist> consumer) {
-			DataManipulationStatement statement = getDataManipulationStatement();
+			var statement = getDataManipulationStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (DMSWhereLogicalOperators) statement.getWhereLogicalOperators();
 		}

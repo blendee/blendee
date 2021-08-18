@@ -168,7 +168,7 @@ public final class Configure {
 	 */
 	public boolean containsSchemaName(String schemaName) {
 		check();
-		for (int i = 0; i < schemaNames.length; i++) {
+		for (var i = 0; i < schemaNames.length; i++) {
 			if (schemaNames[i].equals(schemaName)) return true;
 		}
 

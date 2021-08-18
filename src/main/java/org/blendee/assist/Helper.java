@@ -3,7 +3,6 @@ package org.blendee.assist;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -44,11 +43,11 @@ public class Helper {
 	private static void setExists(RuntimeId main, CriteriaClauseAssist<?> assist, SelectStatement subquery, String keyword) {
 		assist.statement().forSubquery(true);
 
-		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
+		var builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
 
 		//サブクエリのFrom句からBinderを取り出す前にSQL化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
-		String subqueryString = keyword + " (" + builder.sql() + ")";
+		var subqueryString = keyword + " (" + builder.sql() + ")";
 
 		assist.getContext()
 			.addCriteria(
@@ -56,11 +55,11 @@ public class Helper {
 	}
 
 	public static <A> void paren(RuntimeId id, CriteriaContext context, Consumer<A> consumer, A assist) {
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 
 		Objects.requireNonNull(current);
 
-		Criteria contextCriteria = new CriteriaFactory(id).create();
+		var contextCriteria = new CriteriaFactory(id).create();
 		CriteriaContext.setContextCriteria(contextCriteria);
 
 		consumer.accept(assist);
@@ -76,15 +75,15 @@ public class Helper {
 	 * @param subquery 追加条件
 	 */
 	public static void addInCriteria(CriteriaClauseAssist<?> assist, boolean notIn, Vargs<AssistColumn> mainColumns, SelectStatement subquery) {
-		AssistColumn[] criteriaColumns = mainColumns.get();
+		var criteriaColumns = mainColumns.get();
 
-		Column[] columns = new Column[criteriaColumns.length];
+		var columns = new Column[criteriaColumns.length];
 
 		for (int i = 0; i < criteriaColumns.length; i++) {
 			columns[i] = criteriaColumns[i].column();
 		}
 
-		Binder[] values = flatValues(criteriaColumns);
+		var values = flatValues(criteriaColumns);
 
 		assist.getContext()
 			.addCriteria(
@@ -116,14 +115,14 @@ public class Helper {
 
 	static <R, I extends Iterator<R>> Optional<R> unique(I iterator) {
 		if (!iterator.hasNext()) return Optional.empty();
-		R row = iterator.next();
+		var row = iterator.next();
 		if (iterator.hasNext()) throw new NotUniqueException();
 		return Optional.of(row);
 	}
 
 	static String createCoalesceTemplate(int columns) {
-		List<String> list = new LinkedList<>();
-		for (int i = 0; i < columns; i++) {
+		var list = new LinkedList<String>();
+		for (var i = 0; i < columns; i++) {
 			list.add("{" + i + "}");
 		}
 
@@ -135,7 +134,7 @@ public class Helper {
 	}
 
 	static Binder[] flatValues(Stream<Binder[]> binders) {
-		List<Binder> list = new LinkedList<>();
+		var list = new LinkedList<Binder>();
 		binders.forEach(v -> list.addAll(Arrays.asList(v)));
 
 		return list.toArray(new Binder[list.size()]);

@@ -26,7 +26,7 @@ public interface UpdateClauseAssist extends TableFacadeAssist {
 	 * @return element
 	 */
 	default SetElement ls(UpdateColumn... columns) {
-		SetElement element = new SetElement(this);
+		var element = new SetElement(this);
 		Arrays.stream(columns).map(c -> c.column()).forEach(c -> element.addColumn(c));
 
 		return element;

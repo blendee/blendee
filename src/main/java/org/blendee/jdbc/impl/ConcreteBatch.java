@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.Batch;
@@ -42,7 +41,7 @@ class ConcreteBatch implements Batch {
 	@Override
 	public void add(String sql, PreparedStatementComplementer complementer) {
 		if (isThresholdCrossed()) flushBatch();
-		BatchResultHolder holder = batchMap.get(sql);
+		var holder = batchMap.get(sql);
 		BatchPreparedStatement statement;
 		if (holder == null) {
 			statement = connection.createForBatch(sql);
@@ -62,7 +61,7 @@ class ConcreteBatch implements Batch {
 	public int[] execute() {
 		flushBatch();
 		batchOrder = 0;
-		int[] results = currentResults;
+		var results = currentResults;
 		currentResults = new int[0];
 		return results;
 	}
@@ -90,12 +89,12 @@ class ConcreteBatch implements Batch {
 	}
 
 	private void flushBatch() {
-		int[] results = new int[batchOrder];
+		var results = new int[batchOrder];
 		if (currentResults.length > 0)
 			System.arraycopy(currentResults, 0, results, 0, currentResults.length);
 
-		for (Entry<String, BatchResultHolder> entry : batchMap.entrySet()) {
-			BatchResultHolder holder = entry.getValue();
+		for (var entry : batchMap.entrySet()) {
+			var holder = entry.getValue();
 			holder.executeBatch(results);
 		}
 
@@ -119,10 +118,9 @@ class ConcreteBatch implements Batch {
 		}
 
 		private void executeBatch(int[] allResults) {
-			int[] results;
-			results = statement.executeBatch();
-			for (int i = 0; i < results.length; i++) {
-				int globalOrder = orders.get(i);
+			var results = statement.executeBatch();
+			for (var i = 0; i < results.length; i++) {
+				var globalOrder = orders.get(i);
 				allResults[globalOrder] = results[i];
 			}
 		}

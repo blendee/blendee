@@ -2,7 +2,6 @@ package org.blendee.jdbc;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * メタデータに関するユーティリティクラスです。
@@ -37,9 +36,9 @@ public class MetadataUtilities {
 	 * @return テーブルに存在する全てのカラム
 	 */
 	public static String[] getColumnNames(final TablePath path) {
-		ColumnMetadata[] metadatas = getColumnMetadatas(path);
-		String[] names = new String[metadatas.length];
-		for (int i = 0; i < metadatas.length; i++) {
+		var metadatas = getColumnMetadatas(path);
+		var names = new String[metadatas.length];
+		for (var i = 0; i < metadatas.length; i++) {
 			names[i] = metadatas[i].getName();
 		}
 
@@ -107,9 +106,9 @@ public class MetadataUtilities {
 	 * @return 標準化された名称の配列
 	 */
 	public static String[] regularize(String[] names) {
-		String[] regularized = new String[names.length];;
+		var regularized = new String[names.length];;
 
-		StoredIdentifier identifier = BlendeeManager.get().getMetadata().getStoredIdentifier();
+		var identifier = BlendeeManager.get().getMetadata().getStoredIdentifier();
 		for (int i = 0; i < names.length; i++) {
 			regularized[i] = identifier.regularize(names[i]);
 		}
@@ -123,9 +122,9 @@ public class MetadataUtilities {
 	 * @return テーブル間の関係情報
 	 */
 	public static CrossReference[] getCrossReferencesOfImportedKeys(TablePath foreignKeyTable) {
-		TablePath[] targetTables = getResourcesOfImportedKey(foreignKeyTable);
-		List<CrossReference> references = new LinkedList<>();
-		for (TablePath path : targetTables)
+		var targetTables = getResourcesOfImportedKey(foreignKeyTable);
+		var references = new LinkedList<CrossReference>();
+		for (var path : targetTables)
 			references.addAll(Arrays.asList(getCrossReferences(path, foreignKeyTable)));
 
 		return references.toArray(new CrossReference[references.size()]);
@@ -137,9 +136,9 @@ public class MetadataUtilities {
 	 * @return テーブル間の関係情報
 	 */
 	public static CrossReference[] getCrossReferencesOfExportedKeys(TablePath primaryKeyTable) {
-		TablePath[] targetTables = getResourcesOfExportedKey(primaryKeyTable);
-		List<CrossReference> references = new LinkedList<>();
-		for (TablePath path : targetTables)
+		var targetTables = getResourcesOfExportedKey(primaryKeyTable);
+		var references = new LinkedList<CrossReference>();
+		for (var path : targetTables)
 			references.addAll(Arrays.asList(getCrossReferences(primaryKeyTable, path)));
 
 		return references.toArray(new CrossReference[references.size()]);

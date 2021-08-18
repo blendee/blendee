@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import org.blendee.internal.CollectionMap;
 import org.blendee.internal.CollectionMapMap;
@@ -79,7 +78,7 @@ public class VirtualSpace implements Metadata {
 		if (storedIdentifier == null) storedIdentifier = depends.getStoredIdentifier();
 		Objects.requireNonNull(storedIdentifier);
 
-		CollectionMap<TablePath, TablePath> exported = new CollectionMap<TablePath, TablePath>() {
+		var exported = new CollectionMap<TablePath, TablePath>() {
 
 			@Override
 			protected Collection<TablePath> createNewCollection() {
@@ -88,10 +87,10 @@ public class VirtualSpace implements Metadata {
 		};
 
 		//processForExported内でtablesに追加が発生するためtablesを退避
-		for (TableSource table : new HashMap<>(tables).values())
+		for (var table : new HashMap<>(tables).values())
 			processForExported(table, exported, depends);
 
-		for (TableSource table : tables.values())
+		for (var table : tables.values())
 			registerTable(table, exported);
 
 		started = true;
@@ -119,7 +118,7 @@ public class VirtualSpace implements Metadata {
 
 	@Override
 	public synchronized TablePath[] getTables(String schemaName) {
-		Collection<TablePath> paths = schemas.get(storedIdentifier.regularize(schemaName));
+		var paths = schemas.get(storedIdentifier.regularize(schemaName));
 		return paths.toArray(new TablePath[paths.size()]);
 	}
 
@@ -162,7 +161,7 @@ public class VirtualSpace implements Metadata {
 	public synchronized CrossReference[] getCrossReferences(
 		TablePath exported,
 		TablePath imported) {
-		Collection<CrossReference> references = crossReferences.get(imported).get(exported);
+		var references = crossReferences.get(imported).get(exported);
 		return references.toArray(new CrossReference[references.size()]);
 	}
 
@@ -182,7 +181,7 @@ public class VirtualSpace implements Metadata {
 	}
 
 	private synchronized VirtualTable getTable(TablePath path) {
-		VirtualTable table = virtualTables.get(path);
+		var table = virtualTables.get(path);
 		if (table == null) return nullTable;
 		return table;
 	}
@@ -190,20 +189,20 @@ public class VirtualSpace implements Metadata {
 	private void registerTable(
 		TableSource table,
 		CollectionMap<TablePath, TablePath> exportedMap) {
-		ForeignKeySource[] fks = table.getForeignKeySources();
+		var fks = table.getForeignKeySources();
 
-		Set<TablePath> imported = new LinkedHashSet<>();
-		for (ForeignKeySource fk : fks)
+		var imported = new LinkedHashSet<TablePath>();
+		for (var fk : fks)
 			imported.add(fk.getImportedTable());
 
-		TablePath[] importedPaths = imported.toArray(new TablePath[imported.size()]);
+		var importedPaths = imported.toArray(new TablePath[imported.size()]);
 
-		TablePath path = table.getTablePath();
+		var path = table.getTablePath();
 
-		Collection<TablePath> exported = exportedMap.get(path);
-		TablePath[] exportedPaths = exported.toArray(new TablePath[exported.size()]);
+		var exported = exportedMap.get(path);
+		var exportedPaths = exported.toArray(new TablePath[exported.size()]);
 
-		PrimaryKeySource pk = table.getPrimaryKeySource();
+		var pk = table.getPrimaryKeySource();
 
 		VirtualTable virtualTable;
 		if (pk == null) {
@@ -229,13 +228,13 @@ public class VirtualSpace implements Metadata {
 		TableSource table,
 		CollectionMap<TablePath, TablePath> exported,
 		Metadata depends) {
-		TablePath tablePath = table.getTablePath();
+		var tablePath = table.getTablePath();
 
-		for (ForeignKeySource fk : table.getForeignKeySources()) {
-			TablePath importedTable = fk.getImportedTable();
+		for (var fk : table.getForeignKeySources()) {
+			var importedTable = fk.getImportedTable();
 			exported.put(importedTable, tablePath);
 
-			TableSource pkTableBase = tables.get(importedTable);
+			var pkTableBase = tables.get(importedTable);
 			TableSource pkTable;
 			if (pkTableBase == null || pkTableBase.getPrimaryKeySource() == null) {
 				pkTable = createPrimaryKeyTableInformation(depends, importedTable);
@@ -246,7 +245,7 @@ public class VirtualSpace implements Metadata {
 				pkTable = pkTableBase;
 			}
 
-			String[] pkColumns = fk.getPKColumns();
+			var pkColumns = fk.getPKColumns();
 			if (pkColumns.length == 0) pkColumns = pkTable.getPrimaryKeySource().getColumnNames();
 
 			crossReferences.get(tablePath)
@@ -266,9 +265,9 @@ public class VirtualSpace implements Metadata {
 	private static TableSource createPrimaryKeyTableInformation(
 		Metadata depends,
 		TablePath path) {
-		PrimaryKeyMetadata pkMetadata = depends.getPrimaryKeyMetadata(path);
+		var pkMetadata = depends.getPrimaryKeyMetadata(path);
 
-		String[] pkColumnNames = pkMetadata.getColumnNames();
+		var pkColumnNames = pkMetadata.getColumnNames();
 		//PK is not set to the reference "A".
 		//"参照先の " + path + " に PK が設定されていません"
 		if (pkColumnNames.length == 0) throw new IllegalStateException("PK is not found from " + path);

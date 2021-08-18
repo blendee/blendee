@@ -16,7 +16,6 @@ import org.blendee.assist.SelectOfferFunction.SelectOffers;
 import org.blendee.sql.Column;
 import org.blendee.sql.PseudoColumn;
 import org.blendee.sql.Relationship;
-import org.blendee.sql.SQLQueryBuilder;
 
 /**
  * 自動生成される TableFacade の振る舞いを定義したインターフェイスです。<br>
@@ -41,8 +40,8 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return SELECT 句
 	 */
 	default SelectOffer ls(SelectOffer... offers) {
-		SelectOffers visitor = new SelectOffers(getSelectStatement());
-		for (SelectOffer offer : offers) {
+		var visitor = new SelectOffers(getSelectStatement());
+		for (var offer : offers) {
 			offer.get().forEach(c -> visitor.add(c));
 		}
 
@@ -62,8 +61,8 @@ public interface SelectClauseAssist extends ClauseAssist {
 			columns = Arrays.stream(assists).flatMap(a -> Arrays.stream(a.getRelationship().getColumns()));
 		}
 
-		SelectStatement statement = getSelectStatement();
-		List<ColumnExpression> result = columns.map(c -> new ColumnExpression(statement, c))
+		var statement = getSelectStatement();
+		var result = columns.map(c -> new ColumnExpression(statement, c))
 			.collect(Collectors.toList());
 
 		return new SelectOffer() {
@@ -145,12 +144,12 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COALESCE(Vargs<AssistColumn> columns, String... stringExpressions) {
-		List<AssistColumn> all = new ArrayList<>();
-		for (AssistColumn column : columns.get()) {
+		var all = new ArrayList<AssistColumn>();
+		for (var column : columns.get()) {
 			all.add(column);
 		}
 
-		for (String expression : stringExpressions) {
+		for (var expression : stringExpressions) {
 			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), expression, false)));
 		}
 
@@ -178,12 +177,12 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link AliasableOffer}
 	 */
 	default AliasableOffer COALESCE(Vargs<AssistColumn> columns, Number... numbers) {
-		List<AssistColumn> all = new ArrayList<>();
-		for (AssistColumn column : columns.get()) {
+		var all = new ArrayList<AssistColumn>();
+		for (var column : columns.get()) {
 			all.add(column);
 		}
 
-		for (Number number : numbers) {
+		for (var number : numbers) {
 			all.add(new ColumnExpression(getSelectStatement(), "{0}", new PseudoColumn(getRelationship(), number.toString(), false)));
 		}
 
@@ -213,13 +212,13 @@ public interface SelectClauseAssist extends ClauseAssist {
 	default AliasableOffer any(String template, AssistColumn... selectColumns) {
 		getSelectStatement().quitRowMode();
 
-		Column[] columns = new Column[selectColumns.length];
-		for (int i = 0; i < selectColumns.length; i++) {
+		var columns = new Column[selectColumns.length];
+		for (var i = 0; i < selectColumns.length; i++) {
 			columns[i] = selectColumns[i].column();
 		}
 
 		return new ColumnExpression(getSelectStatement(), template, columns, (done, statement) -> {
-			for (AssistColumn column : selectColumns) {
+			for (var column : selectColumns) {
 				done = column.complement(done, statement);
 			}
 
@@ -265,12 +264,12 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link AliasableOffer} AS
 	 */
 	default AliasableOffer any(SelectStatement subquery) {
-		SelectStatement root = getSelectStatement();
+		var root = getSelectStatement();
 
 		root.quitRowMode();
 		root.forSubquery(true);
 
-		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
+		var builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
 
 		Column[] columns = { new PseudoColumn(getRelationship(), builder.sql(), false) };
@@ -283,11 +282,11 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link SelectOffer}
 	 */
 	default SelectOffer asterisk(TableFacadeAssist... assists) {
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 
 		statement.quitRowMode();
 
-		SelectOffers offers = new SelectOffers(statement);
+		var offers = new SelectOffers(statement);
 
 		Stream<Relationship> relationships;
 		if (assists.length == 0) {
@@ -311,7 +310,7 @@ public interface SelectClauseAssist extends ClauseAssist {
 	 * @return {@link GroupByColumn}
 	 */
 	default SelectOffer order(int order, SelectOffer offer) {
-		SelectOffers offers = new SelectOffers(getSelectStatement());
+		var offers = new SelectOffers(getSelectStatement());
 		offer.get().forEach(c -> {
 			c.order(order);
 			offers.add(c);

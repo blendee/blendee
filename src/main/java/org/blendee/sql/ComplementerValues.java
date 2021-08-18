@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -42,7 +41,7 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	 * @return {@link ComplementerValues}
 	 */
 	public static ComplementerValues of(PreparedStatementComplementer complementer) {
-		Map<Integer, Object> map = new TreeMap<>();
+		var map = new TreeMap<Integer, Object>();
 
 		complementer.complement(new BPreparedStatement() {
 
@@ -201,13 +200,13 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 			}
 		});
 
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		var valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
-		List<ValueExtractor> extractors = Arrays.asList(new ValueExtractor[map.size()]);
-		List<Binder> binders = Arrays.asList(new Binder[map.size()]);
+		var extractors = Arrays.asList(new ValueExtractor[map.size()]);
+		var binders = Arrays.asList(new Binder[map.size()]);
 		map.forEach((k, v) -> {
-			int position = k - 1;
-			ValueExtractor extractor = valueExtractors.selectValueExtractor(v.getClass());
+			var position = k - 1;
+			var extractor = valueExtractors.selectValueExtractor(v.getClass());
 			extractors.set(position, extractor);
 			binders.set(position, extractor.extractAsBinder(v));
 		});
@@ -220,13 +219,13 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	 * @return {@link ComplementerValues}
 	 */
 	public static ComplementerValues getInstanceOfPlaceHolderValues(Object... values) {
-		ValueExtractors valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		var valueExtractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
 
-		List<ValueExtractor> extractors = Arrays.asList(new ValueExtractor[values.length]);
-		List<Binder> binders = Arrays.asList(new Binder[values.length]);
-		for (int i = 0; i < values.length; i++) {
-			Object value = values[i];
-			ValueExtractor extractor = valueExtractors.selectValueExtractor(value.getClass());
+		var extractors = Arrays.asList(new ValueExtractor[values.length]);
+		var binders = Arrays.asList(new Binder[values.length]);
+		for (var i = 0; i < values.length; i++) {
+			var value = values[i];
+			var extractor = valueExtractors.selectValueExtractor(value.getClass());
 			extractors.set(i, extractor);
 			binders.set(i, extractor.extractAsBinder(value));
 		}
@@ -250,15 +249,16 @@ public class ComplementerValues implements ChainPreparedStatementComplementer, R
 	 */
 	@Override
 	public ComplementerValues reproduce(Object... placeHolderValues) {
-		List<Binder> binders = new LinkedList<>();
+		var binders = new LinkedList<Binder>();
 
-		int index = 0;
-		for (ValueExtractor extractor : extractors) {
+		var index = 0;
+		for (var extractor : extractors) {
 			try {
 				binders.add(extractor.extractAsBinder(placeHolderValues[index]));
 			} catch (ClassCastException e) {
 				throw new IllegalStateException("ClassCastException at index: " + (index + 1), e);
 			}
+
 			index++;
 		}
 

@@ -37,11 +37,8 @@ public interface GroupByClauseAssist extends ClauseAssist {
 	 * @return 対象カラム
 	 */
 	default Offer any(AssistColumn column) {
-		String template = "{0}";
-		Column[] columns = new Column[] { column.column() };
-
-		GroupByClause clause = getGroupByClause();
-		return new ListClauseOffer(order -> clause.add(order, template, columns, column));
+		var columns = new Column[] { column.column() };
+		return new ListClauseOffer(order -> getGroupByClause().add(order, "{0}", columns, column));
 	}
 
 	/**

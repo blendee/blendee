@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import org.blendee.internal.U;
 
@@ -59,7 +58,7 @@ public class OverClause {
 	}
 
 	Column[] getColumns() {
-		List<Column> columns = new LinkedList<>();
+		var columns = new LinkedList<Column>();
 		if (partitionByClause != null) columns.addAll(partitionByClause.getColumnsInternal());
 		if (orderByClause != null) columns.addAll(orderByClause.getColumnsInternal());
 		return columns.toArray(new Column[columns.size()]);
@@ -67,10 +66,10 @@ public class OverClause {
 
 	private static final String buildTemplate(ListClause<?> clause, int start) {
 		if (clause == null) return "";
-		List<String> localTemplates = new LinkedList<>();
+		var localTemplates = new LinkedList<String>();
 
-		Column[] columns = clause.getColumns();
-		for (int i = 0; i < columns.length; i++) {
+		var columns = clause.getColumns();
+		for (var i = 0; i < columns.length; i++) {
 			localTemplates.add("{" + (start + i) + "}");
 		}
 

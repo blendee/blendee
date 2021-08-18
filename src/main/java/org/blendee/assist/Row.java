@@ -91,7 +91,7 @@ public interface Row extends Updatable {
 	 * @return 削除が成功した場合、 true
 	 */
 	default boolean delete() {
-		int result = new DataAccessHelper().delete(
+		var result = new DataAccessHelper().delete(
 			tablePath(),
 			primaryKey().getCriteria(RuntimeIdFactory.stubInstance()));
 		//削除件数が複数件あります。
@@ -153,7 +153,7 @@ public interface Row extends Updatable {
 	 * @return SELECT されたかどうか
 	 */
 	default boolean isSelected(String columnName) {
-		DataObject data = dataObject();
+		var data = dataObject();
 		return data.getSelectedValues().isSelected(data.getRelationship().getColumn(columnName));
 	}
 }

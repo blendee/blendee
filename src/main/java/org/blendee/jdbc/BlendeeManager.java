@@ -30,7 +30,7 @@ public class BlendeeManager implements ManagementSubject {
 
 			config = initializer.createConfigure();
 
-			int interval = config.getAutoCloseIntervalMillis();
+			var interval = config.getAutoCloseIntervalMillis();
 
 			//intervalが0以下の場合、スレッドを起動しない
 			if (interval > 0) {
@@ -94,10 +94,10 @@ public class BlendeeManager implements ManagementSubject {
 
 		config.initialize();
 
-		Configure config = getConfigure();
+		var config = getConfigure();
 		config.check();
 
-		TransactionFactory factory = config.getTransactionFactoryWithoutCheck();
+		var factory = config.getTransactionFactoryWithoutCheck();
 		Transaction transaction;
 		if (config.usesLazyTransaction()) {
 			transaction = new LazyTransaction(factory);
@@ -117,7 +117,7 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return トランザクション
 	 */
 	public Transaction getCurrentTransaction() {
-		Transaction transaction = transactionThreadLocal.get();
+		var transaction = transactionThreadLocal.get();
 		//このスレッドのトランザクションが開始されていません
 		if (transaction == null) throw new IllegalStateException(Transaction.class.getSimpleName() + ": not started for current thread");
 
@@ -132,7 +132,7 @@ public class BlendeeManager implements ManagementSubject {
 		synchronized (lock) {
 			if (metadata == null) {
 				//不明な実装が返すオブジェクトなのでチェック
-				Metadata metadata = Objects.requireNonNull(config.getMetadataFactory().createMetadata());
+				var metadata = Objects.requireNonNull(config.getMetadataFactory().createMetadata());
 				if (config.usesMetadataCache()) {
 					this.metadata = new CacheMetadata(metadata);
 				} else {
@@ -173,11 +173,11 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return 接続
 	 */
 	public static BConnection getConnection() {
-		Transaction transaction = get().transactionThreadLocal.get();
+		var transaction = get().transactionThreadLocal.get();
 		//このスレッドのトランザクションが開始されていません
 		if (transaction == null) throw new IllegalStateException(Transaction.class.getSimpleName() + ": not started for current thread");
 
-		BConnection connection = transaction.getConnection();
+		var connection = transaction.getConnection();
 		//このスレッドの接続が作成されていません
 		if (connection == null) throw new IllegalStateException(BConnection.class.getSimpleName() + ": not created for current thread");
 
@@ -189,12 +189,12 @@ public class BlendeeManager implements ManagementSubject {
 	 * @return 接続
 	 */
 	public static Optional<BConnection> connection() {
-		Optional<BlendeeManager> manager = optional();
+		var manager = optional();
 		if (manager.isPresent()) {
-			Transaction transaction = manager.get().transactionThreadLocal.get();
+			var transaction = manager.get().transactionThreadLocal.get();
 			if (transaction == null) return Optional.empty();
 
-			BConnection connection = transaction.getConnection();
+			var connection = transaction.getConnection();
 			if (connection == null) return Optional.empty();
 
 			return Optional.of(connection);

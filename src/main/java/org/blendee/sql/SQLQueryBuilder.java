@@ -92,13 +92,13 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	public SQLQueryBuilder(boolean useSelectAsterisk, FromClause fromClause) {
 		this.fromClause = fromClause.replicate();
 
-		RuntimeId id = fromClause.getRuntimeId();
+		var id = fromClause.getRuntimeId();
 
 		selectClause = useSelectAsterisk ? new SelectAsteriskClause() : new SelectClause(id);
 		groupClause = new GroupByClause(id);
 		orderClause = new OrderByClause(id);
 
-		CriteriaFactory factory = new CriteriaFactory(id);
+		var factory = new CriteriaFactory(id);
 		whereClause = factory.create();
 		havingClause = factory.create();
 	}
@@ -233,7 +233,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	 * @param decorators {@link SQLDecorator}
 	 */
 	public void addDecorator(SQLDecorator... decorators) {
-		for (SQLDecorator decorator : decorators) {
+		for (var decorator : decorators) {
 			this.decorators.add(decorator);
 		}
 
@@ -282,8 +282,8 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	public String sql() {
 		prepareForComposedSQL();
 
-		String currentQuery = query;
-		for (SQLDecorator decorator : decorators) {
+		var currentQuery = query;
+		for (var decorator : decorators) {
 			currentQuery = decorator.decorate(currentQuery);
 		}
 
@@ -300,7 +300,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 		done = groupClause.complement(done, statement);
 		done = havingClause.complement(done, statement);
 
-		for (CombiningQuery union : combiningQueries) {
+		for (var union : combiningQueries) {
 			done = union.getSQL().complement(done, statement);
 		}
 
@@ -339,19 +339,19 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 		if (query == null) {
 			prepareFrom();
 
-			ListClauses listClauses = new ListClauses();
+			var listClauses = new ListClauses();
 			merge(listClauses);
 
 			listClauses.addSelect(selectClause);
 			listClauses.addGroupBy(groupClause);
 			listClauses.addOrderBy(orderClause);
 
-			boolean joined = fromClause.isJoined();
+			var joined = fromClause.isJoined();
 
 			havingClause.setKeyword("HAVING");
 			whereClause.setKeyword("WHERE");
 
-			List<String> clauses = new ArrayList<String>();
+			var clauses = new ArrayList<String>();
 			addClause(clauses, listClauses.toSelectString(joined));
 			addClause(clauses, fromClause.toString());
 			addClause(clauses, whereClause.toString(joined));
@@ -377,7 +377,7 @@ public class SQLQueryBuilder implements ComposedSQL, Reproducible<SQL> {
 	private void prepareFrom() {
 		fromClause.clearRelationships();
 
-		Relationship root = fromClause.getRoot();
+		var root = fromClause.getRoot();
 		selectClause.prepareColumns(root);
 		whereClause.prepareColumns(root);
 		groupClause.prepareColumns(root);

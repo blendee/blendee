@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.blendee.internal.U;
@@ -43,7 +42,7 @@ public class JDBCMetadata implements Metadata {
 	 */
 	public JDBCMetadata() {
 		try {
-			DatabaseMetaData metadata = connection().getMetaData();
+			var metadata = connection().getMetaData();
 
 			identifier = StoredIdentifier.getInstance(
 				metadata.storesUpperCaseIdentifiers(),
@@ -59,22 +58,22 @@ public class JDBCMetadata implements Metadata {
 			//設定されていないスキーマ名です
 			throw new IllegalArgumentException("Schema name [" + schemaName + "] not found");
 
-		try (ResultSet result = connection().getMetaData()
+		try (var result = connection().getMetaData()
 			.getTables(
 				null,
 				identifier.regularize(schemaName),
 				null,
 				tableTypes)) {
-			List<String> tables = new ArrayList<>();
+			var tables = new ArrayList<String>();
 			while (result.next()) {
-				String tableName = result.getString("TABLE_NAME");
+				var tableName = result.getString("TABLE_NAME");
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
 				if (!checkObjectName(tableName)) continue;
 				tables.add(tableName);
 			}
 
-			TablePath[] paths = new TablePath[tables.size()];
-			for (int i = 0; i < paths.length; i++) {
+			var paths = new TablePath[tables.size()];
+			for (var i = 0; i < paths.length; i++) {
 				paths[i] = new TablePath(schemaName, tables.get(i));
 			}
 
@@ -91,7 +90,7 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public Optional<TableMetadata> tableMetadata(TablePath path) {
-		try (ResultSet result = connection().getMetaData()
+		try (var result = connection().getMetaData()
 			.getTables(null, identifier.regularize(path.getSchemaName()), identifier.regularize(path.getTableName()), null)) {
 
 			if (!result.next()) return Optional.empty();
@@ -104,10 +103,10 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
-		try (ResultSet result = connection().getMetaData()
+		try (var result = connection().getMetaData()
 			.getColumns(null, identifier.regularize(path.getSchemaName()), identifier.regularize(path.getTableName()), null)) {
 
-			List<ColumnMetadata> columns = new LinkedList<>();
+			var columns = new LinkedList<ColumnMetadata>();
 			while (result.next()) {
 				columns.add(new ConcreteColumnMetadata(result));
 			}
@@ -125,14 +124,14 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public Optional<PrimaryKeyMetadata> primaryKeyMetadata(TablePath path) {
-		try (ResultSet result = connection().getMetaData()
+		try (var result = connection().getMetaData()
 			.getPrimaryKeys(
 				null,
 				identifier.regularize(path.getSchemaName()),
 				identifier.regularize(path.getTableName()))) {
 
 			String name = null;
-			List<Column> columnList = new ArrayList<>();
+			var columnList = new ArrayList<Column>();
 			while (result.next()) {
 				name = name == null ? result.getString("PK_NAME") : name;
 				columnList.add(
@@ -144,9 +143,9 @@ public class JDBCMetadata implements Metadata {
 			if (columnList.size() == 0) return Optional.empty();
 
 			Collections.sort(columnList);
-			int size = columnList.size();
-			String[] columnNames = new String[size];
-			for (int i = 0; i < size; i++) {
+			var size = columnList.size();
+			var columnNames = new String[size];
+			for (var i = 0; i < size; i++) {
 				columnNames[i] = columnList.get(i).name;
 			}
 
@@ -190,8 +189,8 @@ public class JDBCMetadata implements Metadata {
 
 	@Override
 	public CrossReference[] getCrossReferences(TablePath exportedTable, TablePath importedTable) {
-		List<CrossReferenceResult> resultList = new LinkedList<>();
-		try (ResultSet jdbcResult = connection().getMetaData()
+		var resultList = new LinkedList<CrossReferenceResult>();
+		try (var jdbcResult = connection().getMetaData()
 			.getCrossReference(
 				null,
 				identifier.regularize(exportedTable.getSchemaName()),
@@ -209,9 +208,9 @@ public class JDBCMetadata implements Metadata {
 
 		Collections.sort(resultList);
 
-		List<CrossReferenceBuilder> builders = new LinkedList<>();
+		var builders = new LinkedList<CrossReferenceBuilder>();
 		CrossReferenceBuilder builder = null;
-		for (CrossReferenceResult result : resultList) {
+		for (var result : resultList) {
 			if (result.seq.intValue() == 1) {
 				builder = new CrossReferenceBuilder(result);
 				builders.add(builder);
@@ -222,7 +221,7 @@ public class JDBCMetadata implements Metadata {
 			builder.add(result);
 		}
 
-		CrossReference[] references = new CrossReference[builders.size()];
+		var references = new CrossReference[builders.size()];
 		int index = 0;
 		for (Iterator<CrossReferenceBuilder> i = builders.iterator(); i.hasNext(); index++)
 			references[index] = i.next().build();
@@ -254,12 +253,12 @@ public class JDBCMetadata implements Metadata {
 		String tableColumnName)
 		throws SQLException {
 		try {
-			Set<TablePath> targets = new TreeSet<>();
+			var targets = new TreeSet<TablePath>();
 			while (result.next()) {
-				String tableName = result.getString(tableColumnName);
+				var tableName = result.getString(tableColumnName);
 				//もし、使用不可となっている文字を含む場合、使用できるテーブルには含めない
 				if (!checkObjectName(tableName)) continue;
-				TablePath path = new TablePath(result.getString(schemaColumnName), tableName);
+				var path = new TablePath(result.getString(schemaColumnName), tableName);
 				targets.add(path);
 			}
 			return targets.toArray(new TablePath[targets.size()]);
@@ -269,7 +268,7 @@ public class JDBCMetadata implements Metadata {
 	}
 
 	private static boolean checkObjectName(String name) {
-		for (int i = 0; i < illegalChars.length; i++) {
+		for (var i = 0; i < illegalChars.length; i++) {
 			if (name.indexOf(illegalChars[i]) != -1) return false;
 		}
 
@@ -316,7 +315,7 @@ public class JDBCMetadata implements Metadata {
 
 		@Override
 		public int compareTo(CrossReferenceResult target) {
-			int result = fkSchema.compareTo(target.fkSchema);
+			var result = fkSchema.compareTo(target.fkSchema);
 			if (result != 0) return result;
 			result = fkTable.compareTo(target.fkTable);
 			if (result != 0) return result;

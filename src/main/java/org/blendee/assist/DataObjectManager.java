@@ -42,10 +42,10 @@ class DataObjectManager {
 	}
 
 	private Map<Relationship, DataObject> convert(DataObject source) {
-		Map<Relationship, DataObject> map = new HashMap<>();
+		var map = new HashMap<Relationship, DataObject>();
 		map.put(source.getRelationship(), source);
-		for (OneToManyBehavior relation : route) {
-			Relationship include = relation.getRelationship();
+		for (var relation : route) {
+			var include = relation.getRelationship();
 			source = source.getDataObject(include.getCrossReference().getForeignKeyName());
 			map.put(include, source);
 		}

@@ -90,10 +90,10 @@ public interface OrderByClauseAssist extends ClauseAssist {
 	 * @return {@link AscDesc} ASC か DESC
 	 */
 	default AscDesc any(AssistColumn orderByColumn) {
-		String template = "{0}";
-		Column[] columns = new Column[] { orderByColumn.column() };
+		var template = "{0}";
+		var columns = new Column[] { orderByColumn.column() };
 
-		OrderByClause clause = getOrderByClause();
+		var clause = getOrderByClause();
 		return new AscDesc(
 			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC, columns, orderByColumn)),
 			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC, columns, orderByColumn)),
@@ -111,20 +111,20 @@ public interface OrderByClauseAssist extends ClauseAssist {
 	 * @return {@link AscDesc} ASC か DESC
 	 */
 	default AscDesc any(String template, AssistColumn... orderByColumns) {
-		Column[] columns = new Column[orderByColumns.length];
+		var columns = new Column[orderByColumns.length];
 		for (int i = 0; i < orderByColumns.length; i++) {
 			columns[i] = orderByColumns[i].column();
 		}
 
 		ChainPreparedStatementComplementer complementer = (done, statement) -> {
-			for (ChainPreparedStatementComplementer c : orderByColumns) {
+			for (var c : orderByColumns) {
 				done = c.complement(done, statement);
 			}
 
 			return done;
 		};
 
-		OrderByClause clause = getOrderByClause();
+		var clause = getOrderByClause();
 		return new AscDesc(
 			new ListClauseOffer(order -> clause.add(order, template, Direction.ASC, columns, complementer)),
 			new ListClauseOffer(order -> clause.add(order, template, Direction.DESC, columns, complementer)),

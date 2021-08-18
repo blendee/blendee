@@ -83,7 +83,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @param columns 追加するカラム
 	 */
 	public void asc(Column... columns) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			add(column, Direction.ASC);
 		}
 	}
@@ -93,7 +93,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @param columnNames 追加するカラム
 	 */
 	public void asc(String... columnNames) {
-		for (String columnName : columnNames) {
+		for (var columnName : columnNames) {
 			add(columnName, Direction.ASC);
 		}
 	}
@@ -103,7 +103,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @param columns 追加するカラム
 	 */
 	public void desc(Column... columns) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			add(column, Direction.DESC);
 		}
 	}
@@ -113,7 +113,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @param columnNames 追加するカラム
 	 */
 	public void desc(String... columnNames) {
-		for (String columnName : columnNames) {
+		for (var columnName : columnNames) {
 			add(columnName, Direction.DESC);
 		}
 	}
@@ -154,7 +154,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(String template, Direction direction, Column... columns) {
-		ListQueryBlock block = new ListQueryBlock(runtimeId);
+		var block = new ListQueryBlock(runtimeId);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}
@@ -175,7 +175,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 	 * @see SQLFragmentFormat
 	 */
 	public void add(int order, String template, Direction direction, Column... columns) {
-		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
+		var block = new ListQueryBlock(runtimeId, order);
 		for (int i = 0; i < columns.length; i++) {
 			block.addColumn(columns[i]);
 		}
@@ -279,7 +279,7 @@ public class OrderByClause extends ListClause<OrderByClause> {
 		@Override
 		public boolean equals(Object o) {
 			if (!(o instanceof DirectionalColumn)) return false;
-			DirectionalColumn another = (DirectionalColumn) o;
+			var another = (DirectionalColumn) o;
 			return column.equals(another.column) && direction.equals(another.direction);
 		}
 

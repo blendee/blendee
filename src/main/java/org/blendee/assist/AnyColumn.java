@@ -1,7 +1,6 @@
 package org.blendee.assist;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -53,9 +52,9 @@ class AnyColumn implements AssistColumn {
 
 	@Override
 	public Binder[] values() {
-		Binder[] binders = new Binder[values.length];
+		var binders = new Binder[values.length];
 
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 
 		for (int i = 0; i < values.length; i++) {
 			binders[i] = extractor.extract(values[i]);
@@ -75,7 +74,7 @@ class AnyColumn implements AssistColumn {
 	}
 
 	private Column[] columns() {
-		List<Column> list = Arrays.stream(columns).map(c -> c.column()).collect(Collectors.toList());
+		var list = Arrays.stream(columns).map(c -> c.column()).collect(Collectors.toList());
 		return list.toArray(new Column[list.size()]);
 	}
 }

@@ -1,7 +1,6 @@
 package org.blendee.orm;
 
 import org.blendee.jdbc.BlendeeException;
-import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Column;
 import org.blendee.sql.Relationship;
 
@@ -19,7 +18,7 @@ public class IllegalValueException extends BlendeeException {
 	}
 
 	static final String buildMessage(Column column) {
-		Relationship relationship = column.getRelationship();
+		var relationship = column.getRelationship();
 
 		//"SELECT 句にないカラム "
 		//+ relationship.getTablePath().getTableName()
@@ -39,12 +38,12 @@ public class IllegalValueException extends BlendeeException {
 
 	private static String buildRelationshipPart(Relationship relationship) {
 		if (relationship.isRoot()) {
-			TablePath path = relationship.getTablePath();
+			var path = relationship.getTablePath();
 			return path.getTableName();
 		}
 
-		String[] fkNames = relationship.getCrossReference().getForeignKeyColumnNames();
-		String fk = fkNames.length == 1 ? fkNames[0] : "(" + String.join(", ", fkNames) + ")";
+		var fkNames = relationship.getCrossReference().getForeignKeyColumnNames();
+		var fk = fkNames.length == 1 ? fkNames[0] : "(" + String.join(", ", fkNames) + ")";
 
 		return buildRelationshipPart(relationship.getParent()) + "." + fk + " -> " + relationship.getTablePath().getTableName();
 	}

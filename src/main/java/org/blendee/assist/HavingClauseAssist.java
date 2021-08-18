@@ -8,7 +8,6 @@ import static org.blendee.assist.Helper.SUM_TEMPLATE;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.blendee.sql.Column;
 import org.blendee.sql.MultiColumn;
@@ -80,15 +79,15 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(Vargs<CriteriaAssistColumn<O>> columns, Object... values) {
-		List<Column> list = new LinkedList<>();
+		var list = new LinkedList<Column>();
 		columns.stream().forEach(c -> list.add(c.column()));
 
 		Arrays.stream(values).forEach(v -> {
 			list.add(new PseudoColumn(getRelationship(), v.toString(), false));
 		});
 
-		int size = list.size();
-		SelectStatement statement = getSelectStatement();
+		var size = list.size();
+		var statement = getSelectStatement();
 		return new HavingColumn<>(
 			statement,
 			getContext(),
@@ -107,15 +106,15 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	 * @return カラム
 	 */
 	default <O extends LogicalOperators<?>> HavingColumn<O> COALESCE(CriteriaAssistColumn<O> column, Object... values) {
-		List<Column> list = new LinkedList<>();
+		var list = new LinkedList<Column>();
 		list.add(column.column());
 
 		Arrays.stream(values).forEach(v -> {
 			list.add(new PseudoColumn(getRelationship(), v.toString(), false));
 		});
 
-		int size = list.size();
-		SelectStatement statement = getSelectStatement();
+		var size = list.size();
+		var statement = getSelectStatement();
 		return new HavingColumn<>(
 			statement,
 			getContext(),
@@ -155,7 +154,7 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 	default <O extends LogicalOperators<?>> HavingColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new HavingColumn<>(
 			statement,
 			getContext(),
@@ -228,12 +227,12 @@ public interface HavingClauseAssist<R extends HavingClauseAssist<?>> extends Cri
 		String template,
 		Vargs<CriteriaAssistColumn<O>> args) {
 		AssistColumn[] values = args.get();
-		Column[] columns = new Column[values.length];
+		var columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {
 			columns[i] = values[i].column();
 		}
 
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new HavingColumn<>(
 			statement,
 			getContext(),

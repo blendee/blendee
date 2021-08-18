@@ -75,8 +75,8 @@ public final class ByteArrayBinder extends Binder implements Serializable {
 		@Override
 		public int hashCode() {
 			if (value == null) return 0;
-			int[] hashCodes = new int[value.length];
-			for (int i = 0; i < hashCodes.length; i++) {
+			var hashCodes = new int[value.length];
+			for (var i = 0; i < hashCodes.length; i++) {
 				hashCodes[i] = value[i];
 			}
 
@@ -86,7 +86,7 @@ public final class ByteArrayBinder extends Binder implements Serializable {
 		@Override
 		public boolean equals(Object o) {
 			if (!(o instanceof ByteArray)) return false;
-			byte[] targetValue = ((ByteArray) o).value;
+			var targetValue = ((ByteArray) o).value;
 			if (value == null && targetValue == null) return true;
 			return Arrays.equals(value, targetValue);
 		}

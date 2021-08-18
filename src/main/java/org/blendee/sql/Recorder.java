@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -113,14 +112,14 @@ public abstract class Recorder {
 	protected abstract Lock lock();
 
 	private <E extends Reproducible<E>> Reproducer prepare(Supplier<E> supplier, Lock lock) {
-		Class<?> lambdaClass = supplier.getClass();
+		var lambdaClass = supplier.getClass();
 
 		Reproducer reproducer = null;
 
 		lock.lock();
 		try {
 			if ((reproducer = executorCache.get(lambdaClass)) == null) {
-				E reproducible = supplier.get();
+				var reproducible = supplier.get();
 				try {
 					Placeholder.start();
 					//ここで初めてSQLをreproduceし、Placeholderの位置を記録
@@ -144,17 +143,17 @@ public abstract class Recorder {
 		Function<R, E> supplier,
 		Function<R, Object[]> playbackPlaceHolderValuesSupplier,
 		Lock lock) {
-		Class<?> lambdaClass = supplier.getClass();
+		var lambdaClass = supplier.getClass();
 
-		R result = decision.get();
+		var result = decision.get();
 
-		Object[] values = playbackPlaceHolderValuesSupplier.apply(result);
+		var values = playbackPlaceHolderValuesSupplier.apply(result);
 
 		Reproducer reproducer = null;
 
 		lock.lock();
 		try {
-			Map<R, Reproducer> map = (Map<R, Reproducer>) executorMapCache.get(lambdaClass);
+			var map = (Map<R, Reproducer>) executorMapCache.get(lambdaClass);
 
 			if (map == null) {
 				map = new HashMap<>();
@@ -163,7 +162,7 @@ public abstract class Recorder {
 
 			reproducer = map.get(result);
 			if (reproducer == null) {
-				E reproducible = supplier.apply(result);
+				var reproducible = supplier.apply(result);
 				try {
 					Placeholder.start();
 					//ここで初めてSQLをreproduceし、Placeholderの位置を記録
@@ -192,9 +191,9 @@ public abstract class Recorder {
 		private Reproducer(Reproducible<?> reproducible) {
 			this.reproducible = reproducible;
 
-			List<Integer> indexes = Placeholder.getIndexes();
+			var indexes = Placeholder.getIndexes();
 
-			Binder[] binders = reproducible.currentBinders().clone();
+			var binders = reproducible.currentBinders().clone();
 			values = new Object[binders.length];
 			for (int i = 0; i < binders.length; i++) {
 				values[i] = binders[i].getValue();
@@ -211,9 +210,9 @@ public abstract class Recorder {
 				//"値の数は " + placeholderIndexes.length + " である必要があります"
 				throw new IllegalStateException("the number of values ​​must be " + placeholderIndexes.length);
 
-			Object[] clone = values.clone();
+			var clone = values.clone();
 
-			for (int i = 0; i < newValues.length; i++) {
+			for (var i = 0; i < newValues.length; i++) {
 				clone[placeholderIndexes[i]] = newValues[i];
 			}
 

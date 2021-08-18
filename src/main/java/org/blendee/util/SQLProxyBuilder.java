@@ -3,15 +3,12 @@ package org.blendee.util;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.blendee.internal.U;
@@ -67,7 +64,7 @@ public class SQLProxyBuilder {
 			throw new IllegalArgumentException(sourceInterface + " not interface");
 
 		@SuppressWarnings("unchecked")
-		T result = (T) Proxy.newProxyInstance(
+		var result = (T) Proxy.newProxyInstance(
 			SQLProxyBuilder.class.getClassLoader(),
 			new Class<?>[] { sourceInterface },
 			new SQLProxyInvocationHandler(sqlCharset));
@@ -109,7 +106,7 @@ public class SQLProxyBuilder {
 	 * @param consumer
 	 */
 	public static void execute(Consumer<Batch> consumer) {
-		Batch batch = BlendeeManager.getConnection().getBatch();
+		var batch = BlendeeManager.getConnection().getBatch();
 		batchThreadLocal.set(batch);
 		try {
 			consumer.accept(batch);
@@ -128,46 +125,46 @@ public class SQLProxyBuilder {
 
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			Class<?> proxyClass = proxy.getClass().getInterfaces()[0];
+			var proxyClass = proxy.getClass().getInterfaces()[0];
 
 			if (!proxyClass.isAnnotationPresent(SQLProxy.class)) throw new IllegalStateException("annotation SQLProxy not found");
 
-			String proxyClassName = proxyClass.getName();
+			var proxyClassName = proxyClass.getName();
 
 			String sql;
 
-			SQL sqlContainer = method.getAnnotation(SQL.class);
+			var sqlContainer = method.getAnnotation(SQL.class);
 			if (sqlContainer != null) {
 				sql = sqlContainer.value();
 			} else {
-				int packageNameLength = proxyClass.getPackage().getName().length();
+				var packageNameLength = proxyClass.getPackage().getName().length();
 
-				String sqlFileName = proxyClassName.substring(packageNameLength == 0 ? 0 : packageNameLength + 1)
+				var sqlFileName = proxyClassName.substring(packageNameLength == 0 ? 0 : packageNameLength + 1)
 					+ "."
 					+ method.getName()
 					+ ".sql";
 
-				URL url = proxyClass.getResource(sqlFileName);
+				var url = proxyClass.getResource(sqlFileName);
 				//sqlFileName + " が見つかりません"
 				if (url == null) throw new IllegalStateException(sqlFileName + " not found");
 
 				sql = new String(U.readBytes(url.openStream()), charset);
 			}
 
-			Methods methods = Class.forName(proxyClassName + METADATA_CLASS_SUFFIX).getAnnotation(Methods.class);
-			SQLProxyHelper helper = new SQLProxyHelper(
+			var methods = Class.forName(proxyClassName + METADATA_CLASS_SUFFIX).getAnnotation(Methods.class);
+			var helper = new SQLProxyHelper(
 				sql,
 				Arrays.asList(methods.value()).stream().filter(m -> m.name().equals(method.getName())).findFirst().get().args(),
 				args);
 
-			Class<?> returnType = method.getReturnType();
+			var returnType = method.getReturnType();
 
 			if (returnType.equals(BResultSet.class)) {
 				return statement(helper).executeQuery();
 			} else if (returnType.equals(SQLProxy.ResultSet.class)) {
 				return new SQLProxy.ResultSet(statement(helper).executeQuery());
 			} else if (returnType.equals(int.class)) {
-				Batch batch = batchThreadLocal.get();
+				var batch = batchThreadLocal.get();
 				if (batch == null) return statement(helper).executeUpdate();
 
 				batch.add(sql, helper);
@@ -192,17 +189,17 @@ public class SQLProxyBuilder {
 		private final List<Binder> binders = new ArrayList<>();
 
 		private SQLProxyHelper(String sql, String[] argNames, Object[] args) {
-			Bindable[] bindables = BindableConverter.convertAllTypes(args);
+			var bindables = BindableConverter.convertAllTypes(args);
 
-			Map<String, Bindable> argMap = new HashMap<>();
-			for (int i = 0; i < argNames.length; i++) {
+			var argMap = new HashMap<String, Bindable>();
+			for (var i = 0; i < argNames.length; i++) {
 				argMap.put(argNames[i], bindables[i]);
 			}
 
-			int position = 0;
-			StringBuilder converted = new StringBuilder();
+			var position = 0;
+			var converted = new StringBuilder();
 			while (true) {
-				Matcher matcher = placeholder.matcher(sql);
+				var matcher = placeholder.matcher(sql);
 
 				if (!matcher.find()) break;
 
@@ -213,8 +210,8 @@ public class SQLProxyBuilder {
 
 				sql = sql.substring(position);
 
-				String placeholder = matcher.group(1);
-				Bindable value = argMap.get(placeholder);
+				var placeholder = matcher.group(1);
+				var value = argMap.get(placeholder);
 
 				if (value == null) throw new IllegalStateException("place holder [" + placeholder + "] was not found");
 
@@ -228,8 +225,8 @@ public class SQLProxyBuilder {
 
 		@Override
 		public void complement(BPreparedStatement statement) {
-			int i = 0;
-			int size = binders.size();
+			var i = 0;
+			var size = binders.size();
 			for (; i < size; i++) {
 				binders.get(i).bind(i + 1, statement);
 			}

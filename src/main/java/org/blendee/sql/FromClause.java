@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.ChainPreparedStatementComplementer;
-import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.TablePath;
 
 /**
@@ -127,10 +126,10 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			throw new IllegalStateException(relationship + " has not same root");
 		}
 
-		Set<Relationship> set = new HashSet<>();
+		var set = new HashSet<Relationship>();
 		relationship.addParentTo(set);
 		set.add(relationship);
-		for (Relationship element : set) {
+		for (var element : set) {
 			localRelationships.add(new RelationshipContainer(type, element));
 		}
 	}
@@ -146,7 +145,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			new JointContainer(type, another, onCriteria));
 
 		onCriteria.getColumnsInternal().forEach(c -> {
-			Relationship targetRoot = c.getRootRelationship();
+			var targetRoot = c.getRootRelationship();
 			c.setRelationship(target -> {
 				if (targetRoot.equals(root))
 					localRelationships.add(new RelationshipContainer(JoinType.LEFT_OUTER_JOIN, target));
@@ -169,7 +168,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @return {@link Binder} の配列
 	 */
 	public Binder[] getBinders() {
-		List<Binder> binders = new LinkedList<>();
+		var binders = new LinkedList<Binder>();
 		joints.forEach(j -> j.addBindersTo(binders));
 		return binders.toArray(new Binder[binders.size()]);
 	}
@@ -188,7 +187,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		if (!isJoined()) {
 			string = " FROM " + root.getTablePath();
 		} else {
-			LinkedList<String> result = process();
+			var result = process();
 			result.addFirst(id.toString(root));
 			string = " FROM " + String.join(" ", result);
 		}
@@ -201,7 +200,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	 * @return copy
 	 */
 	protected FromClause replicate() {
-		FromClause clone = new FromClause(root.getTablePath(), id);
+		var clone = new FromClause(root.getTablePath(), id);
 
 		//中身はImmutableなのでそのままコピー
 		clone.localRelationships.addAll(localRelationships);
@@ -229,16 +228,16 @@ public class FromClause implements ChainPreparedStatementComplementer {
 	}
 
 	private LinkedList<String> process() {
-		LinkedList<RelationshipContainer> localList = new LinkedList<>();
+		var localList = new LinkedList<RelationshipContainer>();
 		localList.addAll(localRelationships);
 		Collections.sort(localList);
 		localList.removeFirst();
-		LinkedList<String> clause = new LinkedList<>();
-		for (RelationshipContainer element : localList) {
+		var clause = new LinkedList<String>();
+		for (var element : localList) {
 			element.append(clause);
 		}
 
-		for (JointContainer element : joints) {
+		for (var element : joints) {
 			element.append(clause);
 		}
 
@@ -250,9 +249,9 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		Relationship relationship,
 		Column[] left,
 		Column[] right) {
-		Criteria criteria = new CriteriaFactory(id).create();
-		CriteriaFactory factory = new CriteriaFactory(id);
-		for (int i = 0; i < left.length; i++) {
+		var criteria = new CriteriaFactory(id).create();
+		var factory = new CriteriaFactory(id);
+		for (var i = 0; i < left.length; i++) {
 			criteria.and(factory.createCriteria("{0} = {1}", new Column[] { left[i], right[i] }, Bindable.EMPTY_ARRAY));
 		}
 
@@ -293,6 +292,7 @@ public class FromClause implements ChainPreparedStatementComplementer {
 			} else if (o instanceof Relationship) {
 				return relationship.equals(o);
 			}
+
 			return false;
 		}
 
@@ -307,16 +307,16 @@ public class FromClause implements ChainPreparedStatementComplementer {
 		}
 
 		private void append(List<String> list) {
-			CrossReference reference = relationship.getCrossReference();
-			String[] foreignKeyColumnNames = reference.getForeignKeyColumnNames();
-			String[] primaryKeyColumnNames = reference.getPrimaryKeyColumnNames();
+			var reference = relationship.getCrossReference();
+			var foreignKeyColumnNames = reference.getForeignKeyColumnNames();
+			var primaryKeyColumnNames = reference.getPrimaryKeyColumnNames();
 
-			int length = foreignKeyColumnNames.length;
+			var length = foreignKeyColumnNames.length;
 
-			Relationship parentRelationship = relationship.getParent();
-			Column[] left = new Column[length];
-			Column[] right = new Column[length];
-			for (int i = 0; i < length; i++) {
+			var parentRelationship = relationship.getParent();
+			var left = new Column[length];
+			var right = new Column[length];
+			for (var i = 0; i < length; i++) {
 				left[i] = parentRelationship.getColumn(foreignKeyColumnNames[i]);
 				right[i] = relationship.getColumn(primaryKeyColumnNames[i]);
 			}

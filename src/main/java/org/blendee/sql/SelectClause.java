@@ -29,7 +29,7 @@ public class SelectClause extends ListClause<SelectClause> {
 	 * @param columns 追加するカラム
 	 */
 	public void add(int order, Column... columns) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			addInternal(order, column, "{0} AS " + runtimeId.toComplementedColumnName(column.getId()));
 		}
 	}

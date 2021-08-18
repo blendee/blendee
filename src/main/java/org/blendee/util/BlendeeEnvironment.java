@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import org.blendee.jdbc.AutoCloseableFinalizer;
 import org.blendee.jdbc.BlendeeException;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ContextManager;
@@ -91,10 +90,10 @@ public class BlendeeEnvironment {
 	 * @return self
 	 */
 	public BlendeeEnvironment start(Properties initValues) {
-		Map<OptionKey<?>, Object> param = new HashMap<>();
+		var param = new HashMap<OptionKey<?>, Object>();
 
 		initValues.forEach((k, v) -> {
-			ParsableOptionKey<?> key = BlendeeConstants.convert((String) k);
+			var key = BlendeeConstants.convert((String) k);
 			param.put(key, key.parse((String) v).get());
 		});
 
@@ -106,7 +105,7 @@ public class BlendeeEnvironment {
 	 * @return self
 	 */
 	public BlendeeEnvironment start() {
-		Map<OptionKey<?>, Object> param = new Map<OptionKey<?>, Object>() {
+		var param = new Map<OptionKey<?>, Object>() {
 
 			@Override
 			public int size() {
@@ -130,8 +129,8 @@ public class BlendeeEnvironment {
 
 			@Override
 			public Object get(Object object) {
-				ParsableOptionKey<?> key = (ParsableOptionKey<?>) object;
-				String value = System.getProperty("org.blendee." + key.getKey());
+				var key = (ParsableOptionKey<?>) object;
+				var value = System.getProperty("org.blendee." + key.getKey());
 				return key.parse(value);
 			}
 
@@ -182,12 +181,12 @@ public class BlendeeEnvironment {
 	public BlendeeEnvironment start(Map<OptionKey<?>, ?> initValues) {
 		try {
 			ContextManager.setContext(contextName);
-			Initializer init = new Initializer();
+			var init = new Initializer();
 
 			init.setOptions(new HashMap<>(initValues));
 
 			BlendeeConstants.SCHEMA_NAMES.extract(initValues).ifPresent(names -> {
-				for (String name : names) {
+				for (var name : names) {
 					init.addSchemaName(name);
 				}
 			});
@@ -252,9 +251,9 @@ public class BlendeeEnvironment {
 	public void stop() {
 		try {
 			ContextManager.setContext(contextName);
-			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+			var manager = ContextManager.get(BlendeeManager.class);
 			if (manager.initialized()) {
-				AutoCloseableFinalizer finalizer = manager.getAutoCloseableFinalizer();
+				var finalizer = manager.getAutoCloseableFinalizer();
 				finalizer.stop();
 				finalizer.closeAll();
 			}
@@ -275,7 +274,7 @@ public class BlendeeEnvironment {
 	public void execute(BlendeeEnvironmentConsumer consumer) {
 		try {
 			ContextManager.setContext(contextName);
-			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+			var manager = ContextManager.get(BlendeeManager.class);
 
 			boolean top;
 			Transaction transaction;
@@ -326,7 +325,7 @@ public class BlendeeEnvironment {
 	 * @throws BlendeeException 処理内で起こった例外
 	 */
 	public <T> T executeAndGet(BlendeeEnvironmentFunction<T> function) {
-		Container<T> result = new Container<>();
+		var result = new Container<T>();
 		execute(transaction -> {
 			result.value = function.execute(transaction);
 		});
@@ -392,7 +391,7 @@ public class BlendeeEnvironment {
 		try {
 			ContextManager.setContext(contextName);
 
-			BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+			var manager = ContextManager.get(BlendeeManager.class);
 
 			manager.clearMetadataCache();
 

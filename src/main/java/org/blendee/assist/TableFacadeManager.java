@@ -174,6 +174,7 @@ public class TableFacadeManager<T extends Row> {
 		} catch (DataObjectNotFoundException e) {
 			return Optional.empty();
 		}
+
 		return Optional.of(createRow(object));
 	}
 

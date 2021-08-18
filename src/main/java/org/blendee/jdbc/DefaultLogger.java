@@ -30,7 +30,7 @@ public class DefaultLogger implements BLogger {
 
 	@Override
 	public void flush(Level level) {
-		List<String> list = buffer.get();
+		var list = buffer.get();
 		logger.log(level, String.join(lineSeparator, list));
 		list.clear();
 	}

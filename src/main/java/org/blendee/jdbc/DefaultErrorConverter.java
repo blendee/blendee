@@ -18,11 +18,11 @@ public class DefaultErrorConverter implements ErrorConverter {
 	 */
 	@Override
 	public BSQLException convert(SQLException e) {
-		BLogger logger = BlendeeManager.getLogger();
+		var logger = BlendeeManager.getLogger();
 
 		if (e instanceof DataTruncation) {
-			DataTruncation warning = (DataTruncation) e;
-			String prefix = "data truncation: ";
+			var warning = (DataTruncation) e;
+			var prefix = "data truncation: ";
 			logger.println(prefix + "index: " + warning.getIndex());
 			logger.println(prefix + "parameter: " + warning.getParameter());
 			logger.println(prefix + "read: " + warning.getRead());

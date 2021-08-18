@@ -32,7 +32,7 @@ public interface AssistColumn extends ChainPreparedStatementComplementer {
 
 	@Override
 	default int complement(int done, BPreparedStatement statement) {
-		for (Binder binder : values()) {
+		for (var binder : values()) {
 			binder.bind(++done, statement);
 		}
 

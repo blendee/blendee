@@ -803,7 +803,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 	}
 
 	private void careEmptySelect() {
-		SelectClause select = behavior().getSelectClause();
+		var select = behavior().getSelectClause();
 		if (select == null || select.getColumnsSize() == 0) {
 			select = new SelectClause(RuntimeIdFactory.stubInstance());
 			select.add("{0}", new PseudoColumn(relationship, "*", true));
@@ -939,14 +939,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 
 		@Override
 		public WhereLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
 
 		@Override
 		public WhereLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
@@ -970,7 +970,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public WhereColumn<WhereLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new WhereColumn<>(
 				statement,
 				getContext(),
@@ -984,7 +984,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public WhereLogicalOperators paren(Consumer<WhereAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (WhereLogicalOperators) statement.getWhereLogicalOperators();
 		}
@@ -1061,14 +1061,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 
 		@Override
 		public HavingLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
 
 		@Override
 		public HavingLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
@@ -1092,7 +1092,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public HavingColumn<HavingLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new HavingColumn<>(
 				statement,
 				getContext(),
@@ -1106,7 +1106,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public HavingLogicalOperators paren(Consumer<HavingAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (HavingLogicalOperators) statement.getHavingLogicalOperators();
 		}
@@ -1183,14 +1183,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 
 		@Override
 		public OnLeftLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
 
 		@Override
 		public OnLeftLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
@@ -1214,7 +1214,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public OnLeftColumn<OnLeftLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new OnLeftColumn<>(
 				statement,
 				getContext(),
@@ -1228,7 +1228,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public OnLeftLogicalOperators paren(Consumer<OnLeftAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnLeftLogicalOperators) statement.getOnLeftLogicalOperators();
 		}
@@ -1275,14 +1275,14 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 
 		@Override
 		public OnRightLogicalOperators EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setExists(statement.getRuntimeId(), this, subquery);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
 
 		@Override
 		public OnRightLogicalOperators NOT_EXISTS(SelectStatement subquery) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.setNotExists(statement.getRuntimeId(), this, subquery);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}
@@ -1306,7 +1306,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public OnRightColumn<OnRightLogicalOperators> any(String template) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			return new OnRightColumn<>(
 				statement,
 				getContext(),
@@ -1320,7 +1320,7 @@ public class AnonymousTable implements SelectStatement, Query<AutoCloseableItera
 		 */
 		@Override
 		public OnRightLogicalOperators paren(Consumer<OnRightAssist> consumer) {
-			SelectStatement statement = getSelectStatement();
+			var statement = getSelectStatement();
 			Helper.paren(statement.getRuntimeId(), getContext(), consumer, this);
 			return (OnRightLogicalOperators) statement.getOnRightLogicalOperators();
 		}

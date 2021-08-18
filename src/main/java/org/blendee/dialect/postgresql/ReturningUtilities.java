@@ -5,8 +5,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.blendee.assist.Row;
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.Result;
@@ -94,16 +92,16 @@ public class ReturningUtilities {
 		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
-		BConnection connection = BlendeeManager.getConnection();
-		InsertDMLBuilder builder = new InsertDMLBuilder(path);
+		var connection = BlendeeManager.getConnection();
+		var builder = new InsertDMLBuilder(path);
 		builder.add(data);
 
-		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
+		var sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (var statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (var result = statement.executeQuery()) {
 				result.next();
 				return function.apply(result);
 			}
@@ -198,17 +196,17 @@ public class ReturningUtilities {
 		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
-		BConnection connection = BlendeeManager.getConnection();
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
+		var connection = BlendeeManager.getConnection();
+		var builder = new UpdateDMLBuilder(path);
 		builder.add(data);
 		builder.setCriteria(criteria);
 
-		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
+		var sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (var statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (var result = statement.executeQuery()) {
 				return function.apply(result);
 			}
 		}
@@ -296,16 +294,16 @@ public class ReturningUtilities {
 		Objects.requireNonNull(function);
 		checkColumnNames(columnNames);
 
-		BConnection connection = BlendeeManager.getConnection();
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
+		var connection = BlendeeManager.getConnection();
+		var builder = new DeleteDMLBuilder(path);
 		builder.setCriteria(criteria);
 
-		String sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
+		var sql = builder.toString() + " RETURNING " + String.join(", ", columnNames);
 
-		try (BPreparedStatement statement = connection.prepareStatement(sql)) {
+		try (var statement = connection.prepareStatement(sql)) {
 			builder.complement(statement);
 
-			try (BResultSet result = statement.executeQuery()) {
+			try (var result = statement.executeQuery()) {
 				return function.apply(result);
 			}
 		}

@@ -40,7 +40,7 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 	default <O extends LogicalOperators<?>> OnRightColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new OnRightColumn<>(
 			statement,
 			getContext(),
@@ -113,12 +113,12 @@ public interface OnRightClauseAssist<R extends OnRightClauseAssist<?>> extends C
 		String template,
 		Vargs<CriteriaAssistColumn<O>> args) {
 		AssistColumn[] values = args.get();
-		Column[] columns = new Column[values.length];
-		for (int i = 0; i < values.length; i++) {
+		var columns = new Column[values.length];
+		for (var i = 0; i < values.length; i++) {
 			columns[i] = values[i].column();
 		}
 
-		SelectStatement statement = getSelectStatement();
+		var statement = getSelectStatement();
 		return new OnRightColumn<>(
 			statement,
 			getContext(),

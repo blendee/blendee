@@ -27,7 +27,7 @@ class CacheMetadata extends MetadataBase {
 
 	@Override
 	public TablePath[] getTables(final String schemaName) {
-		TablePath[] tables = cache.getTables(new Request<String, TablePath[]>() {
+		var tables = cache.getTables(new Request<String, TablePath[]>() {
 
 			@Override
 			String createCacheKey() {
@@ -61,7 +61,7 @@ class CacheMetadata extends MetadataBase {
 
 	@Override
 	public ColumnMetadata[] getColumnMetadatas(final TablePath path) {
-		ColumnMetadata[] columnMetadatas = cache.getColumnMetadatas(new Request<TablePath, ColumnMetadata[]>() {
+		var columnMetadatas = cache.getColumnMetadatas(new Request<TablePath, ColumnMetadata[]>() {
 
 			@Override
 			TablePath createCacheKey() {
@@ -95,7 +95,7 @@ class CacheMetadata extends MetadataBase {
 
 	@Override
 	public TablePath[] getResourcesOfImportedKey(final TablePath path) {
-		TablePath[] paths = cache.getResourcesOfImportedKey(new Request<TablePath, TablePath[]>() {
+		var paths = cache.getResourcesOfImportedKey(new Request<TablePath, TablePath[]>() {
 
 			@Override
 			TablePath createCacheKey() {
@@ -113,7 +113,7 @@ class CacheMetadata extends MetadataBase {
 
 	@Override
 	public TablePath[] getResourcesOfExportedKey(final TablePath path) {
-		TablePath[] paths = cache.getResourcesOfExportedKey(new Request<TablePath, TablePath[]>() {
+		var paths = cache.getResourcesOfExportedKey(new Request<TablePath, TablePath[]>() {
 
 			@Override
 			TablePath createCacheKey() {
@@ -133,7 +133,7 @@ class CacheMetadata extends MetadataBase {
 	public CrossReference[] getCrossReferences(
 		final TablePath exportedTable,
 		final TablePath importedTable) {
-		CrossReference[] references = cache.getCrossReferences(new Request<List<TablePath>, CrossReference[]>() {
+		var references = cache.getCrossReferences(new Request<List<TablePath>, CrossReference[]>() {
 
 			@Override
 			List<TablePath> createCacheKey() {

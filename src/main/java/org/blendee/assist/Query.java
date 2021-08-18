@@ -6,9 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.blendee.jdbc.AutoCloseableIterator;
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.ResultSetIterator;
@@ -142,9 +140,9 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @param action {@link Consumer}
 	 */
 	default void execute(Consumer<BResultSet> action) {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(aggregateSQL())) {
-			try (BResultSet result = statement.executeQuery()) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(aggregateSQL())) {
+			try (var result = statement.executeQuery()) {
 				action.accept(result);
 			}
 		}
@@ -157,9 +155,9 @@ public interface Query<I extends AutoCloseableIterator<R>, R> extends ComposedSQ
 	 * @return 任意の型の戻り値
 	 */
 	default <T> T executeAndGet(Function<BResultSet, T> action) {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(aggregateSQL())) {
-			try (BResultSet result = statement.executeQuery()) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(aggregateSQL())) {
+			try (var result = statement.executeQuery()) {
 				return action.apply(result);
 			}
 		}

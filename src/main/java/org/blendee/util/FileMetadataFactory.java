@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.Optional;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
@@ -34,9 +33,9 @@ public class FileMetadataFactory implements MetadataFactory {
 	 * @throws ClassNotFoundException XML 内で定義されている項目の型のクラスが存在しない場合
 	 */
 	public FileMetadataFactory() throws IOException, ClassNotFoundException {
-		BlendeeManager manager = ContextManager.get(BlendeeManager.class);
+		var manager = ContextManager.get(BlendeeManager.class);
 
-		Optional<String> fileOfOption = manager.getConfigure().getOption(BlendeeConstants.METADATA_XML_FILE);
+		var fileOfOption = manager.getConfigure().getOption(BlendeeConstants.METADATA_XML_FILE);
 
 		xml = fileOfOption.map(name -> {
 			try {

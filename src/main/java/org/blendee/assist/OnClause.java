@@ -2,7 +2,6 @@ package org.blendee.assist;
 
 import java.util.function.BiConsumer;
 
-import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 
 /**
@@ -35,12 +34,12 @@ public class OnClause<L extends OnLeftClauseAssist<?>, R extends OnRightClauseAs
 	@SafeVarargs
 	public final S ON(BiConsumer<L, R>... consumers) {
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria contextCriteria = new CriteriaFactory(selectStatement.getRuntimeId()).create();
+			var contextCriteria = new CriteriaFactory(selectStatement.getRuntimeId()).create();
 			CriteriaContext.setContextCriteria(contextCriteria);
 
-			for (BiConsumer<L, R> consumer : consumers) {
+			for (var consumer : consumers) {
 				consumer.accept(left, right);
 			}
 

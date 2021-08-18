@@ -7,9 +7,9 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Column;
 import org.blendee.sql.Criteria;
-import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RelationshipFactory;
+import org.blendee.sql.RuntimeId;
 import org.blendee.sql.Updatable;
 import org.blendee.sql.Updater;
 
@@ -95,8 +95,8 @@ public class PartialData implements Updatable {
 	 * @return 検索条件
 	 */
 	public Criteria getCriteria(Relationship relationship, RuntimeId id) {
-		Column[] columns = new Column[columnNames.length];
-		for (int i = 0; i < columnNames.length; i++) {
+		var columns = new Column[columnNames.length];
+		for (var i = 0; i < columnNames.length; i++) {
 			columns[i] = relationship.getColumn(columnNames[i]);
 		}
 		return createCriteria(id, columns, bindables);
@@ -104,15 +104,15 @@ public class PartialData implements Updatable {
 
 	@Override
 	public void setValuesTo(Updater updater) {
-		for (int i = 0; i < columnNames.length; i++) {
+		for (var i = 0; i < columnNames.length; i++) {
 			updater.add(columnNames[i], bindables[i]);
 		}
 	}
 
 	static Criteria createCriteria(RuntimeId id, Column[] columns, Bindable[] bindables) {
-		Column column = columns[0];
-		Criteria criteria = column.getCriteria(id, bindables[0]);
-		for (int i = 1; i < columns.length; i++) {
+		var column = columns[0];
+		var criteria = column.getCriteria(id, bindables[0]);
+		for (var i = 1; i < columns.length; i++) {
 			column = columns[i];
 			criteria.and(column.getCriteria(id, bindables[i]));
 		}

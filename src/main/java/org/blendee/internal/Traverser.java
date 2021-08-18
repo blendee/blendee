@@ -17,7 +17,7 @@ public interface Traverser {
 
 		@Override
 		public void operate(Traverser traverser, Traversable[] traversables) {
-			for (Traversable traversable : traversables)
+			for (var traversable : traversables)
 				operate(traverser, traversable);
 		}
 	};
@@ -29,11 +29,11 @@ public interface Traverser {
 
 		@Override
 		public void operate(final Traverser traverser, Traversable[] traversables) {
-			final ArrayList<Traversable> list = new ArrayList<>();
+			final var list = new ArrayList<Traversable>();
 			list.addAll(Arrays.asList(traversables));
 			//探索が進むと要素が追加されるのでIteratorは使えない
 			for (int i = 0; i < list.size(); i++) {
-				Traversable traversable = list.get(i);
+				var traversable = list.get(i);
 				operate(new Traverser() {
 
 					@Override

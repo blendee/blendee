@@ -35,7 +35,7 @@ class ListClauses {
 	}
 
 	private String toString(LinkedList<? extends ListClause<?>> list, boolean joined) {
-		ListClause<?> clause = list.pop();
+		var clause = list.pop();
 		list.forEach(e -> clause.merge(e));
 
 		clause.sortBlocks();

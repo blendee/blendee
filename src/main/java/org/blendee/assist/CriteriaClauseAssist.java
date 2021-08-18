@@ -101,7 +101,7 @@ public interface CriteriaClauseAssist<R extends CriteriaClauseAssist<?>> {
 	default void with(
 		String template,
 		Consumer<WithValues> consumer) {
-		WithValues values = new WithValues();
+		var values = new WithValues();
 		consumer.accept(values);
 
 		getContext().addCriteria(values.createCriteria(statement().getRuntimeId(), template));

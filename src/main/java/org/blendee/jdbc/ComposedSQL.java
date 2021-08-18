@@ -18,7 +18,7 @@ public interface ComposedSQL extends ChainPreparedStatementComplementer {
 	 * @return 同じ SQL を持つ、別のインスタンス
 	 */
 	default ComposedSQL reproduce(PreparedStatementComplementer complementer) {
-		String sql = sql();
+		var sql = sql();
 		return new ComposedSQL() {
 
 			@Override
@@ -40,7 +40,7 @@ public interface ComposedSQL extends ChainPreparedStatementComplementer {
 	 * @return 同じ SQL を持つ、別のインスタンス
 	 */
 	default ComposedSQL reproduce(ChainPreparedStatementComplementer complementer) {
-		String sql = sql();
+		var sql = sql();
 		return new ComposedSQL() {
 
 			@Override

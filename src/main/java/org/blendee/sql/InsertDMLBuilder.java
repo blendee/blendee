@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import org.blendee.jdbc.TablePath;
 
@@ -21,11 +20,11 @@ public class InsertDMLBuilder extends Updater {
 
 	@Override
 	protected String build() {
-		String[] columnNames = getColumnNames();
-		List<String> columns = new LinkedList<>();
-		List<String> values = new LinkedList<>();
-		for (int i = 0; i < columnNames.length; i++) {
-			String columnName = columnNames[i];
+		var columnNames = getColumnNames();
+		var columns = new LinkedList<String>();
+		var values = new LinkedList<String>();
+		for (var i = 0; i < columnNames.length; i++) {
+			var columnName = columnNames[i];
 			columns.add(columnName);
 			values.add(getPlaceHolderOrFragment(columnName));
 		}

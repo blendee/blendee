@@ -13,7 +13,6 @@ import org.blendee.sql.CriteriaFactory.ComparisonOperator;
 import org.blendee.sql.CriteriaFactory.Match;
 import org.blendee.sql.CriteriaFactory.NullComparisonOperator;
 import org.blendee.sql.RuntimeIdColumn;
-import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
 import org.blendee.sql.binder.DoubleBinder;
@@ -1144,7 +1143,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements C
 	}
 
 	private Criteria merge(Criteria criteria) {
-		Binder[] values = values();
+		var values = values();
 
 		if (values.length == 0) return criteria;
 
@@ -1154,7 +1153,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements C
 	private O addSubQuery(SelectStatement subquery, ComparisonOperator operator) {
 		root.forSubquery(true);
 
-		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
+		var builder = subquery.toSQLQueryBuilder();
 		builder.forSubquery(true);
 		getContext().addCriteria(merge(factory.createSubquery(operator, column, builder)));
 
@@ -1162,7 +1161,7 @@ public abstract class CriteriaColumn<O extends LogicalOperators<?>> implements C
 	}
 
 	private O addAnotherColumnCriteria(AssistColumn another, String template) {
-		Statement statement = another.statement();
+		var statement = another.statement();
 
 		root.forSubquery(true);
 		statement.forSubquery(true);

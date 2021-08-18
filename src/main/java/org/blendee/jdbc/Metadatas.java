@@ -3,9 +3,7 @@ package org.blendee.jdbc;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.impl.SimplePrimaryKeyMetadata;
@@ -38,8 +36,8 @@ public class Metadatas extends MetadataBase {
 
 	@Override
 	public TablePath[] getTables(String schemaName) {
-		Set<TablePath> set = new LinkedHashSet<>();
-		for (Metadata metadata : metadatas) {
+		var set = new LinkedHashSet<TablePath>();
+		for (var metadata : metadatas) {
 			Arrays.stream(metadata.getTables(schemaName)).forEach(t -> {
 				if (!set.contains(t)) set.add(t);
 			});
@@ -55,8 +53,8 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public TableMetadata getTableMetadata(TablePath path) {
-		for (Metadata metadata : metadatas) {
-			TableMetadata table = metadata.getTableMetadata(path);
+		for (var metadata : metadatas) {
+			var table = metadata.getTableMetadata(path);
 			if (table != null) return table;
 		}
 
@@ -68,11 +66,11 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public ColumnMetadata[] getColumnMetadatas(TablePath path) {
-		Map<String, ColumnMetadata> map = new LinkedHashMap<>();
-		for (Metadata metadata : metadatas) {
-			ColumnMetadata[] metadatas = metadata.getColumnMetadatas(path);
-			for (ColumnMetadata column : metadatas) {
-				String name = column.getName();
+		var map = new LinkedHashMap<String, ColumnMetadata>();
+		for (var metadata : metadatas) {
+			var metadatas = metadata.getColumnMetadatas(path);
+			for (var column : metadatas) {
+				var name = column.getName();
 				if (!map.containsKey(name)) map.put(name, column);
 			}
 		}
@@ -85,8 +83,8 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public PrimaryKeyMetadata getPrimaryKeyMetadata(TablePath path) {
-		for (Metadata metadata : metadatas) {
-			PrimaryKeyMetadata pk = metadata.getPrimaryKeyMetadata(path);
+		for (var metadata : metadatas) {
+			var pk = metadata.getPrimaryKeyMetadata(path);
 			if (pk != null) return pk;
 		}
 
@@ -98,8 +96,8 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public TablePath[] getResourcesOfImportedKey(TablePath path) {
-		Set<TablePath> set = new LinkedHashSet<>();
-		for (Metadata metadata : metadatas) {
+		var set = new LinkedHashSet<TablePath>();
+		for (var metadata : metadatas) {
 			Arrays.stream(metadata.getResourcesOfImportedKey(path)).forEach(p -> {
 				if (!set.contains(p))
 					set.add(p);
@@ -114,8 +112,8 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public TablePath[] getResourcesOfExportedKey(TablePath path) {
-		Set<TablePath> set = new LinkedHashSet<>();
-		for (Metadata metadata : metadatas) {
+		var set = new LinkedHashSet<TablePath>();
+		for (var metadata : metadatas) {
 			Arrays.stream(metadata.getResourcesOfExportedKey(path)).forEach(p -> {
 				if (!set.contains(p))
 					set.add(p);
@@ -130,10 +128,10 @@ public class Metadatas extends MetadataBase {
 	 */
 	@Override
 	public CrossReference[] getCrossReferences(TablePath exported, TablePath imported) {
-		Map<String, CrossReference> map = new LinkedHashMap<>();
-		for (Metadata metadata : metadatas) {
+		var map = new LinkedHashMap<String, CrossReference>();
+		for (var metadata : metadatas) {
 			Arrays.stream(metadata.getCrossReferences(exported, imported)).forEach(c -> {
-				String key = c.getForeignKeyName();
+				var key = c.getForeignKeyName();
 				if (!map.containsKey(key)) map.put(key, c);
 			});
 		}

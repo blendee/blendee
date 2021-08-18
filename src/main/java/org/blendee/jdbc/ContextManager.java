@@ -43,7 +43,7 @@ public class ContextManager {
 	 * @return 現在のコンテキスト名
 	 */
 	public static String getCurrentContextName() {
-		String contextName = contextNameThreadLocal.get();
+		var contextName = contextNameThreadLocal.get();
 		return contextName == null ? DEFAULT_CONTEXT_NAME : contextName;
 	}
 

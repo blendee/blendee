@@ -13,7 +13,6 @@ import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.DeleteDMLBuilder;
 import org.blendee.sql.Relationship;
 import org.blendee.sql.RuntimeId;
-import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 
@@ -74,13 +73,13 @@ public abstract class DataManipulationStatementBehavior<
 	public DataManipulator INSERT(InsertOfferFunction<I> function, SelectStatement select) {
 		function.apply(insert()).get().forEach(o -> o.add());
 
-		SQLQueryBuilder builder = select.toSQLQueryBuilder();
+		var builder = select.toSQLQueryBuilder();
 
 		return new RawDataManipulator(buildInsertStatement(builder), builder);
 	}
 
 	public DataManipulator INSERT(SelectStatement select) {
-		SQLQueryBuilder builder = select.toSQLQueryBuilder();
+		var builder = select.toSQLQueryBuilder();
 
 		return new RawDataManipulator(buildInsertStatement(builder), builder);
 	}
@@ -190,10 +189,10 @@ public abstract class DataManipulationStatementBehavior<
 	@SafeVarargs
 	final void WHERE(Consumer<W>... consumers) {
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			for (Consumer<W> consumer : consumers) {
-				Criteria contextCriteria = factory().create();
+			for (var consumer : consumers) {
+				var contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(whereOperators().defaultOperator());
@@ -210,7 +209,7 @@ public abstract class DataManipulationStatementBehavior<
 	}
 
 	DataManipulator createDeleteDataManipulator() {
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(table, id, forSubquery);
+		var builder = new DeleteDMLBuilder(table, id, forSubquery);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());
@@ -219,7 +218,7 @@ public abstract class DataManipulationStatementBehavior<
 	}
 
 	DataManipulator createUpdateDataManipulator() {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(table, id, forSubquery);
+		var builder = new UpdateDMLBuilder(table, id, forSubquery);
 
 		builder.addDecorator(decorators.decorators());
 		builder.setCriteria(whereClause());
@@ -232,20 +231,20 @@ public abstract class DataManipulationStatementBehavior<
 	}
 
 	private String buildInsertStatement(SQLQueryBuilder builder) {
-		List<Column> insertColumns = getInsertColumns();
-		String columnsClause = insertColumns.size() > 0
+		var insertColumns = getInsertColumns();
+		var columnsClause = insertColumns.size() > 0
 			? " ("
 				+ insertColumns.stream().map(c -> c.getName()).collect(Collectors.joining(", "))
 				+ ")"
 			: "";
 
-		String sql = "INSERT INTO "
+		var sql = "INSERT INTO "
 			+ table
 			+ columnsClause
 			+ " "
 			+ builder.sql();
 
-		for (SQLDecorator decorator : decorators.decorators()) {
+		for (var decorator : decorators.decorators()) {
 			sql = decorator.decorate(sql);
 		}
 

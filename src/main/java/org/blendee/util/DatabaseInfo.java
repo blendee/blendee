@@ -20,7 +20,7 @@ public class DatabaseInfo {
 	}
 
 	public static boolean hasStoredIdentifier(Properties properties) {
-		String value = properties.getProperty(storedIdentifierKey);
+		var value = properties.getProperty(storedIdentifierKey);
 		return value != null;
 	}
 

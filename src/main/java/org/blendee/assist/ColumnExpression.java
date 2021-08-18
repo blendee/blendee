@@ -79,7 +79,7 @@ public class ColumnExpression implements AliasableOffer {
 
 	@Override
 	public List<ColumnExpression> get() {
-		LinkedList<ColumnExpression> list = new LinkedList<>();
+		var list = new LinkedList<ColumnExpression>();
 		list.add(this);
 		return list;
 	};
@@ -95,15 +95,15 @@ public class ColumnExpression implements AliasableOffer {
 	}
 
 	void accept(SimpleSelectContext optimizer) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			optimizer.add(column);
 		}
 	}
 
 	void accept(SelectClause selectClause) {
 		if (expression.length() == 0) {
-			List<String> list = new LinkedList<>();
-			for (int i = 0; i < columns.length; i++) {
+			var list = new LinkedList<String>();
+			for (var i = 0; i < columns.length; i++) {
 				list.add("{" + i + "}");
 			}
 

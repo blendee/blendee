@@ -47,7 +47,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 * @return この句が含むカラム
 	 */
 	public Column[] getColumns() {
-		List<Column> columns = getColumnsInternal();
+		var columns = getColumnsInternal();
 		return columns.toArray(new Column[columns.size()]);
 	}
 
@@ -58,7 +58,7 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	 * @throws IllegalStateException ツリー内に同一テーブルが複数あるため、あいまいなカラム指定がされている場合
 	 */
 	public final void prepareColumns(Relationship root) {
-		List<Column> columns = getColumnsInternal();
+		var columns = getColumnsInternal();
 		columns.forEach(c -> c.prepareForSQL(root));
 	}
 
@@ -81,16 +81,16 @@ public abstract class Clause implements ChainPreparedStatementComplementer {
 	abstract List<Column> getColumnsInternal();
 
 	void join(FromClause fromClause) {
-		Column[] columns = getColumns();
-		for (int i = 0; i < columns.length; i++) {
+		var columns = getColumns();
+		for (var i = 0; i < columns.length; i++) {
 			columns[i].setRelationship(r -> fromClause.join(LEFT_OUTER_JOIN, r));
 		}
 	}
 
 	private String[] toString(boolean joining, Column[] columns) {
-		int length = columns.length;
-		String[] columnNames = new String[length];
-		for (int i = 0; i < length; i++) {
+		var length = columns.length;
+		var columnNames = new String[length];
+		for (var i = 0; i < length; i++) {
 			if (joining) {
 				columnNames[i] = columns[i].getComplementedName(runtimeId);
 			} else {

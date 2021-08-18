@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.orm.DataObjectIterator;
 import org.blendee.sql.Bindable;
-import org.blendee.sql.Column;
-import org.blendee.sql.Criteria;
 import org.blendee.sql.CriteriaFactory;
 import org.blendee.sql.RuntimeId;
 
@@ -52,7 +49,7 @@ public abstract class OneToManyQuery<O extends Row, M>
 
 	@Override
 	public Many<O, M> retrieve() {
-		List<OneToManyBehavior> route = route();
+		var route = route();
 		return new Many<>(
 			new DataObjectManager(iterator(), route),
 			null,
@@ -62,18 +59,18 @@ public abstract class OneToManyQuery<O extends Row, M>
 
 	@Override
 	public Optional<One<O, M>> fetch(Bindable... primaryKeyMembers) {
-		Column[] columns = self.getRelationship().getPrimaryKeyColumns();
+		var columns = self.getRelationship().getPrimaryKeyColumns();
 
 		if (columns.length != primaryKeyMembers.length)
 			//primaryKeyMembers の数が正しくありません
 			throw new IllegalArgumentException("primaryKeyMembers size must be " + columns.length);
 
-		Criteria criteria = new CriteriaFactory(runtimeId()).create();
+		var criteria = new CriteriaFactory(runtimeId()).create();
 		for (int i = 0; i < columns.length; i++) {
 			criteria.and(columns[i].getCriteria(runtimeId(), primaryKeyMembers[i]));
 		}
 
-		List<OneToManyBehavior> route = route();
+		var route = route();
 
 		return Helper.unique(
 			new Many<>(
@@ -85,8 +82,8 @@ public abstract class OneToManyQuery<O extends Row, M>
 
 	@Override
 	public int count() {
-		try (BStatement statement = createStatementForCount()) {
-			try (BResultSet result = statement.executeQuery()) {
+		try (var statement = createStatementForCount()) {
+			try (var result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}

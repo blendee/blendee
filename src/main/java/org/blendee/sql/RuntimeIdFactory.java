@@ -35,16 +35,16 @@ public class RuntimeIdFactory {
 	 */
 	public static RuntimeId runtimeInstance() {
 		synchronized (lock) {
-			int allSize = allIds.size();
+			var allSize = allIds.size();
 			if (allSize == 0 || allSize < threshold) {
 				newId();
 			} else if (idPool.size() == 0) {
 				preparePool();
 			}
 
-			String idString = idPool.pop();
+			var idString = idPool.pop();
 
-			RuntimeId id = new ConcreteRuntimeId(idString);
+			var id = new ConcreteRuntimeId(idString);
 
 			weakMap.put(id, idString);
 
@@ -62,13 +62,13 @@ public class RuntimeIdFactory {
 	}
 
 	private static void newId() {
-		String alias = aliasPrefix + next++;
+		var alias = aliasPrefix + next++;
 		allIds.add(alias);
 		idPool.add(alias);
 	}
 
 	private static void preparePool() {
-		List<String> remain = new ArrayList<>(allIds);
+		var remain = new ArrayList<>(allIds);
 		remain.removeAll(weakMap.values());
 
 		if (remain.size() == 0) {

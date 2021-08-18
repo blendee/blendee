@@ -95,7 +95,7 @@ public class PseudoColumn implements Column {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof PseudoColumn)) return false;
-		PseudoColumn another = (PseudoColumn) o;
+		var another = (PseudoColumn) o;
 		return relationship.equals(another.relationship) && expression.equals(another.expression);
 	}
 

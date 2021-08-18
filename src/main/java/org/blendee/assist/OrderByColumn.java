@@ -81,7 +81,7 @@ public class OrderByColumn implements Offer, Offers<Offer>, AssistColumn {
 
 	@Override
 	public List<Offer> get() {
-		List<Offer> offers = new LinkedList<>();
+		var offers = new LinkedList<Offer>();
 		offers.add(this);
 		return offers;
 	}

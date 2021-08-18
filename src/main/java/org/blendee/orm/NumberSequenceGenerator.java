@@ -3,7 +3,6 @@ package org.blendee.orm;
 import java.math.BigInteger;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.TablePath;
@@ -113,7 +112,7 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 
 		String max;
 		try {
-			try (BResultSet result = statement.executeQuery()) {
+			try (var result = statement.executeQuery()) {
 				result.next();
 				max = result.getString(1);
 			}
@@ -129,9 +128,9 @@ public class NumberSequenceGenerator implements SequenceGenerator {
 		}
 		if (base.length > length) throw new SequenceOverflowException(getTargetColumnName());
 
-		char[] next = new char[length];
-		int zeros = length - base.length;
-		for (int i = 0; i < zeros; i++) {
+		var next = new char[length];
+		var zeros = length - base.length;
+		for (var i = 0; i < zeros; i++) {
 			next[i] = '0';
 		}
 		System.arraycopy(base, 0, next, length - base.length, base.length);

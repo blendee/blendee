@@ -36,7 +36,7 @@ public class PhantomColumn implements Column {
 	 */
 	@Override
 	public int hashCode() {
-		Column substance = getSubstanceWithoutCheck();
+		var substance = getSubstanceWithoutCheck();
 		if (substance != null) return substance.hashCode();
 		return phantomHashCode;
 	}
@@ -47,10 +47,10 @@ public class PhantomColumn implements Column {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		Column substance = getSubstanceWithoutCheck();
+		var substance = getSubstanceWithoutCheck();
 		if (substance != null) return substance.equals(o);
 		if (!(o instanceof PhantomColumn)) return false;
-		PhantomColumn target = (PhantomColumn) o;
+		var target = (PhantomColumn) o;
 
 		return name.equals(target.name);
 	}
@@ -61,10 +61,10 @@ public class PhantomColumn implements Column {
 	 */
 	@Override
 	public int compareTo(Column target) {
-		Column substance = getSubstanceWithoutCheck();
+		var substance = getSubstanceWithoutCheck();
 		if (substance != null) return substance.compareTo(target);
 		if (!(target instanceof PhantomColumn)) return -1;
-		PhantomColumn phantomColumnTarget = (PhantomColumn) target;
+		var phantomColumnTarget = (PhantomColumn) target;
 
 		return name.compareTo(phantomColumnTarget.name);
 	}
@@ -154,8 +154,8 @@ public class PhantomColumn implements Column {
 	}
 
 	static Column[] convert(String[] columnNames) {
-		Column[] columns = new Column[columnNames.length];
-		for (int i = 0; i < columnNames.length; i++) {
+		var columns = new Column[columnNames.length];
+		for (var i = 0; i < columnNames.length; i++) {
 			columns[i] = new PhantomColumn(columnNames[i]);
 		}
 		return columns;

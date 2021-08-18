@@ -36,9 +36,9 @@ public class WithValues {
 	 * @return self
 	 */
 	public WithValues values(Object... values) {
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 
-		for (Object value : values) {
+		for (var value : values) {
 			binders.add(extractor.extract(value));
 		}
 

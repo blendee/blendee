@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import org.blendee.jdbc.BSQLException;
 import org.blendee.jdbc.BlendeeManager;
-import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.Transaction;
 import org.blendee.jdbc.TransactionFactory;
@@ -30,7 +29,7 @@ public class DriverManagerTransactionFactory implements TransactionFactory {
 	 * @throws IllegalStateException ドライバークラスのロード時に発生した例外
 	 */
 	public DriverManagerTransactionFactory() {
-		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
+		var config = ContextManager.get(BlendeeManager.class).getConfigure();
 
 		config.getOption(BlendeeConstants.JDBC_DRIVER_CLASS_NAME).ifPresent(c -> {
 			try {

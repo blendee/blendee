@@ -6,8 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.blendee.internal.U;
 import org.blendee.jdbc.BPreparedStatement;
@@ -25,7 +23,6 @@ import org.blendee.sql.Criteria;
 import org.blendee.sql.FromClause;
 import org.blendee.sql.OrderByClause;
 import org.blendee.sql.OrderByClause.DirectionalColumn;
-import org.blendee.sql.Relationship;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.SQLDecorator;
 import org.blendee.sql.SQLQueryBuilder;
@@ -71,13 +68,13 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 		self = self();
 
-		List<OneToManyBehavior> route = new LinkedList<>();
+		var route = new LinkedList<OneToManyBehavior>();
 
 		root = getRoot(self, route);
 
 		id = self.getRuntimeId();
 
-		SelectStatement select = relation.getSelectStatement();
+		var select = relation.getSelectStatement();
 		order = convertOrderByClause(id, route, select.getOrderByClause());
 		optimizer = convertOptimizer(select.getSelectContext(), id, route, root);
 		criteria = select.getWhereClause();
@@ -118,14 +115,14 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	private static OneToManyBehavior getRoot(OneToManyBehavior relation, List<OneToManyBehavior> relations) {
 		relations.add(relation);
-		OneToManyBehavior parent = relation.getParent();
+		var parent = relation.getParent();
 		if (parent == null) return relation;
 		return getRoot(parent, relations);
 	}
 
 	private static SelectContext convertOptimizer(SelectContext optimizer, RuntimeId id, List<OneToManyBehavior> route, OneToManyBehavior root) {
-		Set<Column> selectColumns = new LinkedHashSet<>();
-		SelectClause select = optimizer.selectClause();
+		var selectColumns = new LinkedHashSet<Column>();
+		var select = optimizer.selectClause();
 		Arrays.stream(select.getColumns()).forEach(c -> selectColumns.add(c));
 		route.forEach(r -> {
 			for (Column column : r.getRelationship().getPrimaryKeyColumns()) {
@@ -133,33 +130,33 @@ public class InstantOneToManyQuery<O extends Row, M>
 			}
 		});
 
-		SimpleSelectContext runtimeOptimizer = new SimpleSelectContext(optimizer.tablePath(), id);
+		var runtimeOptimizer = new SimpleSelectContext(optimizer.tablePath(), id);
 		selectColumns.forEach(c -> runtimeOptimizer.add(c));
 
 		return runtimeOptimizer;
 	}
 
 	private static OrderByClause convertOrderByClause(RuntimeId id, List<OneToManyBehavior> route, OrderByClause order) {
-		LinkedList<OneToManyBehavior> relations = new LinkedList<>(route);
+		var relations = new LinkedList<OneToManyBehavior>(route);
 		relations.removeLast();
 
-		OrderByClause newOrder = new OrderByClause(id);
+		var newOrder = new OrderByClause(id);
 
-		List<DirectionalColumn> list = Arrays.asList(order.getDirectionalColumns());
+		var list = Arrays.asList(order.getDirectionalColumns());
 
-		Map<Column, DirectionalColumn> map = new LinkedHashMap<>();
+		var map = new LinkedHashMap<Column, DirectionalColumn>();
 		list.forEach(column -> map.put(column.getColumn(), column));
 
-		for (OneToManyBehavior facadeRelation : relations) {
-			Relationship relation = facadeRelation.getRelationship();
-			Set<Column> pks = new LinkedHashSet<>(Arrays.asList(relation.getPrimaryKeyColumns()));
+		for (var facadeRelation : relations) {
+			var relation = facadeRelation.getRelationship();
+			var pks = new LinkedHashSet<>(Arrays.asList(relation.getPrimaryKeyColumns()));
 
 			list
 				.stream()
 				.filter(column -> column.getColumn().getRelationship().equals(relation))
 				.map(column -> {
 					newOrder.add(column);
-					Column include = column.getColumn();
+					var include = column.getColumn();
 					pks.remove(include);
 
 					return include;
@@ -175,12 +172,12 @@ public class InstantOneToManyQuery<O extends Row, M>
 	}
 
 	private static SelectClause createCountClause(RuntimeId id, Column[] columns) {
-		List<String> parts = new LinkedList<>();
+		var parts = new LinkedList<String>();
 		for (int i = 0; i < columns.length; i++) {
 			parts.add("{" + i + "}");
 		}
 
-		SelectClause select = new SelectClause(id);
+		var select = new SelectClause(id);
 
 		select.add("COUNT(DISTINCT(" + String.join(", ", parts) + "))", columns);
 
@@ -189,8 +186,8 @@ public class InstantOneToManyQuery<O extends Row, M>
 
 	@Override
 	public ComposedSQL countSQL() {
-		RuntimeId id = optimizer.runtimeId();
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(optimizer.tablePath(), id));
+		var id = optimizer.runtimeId();
+		var builder = new SQLQueryBuilder(new FromClause(optimizer.tablePath(), id));
 
 		builder.setSelectClause(createCountClause(id, self.getRelationship().getPrimaryKeyColumns()));
 

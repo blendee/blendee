@@ -66,7 +66,7 @@ public class SelectedValuesIterator implements AutoCloseableIterator<SelectedVal
 	public SelectedValues next() {
 		if (!called) hasNext();
 		if (!hasNext) throw new NoSuchElementException();
-		SelectedValues values = converter.convert(result, columns);
+		var values = converter.convert(result, columns);
 		called = false;
 		counter++;
 		return values;

@@ -3,7 +3,6 @@ package org.blendee.internal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -23,7 +22,8 @@ public class CollectionMapMap<K1, K2, V> implements Cloneable {
 	}
 
 	public static <V, K1, K2> CollectionMapMap<K1, K2, V> newInstance(
-		@SuppressWarnings("rawtypes") Class<? extends Map> mapClass) {
+		@SuppressWarnings("rawtypes")
+		Class<? extends Map> mapClass) {
 		return new CollectionMapMap<>(mapClass);
 	}
 
@@ -33,7 +33,8 @@ public class CollectionMapMap<K1, K2, V> implements Cloneable {
 
 	@SuppressWarnings("unchecked")
 	public CollectionMapMap(
-		@SuppressWarnings("rawtypes") Class<? extends Map> mapClass) {
+		@SuppressWarnings("rawtypes")
+		Class<? extends Map> mapClass) {
 		try {
 			this.map = mapClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
@@ -42,7 +43,7 @@ public class CollectionMapMap<K1, K2, V> implements Cloneable {
 	}
 
 	public CollectionMap<K2, V> get(K1 key) {
-		CollectionMap<K2, V> sub = map.get(key);
+		var sub = map.get(key);
 		if (sub == null) {
 			sub = createNewMap();
 			map.put(key, sub);
@@ -55,7 +56,7 @@ public class CollectionMapMap<K1, K2, V> implements Cloneable {
 	}
 
 	public CollectionMap<K2, V> remove(K1 key) {
-		CollectionMap<K2, V> sub = map.remove(key);
+		var sub = map.remove(key);
 		if (sub == null) return createNewMap();
 		return sub;
 	}
@@ -79,7 +80,7 @@ public class CollectionMapMap<K1, K2, V> implements Cloneable {
 	@Override
 	public CollectionMapMap<K1, K2, V> clone() {
 		CollectionMapMap<K1, K2, V> clone = newInstance(map.getClass());
-		for (Entry<K1, CollectionMap<K2, V>> entry : map.entrySet()) {
+		for (var entry : map.entrySet()) {
 			clone.map.put(entry.getKey(), entry.getValue().clone());
 		}
 

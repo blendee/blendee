@@ -1,11 +1,9 @@
 package org.blendee.sql;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.CrossReference;
 
 /**
  * データベースのカラムを表すインターフェイスです。
@@ -89,14 +87,14 @@ public interface Column extends Comparable<Column> {
 	 * @throws NotFoundException このカラムの属する {@link Relationship} の参照先に another が含まれない場合
 	 */
 	default Column findAnotherRootColumn(Relationship another) {
-		Relationship myRelation = getRelationship();
-		List<String[]> fks = new LinkedList<>();
+		var myRelation = getRelationship();
+		var fks = new LinkedList<String[]>();
 		while (true) {
 			if (myRelation.getTablePath().equals(another.getTablePath())) {
 				//同じテーブルが見つかったら、今度は保存しておいた同じ FK を辿って
 				//目的のカラムを見つける
-				Relationship newRelation = another;
-				for (String[] fk : fks) {
+				var newRelation = another;
+				for (var fk : fks) {
 					newRelation = newRelation.find(fk);
 				}
 
@@ -105,7 +103,7 @@ public interface Column extends Comparable<Column> {
 
 			if (myRelation.isRoot()) break;
 
-			CrossReference reference = myRelation.getCrossReference();
+			var reference = myRelation.getCrossReference();
 			fks.add(reference.getForeignKeyColumnNames());
 			myRelation = myRelation.getParent();
 		}

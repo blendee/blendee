@@ -109,7 +109,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public boolean getBoolean(String columnName) {
-		BooleanBinder binder = (BooleanBinder) getUpdateValue(columnName);
+		var binder = (BooleanBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getBooleanValue();
 		return values.getBoolean(relationship.getColumn(columnName));
 	}
@@ -121,7 +121,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public double getDouble(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) {
 			return ((Number) binder.getValue()).doubleValue();
 		}
@@ -136,7 +136,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public float getFloat(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) {
 			return ((Number) binder.getValue()).floatValue();
 		}
@@ -151,7 +151,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public int getInt(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) {
 			return ((Number) binder.getValue()).intValue();
 		}
@@ -166,7 +166,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public long getLong(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) {
 			return ((Number) binder.getValue()).longValue();
 		}
@@ -181,7 +181,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public String getString(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) return binder.getValue().toString();
 		return values.getString(relationship.getColumn(columnName));
 	}
@@ -193,7 +193,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Timestamp getTimestamp(String columnName) {
-		TimestampBinder binder = (TimestampBinder) getUpdateValue(columnName);
+		var binder = (TimestampBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getTimestampValue();
 		return values.getTimestamp(relationship.getColumn(columnName));
 	}
@@ -205,7 +205,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public BigDecimal getBigDecimal(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) {
 			Number number = (Number) binder.getValue();
 			if (number instanceof BigDecimal) return (BigDecimal) number;
@@ -222,7 +222,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public UUID getUUID(String columnName) {
-		UUIDBinder binder = (UUIDBinder) getUpdateValue(columnName);
+		var binder = (UUIDBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getUUIDValue();
 		return values.getUUID(relationship.getColumn(columnName));
 	}
@@ -234,7 +234,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Object getObject(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) return binder.getValue();
 		return values.getObject(relationship.getColumn(columnName));
 	}
@@ -246,7 +246,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public byte[] getBytes(String columnName) {
-		ByteArrayBinder binder = (ByteArrayBinder) getUpdateValue(columnName);
+		var binder = (ByteArrayBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getByteArrayValue();
 		return values.getBytes(relationship.getColumn(columnName));
 	}
@@ -258,7 +258,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Blob getBlob(String columnName) {
-		BlobBinder binder = (BlobBinder) getUpdateValue(columnName);
+		var binder = (BlobBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getBlobValue();
 		return values.getBlob(relationship.getColumn(columnName));
 	}
@@ -270,7 +270,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Clob getClob(String columnName) {
-		ClobBinder binder = (ClobBinder) getUpdateValue(columnName);
+		var binder = (ClobBinder) getUpdateValue(columnName);
 		if (binder != null) return binder.getClobValue();
 		return values.getClob(relationship.getColumn(columnName));
 	}
@@ -282,7 +282,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public Binder getValue(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) return binder;
 		return values.getBinder(relationship.getColumn(columnName));
 	}
@@ -294,7 +294,7 @@ public class DataObject
 	 * @throws UnknownValueException 新しい値の代わりに SQL 文の関数等をセットした後に値を取得しようとした場合
 	 */
 	public boolean isNull(String columnName) {
-		Binder binder = getUpdateValue(columnName);
+		var binder = getUpdateValue(columnName);
 		if (binder != null) return binder instanceof NullBinder || binder.getValue() == null;
 		return values.isNull(relationship.getColumn(columnName));
 	}
@@ -456,7 +456,7 @@ public class DataObject
 	 * @param value 更新値
 	 */
 	public void setValue(String columnName, Bindable value) {
-		Binder binder = value.toBinder();
+		var binder = value.toBinder();
 		updateValues().put(columnName, new BinderUpdateValue(binder));
 	}
 
@@ -467,7 +467,7 @@ public class DataObject
 	 * @param value 更新値
 	 */
 	public void setValueForcibly(String columnName, Bindable value) {
-		Binder binder = value.toBinder();
+		var binder = value.toBinder();
 		updateValues().put(columnName, new BinderUpdateValue(binder));
 	}
 
@@ -477,9 +477,9 @@ public class DataObject
 	 * 既に値が置き換えられている場合、置き換えられた値はそのまま保持されています。
 	 */
 	public void setAllValuesForcibly() {
-		Map<String, UpdateValue> updateValues = updateValues();
-		for (Column column : relationship.getColumns()) {
-			String name = column.getName();
+		var updateValues = updateValues();
+		for (var column : relationship.getColumns()) {
+			var name = column.getName();
 			if (updateValues.containsKey(name)) continue;
 			setValueForcibly(name, getValue(name));
 		}
@@ -557,9 +557,9 @@ public class DataObject
 
 	@Override
 	public TraversableNode getSubNode() {
-		TraversableNode node = new TraversableNode();
-		Relationship[] sub = relationship.getRelationships();
-		for (Relationship relationship : sub) {
+		var node = new TraversableNode();
+		var sub = relationship.getRelationships();
+		for (var relationship : sub) {
 			node.add(new DataObject(relationship, values));
 		}
 		return node;
@@ -570,9 +570,9 @@ public class DataObject
 	 * @return このインスタンスが外部結合によるものであれば、true
 	 */
 	public boolean isNullPrimaryKey() {
-		Column[] columns = relationship.getPrimaryKeyColumns();
-		for (int i = 0; i < columns.length; i++) {
-			Column column = columns[i];
+		var columns = relationship.getPrimaryKeyColumns();
+		for (var i = 0; i < columns.length; i++) {
+			var column = columns[i];
 			if (values.isNull(column)) return true;
 		}
 
@@ -658,7 +658,7 @@ public class DataObject
 	public void setValuesTo(Updater updater) {
 		if (!isValueUpdated()) return;
 
-		for (Entry<String, UpdateValue> entry : updateValues.entrySet()) {
+		for (var entry : updateValues.entrySet()) {
 			UpdateValue updateValue = entry.getValue();
 			updateValue.add(entry.getKey(), updater);
 		}
@@ -668,9 +668,9 @@ public class DataObject
 		Map<String, UpdateValue> map,
 		String columnName) {
 		if (map == null) return null;
-		UpdateValue updateValue = map.get(columnName);
+		var updateValue = map.get(columnName);
 		if (updateValue == null) return null;
-		Binder result = updateValue.getValue(columnName);
+		var result = updateValue.getValue(columnName);
 
 		if (result instanceof NullBinder) return null;
 
@@ -683,15 +683,15 @@ public class DataObject
 	private boolean updateInternal(StatementFacade statement) {
 		if (!isValueUpdated()) return false;
 
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(relationship.getTablePath());
+		var builder = new UpdateDMLBuilder(relationship.getTablePath());
 		setValuesTo(builder);
 
-		Column[] primaryKeyColumns = relationship.getPrimaryKeyColumns();
+		var primaryKeyColumns = relationship.getPrimaryKeyColumns();
 		if (!relationship.isRoot()) {
 			//root でないと、 Criteria を作る際に、チェックに引っかかるので
 			//root の Relationship のカラムに変換しておく
-			Relationship root = RelationshipFactory.getInstance().getInstance(relationship.getTablePath());
-			for (int i = 0; i < primaryKeyColumns.length; i++) {
+			var root = RelationshipFactory.getInstance().getInstance(relationship.getTablePath());
+			for (var i = 0; i < primaryKeyColumns.length; i++) {
 				primaryKeyColumns[i] = root.getColumn(primaryKeyColumns[i].getName());
 			}
 		}
@@ -699,7 +699,7 @@ public class DataObject
 		builder.setCriteria(PartialData.createCriteria(RuntimeIdFactory.stubInstance(), primaryKeyColumns, getPrimaryKeyBinders()));
 
 		statement.process(builder);
-		int result = statement.execute();
+		var result = statement.execute();
 
 		if (result == 1 || result == BatchFacade.DUMMY_RESULT) return true;
 
@@ -714,14 +714,14 @@ public class DataObject
 	 * @throws NullPrimaryKeyException このインスタンスの主キーが NULL の場合
 	 */
 	private Binder[] getPrimaryKeyBinders() {
-		Column[] columns = relationship.getPrimaryKeyColumns();
+		var columns = relationship.getPrimaryKeyColumns();
 		if (columns.length == 0)
 			//relationship.getTablePath() + " は PK を持ちません"
 			throw new IllegalStateException(relationship.getTablePath() + " has not PK");
 
-		Binder[] binders = new Binder[columns.length];
-		for (int i = 0; i < columns.length; i++) {
-			Column column = columns[i];
+		var binders = new Binder[columns.length];
+		for (var i = 0; i < columns.length; i++) {
+			var column = columns[i];
 			if (values.isNull(column)) throw new NullPrimaryKeyException(relationship);
 			binders[i] = values.getBinder(column);
 		}
@@ -832,10 +832,10 @@ public class DataObject
 
 		@Override
 		public Set<Entry<String, DataObject>> entrySet() {
-			Relationship[] relations = relationship.getRelationships();
-			Set<Entry<String, DataObject>> result = new LinkedHashSet<>();
-			for (Relationship relationship : relations) {
-				String key = relationship.getCrossReference().getForeignKeyName();
+			var relations = relationship.getRelationships();
+			var result = new LinkedHashSet<Entry<String, DataObject>>();
+			for (var relationship : relations) {
+				var key = relationship.getCrossReference().getForeignKeyName();
 				result.add(new DataObjectEntry<DataObject>(key, get(key)));
 			}
 
@@ -854,9 +854,9 @@ public class DataObject
 
 		@Override
 		public Set<String> keySet() {
-			Relationship[] relations = relationship.getRelationships();
-			Set<String> result = new LinkedHashSet<>();
-			for (Relationship relationship : relations) {
+			var relations = relationship.getRelationships();
+			var result = new LinkedHashSet<String>();
+			for (var relationship : relations) {
 				result.add(relationship.getCrossReference().getForeignKeyName());
 			}
 
@@ -920,10 +920,10 @@ public class DataObject
 
 		@Override
 		public Set<Entry<String, Object>> entrySet() {
-			Column[] columns = relationship.getColumns();
-			Set<Entry<String, Object>> result = new LinkedHashSet<>();
-			for (Column column : columns) {
-				String key = column.getName();
+			var columns = relationship.getColumns();
+			var result = new LinkedHashSet<Entry<String, Object>>();
+			for (var column : columns) {
+				var key = column.getName();
 				result.add(new DataObjectEntry<Object>(key, get(key)));
 			}
 
@@ -942,9 +942,9 @@ public class DataObject
 
 		@Override
 		public Set<String> keySet() {
-			Column[] columns = relationship.getColumns();
-			Set<String> result = new LinkedHashSet<>();
-			for (Column column : columns) {
+			var columns = relationship.getColumns();
+			var result = new LinkedHashSet<String>();
+			for (var column : columns) {
 				result.add(column.getName());
 			}
 
@@ -1005,7 +1005,7 @@ public class DataObject
 
 		@Override
 		public boolean equals(Object o) {
-			Entry<?, ?> target = (Entry<?, ?>) o;
+			var target = (Entry<?, ?>) o;
 			return (key == null ? target.getKey() == null : key.equals(target.getKey()))
 				&& (value == null ? target.getValue() == null : value.equals(target.getValue()));
 		}

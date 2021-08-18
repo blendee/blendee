@@ -66,8 +66,8 @@ public class MetadataCache implements ManagementSubject {
 
 	private <K, T> T execute(Map<K, T> cache, Request<K, T> request) {
 		synchronized (cache) {
-			K key = request.createCacheKey();
-			T target = cache.get(key);
+			var key = request.createCacheKey();
+			var target = cache.get(key);
 			if (target != null) return target;
 
 			target = request.createCacheTarget();

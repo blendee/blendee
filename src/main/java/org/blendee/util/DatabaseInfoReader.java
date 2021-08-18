@@ -2,7 +2,6 @@ package org.blendee.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.Properties;
@@ -27,10 +26,10 @@ public class DatabaseInfoReader {
 	}
 
 	public Properties read() throws IOException {
-		String path = rootPackageName.replace('.', '/') + "/" + DatabaseInfo.fileName;
+		var path = rootPackageName.replace('.', '/') + "/" + DatabaseInfo.fileName;
 
-		Properties prop = new Properties();
-		InputStream input = loader.getResourceAsStream(path);
+		var prop = new Properties();
+		var input = loader.getResourceAsStream(path);
 		//path + " が存在しません"
 		if (input == null) throw new IllegalStateException(path + " not found.");
 
@@ -44,7 +43,7 @@ public class DatabaseInfoReader {
 	}
 
 	public boolean exists() {
-		String path = rootPackageName.replace('.', '/') + "/" + DatabaseInfo.fileName;
+		var path = rootPackageName.replace('.', '/') + "/" + DatabaseInfo.fileName;
 		return loader.getResource(path) != null;
 	}
 }

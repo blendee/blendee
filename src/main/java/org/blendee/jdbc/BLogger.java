@@ -48,7 +48,7 @@ public interface BLogger {
 	 * @param t Throwable
 	 */
 	default void log(Level level, Throwable t) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		var out = new ByteArrayOutputStream();
 		PrintStream stream;
 		try {
 			stream = new PrintStream(out, false, StandardCharsets.UTF_8.name());

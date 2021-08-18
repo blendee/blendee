@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -46,14 +45,14 @@ public class MultiColumn implements Column {
 
 	@Override
 	public void setRelationship(Consumer<Relationship> consumer) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			column.setRelationship(consumer);
 		}
 	}
 
 	@Override
 	public String getName() {
-		List<String> strings = Arrays.stream(columns)
+		var strings = Arrays.stream(columns)
 			.map(c -> c.getName())
 			.collect(Collectors.toList());
 
@@ -62,7 +61,7 @@ public class MultiColumn implements Column {
 
 	@Override
 	public String getComplementedName(RuntimeId id) {
-		List<String> strings = Arrays.stream(columns)
+		var strings = Arrays.stream(columns)
 			.map(c -> c.getComplementedName(id))
 			.collect(Collectors.toList());
 
@@ -107,7 +106,7 @@ public class MultiColumn implements Column {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof MultiColumn)) return false;
-		MultiColumn another = (MultiColumn) o;
+		var another = (MultiColumn) o;
 		return root.equals(another.root)
 			&& template.equals(another.template)
 			&& Arrays.equals(columns, another.columns);

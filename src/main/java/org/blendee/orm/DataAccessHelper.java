@@ -1,13 +1,10 @@
 package org.blendee.orm;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BConnection;
-import org.blendee.jdbc.BResultSet;
 import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeException;
@@ -85,12 +82,14 @@ public class DataAccessHelper {
 		PrimaryKey primaryKey,
 		SQLDecorator... options) {
 		checkArgument(context, primaryKey);
-		DataObjectIterator iterator = select(
+
+		var iterator = select(
 			context,
 			primaryKey.getCriteria(id),
 			null,
 			options,
 			false);
+
 		return getFirst(iterator);
 	}
 
@@ -118,12 +117,16 @@ public class DataAccessHelper {
 	 * @return パラメータの条件にマッチする件数
 	 */
 	public int count(TablePath path, Criteria criteria) {
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(path, id));
+		var builder = new SQLQueryBuilder(new FromClause(path, id));
+
 		builder.setSelectClause(new SelectCountClause());
+
 		if (criteria != null) builder.setWhereClause(criteria);
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(builder)) {
-			try (BResultSet result = statement.executeQuery()) {
+
+		var connection = BlendeeManager.getConnection();
+
+		try (var statement = connection.getStatement(builder)) {
+			try (var result = statement.executeQuery()) {
 				result.next();
 				return result.getInt(1);
 			}
@@ -282,7 +285,7 @@ public class DataAccessHelper {
 		TablePath path,
 		Updatable updatable,
 		SQLDecorator... options) {
-		StatementFacade statement = getThreadStatement();
+		var statement = getThreadStatement();
 		return updateInternalFinally(
 			statement,
 			path,
@@ -370,7 +373,7 @@ public class DataAccessHelper {
 		SQLDecorator... options) {
 		Objects.requireNonNull(context);
 
-		SQLQueryBuilder builder = new SQLQueryBuilder(new FromClause(context.tablePath(), context.runtimeId()));
+		var builder = new SQLQueryBuilder(new FromClause(context.tablePath(), context.runtimeId()));
 
 		if (criteria != null) builder.setWhereClause(criteria);
 		if (order != null) builder.setOrderByClause(order);
@@ -394,7 +397,7 @@ public class DataAccessHelper {
 		PreparedStatementComplementer complementer,
 		Column[] selectColumns,
 		SelectContext converter) {
-		BStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		var statement = BlendeeManager.getConnection().getStatement(sql, complementer);
 		return new SelectedValuesIterator(
 			statement,
 			statement.executeQuery(),
@@ -408,7 +411,7 @@ public class DataAccessHelper {
 	}
 
 	static StatementFacade getThreadStatement() {
-		StatementFacade statement = threadStatement.get();
+		var statement = threadStatement.get();
 		if (statement == null) return new PreparedStatementFacade();
 		return statement;
 	}
@@ -423,7 +426,7 @@ public class DataAccessHelper {
 		OrderByClause order,
 		SQLDecorator[] options,
 		boolean readonly) {
-		SQLQueryBuilder builder = buildSQLQueryBuilder(context, criteria, order, options);
+		var builder = buildSQLQueryBuilder(context, criteria, order, options);
 		return new DataObjectIterator(
 			factory.getInstance(context.tablePath()),
 			selectInternal(builder.sql(), builder, builder.getSelectClause().getColumns(), context),
@@ -464,7 +467,7 @@ public class DataAccessHelper {
 		PreparedStatementComplementer complementer,
 		Column[] selectColumns,
 		SelectedValuesConverter converter) {
-		BStatement statement = BlendeeManager.getConnection().getStatement(sql, complementer);
+		var statement = BlendeeManager.getConnection().getStatement(sql, complementer);
 		return new SelectedValuesIterator(
 			statement,
 			statement.executeQuery(),
@@ -512,9 +515,9 @@ public class DataAccessHelper {
 		TablePath path,
 		Updatable updatable,
 		SQLDecorator[] options) {
-		InsertDMLBuilder builder = new InsertDMLBuilder(path);
+		var builder = new InsertDMLBuilder(path);
 
-		for (SQLDecorator option : options) {
+		for (var option : options) {
 			builder.addDecorator(option);
 		}
 
@@ -530,8 +533,8 @@ public class DataAccessHelper {
 		Updatable updatable,
 		int retry,
 		SQLDecorator... options) {
-		final Map<String, Bindable> map = new HashMap<>();
-		InsertDMLBuilder builder = new InsertDMLBuilder(path) {
+		var map = new HashMap<String, Bindable>();
+		var builder = new InsertDMLBuilder(path) {
 
 			@Override
 			public void add(String columnName, Bindable bindable) {
@@ -541,25 +544,26 @@ public class DataAccessHelper {
 			}
 		};
 
-		for (SQLDecorator option : options) {
+		for (var option : options) {
 			builder.addDecorator(option);
 		}
 
 		builder.add(updatable);
 
-		String[] depends = sequencer.getDependsColumnNames();
-		Criteria criteria = new CriteriaFactory(id).create();
-		Relationship relationship = factory.getInstance(path);
-		for (String columnName : depends) {
+		var depends = sequencer.getDependsColumnNames();
+		var criteria = new CriteriaFactory(id).create();
+		var relationship = factory.getInstance(path);
+
+		for (var columnName : depends) {
 			criteria.and(new CriteriaFactory(id).create(relationship.getColumn(columnName), map.get(columnName)));
 		}
 
-		String targetColumnName = sequencer.getTargetColumnName();
+		var targetColumnName = sequencer.getTargetColumnName();
 
 		if (retry <= 0) retry = 3;
-		for (int i = 0; i < retry; i++) {
+		for (var i = 0; i < retry; i++) {
 			try {
-				Bindable bindable = sequencer.next(criteria);
+				var bindable = sequencer.next(criteria);
 				builder.add(targetColumnName, bindable);
 				statement.process(builder);
 				statement.execute();
@@ -589,9 +593,9 @@ public class DataAccessHelper {
 		Updatable updatable,
 		Criteria criteria,
 		SQLDecorator... options) {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(path);
+		var builder = new UpdateDMLBuilder(path);
 
-		for (SQLDecorator option : options) {
+		for (var option : options) {
 			builder.addDecorator(option);
 		}
 
@@ -614,7 +618,7 @@ public class DataAccessHelper {
 		StatementFacade statement,
 		TablePath path,
 		Criteria criteria) {
-		DeleteDMLBuilder builder = new DeleteDMLBuilder(path);
+		var builder = new DeleteDMLBuilder(path);
 		if (criteria != null) builder.setCriteria(criteria);
 		statement.process(builder);
 		return statement.execute();

@@ -3,9 +3,7 @@ package org.blendee.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
@@ -65,7 +63,7 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	 * @param decorators SQL 文を調整する {@link SQLDecorator}
 	 */
 	public void addDecorator(SQLDecorator... decorators) {
-		for (SQLDecorator decorator : decorators) {
+		for (var decorator : decorators) {
 			this.decorators.add(decorator);
 		}
 	}
@@ -75,8 +73,8 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	 * @return 対象件数
 	 */
 	public int executeUpdate() {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(this)) {
 			return statement.executeUpdate();
 		}
 	}
@@ -97,9 +95,9 @@ public class DeleteDMLBuilder implements ComposedSQL {
 	@Override
 	public String sql() {
 		criteria.setKeyword("WHERE");
-		String sql = "DELETE FROM " + path + alias + criteria.toString(false);
+		var sql = "DELETE FROM " + path + alias + criteria.toString(false);
 
-		for (SQLDecorator decorator : decorators) {
+		for (var decorator : decorators) {
 			sql = decorator.decorate(sql);
 		}
 

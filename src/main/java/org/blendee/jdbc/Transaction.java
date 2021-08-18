@@ -106,12 +106,12 @@ public abstract class Transaction implements AutoCloseable {
 	}
 
 	void prepareConnection() {
-		Configure config = getConfigure();
+		var config = getConfigure();
 
-		BConnection connection = getConnection();
+		var connection = getConnection();
 
 		if (config.getLoggerWithoutCheck().isLoggable(LoggingConnection.level)) {
-			SQLLogger logger = new SQLLogger(config.getLoggerWithoutCheck(), config.getLogStackTracePatternWithoutCheck());
+			var logger = new SQLLogger(config.getLoggerWithoutCheck(), config.getLogStackTracePatternWithoutCheck());
 			connection = config.getSQLExtractor().newLoggingConnection(connection, logger);
 		}
 

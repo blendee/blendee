@@ -3,12 +3,10 @@ package org.blendee.orm;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.blendee.internal.U;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.MetadataUtilities;
@@ -16,9 +14,9 @@ import org.blendee.jdbc.TablePath;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.BindableConverter;
 import org.blendee.sql.Criteria;
+import org.blendee.sql.Relationship;
 import org.blendee.sql.RuntimeId;
 import org.blendee.sql.RuntimeIdFactory;
-import org.blendee.sql.Relationship;
 import org.blendee.sql.UpdateDMLBuilder;
 
 /**
@@ -64,7 +62,7 @@ public class PrimaryKey extends PartialData {
 		TablePath path,
 		Bindable... bindables) {
 		super(path, MetadataUtilities.getPrimaryKeyColumnNames(path), bindables);
-		Object[] objects = new Object[bindables.length + 1];
+		var objects = new Object[bindables.length + 1];
 		objects[0] = path;
 		System.arraycopy(bindables, 0, objects, 1, bindables.length);
 		hashCode = Objects.hash(objects);
@@ -78,7 +76,7 @@ public class PrimaryKey extends PartialData {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof PrimaryKey)) return false;
-		PrimaryKey target = (PrimaryKey) o;
+		var target = (PrimaryKey) o;
 		return path.equals(target.path) && U.equals(bindables, target.bindables);
 	}
 
@@ -100,12 +98,13 @@ public class PrimaryKey extends PartialData {
 	 * @return この主キーを参照している全外部キーのインスタンス
 	 */
 	public ForeignKey[] getAllReferences() {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
-		ForeignKey[] keys = new ForeignKey[references.length];
-		for (int i = 0; i < references.length; i++) {
-			CrossReference reference = references[i];
+		var references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
+		var keys = new ForeignKey[references.length];
+		for (var i = 0; i < references.length; i++) {
+			var reference = references[i];
 			keys[i] = getReferencesInternal(reference);
 		}
+
 		return keys;
 	}
 
@@ -119,12 +118,12 @@ public class PrimaryKey extends PartialData {
 	public ForeignKey getReferences(
 		TablePath referencesPath,
 		String[] columnNames) {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
-		String[] myColumns = columnNames.clone();
+		var references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
+		var myColumns = columnNames.clone();
 		Arrays.sort(myColumns);
-		for (int i = 0; i < references.length; i++) {
-			CrossReference reference = references[i];
-			String[] foreignKeyColumnNames = reference.getForeignKeyColumnNames();
+		for (var i = 0; i < references.length; i++) {
+			var reference = references[i];
+			var foreignKeyColumnNames = reference.getForeignKeyColumnNames();
 			Arrays.sort(foreignKeyColumnNames);
 			if (referencesPath.equals(reference.getForeignKeyTable())
 				&&
@@ -146,9 +145,9 @@ public class PrimaryKey extends PartialData {
 	public ForeignKey getReferences(
 		TablePath referencesPath,
 		String foreignKeyName) {
-		CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
-		for (int i = 0; i < references.length; i++) {
-			CrossReference reference = references[i];
+		var references = MetadataUtilities.getCrossReferencesOfExportedKeys(path);
+		for (var i = 0; i < references.length; i++) {
+			var reference = references[i];
 			if (referencesPath.equals(reference.getForeignKeyTable())
 				&&
 				foreignKeyName.equals(reference.getForeignKeyName()))
@@ -173,9 +172,9 @@ public class PrimaryKey extends PartialData {
 	 * 参照している項目がそのテーブルの主キーに含まれている場合、 NULL にはできません
 	 */
 	public void eraseReferences() {
-		TablePath[] tables = MetadataUtilities.getResourcesOfExportedKey(path);
-		for (TablePath table : tables) {
-			CrossReference[] references = MetadataUtilities.getCrossReferences(path, table);
+		var tables = MetadataUtilities.getResourcesOfExportedKey(path);
+		for (var table : tables) {
+			var references = MetadataUtilities.getCrossReferences(path, table);
 			eraseReferences(table, references, this);
 		}
 	}
@@ -183,15 +182,15 @@ public class PrimaryKey extends PartialData {
 	private ForeignKey getReferencesInternal(CrossReference reference) {
 		//MetadataUtilities.getPrimaryKeyColumnNames(path)の返す
 		//項目名の順にbindablesを並び替え
-		String[] columnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
-		Map<String, Bindable> map = new HashMap<>();
-		for (int i = 0; i < columnNames.length; i++) {
+		var columnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
+		var map = new HashMap<String, Bindable>();
+		for (var i = 0; i < columnNames.length; i++) {
 			map.put(reference.convertToForeignKeyColumnName(columnNames[i]), bindables[i]);
 		}
 
-		String[] foreignKeyColumnNames = reference.getForeignKeyColumnNames();
-		Bindable[] foreignKeyBindables = new Bindable[bindables.length];
-		for (int i = 0; i < foreignKeyColumnNames.length; i++) {
+		var foreignKeyColumnNames = reference.getForeignKeyColumnNames();
+		var foreignKeyBindables = new Bindable[bindables.length];
+		for (var i = 0; i < foreignKeyColumnNames.length; i++) {
 			foreignKeyBindables[i] = map.get(foreignKeyColumnNames[i]);
 		}
 
@@ -207,16 +206,16 @@ public class PrimaryKey extends PartialData {
 		TablePath path,
 		CrossReference[] references,
 		PrimaryKey primaryKey) {
-		for (CrossReference reference : references) {
-			UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
-			String[] columnNames = reference.getForeignKeyColumnNames();
-			for (String columnName : columnNames) {
+		for (var reference : references) {
+			var builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
+			var columnNames = reference.getForeignKeyColumnNames();
+			for (var columnName : columnNames) {
 				builder.addSQLFragment(columnName, "NULL");
 			}
 
 			builder.setCriteria(primaryKey.getReferencesInternal(reference).getCriteria(RuntimeIdFactory.stubInstance()));
 
-			try (BStatement statement = BlendeeManager
+			try (var statement = BlendeeManager
 				.getConnection()
 				.getStatement(builder.toString(), builder)) {
 				statement.executeUpdate();
@@ -239,20 +238,21 @@ public class PrimaryKey extends PartialData {
 		PartialData to) {
 		from = convertToReferences(reference, from);
 		to = convertToReferences(reference, to);
-		Set<String> checker = createChecker(to.getColumnNames());
+		var checker = createChecker(to.getColumnNames());
 
-		TablePath foreignKeyTable = reference.getForeignKeyTable();
+		var foreignKeyTable = reference.getForeignKeyTable();
 
-		String[] keyNames = MetadataUtilities.getPrimaryKeyColumnNames(foreignKeyTable);
-		for (String keyName : keyNames) {
+		var keyNames = MetadataUtilities.getPrimaryKeyColumnNames(foreignKeyTable);
+		for (var keyName : keyNames) {
 			if (!checker.contains(keyName)) continue;
-			CrossReference[] references = MetadataUtilities.getCrossReferencesOfExportedKeys(foreignKeyTable);
+			var references = MetadataUtilities.getCrossReferencesOfExportedKeys(foreignKeyTable);
 			if (references.length == 0) break;
 			copy(reference.getForeignKeyTable(), from, to);
 			switchAllReferences(references, from, to);
 			DataAccessHelper.deleteInternal(from.path, from.getCriteria(RuntimeIdFactory.stubInstance()));
 			return;
 		}
+
 		update(reference, from, to);
 	}
 
@@ -260,25 +260,26 @@ public class PrimaryKey extends PartialData {
 		TablePath foreignKeyTable,
 		PartialData from,
 		final PartialData to) {
-		StringBuilder sql = new StringBuilder("INSERT INTO " + foreignKeyTable + " SELECT ");
+		var sql = new StringBuilder("INSERT INTO " + foreignKeyTable + " SELECT ");
 
-		Set<String> checker = createChecker(from.getColumnNames());
+		var checker = createChecker(from.getColumnNames());
 
-		String[] columnNames = MetadataUtilities.getColumnNames(foreignKeyTable);
+		var columnNames = MetadataUtilities.getColumnNames(foreignKeyTable);
 
-		for (int i = 0; i < columnNames.length; i++) {
+		for (var i = 0; i < columnNames.length; i++) {
 			if (checker.contains(columnNames[i])) columnNames[i] = "?";
 		}
+
 		sql.append(String.join(", ", columnNames));
 		sql.append(" FROM ");
 		sql.append(foreignKeyTable);
-		final Criteria criteria = from.getCriteria(RuntimeIdFactory.stubInstance());
+		var criteria = from.getCriteria(RuntimeIdFactory.stubInstance());
 		sql.append(criteria.toString(false));
 
-		try (BStatement statement = BlendeeManager
+		try (var statement = BlendeeManager
 			.getConnection()
 			.getStatement(sql.toString(), s -> {
-				int i = 0;
+				var i = 0;
 				for (; i < to.bindables.length; i++) {
 					to.bindables[i].toBinder().bind(i + 1, s);
 				}
@@ -293,10 +294,10 @@ public class PrimaryKey extends PartialData {
 		CrossReference reference,
 		PartialData from,
 		PartialData to) {
-		UpdateDMLBuilder builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
+		var builder = new UpdateDMLBuilder(reference.getForeignKeyTable());
 		builder.setCriteria(from.getCriteria(RuntimeIdFactory.stubInstance()));
 		builder.add(to);
-		try (BStatement statement = BlendeeManager
+		try (var statement = BlendeeManager
 			.getConnection()
 			.getStatement(builder.toString(), builder)) {
 			statement.executeUpdate();
@@ -304,21 +305,23 @@ public class PrimaryKey extends PartialData {
 	}
 
 	private static Set<String> createChecker(String[] keyColumnNames) {
-		Set<String> keyColumnSet = new HashSet<>();
-		for (int i = 0; i < keyColumnNames.length; i++) {
+		var keyColumnSet = new HashSet<String>();
+		for (var i = 0; i < keyColumnNames.length; i++) {
 			keyColumnSet.add(keyColumnNames[i]);
 		}
+
 		return keyColumnSet;
 	}
 
 	private static PartialData convertToReferences(
 		final CrossReference reference,
 		final PartialData persistence) {
-		String[] columnNames = persistence.getColumnNames();
-		String[] referencesNames = new String[columnNames.length];
-		for (int i = 0; i < columnNames.length; i++) {
+		var columnNames = persistence.getColumnNames();
+		var referencesNames = new String[columnNames.length];
+		for (var i = 0; i < columnNames.length; i++) {
 			referencesNames[i] = reference.convertToForeignKeyColumnName(columnNames[i]);
 		}
+
 		return new PartialData(reference.getForeignKeyTable(), referencesNames, persistence.bindables);
 	}
 }

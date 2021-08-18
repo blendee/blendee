@@ -3,9 +3,7 @@ package org.blendee.sql;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -16,9 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.blendee.internal.CollectionMap;
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.Batch;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
@@ -230,8 +226,8 @@ public abstract class Updater implements ComposedSQL {
 		//保存対象が設定されていません
 		if (columns.size() == 0) throw new IllegalStateException("empty columns");
 
-		String sql = build();
-		for (SQLDecorator decorator : decorators) {
+		var sql = build();
+		for (var decorator : decorators) {
 			sql = decorator.decorate(sql);
 		}
 
@@ -240,7 +236,7 @@ public abstract class Updater implements ComposedSQL {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		for (Iterator<Binder> i = getBindersInternal().iterator(); i.hasNext(); done++) {
+		for (var i = getBindersInternal().iterator(); i.hasNext(); done++) {
 			i.next().bind(done + 1, statement);
 		}
 
@@ -252,8 +248,8 @@ public abstract class Updater implements ComposedSQL {
 	 * @return 対象件数
 	 */
 	public int executeUpdate() {
-		BConnection connection = BlendeeManager.getConnection();
-		try (BStatement statement = connection.getStatement(this)) {
+		var connection = BlendeeManager.getConnection();
+		try (var statement = connection.getStatement(this)) {
 			return statement.executeUpdate();
 		}
 	}
@@ -292,7 +288,7 @@ public abstract class Updater implements ComposedSQL {
 	 * @return {@link Binder}
 	 */
 	public Binder[] getBinders() {
-		Collection<Binder> binders = getBindersInternal();
+		var binders = getBindersInternal();
 		return binders.toArray(new Binder[binders.size()]);
 	}
 
@@ -308,13 +304,13 @@ public abstract class Updater implements ComposedSQL {
 	 * @return SQL 文の一部かもしくはプレースホルダ
 	 */
 	protected String getPlaceHolderOrFragment(String columnName) {
-		String fragment = fragmentMap.get(columnName);
+		var fragment = fragmentMap.get(columnName);
 		if (fragment != null) return fragment;
 		return "?";
 	}
 
 	private List<Binder> getBindersInternal() {
-		List<Binder> binders = new LinkedList<>();
+		var binders = new LinkedList<Binder>();
 		values.keySet().forEach(key -> values.get(key).forEach(b -> binders.add(b)));
 
 		return binders;

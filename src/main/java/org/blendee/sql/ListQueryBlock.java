@@ -47,7 +47,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 		if (this == o) return true;
 		if (!(o instanceof ListQueryBlock)) return false;
 		if (!getClass().equals(o.getClass())) return false;
-		ListQueryBlock target = (ListQueryBlock) o;
+		var target = (ListQueryBlock) o;
 		return templates.equals(target.templates)
 			&& columns.equals(target.columns);
 	}
@@ -68,7 +68,7 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	public ListQueryBlock replicate() {
-		ListQueryBlock clone = new ListQueryBlock(id, order);
+		var clone = new ListQueryBlock(id, order);
 		clone.templates.addAll(templates);
 		columns.forEach(c -> clone.columns.add(c.replicate()));
 
@@ -106,10 +106,10 @@ class ListQueryBlock implements Comparable<ListQueryBlock>, ChainPreparedStateme
 	}
 
 	String getTemplate(WholeCounter counter) {
-		List<String> localTemplates = new LinkedList<>();
+		var localTemplates = new LinkedList<String>();
 
-		int from = counter.i;
-		int to = counter.i += columns.size();
+		var from = counter.i;
+		var to = counter.i += columns.size();
 
 		IntStream.range(from, to).forEach(i -> localTemplates.add("{" + i + "}"));
 

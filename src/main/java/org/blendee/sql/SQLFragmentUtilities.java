@@ -1,6 +1,5 @@
 package org.blendee.sql;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -28,9 +27,8 @@ public class SQLFragmentUtilities {
 			return;
 		}
 
-		for (Matcher outerMatcher = outerPattern.matcher(sqlFragment); outerMatcher
-			.find(); outerMatcher = outerPattern.matcher(sqlFragment)) {
-			String matched = outerMatcher.group(1);
+		for (var outerMatcher = outerPattern.matcher(sqlFragment); outerMatcher.find(); outerMatcher = outerPattern.matcher(sqlFragment)) {
+			var matched = outerMatcher.group(1);
 			if (matched.length() > 0)
 				listener.receiveSQLFragment(matched);
 
@@ -38,15 +36,15 @@ public class SQLFragmentUtilities {
 
 			sqlFragment = sqlFragment.substring(outerMatcher.end());
 
-			StringBuilder constants = new StringBuilder();
+			var constants = new StringBuilder();
 
 			boolean terminated = false;
 
-			for (Matcher innerMatcher = innerPattern.matcher(sqlFragment); innerMatcher.find(); innerMatcher = innerPattern.matcher(sqlFragment)) {
+			for (var innerMatcher = innerPattern.matcher(sqlFragment); innerMatcher.find(); innerMatcher = innerPattern.matcher(sqlFragment)) {
 				sqlFragment = sqlFragment.substring(innerMatcher.end());
 
 				if (innerMatcher.group(2).length() == 1) {
-					String matchedConstants = innerMatcher.group(1);
+					var matchedConstants = innerMatcher.group(1);
 
 					constants.append(matchedConstants);
 

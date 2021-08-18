@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
-import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.UpdateDMLBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
@@ -153,7 +152,7 @@ public class SetElement {
 	 */
 	public SetProof set(Object... values) {
 		binders.clear();
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 		Arrays.stream(values).forEach(v -> {
 			binders.add(extractor.extract(v));
 		});
@@ -173,7 +172,7 @@ public class SetElement {
 	 */
 	public SetProof set(String template, Vargs<Object> values) {
 		binders.clear();
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 		Arrays.stream(values.get()).forEach(v -> {
 			binders.add(extractor.extract(v));
 		});
@@ -194,12 +193,12 @@ public class SetElement {
 	 */
 	public SetProof set(String template, Vargs<? extends UpdateColumn> columns, Vargs<Object> values) {
 		binders.clear();
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 		Arrays.stream(values.get()).forEach(v -> {
 			binders.add(extractor.extract(v));
 		});
 
-		List<String> columnNames = columns.stream().map(c -> c.column().getName()).collect(Collectors.toList());
+		var columnNames = columns.stream().map(c -> c.column().getName()).collect(Collectors.toList());
 		this.template = MessageFormat.format(template, columnNames.toArray());
 
 		assist.getDataManipulationStatement().addSetElement(this);
@@ -231,7 +230,7 @@ public class SetElement {
 
 		subquery.forSubquery(true);
 
-		SQLQueryBuilder builder = subquery.toSQLQueryBuilder();
+		var builder = subquery.toSQLQueryBuilder();
 		template = "(" + builder.sql() + ")";
 		binders.addAll(Arrays.asList(builder.currentBinders()));
 

@@ -34,7 +34,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 		if (this == o) return true;
 		if (!(o instanceof ListClause<?>)) return false;
 		if (!getClass().equals(o.getClass())) return false;
-		ListClause<?> target = (ListClause<?>) o;
+		var target = (ListClause<?>) o;
 		return blocks.equals(target.blocks);
 	}
 
@@ -65,7 +65,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param columns 新しいカラム
 	 */
 	public void add(Column... columns) {
-		for (Column column : columns) {
+		for (var column : columns) {
 			add(column);
 		}
 	}
@@ -75,7 +75,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param columnNames 新しいカラム
 	 */
 	public void add(String... columnNames) {
-		for (String columnName : columnNames) {
+		for (var columnName : columnNames) {
 			add(new PhantomColumn(columnName));
 		}
 	}
@@ -93,9 +93,9 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 		String template,
 		Column[] columns,
 		ChainPreparedStatementComplementer complementer) {
-		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
+		var block = new ListQueryBlock(runtimeId, order);
 
-		for (Column column : columns)
+		for (var column : columns)
 			block.addColumn(column);
 
 		if (complementer != null)
@@ -108,7 +108,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		for (ListQueryBlock block : blocks) {
+		for (var block : blocks) {
 			done = block.complement(done, statement);
 		}
 
@@ -156,7 +156,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 	 * @param template テンプレート
 	 */
 	protected void addInternal(int order, Column column, String template) {
-		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
+		var block = new ListQueryBlock(runtimeId, order);
 		block.addColumn(column);
 		block.addTemplate(template);
 		addBlock(block);
@@ -172,9 +172,9 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	@Override
 	String getTemplate() {
-		List<String> templates = new LinkedList<>();
+		var templates = new LinkedList<String>();
 
-		WholeCounter counter = new WholeCounter();
+		var counter = new WholeCounter();
 		blocks.forEach(b -> {
 			templates.add(b.getTemplate(counter));
 		});
@@ -184,7 +184,7 @@ public abstract class ListClause<T extends ListClause<?>> extends Clause {
 
 	@Override
 	List<Column> getColumnsInternal() {
-		List<Column> columns = new LinkedList<>();
+		var columns = new LinkedList<Column>();
 
 		blocks.forEach(b -> columns.addAll(b.getColumns(runtimeId)));
 

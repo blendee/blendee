@@ -24,7 +24,7 @@ public class GroupByClause extends ListClause<GroupByClause> {
 	 * @param column カラム
 	 */
 	public void add(int order, Column column) {
-		ListQueryBlock block = new ListQueryBlock(runtimeId, order);
+		var block = new ListQueryBlock(runtimeId, order);
 		block.addColumn(column);
 		block.addTemplate("{0}");
 		addBlock(block);

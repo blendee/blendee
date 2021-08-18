@@ -5,9 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.blendee.internal.Traversable;
 import org.blendee.internal.TraversableNode;
-import org.blendee.jdbc.ColumnMetadata;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.DataTypeConverter;
 import org.blendee.jdbc.MetadataUtilities;
@@ -66,18 +64,18 @@ final class ConcreteRelationship implements Relationship {
 
 		this.converter = converter;
 
-		ColumnMetadata[] metadatas = MetadataUtilities.getColumnMetadatas(path);
+		var metadatas = MetadataUtilities.getColumnMetadatas(path);
 		columns = new Column[metadatas.length];
-		for (int i = 0; i < metadatas.length; i++) {
-			ColumnMetadata columnMetadata = metadatas[i];
-			Column column = new RelationshipColumn(this, columnMetadata, converter, String.valueOf(i));
+		for (var i = 0; i < metadatas.length; i++) {
+			var columnMetadata = metadatas[i];
+			var column = new RelationshipColumn(this, columnMetadata, converter, String.valueOf(i));
 			columns[i] = column;
 			columnMap.put(columnMetadata.getName(), column);
 		}
 
-		String[] primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
+		var primaryKeyColumnNames = MetadataUtilities.getPrimaryKeyColumnNames(path);
 		primaryKeyColumns = new Column[primaryKeyColumnNames.length];
-		for (int i = 0; i < primaryKeyColumnNames.length; i++) {
+		for (var i = 0; i < primaryKeyColumnNames.length; i++) {
 			primaryKeyColumns[i] = columnMap.get(MetadataUtilities.regularize(primaryKeyColumnNames[i]));
 		}
 	}
@@ -108,9 +106,9 @@ final class ConcreteRelationship implements Relationship {
 
 	@Override
 	public Relationship[] getRelationships() {
-		Traversable[] traversables = getSubNode().getTraversables();
-		ConcreteRelationship[] relations = new ConcreteRelationship[traversables.length];
-		for (int i = 0; i < traversables.length; i++) {
+		var traversables = getSubNode().getTraversables();
+		var relations = new ConcreteRelationship[traversables.length];
+		for (var i = 0; i < traversables.length; i++) {
 			relations[i] = (ConcreteRelationship) traversables[i];
 		}
 
@@ -124,14 +122,14 @@ final class ConcreteRelationship implements Relationship {
 
 			node = new TraversableNode();
 
-			CrossReference[] references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
+			var references = MetadataUtilities.getCrossReferencesOfImportedKeys(path);
 
 			foreignKeyNameMap = new HashMap<>();
 			foreignKeyIdMap = new HashMap<>();
 
-			for (int i = 0; i < references.length; i++) {
-				CrossReference element = references[i];
-				ConcreteRelationship child = new ConcreteRelationship(
+			for (var i = 0; i < references.length; i++) {
+				var element = references[i];
+				var child = new ConcreteRelationship(
 					root,
 					this,
 					element,
@@ -160,7 +158,7 @@ final class ConcreteRelationship implements Relationship {
 
 	@Override
 	public Column getColumn(String columnName) {
-		Column column = columnMap.get(MetadataUtilities.regularize(columnName));
+		var column = columnMap.get(MetadataUtilities.regularize(columnName));
 		//this + " に " + columnName + " が見つかりません"
 		if (column == null) throw new NotFoundException(columnName + " not found in " + this);
 		return column;
@@ -178,7 +176,7 @@ final class ConcreteRelationship implements Relationship {
 
 	@Override
 	public boolean belongsPrimaryKey(Column column) {
-		for (Column pkColumn : primaryKeyColumns) {
+		for (var pkColumn : primaryKeyColumns) {
 			if (pkColumn.equals(column)) return true;
 		}
 
@@ -201,7 +199,7 @@ final class ConcreteRelationship implements Relationship {
 
 	@Override
 	public ConcreteRelationship find(String[] foreignKeyColumnNames) {
-		String keyId = createForeignKeyId(MetadataUtilities.regularize(foreignKeyColumnNames));
+		var keyId = createForeignKeyId(MetadataUtilities.regularize(foreignKeyColumnNames));
 
 		ConcreteRelationship relationship;
 		synchronized (lock) {

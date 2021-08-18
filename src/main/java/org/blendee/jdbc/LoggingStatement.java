@@ -33,7 +33,7 @@ public class LoggingStatement extends StatementBase {
 	@Override
 	public BResultSet executeQuery() {
 		logger.flush();
-		long start = System.nanoTime();
+		var start = System.nanoTime();
 		try {
 			return super.executeQuery();
 		} finally {
@@ -44,7 +44,7 @@ public class LoggingStatement extends StatementBase {
 	@Override
 	public int executeUpdate() {
 		logger.flush();
-		long start = System.nanoTime();
+		var start = System.nanoTime();
 		try {
 			return super.executeUpdate();
 		} finally {
@@ -55,7 +55,7 @@ public class LoggingStatement extends StatementBase {
 	@Override
 	public boolean execute() {
 		logger.flush();
-		long start = System.nanoTime();
+		var start = System.nanoTime();
 		try {
 			return super.execute();
 		} finally {

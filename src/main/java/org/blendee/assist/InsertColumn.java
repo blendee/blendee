@@ -33,7 +33,7 @@ public class InsertColumn implements Offer, Offers<Offer> {
 
 	@Override
 	public List<Offer> get() {
-		List<Offer> offers = new LinkedList<>();
+		var offers = new LinkedList<Offer>();
 		offers.add(this);
 		return offers;
 	}

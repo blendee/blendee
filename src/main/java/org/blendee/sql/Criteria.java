@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -130,7 +129,7 @@ public class Criteria extends Clause {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		for (Iterator<Binder> i = binders.iterator(); i.hasNext(); done++) {
+		for (var i = binders.iterator(); i.hasNext(); done++) {
 			i.next().bind(done + 1, statement);
 		}
 
@@ -141,7 +140,7 @@ public class Criteria extends Clause {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof Criteria)) return false;
-		Criteria target = strip((Criteria) o);
+		var target = strip((Criteria) o);
 		if (target == null) return false;
 
 		if (!clause.equals(target.clause)
@@ -154,7 +153,7 @@ public class Criteria extends Clause {
 
 	@Override
 	public int hashCode() {
-		List<Object> members = new LinkedList<>();
+		var members = new LinkedList<Object>();
 		members.add(clause);
 		members.add(current);
 		members.addAll(columns);
@@ -169,23 +168,23 @@ public class Criteria extends Clause {
 
 	@Override
 	public Criteria replicate() {
-		Binder[] replicateBinders = new Binder[binders.size()];
+		var replicateBinders = new Binder[binders.size()];
 		{
-			int counter = 0;
-			for (Iterator<Binder> i = binders.iterator(); i.hasNext(); counter++) {
+			var counter = 0;
+			for (var i = binders.iterator(); i.hasNext(); counter++) {
 				replicateBinders[counter] = i.next().replicate();
 			}
 		}
 
-		Column[] replicateColumns = new Column[columns.size()];
+		var replicateColumns = new Column[columns.size()];
 		{
-			int counter = 0;
-			for (Iterator<Column> i = columns.iterator(); i.hasNext(); counter++) {
+			var counter = 0;
+			for (var i = columns.iterator(); i.hasNext(); counter++) {
 				replicateColumns[counter] = i.next().replicate();
 			}
 		}
 
-		Criteria clone = new Criteria(runtimeId, clause, replicateColumns, replicateBinders);
+		var clone = new Criteria(runtimeId, clause, replicateColumns, replicateBinders);
 		clone.current = current;
 		clone.keyword = keyword;
 		return clone;
@@ -197,7 +196,7 @@ public class Criteria extends Clause {
 	 * @throws NotFoundException このインスタンスが持つカラムの属する {@link Relationship} の参照先に another が含まれない場合
 	 */
 	public void changeColumnsRelationshipTo(Relationship another) {
-		List<Column> buffer = new LinkedList<>();
+		var buffer = new LinkedList<Column>();
 		columns.forEach(c -> {
 			c.findAnotherRootColumn(another);
 			buffer.add(c);
@@ -223,7 +222,7 @@ public class Criteria extends Clause {
 	 * @param another 追加する条件
 	 */
 	void append(LogicalOperator operator, Criteria another) {
-		Criteria target = strip(another);
+		var target = strip(another);
 		if (target == null) return;
 		clause = target.delegateProcess(operator, current, clause, columns.size());
 
@@ -261,11 +260,12 @@ public class Criteria extends Clause {
 		LogicalOperator baseCurrentOperator,
 		String baseClause,
 		int skipCount) {
-		int columnsSize = columns.size();
-		String[] replace = new String[columnsSize];
-		for (int i = 0; i < columnsSize; i++) {
+		var columnsSize = columns.size();
+		var replace = new String[columnsSize];
+		for (var i = 0; i < columnsSize; i++) {
 			replace[i] = "{" + (i + skipCount) + "}";
 		}
+
 		return newOperator.process(baseCurrentOperator, baseClause)
 			+ newOperator
 			+ newOperator.process(current, SQLFragmentFormat.execute(getTemplate(), replace));

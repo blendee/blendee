@@ -77,7 +77,7 @@ class ToStringLoggingConnection extends ConnectionBase implements StatementWrapp
 		public BResultSet executeQuery() {
 			logger.setSql(sql());
 			logger.flush();
-			long start = System.nanoTime();
+			var start = System.nanoTime();
 			try {
 				return super.executeQuery();
 			} finally {
@@ -101,7 +101,7 @@ class ToStringLoggingConnection extends ConnectionBase implements StatementWrapp
 		public boolean execute() {
 			logger.setSql(sql());
 			logger.flush();
-			long start = System.nanoTime();
+			var start = System.nanoTime();
 			try {
 				return super.execute();
 			} finally {
@@ -144,7 +144,7 @@ class ToStringLoggingConnection extends ConnectionBase implements StatementWrapp
 
 		@Override
 		public int[] execute() {
-			long start = System.nanoTime();
+			var start = System.nanoTime();
 			try {
 				return super.execute();
 			} finally {

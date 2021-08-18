@@ -41,7 +41,7 @@ public class LoggingBatch extends BatchBase {
 
 	@Override
 	public int[] execute() {
-		long start = System.nanoTime();
+		var start = System.nanoTime();
 		try {
 			return super.execute();
 		} finally {

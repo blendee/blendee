@@ -25,7 +25,7 @@ public interface BConnection {
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
 	default void createStatement(String sql, Consumer<BStatement> consumer) {
-		try (BStatement statement = getStatement(sql)) {
+		try (var statement = getStatement(sql)) {
 			consumer.accept(statement);
 		}
 	}
@@ -38,7 +38,7 @@ public interface BConnection {
 	 * @return T
 	 */
 	default <T> T createStatementAndGet(String sql, Function<BStatement, T> function) {
-		try (BStatement statement = getStatement(sql)) {
+		try (var statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
 	}
@@ -71,7 +71,7 @@ public interface BConnection {
 		String sql,
 		PreparedStatementComplementer complementer,
 		Consumer<BStatement> consumer) {
-		try (BStatement statement = getStatement(sql, complementer)) {
+		try (var statement = getStatement(sql, complementer)) {
 			consumer.accept(statement);
 		}
 	}
@@ -82,7 +82,7 @@ public interface BConnection {
 	 * @param consumer {@link BStatement} を受け取る {@link Consumer}
 	 */
 	default void createStatement(ComposedSQL sql, Consumer<BStatement> consumer) {
-		try (BStatement statement = getStatement(sql)) {
+		try (var statement = getStatement(sql)) {
 			consumer.accept(statement);
 		}
 	}
@@ -99,7 +99,7 @@ public interface BConnection {
 		String sql,
 		PreparedStatementComplementer complementer,
 		Function<BStatement, T> function) {
-		try (BStatement statement = getStatement(sql, complementer)) {
+		try (var statement = getStatement(sql, complementer)) {
 			return function.apply(statement);
 		}
 	}
@@ -112,7 +112,7 @@ public interface BConnection {
 	 * @return T
 	 */
 	default <T> T createStatementAndGet(ComposedSQL sql, Function<BStatement, T> function) {
-		try (BStatement statement = getStatement(sql)) {
+		try (var statement = getStatement(sql)) {
 			return function.apply(statement);
 		}
 	}
@@ -131,7 +131,7 @@ public interface BConnection {
 	 * @param consumer {@link BPreparedStatement} を受け取る {@link Consumer}
 	 */
 	default void prepareStatement(String sql, Consumer<BPreparedStatement> consumer) {
-		try (BPreparedStatement statement = prepareStatement(sql)) {
+		try (var statement = prepareStatement(sql)) {
 			consumer.accept(statement);
 		}
 	}
@@ -144,7 +144,7 @@ public interface BConnection {
 	 * @return T
 	 */
 	default <T> T prepareStatementAndGet(String sql, Function<BPreparedStatement, T> function) {
-		try (BPreparedStatement statement = prepareStatement(sql)) {
+		try (var statement = prepareStatement(sql)) {
 			return function.apply(statement);
 		}
 	}

@@ -45,9 +45,9 @@ public class RelationshipFactory implements ManagementSubject {
 	public Relationship getInstance(TablePath path) {
 		synchronized (lock) {
 			if (pathIdMap.size() == 0) preparePathIdMap();
-			Relationship relationship = relationshipCache.get(path);
+			var relationship = relationshipCache.get(path);
 			if (relationship == null) {
-				String pathId = pathIdMap.get(path);
+				var pathId = pathIdMap.get(path);
 				//path + " は使用できるテーブルに含まれていません"
 				if (pathId == null) throw new IllegalArgumentException(path + " is not in the usable tables.");
 
@@ -70,17 +70,17 @@ public class RelationshipFactory implements ManagementSubject {
 	}
 
 	private void preparePathIdMap() {
-		String[] schemaNames = BlendeeManager.get().getConfigure().getSchemaNames();
-		int counter = 0;
-		for (String name : schemaNames) {
-			TablePath[] paths = MetadataUtilities.getTables(name);
+		var schemaNames = BlendeeManager.get().getConfigure().getSchemaNames();
+		var counter = 0;
+		for (var name : schemaNames) {
+			var paths = MetadataUtilities.getTables(name);
 			counter += paths.length;
 		}
 
 		counter = 0;
-		for (String name : schemaNames) {
-			TablePath[] paths = MetadataUtilities.getTables(name);
-			for (TablePath path : paths) {
+		for (var name : schemaNames) {
+			var paths = MetadataUtilities.getTables(name);
+			for (var path : paths) {
 				pathIdMap.put(path, "t" + counter);
 				counter++;
 			}

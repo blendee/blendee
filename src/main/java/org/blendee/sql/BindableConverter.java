@@ -18,8 +18,8 @@ public class BindableConverter {
 	 * @return 変換された {@link Bindable} の配列
 	 */
 	public static Bindable[] convert(String... members) {
-		Bindable[] bindables = new Bindable[members.length];
-		for (int i = 0; i < bindables.length; i++) {
+		var bindables = new Bindable[members.length];
+		for (var i = 0; i < bindables.length; i++) {
 			bindables[i] = new StringBinder(members[i]);
 		}
 
@@ -63,11 +63,11 @@ public class BindableConverter {
 	 * @return 変換された {@link Bindable} の配列
 	 */
 	public static Bindable[] convertAllTypes(Object[] members) {
-		Bindable[] bindables = new Bindable[members.length];
-		ValueExtractors extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
-		for (int i = 0; i < members.length; i++) {
-			Object keyMember = members[i];
-			ValueExtractor extractor = extractors.selectValueExtractor(keyMember.getClass());
+		var bindables = new Bindable[members.length];
+		var extractors = ContextManager.get(ValueExtractorsConfigure.class).getValueExtractors();
+		for (var i = 0; i < members.length; i++) {
+			var keyMember = members[i];
+			var extractor = extractors.selectValueExtractor(keyMember.getClass());
 
 			//keyMember.getClass() + " に対応する Extractor がありません"
 			if (extractor == null) throw new IllegalStateException("No ValueExtractor of " + keyMember.getClass());

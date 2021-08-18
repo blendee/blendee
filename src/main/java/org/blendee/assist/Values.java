@@ -11,7 +11,6 @@ import org.blendee.sql.Bindable;
 import org.blendee.sql.Binder;
 import org.blendee.sql.Column;
 import org.blendee.sql.InsertDMLBuilder;
-import org.blendee.sql.SQLQueryBuilder;
 import org.blendee.sql.binder.BigDecimalBinder;
 import org.blendee.sql.binder.BooleanBinder;
 import org.blendee.sql.binder.DoubleBinder;
@@ -136,8 +135,8 @@ public class Values {
 	 * @return {@link SetProof}
 	 */
 	public Values any(String template, Object... values) {
-		List<Binder> binders = new LinkedList<>();
-		BinderExtractor extractor = new BinderExtractor();
+		var binders = new LinkedList<Binder>();
+		var extractor = new BinderExtractor();
 		Arrays.stream(values).forEach(v -> {
 			binders.add(extractor.extract(v));
 		});
@@ -169,7 +168,7 @@ public class Values {
 	public Values value(SelectStatement subquery) {
 		subquery.forSubquery(true);
 
-		SQLQueryBuilder queryBuilder = subquery.toSQLQueryBuilder();
+		var queryBuilder = subquery.toSQLQueryBuilder();
 
 		Arrays.asList(queryBuilder.currentBinders());
 

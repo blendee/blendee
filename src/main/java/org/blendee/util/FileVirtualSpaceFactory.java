@@ -34,7 +34,7 @@ class FileVirtualSpaceFactory {
 	 * @throws ClassNotFoundException XML 内で定義されている項目の型のクラスが存在しない場合
 	 */
 	static VirtualSpace getInstance(URL xml) throws IOException, ClassNotFoundException {
-		try (InputStream stream = xml.openStream()) {
+		try (var stream = xml.openStream()) {
 			return getInstance(new BufferedInputStream(stream));
 		}
 	}
@@ -47,17 +47,18 @@ class FileVirtualSpaceFactory {
 	 * @throws ClassNotFoundException XML 内で定義されている項目の型のクラスが存在しない場合
 	 */
 	static VirtualSpace getInstance(InputStream xml) throws IOException, ClassNotFoundException {
-		VirtualSpace space = new VirtualSpace();
+		var space = new VirtualSpace();
 		NodeList list;
-		XPath xpath = XPathFactory.newInstance().newXPath();
+		var xpath = XPathFactory.newInstance().newXPath();
 		try {
 			list = (NodeList) xpath.evaluate(
 				"/blendee-metadata-extension/table",
 				new InputSource(xml),
 				XPathConstants.NODESET);
-			int length = list.getLength();
-			for (int i = 0; i < length; i++) {
-				Node table = list.item(i);
+
+			var length = list.getLength();
+			for (var i = 0; i < length; i++) {
+				var table = list.item(i);
 				space.addTable(processTable(xpath, table));
 			}
 		} catch (XPathExpressionException e) {
@@ -69,21 +70,21 @@ class FileVirtualSpaceFactory {
 
 	private static TableSource processTable(XPath xpath, Node table)
 		throws IOException, XPathExpressionException, ClassNotFoundException {
-		TableMetadata tableMetadata = processTableMetadata(xpath, table);
-		String tableName = tableMetadata.getName();
+		var tableMetadata = processTableMetadata(xpath, table);
+		var tableName = tableMetadata.getName();
 
 		if (!isJavaIdentifierPart(tableName))
 			//"テーブル名 " + tableName + " は使用できない文字を含んでいます"
 			throw new IllegalStateException("Table name " + tableName + " contains invalid characters");
 
-		TablePath path = new TablePath(tableMetadata.getSchemaName(), tableName);
+		var path = new TablePath(tableMetadata.getSchemaName(), tableName);
 
-		ColumnMetadata[] columnMetadatas = processColumnMetadatas(
+		var columnMetadatas = processColumnMetadatas(
 			path,
 			xpath,
 			(NodeList) xpath.evaluate("columns/column", table, XPathConstants.NODESET));
 
-		for (ColumnMetadata columnMetadata : columnMetadatas) {
+		for (var columnMetadata : columnMetadatas) {
 			if (!isJavaIdentifierPart(columnMetadata.getName())) throw new IllegalStateException(
 				//"テーブル名 " + tableName + " 項目名 " + columnMetadata.getName() + " は使用できない文字を含んでいます"
 				"Column name " + tableName + "." + columnMetadata.getName() + " contains invalid characters");
@@ -92,7 +93,7 @@ class FileVirtualSpaceFactory {
 		PrimaryKeySource pk;
 		if (xpath.evaluate("primary-key", table, XPathConstants.NODE) != null) {
 
-			String primaryKeyName = xpath.evaluate("primary-key/@name", table);
+			var primaryKeyName = xpath.evaluate("primary-key/@name", table);
 
 			if (!isJavaIdentifierPart(primaryKeyName))
 				//"テーブル名 " + tableName + " 主キー名 " + primaryKeyName + " は使用できない文字を含んでいます"
@@ -108,13 +109,13 @@ class FileVirtualSpaceFactory {
 			pk = null;
 		}
 
-		NodeList foreignKeyNodes = (NodeList) xpath.evaluate("foreign-key", table, XPathConstants.NODESET);
+		var foreignKeyNodes = (NodeList) xpath.evaluate("foreign-key", table, XPathConstants.NODESET);
 		int foreignKeyNodesLength = foreignKeyNodes.getLength();
-		ForeignKeySource[] fks = new ForeignKeySource[foreignKeyNodesLength];
-		for (int i = 0; i < foreignKeyNodesLength; i++) {
-			Node node = foreignKeyNodes.item(i);
+		var fks = new ForeignKeySource[foreignKeyNodesLength];
+		for (var i = 0; i < foreignKeyNodesLength; i++) {
+			var node = foreignKeyNodes.item(i);
 
-			String foreignKeyName = xpath.evaluate("@name", node);
+			var foreignKeyName = xpath.evaluate("@name", node);
 
 			if (!isJavaIdentifierPart(foreignKeyName)) throw new IllegalStateException(
 				//"テーブル名 " + tableName + " 外部キー名 " + foreignKeyName + " は使用できない文字を含んでいます"
@@ -131,9 +132,9 @@ class FileVirtualSpaceFactory {
 	}
 
 	private static String[] processColumnNames(XPath xpath, NodeList list) throws XPathExpressionException {
-		int length = list.getLength();
-		String[] result = new String[length];
-		for (int i = 0; i < length; i++) {
+		var length = list.getLength();
+		var result = new String[length];
+		for (var i = 0; i < length; i++) {
 			result[i] = xpath.evaluate("@name", list.item(i));
 		}
 
@@ -150,46 +151,46 @@ class FileVirtualSpaceFactory {
 
 	private static ColumnMetadata[] processColumnMetadatas(TablePath path, XPath xpath, NodeList list)
 		throws XPathExpressionException, ClassNotFoundException {
-		int length = list.getLength();
-		ColumnMetadata[] result = new ColumnMetadata[length];
-		for (int i = 0; i < length; i++) {
-			Node node = list.item(i);
+		var length = list.getLength();
+		var result = new ColumnMetadata[length];
+		for (var i = 0; i < length; i++) {
+			var node = list.item(i);
 
 			//必須
-			int type = Integer.parseInt(xpath.evaluate("@type", node));
+			var type = Integer.parseInt(xpath.evaluate("@type", node));
 
 			//省略可
-			String typeName = xpath.evaluate("@type-name", node);
+			var typeName = xpath.evaluate("@type-name", node);
 
 			//省略可
-			String sizeValue = xpath.evaluate("@size", node);
-			int size = 0;
+			var sizeValue = xpath.evaluate("@size", node);
+			var size = 0;
 			if (sizeValue != null && sizeValue.length() > 0) {
 				size = Integer.parseInt(sizeValue);
 			}
 
 			//省略可
-			boolean hasDecimalDigits = Boolean.parseBoolean(xpath.evaluate("@has-decimal-digits", node));
+			var hasDecimalDigits = Boolean.parseBoolean(xpath.evaluate("@has-decimal-digits", node));
 
 			//hasDecimalDigits = true の場合、必須
-			int decimalDigits = 0;
+			var decimalDigits = 0;
 			if (hasDecimalDigits) {
 				decimalDigits = Integer.parseInt(xpath.evaluate("@decimal-disits", node));
 			}
 
 			//省略可
-			String remarks = xpath.evaluate("@remarks", node);
+			var remarks = xpath.evaluate("@remarks", node);
 
 			//省略可
-			String defaultValue = xpath.evaluate("@default-value", node);
+			var defaultValue = xpath.evaluate("@default-value", node);
 
 			//必須
-			int ordinalPosition = Integer.parseInt(xpath.evaluate("@ordinal-position", node));
+			var ordinalPosition = Integer.parseInt(xpath.evaluate("@ordinal-position", node));
 
 			//省略可
-			boolean isNotNull = Boolean.parseBoolean(xpath.evaluate("@is-not-null", node));
+			var isNotNull = Boolean.parseBoolean(xpath.evaluate("@is-not-null", node));
 
-			VirtualColumnMetadata metadata = new VirtualColumnMetadata(
+			var metadata = new VirtualColumnMetadata(
 				path.getSchemaName(),
 				path.getTableName(),
 				xpath.evaluate("@name", list.item(i)),
@@ -209,10 +210,10 @@ class FileVirtualSpaceFactory {
 	}
 
 	private static boolean isJavaIdentifierPart(String target) {
-		char[] targetChars = target.toCharArray();
+		var targetChars = target.toCharArray();
 		if (targetChars.length == 0) return false;
 		if (!Character.isJavaIdentifierStart(targetChars[0])) return false;
-		for (Character c : targetChars) {
+		for (var c : targetChars) {
 			if (!Character.isJavaIdentifierPart(c)) return false;
 		}
 

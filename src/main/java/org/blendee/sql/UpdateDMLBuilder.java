@@ -1,7 +1,6 @@
 package org.blendee.sql;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import org.blendee.jdbc.BPreparedStatement;
 import org.blendee.jdbc.TablePath;
@@ -59,10 +58,10 @@ public class UpdateDMLBuilder extends Updater {
 
 	@Override
 	protected String build() {
-		String[] columnNames = getColumnNames();
-		List<String> list = new LinkedList<>();
-		for (int i = 0; i < columnNames.length; i++) {
-			String columnName = columnNames[i];
+		var columnNames = getColumnNames();
+		var list = new LinkedList<String>();
+		for (var i = 0; i < columnNames.length; i++) {
+			var columnName = columnNames[i];
 			list.add(columnName + " = " + getPlaceHolderOrFragment(columnName));
 		}
 

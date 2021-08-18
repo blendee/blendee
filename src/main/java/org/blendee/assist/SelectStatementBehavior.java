@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.blendee.jdbc.BConnection;
 import org.blendee.jdbc.BPreparedStatement;
-import org.blendee.jdbc.BResultSet;
-import org.blendee.jdbc.BStatement;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ComposedSQL;
 import org.blendee.jdbc.TablePath;
@@ -196,7 +193,7 @@ public abstract class SelectStatementBehavior<
 	 * @param function {@link SelectOfferFunction}
 	 */
 	public void SELECT(SelectOfferFunction<S> function) {
-		Offers<ColumnExpression> offers = function.apply(select());
+		var offers = function.apply(select());
 
 		if (rowMode) {
 			if (contextForSelect == null)
@@ -221,9 +218,9 @@ public abstract class SelectStatementBehavior<
 		SelectOfferFunction<S> function) {
 		quitRowMode();
 
-		Offers<ColumnExpression> offers = function.apply(select());
+		var offers = function.apply(select());
 
-		SelectDistinctClause mySelectClause = new SelectDistinctClause(id);
+		var mySelectClause = new SelectDistinctClause(id);
 		offers.get().forEach(c -> c.accept(mySelectClause));
 		selectClause = mySelectClause;
 	}
@@ -254,10 +251,10 @@ public abstract class SelectStatementBehavior<
 	public final void WHERE(
 		Consumer<W>... consumers) {
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			for (Consumer<W> consumer : consumers) {
-				Criteria contextCriteria = factory().create();
+			for (var consumer : consumers) {
+				var contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(whereOperators().defaultOperator());
@@ -283,10 +280,10 @@ public abstract class SelectStatementBehavior<
 		quitRowMode();
 
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			for (Consumer<H> consumer : consumers) {
-				Criteria contextCriteria = factory().create();
+			for (var consumer : consumers) {
+				var contextCriteria = factory().create();
 				CriteriaContext.setContextCriteria(contextCriteria);
 
 				consumer.accept(havingOperators().defaultOperator());
@@ -383,9 +380,9 @@ public abstract class SelectStatementBehavior<
 	public Criteria createWhereCriteria(
 		Consumer<W> consumer) {
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria criteria = factory().create();
+			var criteria = factory().create();
 			CriteriaContext.setContextCriteria(criteria);
 
 			consumer.accept(whereOperators().defaultOperator());
@@ -408,9 +405,9 @@ public abstract class SelectStatementBehavior<
 	public Criteria createHavingCriteria(
 		Consumer<H> consumer) {
 		//二重に呼ばれた際の処置
-		Criteria current = CriteriaContext.getContextCriteria();
+		var current = CriteriaContext.getContextCriteria();
 		try {
-			Criteria criteria = factory().create();
+			var criteria = factory().create();
 			CriteriaContext.setContextCriteria(criteria);
 
 			consumer.accept(havingOperators().defaultOperator());
@@ -679,16 +676,16 @@ public abstract class SelectStatementBehavior<
 					DataAccessHelper.select(
 						fetchSQL,
 						s -> {
-							List<Binder> binders = values.binders();
+							var binders = values.binders();
 							if (binders.size() > 0) {
-								List<Bindable> bindables = new ArrayList<>();
+								var bindables = new ArrayList<Bindable>();
 								bindables.addAll(values.binders());
 								bindables.addAll(Arrays.asList(primaryKeyMembers));
-								for (int i = 0; i < bindables.size(); i++) {
+								for (var i = 0; i < bindables.size(); i++) {
 									bindables.get(i).toBinder().bind(i + 1, s);
 								}
 							} else {
-								for (int i = 0; i < primaryKeyMembers.length; i++) {
+								for (var i = 0; i < primaryKeyMembers.length; i++) {
 									primaryKeyMembers[i].toBinder().bind(i + 1, s);
 								}
 							}
@@ -706,9 +703,9 @@ public abstract class SelectStatementBehavior<
 		@Override
 		public int count() {
 			checkRowMode(rowMode);
-			BConnection connection = BlendeeManager.getConnection();
-			try (BStatement statement = connection.getStatement(countSQL, values)) {
-				try (BResultSet result = statement.executeQuery()) {
+			var connection = BlendeeManager.getConnection();
+			try (var statement = connection.getStatement(countSQL, values)) {
+				try (var result = statement.executeQuery()) {
 					result.next();
 					return result.getInt(1);
 				}
@@ -787,8 +784,8 @@ public abstract class SelectStatementBehavior<
 	}
 
 	public PlaybackQuery query() {
-		SQLQueryBuilder builder = buildBuilder();
-		String aggregationSQL = builder.sql();
+		var builder = buildBuilder();
+		var aggregationSQL = builder.sql();
 
 		if (!rowMode) {
 			return new PlaybackQuery(
@@ -802,9 +799,9 @@ public abstract class SelectStatementBehavior<
 				false);
 		}
 
-		SelectContext context = getSelectContext();
+		var context = getSelectContext();
 
-		SQLQueryBuilder selector = new DataAccessHelper(id).buildSQLQueryBuilder(
+		var selector = new DataAccessHelper(id).buildSQLQueryBuilder(
 			context,
 			whereClause,
 			orderByClause,
@@ -812,11 +809,11 @@ public abstract class SelectStatementBehavior<
 
 		selector.forSubquery(forSubquery);
 
-		String sql = selector.sql();
+		var sql = selector.sql();
 
 		String countSQL;
 		{
-			SQLQueryBuilder myBuilder = new SQLQueryBuilder(new FromClause(context.tablePath(), id));
+			var myBuilder = new SQLQueryBuilder(new FromClause(context.tablePath(), id));
 			myBuilder.setSelectClause(new SelectCountClause());
 			if (whereClause != null) myBuilder.setWhereClause(whereClause);
 			countSQL = myBuilder.sql();
@@ -824,8 +821,8 @@ public abstract class SelectStatementBehavior<
 
 		String fetchSQL;
 		{
-			Criteria criteria = createFetchCriteria(table);
-			SQLQueryBuilder fetchSelector = new DataAccessHelper(id).buildSQLQueryBuilder(
+			var criteria = createFetchCriteria(table);
+			var fetchSelector = new DataAccessHelper(id).buildSQLQueryBuilder(
 				context,
 				whereClause == null ? criteria : whereClause.and(criteria),
 				null,
@@ -849,7 +846,7 @@ public abstract class SelectStatementBehavior<
 	}
 
 	public SQLQueryBuilder buildBuilder() {
-		SQLQueryBuilder builder = buildBuilderWithoutSelectColumnsSupply();
+		var builder = buildBuilderWithoutSelectColumnsSupply();
 
 		//builder同士JOINしてもなおSELECT句が空の場合
 		if (!builder.hasSelectColumns())
@@ -868,7 +865,7 @@ public abstract class SelectStatementBehavior<
 
 	private ComposedSQL createComposedSQL() {
 		if (rowMode) {
-			SQLQueryBuilder selector = new DataAccessHelper(id).buildSQLQueryBuilder(
+			var selector = new DataAccessHelper(id).buildSQLQueryBuilder(
 				getSelectContext(),
 				whereClause,
 				orderByClause,
@@ -883,7 +880,7 @@ public abstract class SelectStatementBehavior<
 	}
 
 	private SQLQueryBuilder buildBuilderWithoutSelectColumnsSupply() {
-		SQLQueryBuilder builder = new SQLQueryBuilder(false, getFromClause());
+		var builder = new SQLQueryBuilder(false, getFromClause());
 
 		builder.forSubquery(forSubquery);
 
@@ -915,7 +912,7 @@ public abstract class SelectStatementBehavior<
 		RightTable<R> right) {
 		quitRowMode();
 
-		JoinResource joinResource = new JoinResource();
+		var joinResource = new JoinResource();
 		joinResource.rightRoot = right.getSelectStatement();
 		joinResource.joinType = joinType;
 
@@ -928,7 +925,7 @@ public abstract class SelectStatementBehavior<
 		JoinType joinType,
 		RightTable<R> right,
 		Q query) {
-		JoinResource joinResource = joinInternal(joinType, right);
+		var joinResource = joinInternal(joinType, right);
 
 		return new OnClause<>(
 			joinResource,
@@ -953,10 +950,10 @@ public abstract class SelectStatementBehavior<
 	}
 
 	private Criteria createFetchCriteria(TablePath tablePath) {
-		CriteriaFactory factory = factory();
-		Criteria criteria = factory.create();
+		var factory = factory();
+		var criteria = factory.create();
 
-		for (Column column : RelationshipFactory.getInstance().getInstance(tablePath).getPrimaryKeyColumns()) {
+		for (var column : RelationshipFactory.getInstance().getInstance(tablePath).getPrimaryKeyColumns()) {
 			criteria.and(factory.create(column, new NullBinder(column.getColumnMetadata().getType())));
 		}
 

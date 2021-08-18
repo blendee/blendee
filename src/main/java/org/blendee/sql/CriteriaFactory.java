@@ -3,7 +3,6 @@ package org.blendee.sql;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -1046,8 +1045,8 @@ public class CriteriaFactory {
 		String clause,
 		Column[] columns,
 		Bindable[] bindables) {
-		Binder[] binders = new Binder[bindables.length];
-		for (int i = 0; i < bindables.length; i++) {
+		var binders = new Binder[bindables.length];
+		for (var i = 0; i < bindables.length; i++) {
 			binders[i] = bindables[i].toBinder();
 		}
 
@@ -1067,8 +1066,8 @@ public class CriteriaFactory {
 		String clause,
 		Column[] columns,
 		Bindable[] bindables) {
-		Binder[] binders = new Binder[bindables.length];
-		for (int i = 0; i < bindables.length; i++) {
+		var binders = new Binder[bindables.length];
+		for (var i = 0; i < bindables.length; i++) {
 			binders[i] = bindables[i].toBinder();
 		}
 
@@ -1138,15 +1137,16 @@ public class CriteriaFactory {
 		//subQueryColumns が空です
 		if (subqueryColumns.length == 0) throw new SubqueryException("subQueryColumns is empty");
 
-		SQLQueryBuilder builder = new SQLQueryBuilder(
+		var builder = new SQLQueryBuilder(
 			new FromClause(subqueryColumns[0].getRootRelationship().getTablePath(), id));
 		builder.setWhereClause(subquery);
-		SelectClause selectClause = new SelectClause(id);
-		for (Column column : subqueryColumns) {
+		var selectClause = new SelectClause(id);
+		for (var column : subqueryColumns) {
 			selectClause.add(column);
 		}
 
 		builder.setSelectClause(selectClause);
+
 		return createSubquery(columns, builder, false);
 	}
 
@@ -1167,14 +1167,14 @@ public class CriteriaFactory {
 		//columns が空です
 		if (columns.length == 0) throw new SubqueryException("columns is empty");
 
-		Column[] subQueryColumns = subquery.getSelectClause().getColumns();
+		var subQueryColumns = subquery.getSelectClause().getColumns();
 
 		if (columns.length != subQueryColumns.length) {
 			//項目数が一致しません
 			throw new SubqueryException("The number of items does not match");
 		}
 
-		for (Column column : subQueryColumns) {
+		for (var column : subQueryColumns) {
 			if (!column.getColumnMetadata().isNotNull())
 				//IN を使用しているため、サブクエリの select 句のカラムは、すべて NOT NULL である必要があります
 				throw new SubqueryException("Using IN, all columns in the subquery select clause must be NOT NULL");
@@ -1200,13 +1200,13 @@ public class CriteriaFactory {
 		//columns が空です
 		if (columns.length == 0) throw new SubqueryException("empty columns");
 
-		List<String> columnPartList = new LinkedList<>();
-		for (int i = 0; i < columns.length; i++) {
+		var columnPartList = new LinkedList<String>();
+		for (var i = 0; i < columns.length; i++) {
 			columnPartList.add("{" + i + "}");
 		}
 
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
-		String subqueryString = "(" + String.join(", ", columnPartList) + ") " + (notIn ? "NOT IN" : "IN") + " (" + subquery.sql() + ")";
+		var subqueryString = "(" + String.join(", ", columnPartList) + ") " + (notIn ? "NOT IN" : "IN") + " (" + subquery.sql() + ")";
 
 		return new Criteria(id, subqueryString, columns, subquery.currentBinders());
 	}
@@ -1226,7 +1226,7 @@ public class CriteriaFactory {
 		Column column,
 		SQLQueryBuilder subquery) {
 		//サブクエリのFrom句からBinderを取り出す前にsql化して内部のFrom句をマージしておかないとBinderが準備されないため、先に実行
-		String subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
+		var subqueryString = "{0} " + operator.operator + " (" + subquery.sql() + ")";
 
 		return new Criteria(id, subqueryString, new Column[] { column }, subquery.currentBinders());
 	}
@@ -1244,7 +1244,7 @@ public class CriteriaFactory {
 	}
 
 	private static Bindable[] toBindables(String[] values) {
-		List<StringBinder> bindables = Arrays.stream(values)
+		var bindables = Arrays.stream(values)
 			.map(v -> new StringBinder(v))
 			.collect(Collectors.toList());
 		return bindables.toArray(new Bindable[bindables.size()]);

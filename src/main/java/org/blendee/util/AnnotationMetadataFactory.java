@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.blendee.assist.Row;
@@ -24,7 +22,6 @@ import org.blendee.assist.annotation.Table;
 import org.blendee.internal.U;
 import org.blendee.jdbc.BlendeeManager;
 import org.blendee.jdbc.ColumnMetadata;
-import org.blendee.jdbc.Configure;
 import org.blendee.jdbc.ContextManager;
 import org.blendee.jdbc.CrossReference;
 import org.blendee.jdbc.Metadata;
@@ -161,14 +158,14 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private void prepareVirtualSpace() {
-		Configure config = ContextManager.get(BlendeeManager.class).getConfigure();
-		String rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
+		var config = ContextManager.get(BlendeeManager.class).getConfigure();
+		var rootPackage = config.getOption(BlendeeConstants.TABLE_FACADE_PACKAGE).orElse(DEFAULT_ROOT_PACKAGE);
 
-		DatabaseInfoReader info = new DatabaseInfoReader(rootPackage, getClassLoader());
+		var info = new DatabaseInfoReader(rootPackage, getClassLoader());
 
 		if (info.exists()) {
 			try {
-				Properties properties = info.read();
+				var properties = info.read();
 
 				if (DatabaseInfo.hasStoredIdentifier(properties))
 					virtualSpace.setStoredIdentifier(DatabaseInfo.getStoredIdentifier(properties));
@@ -187,22 +184,22 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private TableSource convert(Class<?> clazz) {
-		Table table = clazz.getAnnotation(Table.class);
+		var table = clazz.getAnnotation(Table.class);
 
-		PrimaryKey pk = clazz.getAnnotation(PrimaryKey.class);
+		var pk = clazz.getAnnotation(PrimaryKey.class);
 
-		List<ForeignKeySource> fkSources = new LinkedList<>();
-		List<ColumnMetadata> columnMetadatas = new LinkedList<>();
+		var fkSources = new LinkedList<ForeignKeySource>();
+		var columnMetadatas = new LinkedList<ColumnMetadata>();
 
 		Arrays.stream(clazz.getDeclaredFields()).forEach(f -> {
-			ForeignKey fk = f.getAnnotation(ForeignKey.class);
+			var fk = f.getAnnotation(ForeignKey.class);
 			if (fk != null) fkSources.add(createSource(fk));
 
 			if (usesAllVirtualColumns()) {
-				Column column = f.getAnnotation(Column.class);
+				var column = f.getAnnotation(Column.class);
 
 				if (column != null) {
-					ColumnMetadata columnMetadata = new VirtualColumnMetadata(
+					var columnMetadata = new VirtualColumnMetadata(
 						table.schema(),
 						table.name(),
 						column.name(),
@@ -226,7 +223,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 			if (fk != null) fkSources.add(createSource(fk));
 		});
 
-		VirtualTableMetadata tableMetadata = new VirtualTableMetadata(
+		var tableMetadata = new VirtualTableMetadata(
 			table.schema(),
 			table.name(),
 			table.type(),
@@ -254,9 +251,9 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 
 	@SuppressWarnings("unchecked")
 	private List<Class<?>> listClasses(ClassLoader loader, String packageName) {
-		String path = packageName.replace('.', '/');
+		var path = packageName.replace('.', '/');
 
-		URL url = loader.getResource(path);
+		var url = loader.getResource(path);
 
 		if (url == null) return Collections.EMPTY_LIST;
 
@@ -268,7 +265,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private List<Class<?>> forFile(String packageName, ClassLoader loader, URL url) {
-		File[] files = new File(url.getFile()).listFiles((dir, name) -> filterFile(name));
+		var files = new File(url.getFile()).listFiles((dir, name) -> filterFile(name));
 
 		return Arrays.stream(files)
 			.map(file -> packageName + "." + file.getName().replaceAll(".class$", ""))
@@ -278,7 +275,7 @@ public class AnnotationMetadataFactory implements MetadataFactory {
 	}
 
 	private List<Class<?>> forJar(String path, ClassLoader loader, URL url) {
-		try (JarFile jarFile = ((JarURLConnection) url.openConnection()).getJarFile()) {
+		try (var jarFile = ((JarURLConnection) url.openConnection()).getJarFile()) {
 			return Collections.list(jarFile.entries())
 				.stream()
 				.map(entry -> entry.getName())

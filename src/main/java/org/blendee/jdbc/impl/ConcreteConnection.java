@@ -61,28 +61,28 @@ public class ConcreteConnection implements BConnection {
 
 	@Override
 	public BStatement getStatement(String sql) {
-		ConcretePreparedStatement statement = create(sql);
+		var statement = create(sql);
 		return wrap((BStatement) statement, statementWrappers);
 	}
 
 	@Override
 	public BPreparedStatement getStatement(String sql, PreparedStatementComplementer complementer) {
-		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, statementWrappers);
+		var statement = create(sql);
+		var wrapped = wrap(statement, statementWrappers);
 		complementer.complement(wrapped);
 		return wrapped;
 	}
 
 	@Override
 	public BPreparedStatement prepareStatement(String sql) {
-		ConcretePreparedStatement statement = create(sql);
-		BPreparedStatement wrapped = wrap(statement, statementWrappers);
+		var statement = create(sql);
+		var wrapped = wrap(statement, statementWrappers);
 		return wrapped;
 	}
 
 	@Override
 	public Batch getBatch() {
-		ConcreteBatch batch = new ConcreteBatch(this);
+		var batch = new ConcreteBatch(this);
 		return wrap(batch, statementWrappers);
 	}
 
@@ -120,23 +120,25 @@ public class ConcreteConnection implements BConnection {
 	private static BStatement wrap(
 		BStatement statement,
 		Set<StatementWrapper> wrappers) {
-		for (StatementWrapper wrapper : wrappers)
+		for (var wrapper : wrappers)
 			statement = wrapper.wrap(statement);
+
 		return statement;
 	}
 
 	private static BPreparedStatement wrap(
 		BPreparedStatement statement,
 		Set<StatementWrapper> wrappers) {
-		for (StatementWrapper wrapper : wrappers)
+		for (var wrapper : wrappers)
 			statement = wrapper.wrap(statement);
+
 		return statement;
 	}
 
 	private static Batch wrap(
 		Batch batch,
 		Set<StatementWrapper> wrappers) {
-		for (StatementWrapper wrapper : wrappers)
+		for (var wrapper : wrappers)
 			batch = wrapper.wrap(batch);
 		return batch;
 	}

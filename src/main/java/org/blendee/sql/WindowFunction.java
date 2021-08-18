@@ -2,7 +2,6 @@ package org.blendee.sql;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.blendee.internal.U;
 
@@ -115,7 +114,7 @@ public class WindowFunction {
 	}
 
 	Column[] getColumns() {
-		List<Column> columns = new LinkedList<>();
+		var columns = new LinkedList<Column>();
 		columns.addAll(Arrays.asList(function.getColumns()));
 		columns.addAll(Arrays.asList(overClause.getColumns()));
 		return columns.toArray(new Column[columns.size()]);

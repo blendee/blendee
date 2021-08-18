@@ -22,7 +22,7 @@ public class SimpleContextStrategy implements ContextStrategy {
 
 		Object instance;
 		synchronized (lock) {
-			Map<Class<?>, Object> map = getContextMap(contextMap, contextName);
+			var map = getContextMap(contextMap, contextName);
 
 			instance = map.get(clazz);
 
@@ -38,7 +38,7 @@ public class SimpleContextStrategy implements ContextStrategy {
 		}
 
 		@SuppressWarnings("unchecked")
-		T result = (T) instance;
+		var result = (T) instance;
 
 		return result;
 	}
@@ -51,7 +51,7 @@ public class SimpleContextStrategy implements ContextStrategy {
 	}
 
 	private static Map<Class<?>, Object> getContextMap(Map<String, Map<Class<?>, Object>> map, String name) {
-		Map<Class<?>, Object> contextMap = map.get(name);
+		var contextMap = map.get(name);
 		if (contextMap == null) {
 			contextMap = new HashMap<>();
 			map.put(name, contextMap);

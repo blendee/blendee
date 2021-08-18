@@ -10,7 +10,6 @@ import java.util.stream.StreamSupport;
 import org.blendee.internal.U;
 import org.blendee.jdbc.AutoCloseableIterator;
 import org.blendee.orm.DataObject;
-import org.blendee.sql.Relationship;
 
 /**
  * {@link Iterator} としての性質を持った {@link Row} の集合を表します。
@@ -49,7 +48,7 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 		//hasNext() が実行されていません
 		if (!manager.prepared()) throw new IllegalStateException("Do hasNext() first.");
 
-		DataObject current = manager.current(selfAsMany.getRelationship());
+		var current = manager.current(selfAsMany.getRelationship());
 
 		Many<Row, Object> next;
 		if (nextMany == null) {
@@ -60,7 +59,7 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 		}
 
 		@SuppressWarnings("unchecked")
-		One<O, M> result = (One<O, M>) new One<>(selfAsMany.createRow(current), next);
+		var result = (One<O, M>) new One<>(selfAsMany.createRow(current), next);
 
 		return result;
 	}
@@ -69,8 +68,8 @@ public class Many<O extends Row, M> implements Iterable<One<O, M>>, AutoCloseabl
 	public boolean hasNext() {
 		if (!manager.prepared()) return false;
 
-		Relationship key = selfAsMany.getRelationship();
-		DataObject current = manager.current(key);
+		var key = selfAsMany.getRelationship();
+		var current = manager.current(key);
 
 		while (prev != null && current != null && prev.getPrimaryKey().equals(current.getPrimaryKey())) {
 			manager.next();

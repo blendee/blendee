@@ -27,7 +27,7 @@ public class SimpleComposedSQL implements ComposedSQL {
 
 	@Override
 	public int complement(int done, BPreparedStatement statement) {
-		for (Binder binder : binders) {
+		for (var binder : binders) {
 			binder.bind(++done, statement);
 		}
 

@@ -265,7 +265,7 @@ public abstract class Placeholder extends Binder {
 	}
 
 	static List<Integer> getIndexes() {
-		List<Integer> list = placeholderIndexes.get();
+		var list = placeholderIndexes.get();
 		if (list == null) throw new IllegalStateException();
 
 		return list;

@@ -40,13 +40,13 @@ public class InsertStatementIntermediate {
 			//カラム数と値の数が違います
 			throw new IllegalStateException("different size: columns=" + columns.size() + ", values=" + values.length);
 
-		BinderExtractor extractor = new BinderExtractor();
+		var extractor = new BinderExtractor();
 
-		InsertDMLBuilder builder = new InsertDMLBuilder(table);
+		var builder = new InsertDMLBuilder(table);
 
 		for (int i = 0; i < values.length; i++) {
-			Column c = columns.get(i);
-			Object v = values[i];
+			var c = columns.get(i);
+			var v = values[i];
 			if (v != null) {
 				builder.add(c.getName(), extractor.extract(v));
 			} else {
@@ -66,9 +66,9 @@ public class InsertStatementIntermediate {
 	public DataManipulator VALUES(Consumer<Values> consumer) {
 		prepareColumns();
 
-		InsertDMLBuilder builder = new InsertDMLBuilder(table);
+		var builder = new InsertDMLBuilder(table);
 
-		Values values = new Values(builder, columns);
+		var values = new Values(builder, columns);
 		consumer.accept(values);
 
 		builder.addDecorator(decorators.decorators());

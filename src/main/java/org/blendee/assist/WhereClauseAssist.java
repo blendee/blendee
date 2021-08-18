@@ -40,7 +40,7 @@ public interface WhereClauseAssist<R extends WhereClauseAssist<?>> extends Crite
 	default <O extends LogicalOperators<?>> WhereColumn<O> any(
 		String template,
 		CriteriaAssistColumn<O> column) {
-		Statement statement = statement();
+		var statement = statement();
 		return new WhereColumn<>(
 			statement,
 			getContext(),
@@ -112,13 +112,13 @@ public interface WhereClauseAssist<R extends WhereClauseAssist<?>> extends Crite
 	default <O extends LogicalOperators<?>> WhereColumn<O> any(
 		String template,
 		Vargs<CriteriaAssistColumn<O>> args) {
-		AssistColumn[] values = args.get();
-		Column[] columns = new Column[values.length];
+		var values = args.get();
+		var columns = new Column[values.length];
 		for (int i = 0; i < values.length; i++) {
 			columns[i] = values[i].column();
 		}
 
-		Statement statement = statement();
+		var statement = statement();
 		return new WhereColumn<>(
 			statement,
 			getContext(),

@@ -24,7 +24,7 @@ public class ResultSetIterator implements AutoCloseableIterator<Result>, Iterabl
 	 * @param sql {@link ComposedSQL}
 	 */
 	public ResultSetIterator(ComposedSQL sql) {
-		BConnection connection = BlendeeManager.getConnection();
+		var connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql);
 		result = statement.executeQuery();
 	}
@@ -35,7 +35,7 @@ public class ResultSetIterator implements AutoCloseableIterator<Result>, Iterabl
 	 * @param complementer {@link PreparedStatementComplementer}
 	 */
 	public ResultSetIterator(String sql, PreparedStatementComplementer complementer) {
-		BConnection connection = BlendeeManager.getConnection();
+		var connection = BlendeeManager.getConnection();
 		statement = connection.getStatement(sql, complementer);
 		result = statement.executeQuery();
 	}
