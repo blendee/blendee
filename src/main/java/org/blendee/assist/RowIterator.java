@@ -29,7 +29,7 @@ public abstract class RowIterator<R extends Row>
 	}
 
 	/**
-	 * Stream に変換します。
+	 * {@link Stream} に変換します。
 	 * @return {@link Stream}
 	 */
 	public Stream<R> stream() {

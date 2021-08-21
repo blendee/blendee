@@ -1,7 +1,13 @@
 package org.blendee.jdbc;
 
 import java.sql.ResultSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * {@link ResultSet} に似せ、機能を制限したインターフェイスです。
@@ -34,6 +40,46 @@ public interface BResultSet extends AutoCloseable, Result {
 		} finally {
 			close();
 		}
+	}
+
+	/**
+	 * {@link Stream} に変換します。
+	 * @return {@link Stream}
+	 */
+	default Stream<Result> stream() {
+
+		boolean[] hasNext = { false };
+
+		boolean[] nexted = { false };
+
+		var iterator = new Iterator<Result>() {
+
+			@Override
+			public boolean hasNext() {
+				hasNext[0] = BResultSet.this.next();
+
+				var hasNextCurrent = hasNext[0];
+
+				nexted[0] = true;
+
+				if (!hasNextCurrent) close();
+
+				return hasNextCurrent;
+			}
+
+			@Override
+			public Result next() {
+				if (!nexted[0]) hasNext();
+
+				if (!hasNext[0]) throw new NoSuchElementException();
+
+				nexted[0] = false;
+
+				return BResultSet.this;
+			}
+		};
+
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
 	}
 
 	/**
